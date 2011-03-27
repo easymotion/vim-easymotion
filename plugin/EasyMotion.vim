@@ -291,8 +291,14 @@
 
 			let pos = searchpos(a:regexp, search_direction, search_stopline)
 
+			" Reached end of search range
 			if pos == [0, 0]
 				break
+			endif
+
+			" Skip folded lines
+			if foldclosed(pos[0]) != -1
+				continue
 			endif
 
 			call add(targets, pos)
