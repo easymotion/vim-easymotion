@@ -95,9 +95,14 @@
 		function! EasyMotionF(visualmode, direction)
 			call <SID>Prompt('Search for character')
 
-			let char = getchar()
+			let char = <SID>GetChar()
 
-			let re = '\C' . escape(nr2char(char), '.$^~')
+			" Check that we have an input char
+			if empty(char)
+				return
+			endif
+
+			let re = '\C' . escape(char, '.$^~')
 
 			call <SID>EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
 		endfunction
@@ -107,12 +112,17 @@
 		function! EasyMotionT(visualmode, direction)
 			call <SID>Prompt('Search for character')
 
-			let char = getchar()
+			let char = <SID>GetChar()
+
+			" Check that we have an input char
+			if empty(char)
+				return
+			endif
 
 			if a:direction == 1
-				let re = '\C' . escape(nr2char(char), '.$^~') . '\zs.'
+				let re = '\C' . escape(char, '.$^~') . '\zs.'
 			else
-				let re = '\C.' . escape(nr2char(char), '.$^~')
+				let re = '\C.' . escape(char, '.$^~')
 			endif
 
 			call <SID>EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
@@ -170,6 +180,20 @@
 
 			call setline(line_num, line[a:key])
 		endfor
+	endfunction " }}}
+	function! s:GetChar() " {{{
+		let char = getchar()
+
+		if char == 27
+			" Escape key pressed
+			redraw
+
+			call <SID>Message('Cancelled')
+
+			return ''
+		endif
+
+		return nr2char(char)
 	endfunction " }}}
 " }}}
 " Core functions {{{
@@ -230,7 +254,7 @@
 			call <SID>Prompt('Group character')
 		endif
 
-		let input_char = nr2char(getchar())
+		let input_char = <SID>GetChar()
 
 		redraw
 
@@ -242,9 +266,14 @@
 
 		redraw
 
+		" Check that we have an input char
+		if empty(input_char)
+			throw 'Cancelled'
+		endif
+
 		" Check if the input char is valid
 		if ! has_key(s:key_to_index, input_char) || s:key_to_index[input_char] >= targets_len
-			throw 'Cancelled'
+			throw 'Invalid target'
 		endif
 
 		if single_group
