@@ -1,18 +1,17 @@
-" EasyMotion - vim motions on speed
+" EasyMotion - Vim motions on speed!
 "
 " Author: Kim Silkebækken <kim.silkebaekken+github@gmail.com>
 " Source: https://github.com/Lokaltog/EasyMotion
-" Version: 1.0
+" Version: 1.0.1
 " Modified: 2011-03-28
 "
-" Heavily modified version of Bartlomiej Podolak's PreciseJump script:
+" Based on Bartlomiej Podolak's PreciseJump script:
 " http://www.vim.org/scripts/script.php?script_id=3437
 "
-" This script addresses some issues with the original PreciseJump
-" script. It works correctly with the following motions in both normal
+" This script works correctly with the following motions in both normal
 " and visual mode: f F t T w e b
 "
-" Default key mapping:
+" Default key mapping for both normal and visual mode:
 " - <Leader> f {char}
 " - <Leader> F {char}
 " - <Leader> t {char}
