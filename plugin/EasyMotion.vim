@@ -9,8 +9,8 @@
 " http://www.vim.org/scripts/script.php?script_id=3437
 "
 " This script addresses some issues with the original PreciseJump
-" script. It only works in normal mode (for now), and it works correctly
-" with the following motions: f F t T w e b
+" script. It works correctly with the following motions in both normal
+" and visual mode: f F t T w e b
 "
 " Default key mapping:
 " - <Leader> f {char}
@@ -60,14 +60,21 @@
 " Default key mapping {{{
 	if g:EasyMotion_do_mapping
 		nnoremap <silent> <Leader>f :call EasyMotionF(0)<CR>
+		vnoremap <silent> <Leader>f :<C-U>call EasyMotionF(0, visualmode())<CR>
 		nnoremap <silent> <Leader>F :call EasyMotionF(1)<CR>
+		vnoremap <silent> <Leader>F :<C-U>call EasyMotionF(1, visualmode())<CR>
 
 		nnoremap <silent> <Leader>t :call EasyMotionT(0)<CR>
+		vnoremap <silent> <Leader>t :<C-U>call EasyMotionT(0, visualmode())<CR>
 		nnoremap <silent> <Leader>T :call EasyMotionT(1)<CR>
+		vnoremap <silent> <Leader>T :<C-U>call EasyMotionT(1, visualmode())<CR>
 
 		nnoremap <silent> <Leader>w :call EasyMotionW()<CR>
+		vnoremap <silent> <Leader>w :<C-U>call EasyMotionW(visualmode())<CR>
 		nnoremap <silent> <Leader>e :call EasyMotionE()<CR>
+		vnoremap <silent> <Leader>e :<C-U>call EasyMotionE(visualmode())<CR>
 		nnoremap <silent> <Leader>b :call EasyMotionB()<CR>
+		vnoremap <silent> <Leader>b :<C-U>call EasyMotionB(visualmode())<CR>
 	endif
 " }}}
 " Initialize variables {{{
@@ -83,19 +90,19 @@
 " Motion functions {{{
 	" F key motions {{{
 		" Go to {char} to the right or the left
-		function! EasyMotionF(direction)
+		function! EasyMotionF(direction, ...)
 			call <SID>Prompt('Search for character')
 
 			let char = getchar()
 
 			let re = '\C' . escape(nr2char(char), '.$^~')
 
-			call <SID>EasyMotion(re, a:direction)
+			call <SID>EasyMotion(re, a:direction, a:0 > 0 ? a:1 : '')
 		endfunction
 	" }}}
 	" T key motions {{{
 		" Go to {char} to the right (before) or the left (after)
-		function! EasyMotionT(direction)
+		function! EasyMotionT(direction, ...)
 			call <SID>Prompt('Search for character')
 
 			let char = getchar()
@@ -106,25 +113,25 @@
 				let re = '\C.' . escape(nr2char(char), '.$^~')
 			endif
 
-			call <SID>EasyMotion(re, a:direction)
+			call <SID>EasyMotion(re, a:direction, a:0 > 0 ? a:1 : '')
 		endfunction
 	" }}}
 	" W key motions {{{
 		" Beginning of word forward
-		function! EasyMotionW()
-			call <SID>EasyMotion('\<.', 0)
+		function! EasyMotionW(...)
+			call <SID>EasyMotion('\<.', 0, a:0 > 0 ? a:1 : '')
 		endfunction
 	" }}}
 	" E key motions {{{
 		" End of word forward
-		function! EasyMotionE()
-			call <SID>EasyMotion('.\>', 0)
+		function! EasyMotionE(...)
+			call <SID>EasyMotion('.\>', 0, a:0 > 0 ? a:1 : '')
 		endfunction
 	" }}}
 	" B key motions {{{
 		" Beginning of word backward
-		function! EasyMotionB()
-			call <SID>EasyMotion('\<.', 1)
+		function! EasyMotionB(...)
+			call <SID>EasyMotion('\<.', 1, a:0 > 0 ? a:1 : '')
 		endfunction
 	" }}}
 " }}}
@@ -268,9 +275,10 @@
 			endif
 		endtry
 	endfunction "}}}
-	function! s:EasyMotion(regexp, direction) " {{{
+	function! s:EasyMotion(regexp, direction, ...) " {{{
 		let orig_pos = [line('.'), col('.')]
 		let targets = []
+		let visualmode = a:0 > 0 ? a:1 : ''
 
 		" Find motion targets
 		while 1
@@ -299,6 +307,9 @@
 			redraw
 
 			call <SID>Message('No matches')
+
+			" Restore cursor position
+			call setpos('.', [0, orig_pos[0], orig_pos[1]])
 
 			return
 		endif
@@ -351,10 +362,34 @@
 			" Cancelled by user
 			call <SID>Message('Operation cancelled')
 
+			" Restore cursor position/selection
+			if ! empty(visualmode)
+				silent exec 'normal! `<' . visualmode . '`>'
+			else
+				call setpos('.', [0, orig_pos[0], orig_pos[1]])
+			endif
+
 			return
 		else
-			" Jump to coords
-			call setpos('.', [0, coords[0], coords[1]])
+			if ! empty(visualmode)
+				" Store original marks
+				let m_a = getpos("'a")
+				let m_b = getpos("'b")
+
+				" Store start/end positions
+				call setpos("'a", [0, orig_pos[0], orig_pos[1]])
+				call setpos("'b", [0, coords[0], coords[1]])
+
+				" Update selection
+				silent exec 'normal! `a' . visualmode . '`b'
+
+				" Restore original marks
+				call setpos("'a", m_a)
+				call setpos("'b", m_b)
+			else
+				" Update cursor position
+				call setpos('.', [0, coords[0], coords[1]])
+			endif
 
 			call <SID>Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		endif
