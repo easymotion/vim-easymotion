@@ -66,6 +66,8 @@
 	    let s:key_to_index[i] = index
 	    let index += 1
 	endfor
+
+	let s:var_reset = {}
 " }}}
 " Motion functions {{{
 	" F key motions {{{
@@ -124,6 +126,20 @@
 		echo a:message . ': '
 		echohl None
 	endfunction " }}}
+	function! s:VarReset(var, ...) " {{{
+		if a:0 == 0 && has_key(s:var_reset, a:var)
+			" Reset var to original value
+			call setbufvar(bufname(0), a:var, s:var_reset[a:var])
+		elseif a:0 == 1
+			let new_value = a:0 == 1 ? a:1 : ''
+
+			" Store original value
+			let s:var_reset[a:var] = getbufvar(bufname(0), a:var)
+
+			" Set new var value
+			call setbufvar(bufname(0), a:var, new_value)
+		endif
+	endfunction " }}}
 " }}}
 " Core functions {{{
 	function! s:PromptUser(groups) "{{{
@@ -167,27 +183,12 @@
 
 			let lines_items = items(lines)
 		" }}}
-		" Store original buffer properties {{{
-			let modified = &modified
-			let modifiable = &modifiable
-			let readonly = &readonly
-		" }}}
 
 		let input_char = ''
 
 		try
 			" Highlight source
 			let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
-
-			" Make sure we can change the buffer {{{
-				if modifiable == 0
-					silent setl modifiable
-				endif
-
-				if readonly == 1
-					silent setl noreadonly
-				endif
-			" }}}
 
 			" Set lines with markers
 			for [line_num, line] in lines_items
@@ -226,20 +227,6 @@
 
 			redraw
 
-			" Restore original properties {{{
-				if modified == 0
-					silent setl nomodified
-				endif
-
-				if modifiable == 0
-					silent setl nomodifiable
-				endif
-
-				if readonly == 1
-					silent setl readonly
-				endif
-			" }}}
-
 			" Check if the input char is valid
 			if ! has_key(s:key_to_index, input_char) || s:key_to_index[input_char] >= targets_len
 				" Invalid input char
@@ -260,87 +247,114 @@
 		let targets = []
 		let visualmode = a:0 > 0 ? a:1 : ''
 
-		" Find motion targets
-		while 1
-			let search_direction = (a:direction == 1 ? 'b' : '')
-			let search_stopline = line(a:direction == 1 ? 'w0' : 'w$')
+		try
+			" Reset properties
+			call <SID>VarReset('&scrolloff', 0)
+			call <SID>VarReset('&modified', 0)
+			call <SID>VarReset('&modifiable', 1)
+			call <SID>VarReset('&readonly', 0)
 
-			let pos = searchpos(a:regexp, search_direction, search_stopline)
+			" Find motion targets
+			while 1
+				let search_direction = (a:direction == 1 ? 'b' : '')
+				let search_stopline = line(a:direction == 1 ? 'w0' : 'w$')
 
-			" Reached end of search range
-			if pos == [0, 0]
-				break
+				let pos = searchpos(a:regexp, search_direction, search_stopline)
+
+				" Reached end of search range
+				if pos == [0, 0]
+					break
+				endif
+
+				" Skip folded lines
+				if foldclosed(pos[0]) != -1
+					continue
+				endif
+
+				call add(targets, pos)
+			endwhile
+
+			let targets_len = len(targets)
+			let groups_len = len(s:index_to_key)
+
+			if targets_len == 0
+				throw 'No matches'
 			endif
-
-			" Skip folded lines
-			if foldclosed(pos[0]) != -1
-				continue
-			endif
-
-			call add(targets, pos)
-		endwhile
-
-		let targets_len = len(targets)
-		let groups_len = len(s:index_to_key)
-
-		if targets_len == 0
-			redraw
-
-			call <SID>Message('No matches')
 
 			" Restore cursor position
 			call setpos('.', [0, orig_pos[0], orig_pos[1]])
 
-			return
-		endif
+			" Split targets into key groups {{{
+				let groups = []
+				let i = 0
 
-		" Restore cursor position
-		call setpos('.', [0, orig_pos[0], orig_pos[1]])
+				while i < targets_len
+					call add(groups, targets[i : i + groups_len - 1])
 
-		" Split targets into key groups {{{
-			let groups = []
-			let i = 0
+					let i += groups_len
+				endwhile
+			" }}}
+			" Too many groups; only display the first ones {{{
+				if len(groups) > groups_len
+					call <SID>Message('Only displaying the first matches')
 
-			while i < targets_len
-				call add(groups, targets[i : i + groups_len - 1])
+					let groups = groups[0 : groups_len - 1]
+				endif
+			" }}}
 
-				let i += groups_len
-			endwhile
-		" }}}
-		" Too many groups; only display the first ones {{{
-			if len(groups) > groups_len
-				call <SID>Message('Only displaying the first matches')
+			" Shade inactive source
+			if g:EasyMotion_shade
+				let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
 
-				let groups = groups[0 : groups_len - 1]
+				if a:direction == 1
+					" Backward
+					let shade_hl_re = '\%'. line('w0') .'l\_.*' . shade_hl_pos
+				else
+					" Forward
+					let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
+				endif
+
+				let shade_hl_id = matchadd(g:EasyMotion_shade_hl, shade_hl_re, 0)
 			endif
-		" }}}
 
-		" Shade inactive source
-		if g:EasyMotion_shade
-			let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
+			" Prompt user for target group/character
+			let coords = <SID>PromptUser(groups)
 
-			if a:direction == 1
-				" Backward
-				let shade_hl_re = '\%'. line('w0') .'l\_.*' . shade_hl_pos
+			" Remove shading
+			if g:EasyMotion_shade
+				call matchdelete(shade_hl_id)
+			endif
+
+			if len(coords) != 2
+				throw 'Cancelled'
 			else
-				" Forward
-				let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
+				if ! empty(visualmode)
+					" Store original marks
+					let m_a = getpos("'a")
+					let m_b = getpos("'b")
+
+					" Store start/end positions
+					call setpos("'a", [0, orig_pos[0], orig_pos[1]])
+					call setpos("'b", [0, coords[0], coords[1]])
+
+					" Update selection
+					silent exec 'normal! `a' . visualmode . '`b'
+
+					" Restore original marks
+					call setpos("'a", m_a)
+					call setpos("'b", m_b)
+				else
+					" Update cursor position
+					call setpos('.', [0, coords[0], coords[1]])
+				endif
+
+				call <SID>Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 			endif
+		catch /.*/
+			redraw
 
-			let shade_hl_id = matchadd(g:EasyMotion_shade_hl, shade_hl_re, 0)
-		endif
-
-		" Prompt user for target group/character
-		let coords = <SID>PromptUser(groups)
-
-		" Remove shading
-		if g:EasyMotion_shade
-			call matchdelete(shade_hl_id)
-		endif
-
-		if len(coords) != 2
-			" Cancelled by user
-			call <SID>Message('Operation cancelled')
+			" Show exception message
+			call <SID>Message(v:exception)
 
 			" Restore cursor position/selection
 			if ! empty(visualmode)
@@ -348,30 +362,14 @@
 			else
 				call setpos('.', [0, orig_pos[0], orig_pos[1]])
 			endif
+		finally
+			redraw
 
-			return
-		else
-			if ! empty(visualmode)
-				" Store original marks
-				let m_a = getpos("'a")
-				let m_b = getpos("'b")
-
-				" Store start/end positions
-				call setpos("'a", [0, orig_pos[0], orig_pos[1]])
-				call setpos("'b", [0, coords[0], coords[1]])
-
-				" Update selection
-				silent exec 'normal! `a' . visualmode . '`b'
-
-				" Restore original marks
-				call setpos("'a", m_a)
-				call setpos("'b", m_b)
-			else
-				" Update cursor position
-				call setpos('.', [0, coords[0], coords[1]])
-			endif
-
-			call <SID>Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
-		endif
+			" Restore properties
+			call <SID>VarReset('&scrolloff')
+			call <SID>VarReset('&modified')
+			call <SID>VarReset('&modifiable')
+			call <SID>VarReset('&readonly')
+		endtry
 	endfunction " }}}
 " }}}
