@@ -1,0 +1,148 @@
+*easymotion.txt*	Version 1.0.1.  Last change: 2011 Mar 28
+
+
+            ______                  __  ___       __  _
+           / ____/____ ________  __/  |/  /____  / /_(_)____  ____
+          / __/  / __ `/ ___/ / / / /|_/ // __ \/ __/ // __ \/ __ \
+         / /___ / /_/ (__  ) /_/ / /  / // /_/ / /_/ // /_/ / / / /
+        /_____/ \__,_/____/\__, /_/  /_/ \____/\__/_/ \____/_/ /_/
+                          /____/
+                                  - Vim motions on speed!
+
+
+==============================================================================
+CONTENTS                                                 *easymotion-contents*
+
+    1. Introduction ....................... |easymotion-introduction|
+    2. Usage .............................. |easymotion-usage|
+    3. Requirements ....................... |easymotion-requirements|
+    4. Configuration ...................... |easymotion-configuration|
+       4.1 EasyMotion_keys ................ |EasyMotion_keys|
+       4.2 EasyMotion_target_hl ........... |EasyMotion_target_hl|
+       4.3 EasyMotion_shade_hl ............ |EasyMotion_shade_hl|
+       4.4 EasyMotion_do_shade ............ |EasyMotion_do_shade|
+       4.5 EasyMotion_do_mapping .......... |EasyMotion_do_mapping|
+    5. License ............................ |easymotion-license|
+    6. Known bugs ......................... |easymotion-known-bugs|
+    7. Contributing ....................... |easymotion-contributing|
+    8. Credits ............................ |easymotion-credits|
+
+==============================================================================
+1. Introduction                         *easymotion* *easymotion-introduction*
+
+EasyMotion provides a much simpler way to use some motions in vim. It takes
+the <number> out of <number>w or <number>f{char} by highlighting all possible
+choices and allowing you to press one key to jump directly to the target.
+
+When one of the available motions is triggered, all visible text preceding or
+following the cursor is faded, and motion targets are highlighted.
+
+==============================================================================
+2. Usage                                                    *easymotion-usage*
+
+EasyMotion is triggered manually or by one of the provided mappings (see
+|EasyMotion_do_mapping|).
+
+Example: >
+
+	<cursor>Lorem ipsum dolor sit amet.
+
+If the word motion |w| is triggered with the default mapping <Leader>w, the
+text is updated (no braces are actually added, the letters are highlighted in
+red by default): >
+
+	<cursor>Lorem {a}psum {b}olor {c}it {d}met.
+
+Press 'c' to jump to the beginning of the word "sit": >
+
+	Lorem ipsum dolor <cursor>sit amet.
+
+And that's it!
+
+==============================================================================
+3. Requirements                                      *easymotion-requirements*
+
+EasyMotion is tested in vim 7.3, but should run fine in vim 7.2. Vi-compatible
+mode must be disabled.
+
+==============================================================================
+4. Configuration                                    *easymotion-configuration*
+
+------------------------------------------------------------------------------
+4.1 EasyMotion_keys                                          *EasyMotion_keys*
+
+You can choose the characters which will be used for jump targets. If you want
+to use numbers or symbols instead of the default value, set the variable like
+this: >
+
+	let g:EasyMotion_keys = '1234567890&[{}(=*)+]'
+
+Default: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+------------------------------------------------------------------------------
+4.2 EasyMotion_target_hl                                *EasyMotion_target_hl*
+
+Set the highlighting group for jump targets.
+
+Default: 'EasyMotionTarget'
+
+------------------------------------------------------------------------------
+4.3 EasyMotion_shade_hl                                  *EasyMotion_shade_hl*
+
+Set the highlighting group for shaded text.
+
+Default: 'EasyMotionShade'
+
+------------------------------------------------------------------------------
+4.4 EasyMotion_do_shade                                  *EasyMotion_do_shade*
+
+Set this to 0 if you want to disable text shading.
+
+Default: 1
+
+------------------------------------------------------------------------------
+4.5 EasyMotion_do_mapping                              *EasyMotion_do_mapping*
+
+Set this to 0 if you want to disable the default mappings. The default
+configuration provides the following mappings:
+
+	Mapping            Details
+	--------------------------
+	<Leader>f{char}    See |f|
+	<Leader>F{char}    See |F|
+	<Leader>t{char}    See |t|
+	<Leader>T{char}    See |T|
+	<Leader>w          See |w|
+	<Leader>e          See |e|
+	<Leader>b          See |b|
+
+==============================================================================
+5. License                                                *easymotion-license*
+
+Creative Commons Attribution-ShareAlike 3.0 Unported
+
+http://creativecommons.org/licenses/by-sa/3.0/
+
+==============================================================================
+6. Known bugs                                          *easymotion-known-bugs*
+
+None.
+
+==============================================================================
+7. Contributing                                      *easymotion-contributing*
+
+If you experience any bugs or have feature requests, open an issue on GitHub.
+Fork me on GitHub and send a pull request if you have any code improvements.
+
+Source repository: https://github.com/Lokaltog/EasyMotion
+
+==============================================================================
+8. Credits                                                *easymotion-credits*
+
+EasyMotion is based on Bartlomiej Podolak's great PreciseJump script, which
+can be downloaded here:
+
+http://www.vim.org/scripts/script.php?script_id=3437
+
+==============================================================================
+vim:tw=78:sw=4:ts=8:ft=help:norl:
