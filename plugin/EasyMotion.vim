@@ -361,7 +361,7 @@
 
 			" Restore cursor position/selection
 			if ! empty(a:visualmode)
-				silent exec 'normal! `<' . a:visualmode . '`>'
+				silent exec 'normal! gv'
 			else
 				call setpos('.', [0, orig_pos[0], orig_pos[1]])
 			endif
