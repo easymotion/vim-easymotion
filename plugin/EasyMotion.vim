@@ -353,13 +353,7 @@
 			return
 		else
 			" Jump to coords
-			let virtualedit = &virtualedit
-			setl virtualedit=
-
-			silent execute 'normal! ' . coords[0] . 'gg'
-			silent execute 'normal! "0|"'
-			silent execute 'normal! ' . (coords[1] - 1) . 'l'
-			silent execute 'setl virtualedit=' . virtualedit
+			call setpos('.', [0, coords[0], coords[1]])
 
 			call <SID>Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		endif
