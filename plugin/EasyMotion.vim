@@ -176,16 +176,16 @@
 
 				let current_group += 1
 			endfor
+
 			let lines_items = items(lines)
 		" }}}
-
-		let input_char = ''
-
-		" Store original properties {{{
+		" Store original buffer properties {{{
 			let modified = &modified
 			let modifiable = &modifiable
 			let readonly = &readonly
 		" }}}
+
+		let input_char = ''
 
 		try
 			" Highlight source
@@ -336,6 +336,7 @@
 			let shade_hl_id = matchadd(g:EasyMotion_shade_hl, shade_hl_re, 0)
 		endif
 
+		" Prompt user for target group/character
 		let coords = <SID>PromptUser(groups)
 
 		" Remove shading
