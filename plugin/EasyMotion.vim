@@ -66,6 +66,8 @@
 	    let s:key_to_index[i] = index
 	    let index += 1
 	endfor
+
+	let s:var_reset = {}
 " }}}
 " Motion functions {{{
 	" F key motions {{{
@@ -123,6 +125,20 @@
 		echohl Question
 		echo a:message . ': '
 		echohl None
+	endfunction " }}}
+	function! s:VarReset(var, ...) " {{{
+		if a:0 == 0 && has_key(s:var_reset, a:var)
+			" Reset var to original value
+			call setbufvar(bufname(0), a:var, s:var_reset[a:var])
+		elseif a:0 == 1
+			let new_value = a:0 == 1 ? a:1 : ''
+
+			" Store original value
+			let s:var_reset[a:var] = getbufvar(bufname(0), a:var)
+
+			" Set new var value
+			call setbufvar(bufname(0), a:var, new_value)
+		endif
 	endfunction " }}}
 " }}}
 " Core functions {{{
