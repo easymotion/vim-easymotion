@@ -30,31 +30,51 @@
 	endif " }}}
 	" Create default highlighting {{{
 		if ! hlexists(g:EasyMotion_target_hl) " {{{
-			execute 'hi ' . g:EasyMotion_target_hl . ' ctermfg=red ctermbg=none cterm=bold gui=bold guibg=Red guifg=yellow'
+			let hl = 'guibg=none guifg=#ff0000 gui=bold '
+
+			if &t_Co == 256
+				let hl .= 'ctermbg=none ctermfg=196 cterm=bold '
+			else
+				let hl .= 'ctermbg=none ctermfg=red cterm=bold '
+			endif
+
+			execute 'hi ' . g:EasyMotion_target_hl . ' ' . hl
 		endif " }}}
 		if ! hlexists(g:EasyMotion_shade_hl) " {{{
-			execute 'hi ' . g:EasyMotion_shade_hl . ' ctermfg=black ctermbg=none cterm=bold gui=bold guibg=none guifg=black'
+			let hl = 'guibg=none guifg=#585858 gui=none '
+
+			if &t_Co == 256
+				let hl .= 'ctermbg=none ctermfg=240 cterm=none '
+			else
+				let hl .= 'ctermbg=none ctermfg=darkgrey cterm=none '
+			endif
+
+			execute 'hi ' . g:EasyMotion_shade_hl . ' ' . hl
 		endif " }}}
 	" }}}
 " }}}
 " Default key mapping {{{
 	if g:EasyMotion_do_mapping
-		nnoremap <silent> <Leader>f :call EasyMotionF(0)<CR>
-		vnoremap <silent> <Leader>f :<C-U>call EasyMotionF(0, visualmode())<CR>
-		nnoremap <silent> <Leader>F :call EasyMotionF(1)<CR>
-		vnoremap <silent> <Leader>F :<C-U>call EasyMotionF(1, visualmode())<CR>
+		nnoremap <silent> <Leader>f      :call EasyMotionF(0, 0)<CR>
+		vnoremap <silent> <Leader>f :<C-U>call EasyMotionF(1, 0)<CR>
+                                                                ,
+		nnoremap <silent> <Leader>F      :call EasyMotionF(0, 1)<CR>
+		vnoremap <silent> <Leader>F :<C-U>call EasyMotionF(1, 1)<CR>
+                                                                ,
+		nnoremap <silent> <Leader>t      :call EasyMotionT(0, 0)<CR>
+		vnoremap <silent> <Leader>t :<C-U>call EasyMotionT(1, 0)<CR>
+                                                                ,
+		nnoremap <silent> <Leader>T      :call EasyMotionT(0, 1)<CR>
+		vnoremap <silent> <Leader>T :<C-U>call EasyMotionT(1, 1)<CR>
 
-		nnoremap <silent> <Leader>t :call EasyMotionT(0)<CR>
-		vnoremap <silent> <Leader>t :<C-U>call EasyMotionT(0, visualmode())<CR>
-		nnoremap <silent> <Leader>T :call EasyMotionT(1)<CR>
-		vnoremap <silent> <Leader>T :<C-U>call EasyMotionT(1, visualmode())<CR>
+		nnoremap <silent> <Leader>w      :call EasyMotionW(0)<CR>
+		vnoremap <silent> <Leader>w :<C-U>call EasyMotionW(1)<CR>
 
-		nnoremap <silent> <Leader>w :call EasyMotionW()<CR>
-		vnoremap <silent> <Leader>w :<C-U>call EasyMotionW(visualmode())<CR>
-		nnoremap <silent> <Leader>e :call EasyMotionE()<CR>
-		vnoremap <silent> <Leader>e :<C-U>call EasyMotionE(visualmode())<CR>
-		nnoremap <silent> <Leader>b :call EasyMotionB()<CR>
-		vnoremap <silent> <Leader>b :<C-U>call EasyMotionB(visualmode())<CR>
+		nnoremap <silent> <Leader>e      :call EasyMotionE(0)<CR>
+		vnoremap <silent> <Leader>e :<C-U>call EasyMotionE(1)<CR>
+
+		nnoremap <silent> <Leader>b      :call EasyMotionB(0)<CR>
+		vnoremap <silent> <Leader>b :<C-U>call EasyMotionB(1)<CR>
 	endif
 " }}}
 " Initialize variables {{{
@@ -72,19 +92,19 @@
 " Motion functions {{{
 	" F key motions {{{
 		" Go to {char} to the right or the left
-		function! EasyMotionF(direction, ...)
+		function! EasyMotionF(visualmode, direction)
 			call <SID>Prompt('Search for character')
 
 			let char = getchar()
 
 			let re = '\C' . escape(nr2char(char), '.$^~')
 
-			call <SID>EasyMotion(re, a:direction, a:0 > 0 ? a:1 : '')
+			call <SID>EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 	" T key motions {{{
 		" Go to {char} to the right (before) or the left (after)
-		function! EasyMotionT(direction, ...)
+		function! EasyMotionT(visualmode, direction)
 			call <SID>Prompt('Search for character')
 
 			let char = getchar()
@@ -95,25 +115,25 @@
 				let re = '\C.' . escape(nr2char(char), '.$^~')
 			endif
 
-			call <SID>EasyMotion(re, a:direction, a:0 > 0 ? a:1 : '')
+			call <SID>EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 	" W key motions {{{
 		" Beginning of word forward
-		function! EasyMotionW(...)
-			call <SID>EasyMotion('\<.', 0, a:0 > 0 ? a:1 : '')
+		function! EasyMotionW(visualmode)
+			call <SID>EasyMotion('\<.', 0, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 	" E key motions {{{
 		" End of word forward
-		function! EasyMotionE(...)
-			call <SID>EasyMotion('.\>', 0, a:0 > 0 ? a:1 : '')
+		function! EasyMotionE(visualmode)
+			call <SID>EasyMotion('.\>', 0, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 	" B key motions {{{
 		" Beginning of word backward
-		function! EasyMotionB(...)
-			call <SID>EasyMotion('\<.', 1, a:0 > 0 ? a:1 : '')
+		function! EasyMotionB(visualmode)
+			call <SID>EasyMotion('\<.', 1, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 " }}}
@@ -139,6 +159,17 @@
 			" Set new var value
 			call setbufvar(bufname(0), a:var, new_value)
 		endif
+	endfunction " }}}
+	function! s:SetLines(lines, key) " {{{
+		for [line_num, line] in a:lines
+			try
+				" Try to join changes with previous undo block
+				undojoin
+			catch
+			endtry
+
+			call setline(line_num, line[a:key])
+		endfor
 	endfunction " }}}
 " }}}
 " Core functions {{{
@@ -184,68 +215,49 @@
 			let lines_items = items(lines)
 		" }}}
 
-		let input_char = ''
+		" Highlight source
+		let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
 
-		try
-			" Highlight source
-			let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
+		" Set lines with markers
+		call <SID>SetLines(lines_items, 'marker')
 
-			" Set lines with markers
-			for [line_num, line] in lines_items
-				try
-					undojoin
-				catch
-				endtry
+		redraw
 
-				call setline(line_num, line['marker'])
-			endfor
+		" Get target/group character
+		if single_group
+			call <SID>Prompt('Target character')
+		else
+			call <SID>Prompt('Group character')
+		endif
 
-			redraw
+		let input_char = nr2char(getchar())
 
-			" Get target/group character
-			if single_group
-				call <SID>Prompt('Target character')
-			else
-				call <SID>Prompt('Group character')
-			endif
+		redraw
 
-			let input_char = nr2char(getchar())
+		" Restore original lines
+		call <SID>SetLines(lines_items, 'orig')
 
-			redraw
-		finally
-			" Restore original lines
-			for [line_num, line] in lines_items
-				try
-					undojoin
-				catch
-				endtry
+		" Un-highlight code
+		call matchdelete(target_hl_id)
 
-				call setline(line_num, line['orig'])
-			endfor
+		redraw
 
-			call matchdelete(target_hl_id)
+		" Check if the input char is valid
+		if ! has_key(s:key_to_index, input_char) || s:key_to_index[input_char] >= targets_len
+			throw 'Cancelled'
+		endif
 
-			redraw
-
-			" Check if the input char is valid
-			if ! has_key(s:key_to_index, input_char) || s:key_to_index[input_char] >= targets_len
-				" Invalid input char
-				return []
-			else
-				if single_group
-					" Return target coordinates
-					return a:groups[0][s:key_to_index[input_char]]
-				else
-					" Prompt for target character
-					return s:PromptUser([a:groups[s:key_to_index[input_char]]])
-				endif
-			endif
-		endtry
+		if single_group
+			" Return target coordinates
+			return a:groups[0][s:key_to_index[input_char]]
+		else
+			" Prompt for target character
+			return s:PromptUser([a:groups[s:key_to_index[input_char]]])
+		endif
 	endfunction "}}}
-	function! s:EasyMotion(regexp, direction, ...) " {{{
+	function! s:EasyMotion(regexp, direction, visualmode) " {{{
 		let orig_pos = [line('.'), col('.')]
 		let targets = []
-		let visualmode = a:0 > 0 ? a:1 : ''
 
 		try
 			" Reset properties
@@ -320,36 +332,27 @@
 			" Prompt user for target group/character
 			let coords = <SID>PromptUser(groups)
 
-			" Remove shading
-			if g:EasyMotion_shade
-				call matchdelete(shade_hl_id)
-			endif
+			if ! empty(a:visualmode)
+				" Store original marks
+				let m_a = getpos("'a")
+				let m_b = getpos("'b")
 
-			if len(coords) != 2
-				throw 'Cancelled'
+				" Store start/end positions
+				call setpos("'a", [0, orig_pos[0], orig_pos[1]])
+				call setpos("'b", [0, coords[0], coords[1]])
+
+				" Update selection
+				silent exec 'normal! `a' . a:visualmode . '`b'
+
+				" Restore original marks
+				call setpos("'a", m_a)
+				call setpos("'b", m_b)
 			else
-				if ! empty(visualmode)
-					" Store original marks
-					let m_a = getpos("'a")
-					let m_b = getpos("'b")
-
-					" Store start/end positions
-					call setpos("'a", [0, orig_pos[0], orig_pos[1]])
-					call setpos("'b", [0, coords[0], coords[1]])
-
-					" Update selection
-					silent exec 'normal! `a' . visualmode . '`b'
-
-					" Restore original marks
-					call setpos("'a", m_a)
-					call setpos("'b", m_b)
-				else
-					" Update cursor position
-					call setpos('.', [0, coords[0], coords[1]])
-				endif
-
-				call <SID>Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
+				" Update cursor position
+				call setpos('.', [0, coords[0], coords[1]])
 			endif
+
+			call <SID>Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		catch /.*/
 			redraw
 
@@ -357,13 +360,18 @@
 			call <SID>Message(v:exception)
 
 			" Restore cursor position/selection
-			if ! empty(visualmode)
-				silent exec 'normal! `<' . visualmode . '`>'
+			if ! empty(a:visualmode)
+				silent exec 'normal! gv'
 			else
 				call setpos('.', [0, orig_pos[0], orig_pos[1]])
 			endif
 		finally
 			redraw
+
+			" Remove shading
+			if g:EasyMotion_shade
+				call matchdelete(shade_hl_id)
+			endif
 
 			" Restore properties
 			call <SID>VarReset('&scrolloff')
