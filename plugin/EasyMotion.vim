@@ -140,6 +140,17 @@
 			call setbufvar(bufname(0), a:var, new_value)
 		endif
 	endfunction " }}}
+	function! s:SetLines(lines, key) " {{{
+		for [line_num, line] in a:lines
+			try
+				" Try to join changes with previous undo block
+				undojoin
+			catch
+			endtry
+
+			call setline(line_num, line[a:key])
+		endfor
+	endfunction " }}}
 " }}}
 " Core functions {{{
 	function! s:PromptUser(groups) "{{{
@@ -191,14 +202,7 @@
 			let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
 
 			" Set lines with markers
-			for [line_num, line] in lines_items
-				try
-					undojoin
-				catch
-				endtry
-
-				call setline(line_num, line['marker'])
-			endfor
+			call <SID>SetLines(lines_items, 'marker')
 
 			redraw
 
@@ -214,14 +218,7 @@
 			redraw
 		finally
 			" Restore original lines
-			for [line_num, line] in lines_items
-				try
-					undojoin
-				catch
-				endtry
-
-				call setline(line_num, line['orig'])
-			endfor
+			call <SID>SetLines(lines_items, 'orig')
 
 			call matchdelete(target_hl_id)
 
