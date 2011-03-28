@@ -328,9 +328,11 @@
 			let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
 
 			if a:direction == 1
-				let shade_hl_re = '\%^\_.*' . shade_hl_pos
+				" Backward
+				let shade_hl_re = '\%'. line('w0') .'l\_.*' . shade_hl_pos
 			else
-				let shade_hl_re = shade_hl_pos . '\_.*\%$'
+				" Forward
+				let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
 			endif
 
 			let shade_hl_id = matchadd(g:EasyMotion_shade_hl, shade_hl_re, 0)
