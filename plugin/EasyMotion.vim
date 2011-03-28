@@ -55,22 +55,26 @@
 " }}}
 " Default key mapping {{{
 	if g:EasyMotion_do_mapping
-		nnoremap <silent> <Leader>f :call EasyMotionF(0)<CR>
-		vnoremap <silent> <Leader>f :<C-U>call EasyMotionF(0, visualmode())<CR>
-		nnoremap <silent> <Leader>F :call EasyMotionF(1)<CR>
-		vnoremap <silent> <Leader>F :<C-U>call EasyMotionF(1, visualmode())<CR>
+		nnoremap <silent> <Leader>f      :call EasyMotionF(0, 0)<CR>
+		vnoremap <silent> <Leader>f :<C-U>call EasyMotionF(0, 1)<CR>
 
-		nnoremap <silent> <Leader>t :call EasyMotionT(0)<CR>
-		vnoremap <silent> <Leader>t :<C-U>call EasyMotionT(0, visualmode())<CR>
-		nnoremap <silent> <Leader>T :call EasyMotionT(1)<CR>
-		vnoremap <silent> <Leader>T :<C-U>call EasyMotionT(1, visualmode())<CR>
+		nnoremap <silent> <Leader>F      :call EasyMotionF(1, 0)<CR>
+		vnoremap <silent> <Leader>F :<C-U>call EasyMotionF(1, 1)<CR>
 
-		nnoremap <silent> <Leader>w :call EasyMotionW()<CR>
-		vnoremap <silent> <Leader>w :<C-U>call EasyMotionW(visualmode())<CR>
-		nnoremap <silent> <Leader>e :call EasyMotionE()<CR>
-		vnoremap <silent> <Leader>e :<C-U>call EasyMotionE(visualmode())<CR>
-		nnoremap <silent> <Leader>b :call EasyMotionB()<CR>
-		vnoremap <silent> <Leader>b :<C-U>call EasyMotionB(visualmode())<CR>
+		nnoremap <silent> <Leader>t      :call EasyMotionT(0, 0)<CR>
+		vnoremap <silent> <Leader>t :<C-U>call EasyMotionT(0, 1)<CR>
+
+		nnoremap <silent> <Leader>T      :call EasyMotionT(1, 0)<CR>
+		vnoremap <silent> <Leader>T :<C-U>call EasyMotionT(1, 1)<CR>
+
+		nnoremap <silent> <Leader>w      :call EasyMotionW(0)<CR>
+		vnoremap <silent> <Leader>w :<C-U>call EasyMotionW(1)<CR>
+
+		nnoremap <silent> <Leader>e      :call EasyMotionE(0)<CR>
+		vnoremap <silent> <Leader>e :<C-U>call EasyMotionE(1)<CR>
+
+		nnoremap <silent> <Leader>b      :call EasyMotionB(0)<CR>
+		vnoremap <silent> <Leader>b :<C-U>call EasyMotionB(1)<CR>
 	endif
 " }}}
 " Initialize variables {{{
@@ -88,19 +92,19 @@
 " Motion functions {{{
 	" F key motions {{{
 		" Go to {char} to the right or the left
-		function! EasyMotionF(direction, ...)
+		function! EasyMotionF(direction, visualmode)
 			call <SID>Prompt('Search for character')
 
 			let char = getchar()
 
 			let re = '\C' . escape(nr2char(char), '.$^~')
 
-			call <SID>EasyMotion(re, a:direction, a:0 > 0 ? a:1 : '')
+			call <SID>EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 	" T key motions {{{
 		" Go to {char} to the right (before) or the left (after)
-		function! EasyMotionT(direction, ...)
+		function! EasyMotionT(direction, visualmode)
 			call <SID>Prompt('Search for character')
 
 			let char = getchar()
@@ -111,25 +115,25 @@
 				let re = '\C.' . escape(nr2char(char), '.$^~')
 			endif
 
-			call <SID>EasyMotion(re, a:direction, a:0 > 0 ? a:1 : '')
+			call <SID>EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 	" W key motions {{{
 		" Beginning of word forward
-		function! EasyMotionW(...)
-			call <SID>EasyMotion('\<.', 0, a:0 > 0 ? a:1 : '')
+		function! EasyMotionW(visualmode)
+			call <SID>EasyMotion('\<.', 0, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 	" E key motions {{{
 		" End of word forward
-		function! EasyMotionE(...)
-			call <SID>EasyMotion('.\>', 0, a:0 > 0 ? a:1 : '')
+		function! EasyMotionE(visualmode)
+			call <SID>EasyMotion('.\>', 0, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 	" B key motions {{{
 		" Beginning of word backward
-		function! EasyMotionB(...)
-			call <SID>EasyMotion('\<.', 1, a:0 > 0 ? a:1 : '')
+		function! EasyMotionB(visualmode)
+			call <SID>EasyMotion('\<.', 1, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 " }}}
@@ -255,10 +259,9 @@
 			endif
 		endtry
 	endfunction "}}}
-	function! s:EasyMotion(regexp, direction, ...) " {{{
+	function! s:EasyMotion(regexp, direction, visualmode) " {{{
 		let orig_pos = [line('.'), col('.')]
 		let targets = []
-		let visualmode = a:0 > 0 ? a:1 : ''
 
 		try
 			" Reset properties
@@ -341,7 +344,7 @@
 			if len(coords) != 2
 				throw 'Cancelled'
 			else
-				if ! empty(visualmode)
+				if ! empty(a:visualmode)
 					" Store original marks
 					let m_a = getpos("'a")
 					let m_b = getpos("'b")
@@ -351,7 +354,7 @@
 					call setpos("'b", [0, coords[0], coords[1]])
 
 					" Update selection
-					silent exec 'normal! `a' . visualmode . '`b'
+					silent exec 'normal! `a' . a:visualmode . '`b'
 
 					" Restore original marks
 					call setpos("'a", m_a)
@@ -370,8 +373,8 @@
 			call <SID>Message(v:exception)
 
 			" Restore cursor position/selection
-			if ! empty(visualmode)
-				silent exec 'normal! `<' . visualmode . '`>'
+			if ! empty(a:visualmode)
+				silent exec 'normal! `<' . a:visualmode . '`>'
 			else
 				call setpos('.', [0, orig_pos[0], orig_pos[1]])
 			endif
