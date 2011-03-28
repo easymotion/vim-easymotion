@@ -150,46 +150,33 @@
 				return a:groups[0][0]
 			endif
 		" }}}
-		" Get the lines that need to be changed {{{
-			let lines = []
-			let lines_set = {}
-			for group in a:groups
-				for [line, col] in group
-					if ! has_key(lines_set, line)
-						call add(lines, line)
-
-						let lines_set[line] = 1
-					endif
-				endfor
-			endfor
-		" }}}
-		" Create copies of the lines {{{
-			let orig_lines = {}
-			let marker_lines = {}
-
-			for line_num in lines
-				let orig_lines[line_num] = getline(line_num)
-				let marker_lines[line_num] = split(getline(line_num), '\zs')
-			endfor
-		" }}}
-		" Add markers to the lines and prepare highlighting {{{
-			let current_group = 0
+		" Prepare marker lines {{{
+			let lines = {}
 			let hl_coords = []
+			let current_group = 0
 
 			for group in a:groups
 				let element = 0
 
-				for [line, col] in group
-					" Create marker
-					let marker_lines[line][col - 1] = s:index_to_key[single_group ? element : current_group]
-					let element += 1
+				for [line_num, col_num] in group
+					" Add original line and marker line
+					if ! has_key(lines, line_num)
+						let current_line = getline(line_num)
+
+						let lines[line_num] = { 'orig': current_line, 'marker': split(current_line, '\zs') }
+					endif
+
+					let lines[line_num]['marker'][col_num - 1] = s:index_to_key[single_group ? element : current_group]
 
 					" Add highlighting coordinates
-					call add(hl_coords, '\%' . line . 'l\%' . col . 'c')
+					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+
+					let element += 1
 				endfor
 
 				let current_group += 1
 			endfor
+			let lines_items = items(lines)
 		" }}}
 
 		let input_char = ''
@@ -215,13 +202,13 @@
 			" }}}
 
 			" Set lines with markers
-			for [line_num, line_arr] in items(marker_lines)
+			for [line_num, line] in lines_items
 				try
 					undojoin
 				catch
 				endtry
 
-				call setline(line_num, join(line_arr, ''))
+				call setline(line_num, join(line['marker'], ''))
 			endfor
 
 			redraw
@@ -238,13 +225,13 @@
 			redraw
 		finally
 			" Restore original lines
-			for [line_num, line] in items(orig_lines)
+			for [line_num, line] in lines_items
 				try
 					undojoin
 				catch
 				endtry
 
-				call setline(line_num, line)
+				call setline(line_num, line['orig'])
 			endfor
 
 			call matchdelete(target_hl_id)
