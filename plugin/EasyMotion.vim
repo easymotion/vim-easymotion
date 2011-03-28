@@ -30,10 +30,26 @@
 	endif " }}}
 	" Create default highlighting {{{
 		if ! hlexists(g:EasyMotion_target_hl) " {{{
-			execute 'hi ' . g:EasyMotion_target_hl . ' ctermfg=red ctermbg=none cterm=bold gui=bold guibg=Red guifg=yellow'
+			let hl = 'guibg=none guifg=#ff0000 gui=bold '
+
+			if &t_Co == 256
+				let hl .= 'ctermbg=none ctermfg=196 cterm=bold '
+			else
+				let hl .= 'ctermbg=none ctermfg=red cterm=bold '
+			endif
+
+			execute 'hi ' . g:EasyMotion_target_hl . ' ' . hl
 		endif " }}}
 		if ! hlexists(g:EasyMotion_shade_hl) " {{{
-			execute 'hi ' . g:EasyMotion_shade_hl . ' ctermfg=black ctermbg=none cterm=bold gui=bold guibg=none guifg=black'
+			let hl = 'guibg=none guifg=#585858 gui=none '
+
+			if &t_Co == 256
+				let hl .= 'ctermbg=none ctermfg=240 cterm=none '
+			else
+				let hl .= 'ctermbg=none ctermfg=darkgrey cterm=none '
+			endif
+
+			execute 'hi ' . g:EasyMotion_shade_hl . ' ' . hl
 		endif " }}}
 	" }}}
 " }}}
