@@ -260,6 +260,10 @@
 		let targets = []
 		let visualmode = a:0 > 0 ? a:1 : ''
 
+		" Store original scrolloff value
+		let scrolloff = &scrolloff
+		setl scrolloff=0
+
 		" Find motion targets
 		while 1
 			let search_direction = (a:direction == 1 ? 'b' : '')
@@ -290,6 +294,9 @@
 
 			" Restore cursor position
 			call setpos('.', [0, orig_pos[0], orig_pos[1]])
+
+			" Restore original scrolloff value
+			execute 'setl scrolloff=' . scrolloff
 
 			return
 		endif
@@ -349,6 +356,9 @@
 				call setpos('.', [0, orig_pos[0], orig_pos[1]])
 			endif
 
+			" Restore original scrolloff value
+			execute 'setl scrolloff=' . scrolloff
+
 			return
 		else
 			if ! empty(visualmode)
@@ -370,6 +380,9 @@
 				" Update cursor position
 				call setpos('.', [0, coords[0], coords[1]])
 			endif
+
+			" Restore original scrolloff value
+			execute 'setl scrolloff=' . scrolloff
 
 			call <SID>Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		endif
