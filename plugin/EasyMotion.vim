@@ -1,18 +1,17 @@
-" EasyMotion - vim motions on speed
+" EasyMotion - Vim motions on speed!
 "
 " Author: Kim Silkebækken <kim.silkebaekken+github@gmail.com>
 " Source: https://github.com/Lokaltog/EasyMotion
-" Version: 1.0
+" Version: 1.0.1
 " Modified: 2011-03-28
 "
-" Heavily modified version of Bartlomiej Podolak's PreciseJump script:
+" Based on Bartlomiej Podolak's PreciseJump script:
 " http://www.vim.org/scripts/script.php?script_id=3437
 "
-" This script addresses some issues with the original PreciseJump
-" script. It only works in normal mode (for now), and it works correctly
-" with the following motions: f F t T w e b
+" This script works correctly with the following motions in both normal
+" and visual mode: f F t T w e b
 "
-" Default key mapping:
+" Default key mapping for both normal and visual mode:
 " - <Leader> f {char}
 " - <Leader> F {char}
 " - <Leader> t {char}
@@ -60,14 +59,21 @@
 " Default key mapping {{{
 	if g:EasyMotion_do_mapping
 		nnoremap <silent> <Leader>f :call EasyMotionF(0)<CR>
+		vnoremap <silent> <Leader>f :<C-U>call EasyMotionF(0, visualmode())<CR>
 		nnoremap <silent> <Leader>F :call EasyMotionF(1)<CR>
+		vnoremap <silent> <Leader>F :<C-U>call EasyMotionF(1, visualmode())<CR>
 
 		nnoremap <silent> <Leader>t :call EasyMotionT(0)<CR>
+		vnoremap <silent> <Leader>t :<C-U>call EasyMotionT(0, visualmode())<CR>
 		nnoremap <silent> <Leader>T :call EasyMotionT(1)<CR>
+		vnoremap <silent> <Leader>T :<C-U>call EasyMotionT(1, visualmode())<CR>
 
 		nnoremap <silent> <Leader>w :call EasyMotionW()<CR>
+		vnoremap <silent> <Leader>w :<C-U>call EasyMotionW(visualmode())<CR>
 		nnoremap <silent> <Leader>e :call EasyMotionE()<CR>
+		vnoremap <silent> <Leader>e :<C-U>call EasyMotionE(visualmode())<CR>
 		nnoremap <silent> <Leader>b :call EasyMotionB()<CR>
+		vnoremap <silent> <Leader>b :<C-U>call EasyMotionB(visualmode())<CR>
 	endif
 " }}}
 " Initialize variables {{{
@@ -83,19 +89,19 @@
 " Motion functions {{{
 	" F key motions {{{
 		" Go to {char} to the right or the left
-		function! EasyMotionF(direction)
+		function! EasyMotionF(direction, ...)
 			call <SID>Prompt('Search for character')
 
 			let char = getchar()
 
 			let re = '\C' . escape(nr2char(char), '.$^~')
 
-			call <SID>EasyMotion(re, a:direction)
+			call <SID>EasyMotion(re, a:direction, a:0 > 0 ? a:1 : '')
 		endfunction
 	" }}}
 	" T key motions {{{
 		" Go to {char} to the right (before) or the left (after)
-		function! EasyMotionT(direction)
+		function! EasyMotionT(direction, ...)
 			call <SID>Prompt('Search for character')
 
 			let char = getchar()
@@ -106,25 +112,25 @@
 				let re = '\C.' . escape(nr2char(char), '.$^~')
 			endif
 
-			call <SID>EasyMotion(re, a:direction)
+			call <SID>EasyMotion(re, a:direction, a:0 > 0 ? a:1 : '')
 		endfunction
 	" }}}
 	" W key motions {{{
 		" Beginning of word forward
-		function! EasyMotionW()
-			call <SID>EasyMotion('\<.', 0)
+		function! EasyMotionW(...)
+			call <SID>EasyMotion('\<.', 0, a:0 > 0 ? a:1 : '')
 		endfunction
 	" }}}
 	" E key motions {{{
 		" End of word forward
-		function! EasyMotionE()
-			call <SID>EasyMotion('.\>', 0)
+		function! EasyMotionE(...)
+			call <SID>EasyMotion('.\>', 0, a:0 > 0 ? a:1 : '')
 		endfunction
 	" }}}
 	" B key motions {{{
 		" Beginning of word backward
-		function! EasyMotionB()
-			call <SID>EasyMotion('\<.', 1)
+		function! EasyMotionB(...)
+			call <SID>EasyMotion('\<.', 1, a:0 > 0 ? a:1 : '')
 		endfunction
 	" }}}
 " }}}
@@ -150,55 +156,43 @@
 				return a:groups[0][0]
 			endif
 		" }}}
-		" Get the lines that need to be changed {{{
-			let lines = []
-			let lines_set = {}
-			for group in a:groups
-				for [line, col] in group
-					if ! has_key(lines_set, line)
-						call add(lines, line)
-
-						let lines_set[line] = 1
-					endif
-				endfor
-			endfor
-		" }}}
-		" Create copies of the lines {{{
-			let orig_lines = {}
-			let marker_lines = {}
-
-			for line_num in lines
-				let orig_lines[line_num] = getline(line_num)
-				let marker_lines[line_num] = split(getline(line_num), '\zs')
-			endfor
-		" }}}
-		" Add markers to the lines and prepare highlighting {{{
-			let current_group = 0
+		" Prepare marker lines {{{
+			let lines = {}
 			let hl_coords = []
+			let current_group = 0
 
 			for group in a:groups
 				let element = 0
 
-				for [line, col] in group
-					" Create marker
-					let marker_lines[line][col - 1] = s:index_to_key[single_group ? element : current_group]
-					let element += 1
+				for [line_num, col_num] in group
+					" Add original line and marker line
+					if ! has_key(lines, line_num)
+						let current_line = getline(line_num)
+
+						let lines[line_num] = { 'orig': current_line, 'marker': current_line }
+					endif
+
+					" Substitute marker character
+					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', s:index_to_key[single_group ? element : current_group], '')
 
 					" Add highlighting coordinates
-					call add(hl_coords, '\%' . line . 'l\%' . col . 'c')
+					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+
+					let element += 1
 				endfor
 
 				let current_group += 1
 			endfor
+
+			let lines_items = items(lines)
 		" }}}
-
-		let input_char = ''
-
-		" Store original properties {{{
+		" Store original buffer properties {{{
 			let modified = &modified
 			let modifiable = &modifiable
 			let readonly = &readonly
 		" }}}
+
+		let input_char = ''
 
 		try
 			" Highlight source
@@ -215,13 +209,13 @@
 			" }}}
 
 			" Set lines with markers
-			for [line_num, line_arr] in items(marker_lines)
+			for [line_num, line] in lines_items
 				try
 					undojoin
 				catch
 				endtry
 
-				call setline(line_num, join(line_arr, ''))
+				call setline(line_num, line['marker'])
 			endfor
 
 			redraw
@@ -238,13 +232,13 @@
 			redraw
 		finally
 			" Restore original lines
-			for [line_num, line] in items(orig_lines)
+			for [line_num, line] in lines_items
 				try
 					undojoin
 				catch
 				endtry
 
-				call setline(line_num, line)
+				call setline(line_num, line['orig'])
 			endfor
 
 			call matchdelete(target_hl_id)
@@ -280,9 +274,10 @@
 			endif
 		endtry
 	endfunction "}}}
-	function! s:EasyMotion(regexp, direction) " {{{
+	function! s:EasyMotion(regexp, direction, ...) " {{{
 		let orig_pos = [line('.'), col('.')]
 		let targets = []
+		let visualmode = a:0 > 0 ? a:1 : ''
 
 		" Find motion targets
 		while 1
@@ -311,6 +306,9 @@
 			redraw
 
 			call <SID>Message('No matches')
+
+			" Restore cursor position
+			call setpos('.', [0, orig_pos[0], orig_pos[1]])
 
 			return
 		endif
@@ -341,14 +339,17 @@
 			let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
 
 			if a:direction == 1
-				let shade_hl_re = '\%^\_.*' . shade_hl_pos
+				" Backward
+				let shade_hl_re = '\%'. line('w0') .'l\_.*' . shade_hl_pos
 			else
-				let shade_hl_re = shade_hl_pos . '\_.*\%$'
+				" Forward
+				let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
 			endif
 
 			let shade_hl_id = matchadd(g:EasyMotion_shade_hl, shade_hl_re, 0)
 		endif
 
+		" Prompt user for target group/character
 		let coords = <SID>PromptUser(groups)
 
 		" Remove shading
@@ -360,16 +361,34 @@
 			" Cancelled by user
 			call <SID>Message('Operation cancelled')
 
+			" Restore cursor position/selection
+			if ! empty(visualmode)
+				silent exec 'normal! `<' . visualmode . '`>'
+			else
+				call setpos('.', [0, orig_pos[0], orig_pos[1]])
+			endif
+
 			return
 		else
-			" Jump to coords
-			let virtualedit = &virtualedit
-			setl virtualedit=
+			if ! empty(visualmode)
+				" Store original marks
+				let m_a = getpos("'a")
+				let m_b = getpos("'b")
 
-			silent execute 'normal! ' . coords[0] . 'gg'
-			silent execute 'normal! "0|"'
-			silent execute 'normal! ' . (coords[1] - 1) . 'l'
-			silent execute 'setl virtualedit=' . virtualedit
+				" Store start/end positions
+				call setpos("'a", [0, orig_pos[0], orig_pos[1]])
+				call setpos("'b", [0, coords[0], coords[1]])
+
+				" Update selection
+				silent exec 'normal! `a' . visualmode . '`b'
+
+				" Restore original marks
+				call setpos("'a", m_a)
+				call setpos("'b", m_b)
+			else
+				" Update cursor position
+				call setpos('.', [0, coords[0], coords[1]])
+			endif
 
 			call <SID>Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		endif
