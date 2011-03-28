@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 1.0.1.  Last change: 2011 Mar 28
+*easymotion.txt*	Version 1.0.2.  Last change: 2011 Mar 28
 
 
             ______                  __  ___       __  _
