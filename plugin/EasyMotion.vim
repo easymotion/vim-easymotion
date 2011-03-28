@@ -2,25 +2,6 @@
 "
 " Author: Kim Silkebækken <kim.silkebaekken+github@gmail.com>
 " Source: https://github.com/Lokaltog/EasyMotion
-" Version: 1.0.1
-" Modified: 2011-03-28
-"
-" Based on Bartlomiej Podolak's PreciseJump script:
-" http://www.vim.org/scripts/script.php?script_id=3437
-"
-" This script works correctly with the following motions in both normal
-" and visual mode: f F t T w e b
-"
-" Default key mapping for both normal and visual mode:
-" - <Leader> f {char}
-" - <Leader> F {char}
-" - <Leader> t {char}
-" - <Leader> T {char}
-" - <Leader> w
-" - <Leader> e
-" - <Leader> b
-"
-" Disable default mapping by setting g:EasyMotion_do_mapping = 0
 
 " Prevent double loading {{{
 	if exists('g:EasyMotion_loaded')
