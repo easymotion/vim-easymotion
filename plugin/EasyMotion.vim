@@ -369,7 +369,7 @@
 			redraw
 
 			" Remove shading
-			if g:EasyMotion_shade
+			if g:EasyMotion_shade && exists('shade_hl_id')
 				call matchdelete(shade_hl_id)
 			endif
 
