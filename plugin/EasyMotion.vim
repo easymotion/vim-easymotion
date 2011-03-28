@@ -215,49 +215,45 @@
 			let lines_items = items(lines)
 		" }}}
 
-		let input_char = ''
+		" Highlight source
+		let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
 
-		try
-			" Highlight source
-			let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
+		" Set lines with markers
+		call <SID>SetLines(lines_items, 'marker')
 
-			" Set lines with markers
-			call <SID>SetLines(lines_items, 'marker')
+		redraw
 
-			redraw
+		" Get target/group character
+		if single_group
+			call <SID>Prompt('Target character')
+		else
+			call <SID>Prompt('Group character')
+		endif
 
-			" Get target/group character
-			if single_group
-				call <SID>Prompt('Target character')
-			else
-				call <SID>Prompt('Group character')
-			endif
+		let input_char = nr2char(getchar())
 
-			let input_char = nr2char(getchar())
+		redraw
 
-			redraw
-		finally
-			" Restore original lines
-			call <SID>SetLines(lines_items, 'orig')
+		" Restore original lines
+		call <SID>SetLines(lines_items, 'orig')
 
-			call matchdelete(target_hl_id)
+		" Un-highlight code
+		call matchdelete(target_hl_id)
 
-			redraw
+		redraw
 
-			" Check if the input char is valid
-			if ! has_key(s:key_to_index, input_char) || s:key_to_index[input_char] >= targets_len
-				" Invalid input char
-				return []
-			else
-				if single_group
-					" Return target coordinates
-					return a:groups[0][s:key_to_index[input_char]]
-				else
-					" Prompt for target character
-					return s:PromptUser([a:groups[s:key_to_index[input_char]]])
-				endif
-			endif
-		endtry
+		" Check if the input char is valid
+		if ! has_key(s:key_to_index, input_char) || s:key_to_index[input_char] >= targets_len
+			throw 'Cancelled'
+		endif
+
+		if single_group
+			" Return target coordinates
+			return a:groups[0][s:key_to_index[input_char]]
+		else
+			" Prompt for target character
+			return s:PromptUser([a:groups[s:key_to_index[input_char]]])
+		endif
 	endfunction "}}}
 	function! s:EasyMotion(regexp, direction, visualmode) " {{{
 		let orig_pos = [line('.'), col('.')]
@@ -336,36 +332,27 @@
 			" Prompt user for target group/character
 			let coords = <SID>PromptUser(groups)
 
-			" Remove shading
-			if g:EasyMotion_shade
-				call matchdelete(shade_hl_id)
-			endif
+			if ! empty(a:visualmode)
+				" Store original marks
+				let m_a = getpos("'a")
+				let m_b = getpos("'b")
 
-			if len(coords) != 2
-				throw 'Cancelled'
+				" Store start/end positions
+				call setpos("'a", [0, orig_pos[0], orig_pos[1]])
+				call setpos("'b", [0, coords[0], coords[1]])
+
+				" Update selection
+				silent exec 'normal! `a' . a:visualmode . '`b'
+
+				" Restore original marks
+				call setpos("'a", m_a)
+				call setpos("'b", m_b)
 			else
-				if ! empty(a:visualmode)
-					" Store original marks
-					let m_a = getpos("'a")
-					let m_b = getpos("'b")
-
-					" Store start/end positions
-					call setpos("'a", [0, orig_pos[0], orig_pos[1]])
-					call setpos("'b", [0, coords[0], coords[1]])
-
-					" Update selection
-					silent exec 'normal! `a' . a:visualmode . '`b'
-
-					" Restore original marks
-					call setpos("'a", m_a)
-					call setpos("'b", m_b)
-				else
-					" Update cursor position
-					call setpos('.', [0, coords[0], coords[1]])
-				endif
-
-				call <SID>Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
+				" Update cursor position
+				call setpos('.', [0, coords[0], coords[1]])
 			endif
+
+			call <SID>Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		catch /.*/
 			redraw
 
@@ -380,6 +367,11 @@
 			endif
 		finally
 			redraw
+
+			" Remove shading
+			if g:EasyMotion_shade
+				call matchdelete(shade_hl_id)
+			endif
 
 			" Restore properties
 			call <SID>VarReset('&scrolloff')
