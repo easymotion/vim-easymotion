@@ -56,15 +56,15 @@
 " Default key mapping {{{
 	if g:EasyMotion_do_mapping
 		nnoremap <silent> <Leader>f      :call EasyMotionF(0, 0)<CR>
-		vnoremap <silent> <Leader>f :<C-U>call EasyMotionF(0, 1)<CR>
-
-		nnoremap <silent> <Leader>F      :call EasyMotionF(1, 0)<CR>
+		vnoremap <silent> <Leader>f :<C-U>call EasyMotionF(1, 0)<CR>
+                                                                ,
+		nnoremap <silent> <Leader>F      :call EasyMotionF(0, 1)<CR>
 		vnoremap <silent> <Leader>F :<C-U>call EasyMotionF(1, 1)<CR>
-
+                                                                ,
 		nnoremap <silent> <Leader>t      :call EasyMotionT(0, 0)<CR>
-		vnoremap <silent> <Leader>t :<C-U>call EasyMotionT(0, 1)<CR>
-
-		nnoremap <silent> <Leader>T      :call EasyMotionT(1, 0)<CR>
+		vnoremap <silent> <Leader>t :<C-U>call EasyMotionT(1, 0)<CR>
+                                                                ,
+		nnoremap <silent> <Leader>T      :call EasyMotionT(0, 1)<CR>
 		vnoremap <silent> <Leader>T :<C-U>call EasyMotionT(1, 1)<CR>
 
 		nnoremap <silent> <Leader>w      :call EasyMotionW(0)<CR>
@@ -92,7 +92,7 @@
 " Motion functions {{{
 	" F key motions {{{
 		" Go to {char} to the right or the left
-		function! EasyMotionF(direction, visualmode)
+		function! EasyMotionF(visualmode, direction)
 			call <SID>Prompt('Search for character')
 
 			let char = getchar()
@@ -104,7 +104,7 @@
 	" }}}
 	" T key motions {{{
 		" Go to {char} to the right (before) or the left (after)
-		function! EasyMotionT(direction, visualmode)
+		function! EasyMotionT(visualmode, direction)
 			call <SID>Prompt('Search for character')
 
 			let char = getchar()
