@@ -163,10 +163,11 @@
 					if ! has_key(lines, line_num)
 						let current_line = getline(line_num)
 
-						let lines[line_num] = { 'orig': current_line, 'marker': split(current_line, '\zs') }
+						let lines[line_num] = { 'orig': current_line, 'marker': current_line }
 					endif
 
-					let lines[line_num]['marker'][col_num - 1] = s:index_to_key[single_group ? element : current_group]
+					" Substitute marker character
+					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', s:index_to_key[single_group ? element : current_group], '')
 
 					" Add highlighting coordinates
 					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
@@ -208,7 +209,7 @@
 				catch
 				endtry
 
-				call setline(line_num, join(line['marker'], ''))
+				call setline(line_num, line['marker'])
 			endfor
 
 			redraw
