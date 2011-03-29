@@ -1,7 +1,7 @@
 " EasyMotion - Vim motions on speed!
 "
-" Author: Kim Silkebækken <kim.silkebaekken+github@gmail.com>
-" Source: https://github.com/Lokaltog/EasyMotion
+" Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
+" Source repository: https://github.com/Lokaltog/vim-easymotion
 
 " Prevent double loading {{{
 	if exists('g:EasyMotion_loaded')
