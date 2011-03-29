@@ -11,47 +11,30 @@
 	let g:EasyMotion_loaded = 1
 " }}}
 " Default configuration {{{
-	if ! exists('g:EasyMotion_keys') " {{{
-		let g:EasyMotion_keys  = ''
-		let g:EasyMotion_keys .= 'abcdefghijklmnopqrstuvwxyz'
-		let g:EasyMotion_keys .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-	endif " }}}
-	if ! exists('g:EasyMotion_target_hl') " {{{
-		let g:EasyMotion_target_hl = 'EasyMotionTarget'
-	endif " }}}
-	if ! exists('g:EasyMotion_shade_hl') " {{{
-		let g:EasyMotion_shade_hl = 'EasyMotionShade'
-	endif " }}}
-	if ! exists('g:EasyMotion_do_shade') " {{{
-		let g:EasyMotion_shade = 1
-	endif " }}}
-	if ! exists('g:EasyMotion_do_mapping') " {{{
-		let g:EasyMotion_do_mapping = 1
-	endif " }}}
-	" Create default highlighting {{{
-		if ! hlexists(g:EasyMotion_target_hl) " {{{
-			let hl = 'guibg=none guifg=#ff0000 gui=bold '
+	function! s:InitOption(option, default) " {{{
+		if ! exists('g:EasyMotion_' . a:option)
+			exec 'let g:EasyMotion_' . a:option . ' = ' . string(a:default)
+		endif
+	endfunction " }}}
+	function! s:InitHL(group, gui, cterm256, cterm) " {{{
+		if ! hlexists(a:group)
+			let guihl = printf('guibg=%s guifg=#%s gui=%s', a:gui[0], a:gui[1], a:gui[2])
+			let ctermhl = &t_Co == 256
+				\ ? printf('ctermbg=%s ctermfg=%s cterm=%s', a:cterm256[0], a:cterm256[1], a:cterm256[2])
+				\ : printf('ctermbg=%s ctermfg=%s cterm=%s', a:cterm[0], a:cterm[1], a:cterm[2])
 
-			if &t_Co == 256
-				let hl .= 'ctermbg=none ctermfg=196 cterm=bold '
-			else
-				let hl .= 'ctermbg=none ctermfg=red cterm=bold '
-			endif
+			execute printf('hi %s %s %s', a:group, guihl, ctermhl)
+		endif
+	endfunction " }}}
 
-			execute 'hi ' . g:EasyMotion_target_hl . ' ' . hl
-		endif " }}}
-		if ! hlexists(g:EasyMotion_shade_hl) " {{{
-			let hl = 'guibg=none guifg=#585858 gui=none '
+	call s:InitOption('keys', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+	call s:InitOption('target_hl', 'EasyMotionTarget')
+	call s:InitOption('shade_hl', 'EasyMotionShade')
+	call s:InitOption('do_shade', 1)
+	call s:InitOption('do_mapping', 1)
 
-			if &t_Co == 256
-				let hl .= 'ctermbg=none ctermfg=240 cterm=none '
-			else
-				let hl .= 'ctermbg=none ctermfg=darkgrey cterm=none '
-			endif
-
-			execute 'hi ' . g:EasyMotion_shade_hl . ' ' . hl
-		endif " }}}
-	" }}}
+	call s:InitHL(g:EasyMotion_target_hl, ['none', 'ff0000', 'bold'], ['none', '196', 'bold'], ['none', 'red', 'bold'])
+	call s:InitHL(g:EasyMotion_shade_hl, ['none', '585858', 'none'], ['none', '240', 'none'], ['none', 'darkgrey', 'none'])
 " }}}
 " Default key mapping {{{
 	if g:EasyMotion_do_mapping
@@ -90,62 +73,41 @@
 	let s:var_reset = {}
 " }}}
 " Motion functions {{{
-	" F key motions {{{
-		" Go to {char} to the right or the left
-		function! EasyMotionF(visualmode, direction)
-			call <SID>Prompt('Search for character')
+	function! EasyMotionF(visualmode, direction) " {{{
+		let char = s:GetSearchChar(a:visualmode)
 
-			let char = <SID>GetChar()
+		if empty(char)
+			return
+		endif
 
-			" Check that we have an input char
-			if empty(char)
-				return
-			endif
+		let re = '\C' . escape(char, '.$^~')
 
-			let re = '\C' . escape(char, '.$^~')
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
+	endfunction " }}}
+	function! EasyMotionT(visualmode, direction) " {{{
+		let char = s:GetSearchChar(a:visualmode)
 
-			call <SID>EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
-		endfunction
-	" }}}
-	" T key motions {{{
-		" Go to {char} to the right (before) or the left (after)
-		function! EasyMotionT(visualmode, direction)
-			call <SID>Prompt('Search for character')
+		if empty(char)
+			return
+		endif
 
-			let char = <SID>GetChar()
+		if a:direction == 1
+			let re = '\C' . escape(char, '.$^~') . '\zs.'
+		else
+			let re = '\C.' . escape(char, '.$^~')
+		endif
 
-			" Check that we have an input char
-			if empty(char)
-				return
-			endif
-
-			if a:direction == 1
-				let re = '\C' . escape(char, '.$^~') . '\zs.'
-			else
-				let re = '\C.' . escape(char, '.$^~')
-			endif
-
-			call <SID>EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
-		endfunction
-	" }}}
-	" W key motions {{{
-		" Beginning of word forward
-		function! EasyMotionW(visualmode)
-			call <SID>EasyMotion('\<.', 0, a:visualmode ? visualmode() : '')
-		endfunction
-	" }}}
-	" E key motions {{{
-		" End of word forward
-		function! EasyMotionE(visualmode)
-			call <SID>EasyMotion('.\>', 0, a:visualmode ? visualmode() : '')
-		endfunction
-	" }}}
-	" B key motions {{{
-		" Beginning of word backward
-		function! EasyMotionB(visualmode)
-			call <SID>EasyMotion('\<.', 1, a:visualmode ? visualmode() : '')
-		endfunction
-	" }}}
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
+	endfunction " }}}
+	function! EasyMotionW(visualmode) " {{{
+		call s:EasyMotion('\<.', 0, a:visualmode ? visualmode() : '')
+	endfunction " }}}
+	function! EasyMotionE(visualmode) " {{{
+		call s:EasyMotion('.\>', 0, a:visualmode ? visualmode() : '')
+	endfunction " }}}
+	function! EasyMotionB(visualmode) " {{{
+		call s:EasyMotion('\<.', 1, a:visualmode ? visualmode() : '')
+	endfunction " }}}
 " }}}
 " Helper functions {{{
 	function! s:Message(message) " {{{
@@ -188,13 +150,30 @@
 			" Escape key pressed
 			redraw
 
-			call <SID>Message('Cancelled')
+			call s:Message('Cancelled')
 
 			return ''
 		endif
 
 		return nr2char(char)
 	endfunction " }}}
+	function! s:GetSearchChar(visualmode)
+		call s:Prompt('Search for character')
+
+		let char = s:GetChar()
+
+		" Check that we have an input char
+		if empty(char)
+			" Restore selection
+			if ! empty(a:visualmode)
+				silent exec 'normal! gv'
+			endif
+
+			return ''
+		endif
+
+		return char
+	endfunction
 " }}}
 " Core functions {{{
 	function! s:PromptUser(groups) "{{{
@@ -243,23 +222,23 @@
 		let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
 
 		" Set lines with markers
-		call <SID>SetLines(lines_items, 'marker')
+		call s:SetLines(lines_items, 'marker')
 
 		redraw
 
 		" Get target/group character
 		if single_group
-			call <SID>Prompt('Target character')
+			call s:Prompt('Target character')
 		else
-			call <SID>Prompt('Group character')
+			call s:Prompt('Group character')
 		endif
 
-		let input_char = <SID>GetChar()
+		let input_char = s:GetChar()
 
 		redraw
 
 		" Restore original lines
-		call <SID>SetLines(lines_items, 'orig')
+		call s:SetLines(lines_items, 'orig')
 
 		" Un-highlight code
 		call matchdelete(target_hl_id)
@@ -290,10 +269,10 @@
 
 		try
 			" Reset properties
-			call <SID>VarReset('&scrolloff', 0)
-			call <SID>VarReset('&modified', 0)
-			call <SID>VarReset('&modifiable', 1)
-			call <SID>VarReset('&readonly', 0)
+			call s:VarReset('&scrolloff', 0)
+			call s:VarReset('&modified', 0)
+			call s:VarReset('&modifiable', 1)
+			call s:VarReset('&readonly', 0)
 
 			" Find motion targets
 			while 1
@@ -337,14 +316,14 @@
 			" }}}
 			" Too many groups; only display the first ones {{{
 				if len(groups) > groups_len
-					call <SID>Message('Only displaying the first matches')
+					call s:Message('Only displaying the first matches')
 
 					let groups = groups[0 : groups_len - 1]
 				endif
 			" }}}
 
 			" Shade inactive source
-			if g:EasyMotion_shade
+			if g:EasyMotion_do_shade
 				let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
 
 				if a:direction == 1
@@ -359,7 +338,7 @@
 			endif
 
 			" Prompt user for target group/character
-			let coords = <SID>PromptUser(groups)
+			let coords = s:PromptUser(groups)
 
 			if ! empty(a:visualmode)
 				" Store original marks
@@ -381,12 +360,12 @@
 				call setpos('.', [0, coords[0], coords[1]])
 			endif
 
-			call <SID>Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
+			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		catch /.*/
 			redraw
 
 			" Show exception message
-			call <SID>Message(v:exception)
+			call s:Message(v:exception)
 
 			" Restore cursor position/selection
 			if ! empty(a:visualmode)
@@ -398,15 +377,15 @@
 			redraw
 
 			" Remove shading
-			if g:EasyMotion_shade && exists('shade_hl_id')
+			if g:EasyMotion_do_shade && exists('shade_hl_id')
 				call matchdelete(shade_hl_id)
 			endif
 
 			" Restore properties
-			call <SID>VarReset('&scrolloff')
-			call <SID>VarReset('&modified')
-			call <SID>VarReset('&modifiable')
-			call <SID>VarReset('&readonly')
+			call s:VarReset('&scrolloff')
+			call s:VarReset('&modified')
+			call s:VarReset('&modifiable')
+			call s:VarReset('&readonly')
 		endtry
 	endfunction " }}}
 " }}}
