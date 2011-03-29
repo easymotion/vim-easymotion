@@ -337,7 +337,7 @@
 			" }}}
 
 			" Shade inactive source
-			if g:EasyMotion_shade
+			if g:EasyMotion_do_shade
 				let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
 
 				if a:direction == 1
@@ -391,7 +391,7 @@
 			redraw
 
 			" Remove shading
-			if g:EasyMotion_shade && exists('shade_hl_id')
+			if g:EasyMotion_do_shade && exists('shade_hl_id')
 				call matchdelete(shade_hl_id)
 			endif
 
