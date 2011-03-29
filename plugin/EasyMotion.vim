@@ -93,9 +93,9 @@
 	" F key motions {{{
 		" Go to {char} to the right or the left
 		function! EasyMotionF(visualmode, direction)
-			call <SID>Prompt('Search for character')
+			call s:Prompt('Search for character')
 
-			let char = <SID>GetChar()
+			let char = s:GetChar()
 
 			" Check that we have an input char
 			if empty(char)
@@ -104,15 +104,15 @@
 
 			let re = '\C' . escape(char, '.$^~')
 
-			call <SID>EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
+			call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 	" T key motions {{{
 		" Go to {char} to the right (before) or the left (after)
 		function! EasyMotionT(visualmode, direction)
-			call <SID>Prompt('Search for character')
+			call s:Prompt('Search for character')
 
-			let char = <SID>GetChar()
+			let char = s:GetChar()
 
 			" Check that we have an input char
 			if empty(char)
@@ -125,25 +125,25 @@
 				let re = '\C.' . escape(char, '.$^~')
 			endif
 
-			call <SID>EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
+			call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 	" W key motions {{{
 		" Beginning of word forward
 		function! EasyMotionW(visualmode)
-			call <SID>EasyMotion('\<.', 0, a:visualmode ? visualmode() : '')
+			call s:EasyMotion('\<.', 0, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 	" E key motions {{{
 		" End of word forward
 		function! EasyMotionE(visualmode)
-			call <SID>EasyMotion('.\>', 0, a:visualmode ? visualmode() : '')
+			call s:EasyMotion('.\>', 0, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 	" B key motions {{{
 		" Beginning of word backward
 		function! EasyMotionB(visualmode)
-			call <SID>EasyMotion('\<.', 1, a:visualmode ? visualmode() : '')
+			call s:EasyMotion('\<.', 1, a:visualmode ? visualmode() : '')
 		endfunction
 	" }}}
 " }}}
@@ -188,7 +188,7 @@
 			" Escape key pressed
 			redraw
 
-			call <SID>Message('Cancelled')
+			call s:Message('Cancelled')
 
 			return ''
 		endif
@@ -243,23 +243,23 @@
 		let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
 
 		" Set lines with markers
-		call <SID>SetLines(lines_items, 'marker')
+		call s:SetLines(lines_items, 'marker')
 
 		redraw
 
 		" Get target/group character
 		if single_group
-			call <SID>Prompt('Target character')
+			call s:Prompt('Target character')
 		else
-			call <SID>Prompt('Group character')
+			call s:Prompt('Group character')
 		endif
 
-		let input_char = <SID>GetChar()
+		let input_char = s:GetChar()
 
 		redraw
 
 		" Restore original lines
-		call <SID>SetLines(lines_items, 'orig')
+		call s:SetLines(lines_items, 'orig')
 
 		" Un-highlight code
 		call matchdelete(target_hl_id)
@@ -290,10 +290,10 @@
 
 		try
 			" Reset properties
-			call <SID>VarReset('&scrolloff', 0)
-			call <SID>VarReset('&modified', 0)
-			call <SID>VarReset('&modifiable', 1)
-			call <SID>VarReset('&readonly', 0)
+			call s:VarReset('&scrolloff', 0)
+			call s:VarReset('&modified', 0)
+			call s:VarReset('&modifiable', 1)
+			call s:VarReset('&readonly', 0)
 
 			" Find motion targets
 			while 1
@@ -337,7 +337,7 @@
 			" }}}
 			" Too many groups; only display the first ones {{{
 				if len(groups) > groups_len
-					call <SID>Message('Only displaying the first matches')
+					call s:Message('Only displaying the first matches')
 
 					let groups = groups[0 : groups_len - 1]
 				endif
@@ -359,7 +359,7 @@
 			endif
 
 			" Prompt user for target group/character
-			let coords = <SID>PromptUser(groups)
+			let coords = s:PromptUser(groups)
 
 			if ! empty(a:visualmode)
 				" Store original marks
@@ -381,12 +381,12 @@
 				call setpos('.', [0, coords[0], coords[1]])
 			endif
 
-			call <SID>Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
+			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		catch /.*/
 			redraw
 
 			" Show exception message
-			call <SID>Message(v:exception)
+			call s:Message(v:exception)
 
 			" Restore cursor position/selection
 			if ! empty(a:visualmode)
@@ -403,10 +403,10 @@
 			endif
 
 			" Restore properties
-			call <SID>VarReset('&scrolloff')
-			call <SID>VarReset('&modified')
-			call <SID>VarReset('&modifiable')
-			call <SID>VarReset('&readonly')
+			call s:VarReset('&scrolloff')
+			call s:VarReset('&modified')
+			call s:VarReset('&modifiable')
+			call s:VarReset('&readonly')
 		endtry
 	endfunction " }}}
 " }}}
