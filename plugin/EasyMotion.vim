@@ -73,62 +73,41 @@
 	let s:var_reset = {}
 " }}}
 " Motion functions {{{
-	" F key motions {{{
-		" Go to {char} to the right or the left
-		function! EasyMotionF(visualmode, direction)
-			call s:Prompt('Search for character')
+	function! EasyMotionF(visualmode, direction) " {{{
+		let char = s:GetSearchChar(a:visualmode)
 
-			let char = s:GetChar()
+		if empty(char)
+			return
+		endif
 
-			" Check that we have an input char
-			if empty(char)
-				return
-			endif
+		let re = '\C' . escape(char, '.$^~')
 
-			let re = '\C' . escape(char, '.$^~')
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
+	endfunction " }}}
+	function! EasyMotionT(visualmode, direction) " {{{
+		let char = s:GetSearchChar(a:visualmode)
 
-			call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
-		endfunction
-	" }}}
-	" T key motions {{{
-		" Go to {char} to the right (before) or the left (after)
-		function! EasyMotionT(visualmode, direction)
-			call s:Prompt('Search for character')
+		if empty(char)
+			return
+		endif
 
-			let char = s:GetChar()
+		if a:direction == 1
+			let re = '\C' . escape(char, '.$^~') . '\zs.'
+		else
+			let re = '\C.' . escape(char, '.$^~')
+		endif
 
-			" Check that we have an input char
-			if empty(char)
-				return
-			endif
-
-			if a:direction == 1
-				let re = '\C' . escape(char, '.$^~') . '\zs.'
-			else
-				let re = '\C.' . escape(char, '.$^~')
-			endif
-
-			call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
-		endfunction
-	" }}}
-	" W key motions {{{
-		" Beginning of word forward
-		function! EasyMotionW(visualmode)
-			call s:EasyMotion('\<.', 0, a:visualmode ? visualmode() : '')
-		endfunction
-	" }}}
-	" E key motions {{{
-		" End of word forward
-		function! EasyMotionE(visualmode)
-			call s:EasyMotion('.\>', 0, a:visualmode ? visualmode() : '')
-		endfunction
-	" }}}
-	" B key motions {{{
-		" Beginning of word backward
-		function! EasyMotionB(visualmode)
-			call s:EasyMotion('\<.', 1, a:visualmode ? visualmode() : '')
-		endfunction
-	" }}}
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
+	endfunction " }}}
+	function! EasyMotionW(visualmode) " {{{
+		call s:EasyMotion('\<.', 0, a:visualmode ? visualmode() : '')
+	endfunction " }}}
+	function! EasyMotionE(visualmode) " {{{
+		call s:EasyMotion('.\>', 0, a:visualmode ? visualmode() : '')
+	endfunction " }}}
+	function! EasyMotionB(visualmode) " {{{
+		call s:EasyMotion('\<.', 1, a:visualmode ? visualmode() : '')
+	endfunction " }}}
 " }}}
 " Helper functions {{{
 	function! s:Message(message) " {{{
@@ -178,6 +157,23 @@
 
 		return nr2char(char)
 	endfunction " }}}
+	function! s:GetSearchChar(visualmode)
+		call s:Prompt('Search for character')
+
+		let char = s:GetChar()
+
+		" Check that we have an input char
+		if empty(char)
+			" Restore selection
+			if ! empty(a:visualmode)
+				silent exec 'normal! gv'
+			endif
+
+			return ''
+		endif
+
+		return char
+	endfunction
 " }}}
 " Core functions {{{
 	function! s:PromptUser(groups) "{{{
