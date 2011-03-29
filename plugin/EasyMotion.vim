@@ -33,8 +33,8 @@
 	call s:InitOption('do_shade', 1)
 	call s:InitOption('do_mapping', 1)
 
-	call s:InitHL(g:EasyMotion_target_hl, ['none', 'ff0000', 'bold'], ['none', '196', 'bold'], ['none', 'red', 'bold'])
-	call s:InitHL(g:EasyMotion_shade_hl, ['none', '585858', 'none'], ['none', '240', 'none'], ['none', 'darkgrey', 'none'])
+	call s:InitHL(g:EasyMotion_target_hl, ['NONE', 'ff0000', 'bold'], ['NONE', '196', 'bold'], ['NONE', 'red', 'bold'])
+	call s:InitHL(g:EasyMotion_shade_hl, ['NONE', '585858', 'NONE'], ['NONE', '240', 'NONE'], ['NONE', 'darkgrey', 'NONE'])
 " }}}
 " Default key mapping {{{
 	if g:EasyMotion_do_mapping
