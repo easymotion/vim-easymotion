@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 1.0.5.  Last change: 2011 Mar 28
+*easymotion.txt*	Version 1.0.6.  Last change: 2011 Mar 29
 
 
             ______                  __  ___       __  _
@@ -134,7 +134,8 @@ None.
 If you experience any bugs or have feature requests, open an issue on GitHub.
 Fork me on GitHub and send a pull request if you have any code improvements.
 
-Source repository: https://github.com/Lokaltog/EasyMotion
+Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
+Source repository: https://github.com/Lokaltog/vim-easymotion
 
 ==============================================================================
 8. Credits                                                *easymotion-credits*
