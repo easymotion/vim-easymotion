@@ -16,35 +16,25 @@
 			exec 'let g:EasyMotion_' . a:option . ' = ' . string(a:default)
 		endif
 	endfunction " }}}
+	function! s:InitHL(group, gui, cterm256, cterm) " {{{
+		if ! hlexists(a:group)
+			let guihl = printf('guibg=%s guifg=#%s gui=%s', a:gui[0], a:gui[1], a:gui[2])
+			let ctermhl = &t_Co == 256
+				\ ? printf('ctermbg=%s ctermfg=%s cterm=%s', a:cterm256[0], a:cterm256[1], a:cterm256[2])
+				\ : printf('ctermbg=%s ctermfg=%s cterm=%s', a:cterm[0], a:cterm[1], a:cterm[2])
+
+			execute printf('hi %s %s %s', a:group, guihl, ctermhl)
+		endif
+	endfunction " }}}
+
 	call s:InitOption('keys', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 	call s:InitOption('target_hl', 'EasyMotionTarget')
 	call s:InitOption('shade_hl', 'EasyMotionShade')
 	call s:InitOption('do_shade', 1)
 	call s:InitOption('do_mapping', 1)
-	" Create default highlighting {{{
-		if ! hlexists(g:EasyMotion_target_hl) " {{{
-			let hl = 'guibg=none guifg=#ff0000 gui=bold '
 
-			if &t_Co == 256
-				let hl .= 'ctermbg=none ctermfg=196 cterm=bold '
-			else
-				let hl .= 'ctermbg=none ctermfg=red cterm=bold '
-			endif
-
-			execute 'hi ' . g:EasyMotion_target_hl . ' ' . hl
-		endif " }}}
-		if ! hlexists(g:EasyMotion_shade_hl) " {{{
-			let hl = 'guibg=none guifg=#585858 gui=none '
-
-			if &t_Co == 256
-				let hl .= 'ctermbg=none ctermfg=240 cterm=none '
-			else
-				let hl .= 'ctermbg=none ctermfg=darkgrey cterm=none '
-			endif
-
-			execute 'hi ' . g:EasyMotion_shade_hl . ' ' . hl
-		endif " }}}
-	" }}}
+	call s:InitHL(g:EasyMotion_target_hl, ['none', 'ff0000', 'bold'], ['none', '196', 'bold'], ['none', 'red', 'bold'])
+	call s:InitHL(g:EasyMotion_shade_hl, ['none', '585858', 'none'], ['none', '240', 'none'], ['none', 'darkgrey', 'none'])
 " }}}
 " Default key mapping {{{
 	if g:EasyMotion_do_mapping
