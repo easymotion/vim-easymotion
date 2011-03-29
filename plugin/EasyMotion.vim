@@ -40,13 +40,13 @@
 	if g:EasyMotion_do_mapping
 		nnoremap <silent> <Leader>f      :call EasyMotionF(0, 0)<CR>
 		vnoremap <silent> <Leader>f :<C-U>call EasyMotionF(1, 0)<CR>
-                                                                ,
+
 		nnoremap <silent> <Leader>F      :call EasyMotionF(0, 1)<CR>
 		vnoremap <silent> <Leader>F :<C-U>call EasyMotionF(1, 1)<CR>
-                                                                ,
+
 		nnoremap <silent> <Leader>t      :call EasyMotionT(0, 0)<CR>
 		vnoremap <silent> <Leader>t :<C-U>call EasyMotionT(1, 0)<CR>
-                                                                ,
+
 		nnoremap <silent> <Leader>T      :call EasyMotionT(0, 1)<CR>
 		vnoremap <silent> <Leader>T :<C-U>call EasyMotionT(1, 1)<CR>
 
