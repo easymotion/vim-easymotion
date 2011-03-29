@@ -290,6 +290,12 @@
 
 				" Skip folded lines
 				if foldclosed(pos[0]) != -1
+					if a:direction == 1
+						normal! k$
+					else
+						normal! j^
+					endif
+
 					continue
 				endif
 
