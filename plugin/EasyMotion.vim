@@ -40,13 +40,13 @@
 	if g:EasyMotion_do_mapping
 		nnoremap <silent> <Leader>f      :call EasyMotionF(0, 0)<CR>
 		vnoremap <silent> <Leader>f :<C-U>call EasyMotionF(1, 0)<CR>
-                                                                ,
+
 		nnoremap <silent> <Leader>F      :call EasyMotionF(0, 1)<CR>
 		vnoremap <silent> <Leader>F :<C-U>call EasyMotionF(1, 1)<CR>
-                                                                ,
+
 		nnoremap <silent> <Leader>t      :call EasyMotionT(0, 0)<CR>
 		vnoremap <silent> <Leader>t :<C-U>call EasyMotionT(1, 0)<CR>
-                                                                ,
+
 		nnoremap <silent> <Leader>T      :call EasyMotionT(0, 1)<CR>
 		vnoremap <silent> <Leader>T :<C-U>call EasyMotionT(1, 1)<CR>
 
@@ -119,17 +119,19 @@
 		echohl None
 	endfunction " }}}
 	function! s:VarReset(var, ...) " {{{
+		let buf = bufname("")
+
 		if a:0 == 0 && has_key(s:var_reset, a:var)
 			" Reset var to original value
-			call setbufvar(bufname(0), a:var, s:var_reset[a:var])
+			call setbufvar(buf, a:var, s:var_reset[a:var])
 		elseif a:0 == 1
 			let new_value = a:0 == 1 ? a:1 : ''
 
 			" Store original value
-			let s:var_reset[a:var] = getbufvar(bufname(0), a:var)
+			let s:var_reset[a:var] = getbufvar(buf, a:var)
 
 			" Set new var value
-			call setbufvar(bufname(0), a:var, new_value)
+			call setbufvar(buf, a:var, new_value)
 		endif
 	endfunction " }}}
 	function! s:SetLines(lines, key) " {{{
@@ -221,46 +223,46 @@
 		" Highlight source
 		let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
 
-		" Set lines with markers
-		call s:SetLines(lines_items, 'marker')
+		try
+			" Set lines with markers
+			call s:SetLines(lines_items, 'marker')
 
-		redraw
+			redraw
 
-		" Get target/group character
-		if single_group
-			call s:Prompt('Target character')
-		else
-			call s:Prompt('Group character')
-		endif
+			" Get target/group character
+			if single_group
+				call s:Prompt('Target character')
+			else
+				call s:Prompt('Group character')
+			endif
 
-		let input_char = s:GetChar()
+			let char = s:GetChar()
+		finally
+			" Restore original lines
+			call s:SetLines(lines_items, 'orig')
 
-		redraw
+			" Un-highlight code
+			call matchdelete(target_hl_id)
 
-		" Restore original lines
-		call s:SetLines(lines_items, 'orig')
-
-		" Un-highlight code
-		call matchdelete(target_hl_id)
-
-		redraw
+			redraw
+		endtry
 
 		" Check that we have an input char
-		if empty(input_char)
+		if empty(char)
 			throw 'Cancelled'
 		endif
 
 		" Check if the input char is valid
-		if ! has_key(s:key_to_index, input_char) || s:key_to_index[input_char] >= targets_len
+		if ! has_key(s:key_to_index, char) || s:key_to_index[char] >= targets_len
 			throw 'Invalid target'
 		endif
 
 		if single_group
 			" Return target coordinates
-			return a:groups[0][s:key_to_index[input_char]]
+			return a:groups[0][s:key_to_index[char]]
 		else
 			" Prompt for target character
-			return s:PromptUser([a:groups[s:key_to_index[input_char]]])
+			return s:PromptUser([a:groups[s:key_to_index[char]]])
 		endif
 	endfunction "}}}
 	function! s:EasyMotion(regexp, direction, visualmode) " {{{
@@ -288,6 +290,12 @@
 
 				" Skip folded lines
 				if foldclosed(pos[0]) != -1
+					if a:direction == 1
+						normal! k$
+					else
+						normal! j^
+					endif
+
 					continue
 				endif
 
@@ -341,27 +349,17 @@
 			let coords = s:PromptUser(groups)
 
 			if ! empty(a:visualmode)
-				" Store original marks
-				let m_a = getpos("'a")
-				let m_b = getpos("'b")
-
-				" Store start/end positions
-				call setpos("'a", [0, orig_pos[0], orig_pos[1]])
-				call setpos("'b", [0, coords[0], coords[1]])
-
 				" Update selection
-				silent exec 'normal! `a' . a:visualmode . '`b'
+				call setpos('.', [0, orig_pos[0], orig_pos[1]])
 
-				" Restore original marks
-				call setpos("'a", m_a)
-				call setpos("'b", m_b)
-			else
-				" Update cursor position
-				call setpos('.', [0, coords[0], coords[1]])
+				exec 'normal! ' . a:visualmode
 			endif
 
+			" Update cursor position
+			call setpos('.', [0, coords[0], coords[1]])
+
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
-		catch /.*/
+		catch
 			redraw
 
 			" Show exception message
@@ -374,18 +372,16 @@
 				call setpos('.', [0, orig_pos[0], orig_pos[1]])
 			endif
 		finally
-			redraw
-
-			" Remove shading
-			if g:EasyMotion_do_shade && exists('shade_hl_id')
-				call matchdelete(shade_hl_id)
-			endif
-
 			" Restore properties
 			call s:VarReset('&scrolloff')
 			call s:VarReset('&modified')
 			call s:VarReset('&modifiable')
 			call s:VarReset('&readonly')
+
+			" Remove shading
+			if g:EasyMotion_do_shade && exists('shade_hl_id')
+				call matchdelete(shade_hl_id)
+			endif
 		endtry
 	endfunction " }}}
 " }}}

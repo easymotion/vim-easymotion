@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 1.0.6.  Last change: 2011 Mar 29
+*easymotion.txt*	Version 1.0.7.  Last change: 2011 Mar 29
 
 
             ______                  __  ___       __  _
@@ -41,19 +41,19 @@ following the cursor is faded, and motion targets are highlighted.
 2. Usage                                                    *easymotion-usage*
 
 EasyMotion is triggered manually or by one of the provided mappings (see
-|EasyMotion_do_mapping|).
+|EasyMotion_do_mapping| for details).
 
 Example: >
 
 	<cursor>Lorem ipsum dolor sit amet.
 
 If the word motion |w| is triggered with the default mapping <Leader>w, the
-text is updated (no braces are actually added, the letters are highlighted in
-red by default): >
+text is updated like this (no braces are actually added, the letters are
+highlighted in red by default): >
 
 	<cursor>Lorem {a}psum {b}olor {c}it {d}met.
 
-Press 'c' to jump to the beginning of the word "sit": >
+Press "c" to jump to the beginning of the word "sit": >
 
 	Lorem ipsum dolor <cursor>sit amet.
 
@@ -62,27 +62,34 @@ And that's it!
 ==============================================================================
 3. Requirements                                      *easymotion-requirements*
 
-EasyMotion is tested in vim 7.3, but should run fine in vim 7.2. Vi-compatible
-mode must be disabled.
+EasyMotion has been developed and tested in vim 7.3, but it should run without
+any problems in vim 7.2.
+
+Vi-compatible mode must be disabled.
 
 ==============================================================================
 4. Configuration                                    *easymotion-configuration*
 
+Set the configuration variables globally in your vimrc file.
+
+Example: >
+
+	let g:EasyMotion_keys = '1234567890'
+	let g:EasyMotion_do_shade = 0
+
 ------------------------------------------------------------------------------
 4.1 EasyMotion_keys                                          *EasyMotion_keys*
 
-You can choose the characters which will be used for jump targets. If you want
-to use numbers or symbols instead of the default value, set the variable like
-this: >
-
-	let g:EasyMotion_keys = '1234567890&[{}(=*)+]'
+Set the keys which will be used for motion targets. Add as many keys as you
+want. There's a lower chance that the motion targets will be grouped with many
+keys available.
 
 Default: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 ------------------------------------------------------------------------------
 4.2 EasyMotion_target_hl                                *EasyMotion_target_hl*
 
-Set the highlighting group for jump targets.
+Set the highlighting group for motion targets.
 
 Default: 'EasyMotionTarget'
 
@@ -104,7 +111,8 @@ Default: 1
 4.5 EasyMotion_do_mapping                              *EasyMotion_do_mapping*
 
 Set this to 0 if you want to disable the default mappings. The default
-configuration provides the following mappings:
+configuration provides the following mappings in both normal and visual
+mode:
 
 	Mapping            Details
 	--------------------------
@@ -115,6 +123,11 @@ configuration provides the following mappings:
 	<Leader>w          See |w|
 	<Leader>e          See |e|
 	<Leader>b          See |b|
+
+Default: 1
+
+Note: If you disable this option, you'll have to map the motions yourself. See
+the plugin source code for mapping details.
 
 ==============================================================================
 5. License                                                *easymotion-license*
@@ -131,8 +144,9 @@ None.
 ==============================================================================
 7. Contributing                                      *easymotion-contributing*
 
-If you experience any bugs or have feature requests, open an issue on GitHub.
-Fork me on GitHub and send a pull request if you have any code improvements.
+If you experience any bugs or have feature requests, please open an issue on
+GitHub. Fork the source repository on GitHub and send a pull request if you
+have any code improvements.
 
 Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 Source repository: https://github.com/Lokaltog/vim-easymotion
