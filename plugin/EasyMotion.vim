@@ -343,24 +343,14 @@
 			let coords = s:PromptUser(groups)
 
 			if ! empty(a:visualmode)
-				" Store original marks
-				let m_a = getpos("'a")
-				let m_b = getpos("'b")
-
-				" Store start/end positions
-				call setpos("'a", [0, orig_pos[0], orig_pos[1]])
-				call setpos("'b", [0, coords[0], coords[1]])
-
 				" Update selection
-				silent exec 'normal! `a' . a:visualmode . '`b'
+				call setpos('.', [0, orig_pos[0], orig_pos[1]])
 
-				" Restore original marks
-				call setpos("'a", m_a)
-				call setpos("'b", m_b)
-			else
-				" Update cursor position
-				call setpos('.', [0, coords[0], coords[1]])
+				exec 'normal! ' . a:visualmode
 			endif
+
+			" Update cursor position
+			call setpos('.', [0, coords[0], coords[1]])
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		catch /.*/
