@@ -223,46 +223,46 @@
 		" Highlight source
 		let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
 
-		" Set lines with markers
-		call s:SetLines(lines_items, 'marker')
+		try
+			" Set lines with markers
+			call s:SetLines(lines_items, 'marker')
 
-		redraw
+			redraw
 
-		" Get target/group character
-		if single_group
-			call s:Prompt('Target character')
-		else
-			call s:Prompt('Group character')
-		endif
+			" Get target/group character
+			if single_group
+				call s:Prompt('Target character')
+			else
+				call s:Prompt('Group character')
+			endif
 
-		let input_char = s:GetChar()
+			let char = s:GetChar()
+		finally
+			" Restore original lines
+			call s:SetLines(lines_items, 'orig')
 
-		redraw
+			" Un-highlight code
+			call matchdelete(target_hl_id)
 
-		" Restore original lines
-		call s:SetLines(lines_items, 'orig')
-
-		" Un-highlight code
-		call matchdelete(target_hl_id)
-
-		redraw
+			redraw
+		endtry
 
 		" Check that we have an input char
-		if empty(input_char)
+		if empty(char)
 			throw 'Cancelled'
 		endif
 
 		" Check if the input char is valid
-		if ! has_key(s:key_to_index, input_char) || s:key_to_index[input_char] >= targets_len
+		if ! has_key(s:key_to_index, char) || s:key_to_index[char] >= targets_len
 			throw 'Invalid target'
 		endif
 
 		if single_group
 			" Return target coordinates
-			return a:groups[0][s:key_to_index[input_char]]
+			return a:groups[0][s:key_to_index[char]]
 		else
 			" Prompt for target character
-			return s:PromptUser([a:groups[s:key_to_index[input_char]]])
+			return s:PromptUser([a:groups[s:key_to_index[char]]])
 		endif
 	endfunction "}}}
 	function! s:EasyMotion(regexp, direction, visualmode) " {{{
@@ -353,7 +353,7 @@
 			call setpos('.', [0, coords[0], coords[1]])
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
-		catch /.*/
+		catch
 			redraw
 
 			" Show exception message
@@ -366,18 +366,16 @@
 				call setpos('.', [0, orig_pos[0], orig_pos[1]])
 			endif
 		finally
-			redraw
-
-			" Remove shading
-			if g:EasyMotion_do_shade && exists('shade_hl_id')
-				call matchdelete(shade_hl_id)
-			endif
-
 			" Restore properties
 			call s:VarReset('&scrolloff')
 			call s:VarReset('&modified')
 			call s:VarReset('&modifiable')
 			call s:VarReset('&readonly')
+
+			" Remove shading
+			if g:EasyMotion_do_shade && exists('shade_hl_id')
+				call matchdelete(shade_hl_id)
+			endif
 		endtry
 	endfunction " }}}
 " }}}
