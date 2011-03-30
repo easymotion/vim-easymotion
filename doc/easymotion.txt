@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 1.0.8.  Last change: 2011 Mar 30
+*easymotion.txt*	Version 1.0.9.  Last change: 2011 Mar 30
 
 
             ______                  __  ___       __  _
@@ -153,6 +153,8 @@ Source repository: https://github.com/Lokaltog/vim-easymotion
 
 ==============================================================================
 8. Credits                                                *easymotion-credits*
+
+- Ben Boeckel: ge motion
 
 EasyMotion is based on Bartlomiej Podolak's great PreciseJump script, which
 can be downloaded here:
