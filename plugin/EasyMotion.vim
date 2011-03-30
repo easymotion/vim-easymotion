@@ -61,6 +61,12 @@
 
 		nnoremap <silent> <Leader>ge      :call EasyMotionE(0, 1)<CR>
 		vnoremap <silent> <Leader>ge :<C-U>call EasyMotionE(1, 1)<CR>
+
+		nnoremap <silent> <Leader>j       :call EasyMotionJK(0, 0)<CR>
+		vnoremap <silent> <Leader>j  :<C-U>call EasyMotionJK(1, 0)<CR>
+
+		nnoremap <silent> <Leader>k       :call EasyMotionJK(0, 1)<CR>
+		vnoremap <silent> <Leader>k  :<C-U>call EasyMotionJK(1, 1)<CR>
 	endif
 " }}}
 " Initialize variables {{{
@@ -109,6 +115,9 @@
 	endfunction " }}}
 	function! EasyMotionE(visualmode, direction) " {{{
 		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '')
+	endfunction " }}}
+	function! EasyMotionJK(visualmode, direction) " {{{
+		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '')
 	endfunction " }}}
 " }}}
 " Helper functions {{{
