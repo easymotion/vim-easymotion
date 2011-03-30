@@ -61,6 +61,12 @@
 
 		nnoremap <silent> <Leader>ge      :call EasyMotionE(0, 1)<CR>
 		vnoremap <silent> <Leader>ge :<C-U>call EasyMotionE(1, 1)<CR>
+
+		nnoremap <silent> <Leader>j       :call EasyMotionJK(0, 0)<CR>
+		vnoremap <silent> <Leader>j  :<C-U>call EasyMotionJK(1, 0)<CR>
+
+		nnoremap <silent> <Leader>k       :call EasyMotionJK(0, 1)<CR>
+		vnoremap <silent> <Leader>k  :<C-U>call EasyMotionJK(1, 1)<CR>
 	endif
 " }}}
 " Initialize variables {{{
@@ -109,6 +115,9 @@
 	endfunction " }}}
 	function! EasyMotionE(visualmode, direction) " {{{
 		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '')
+	endfunction " }}}
+	function! EasyMotionJK(visualmode, direction) " {{{
+		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '')
 	endfunction " }}}
 " }}}
 " Helper functions {{{
@@ -207,8 +216,15 @@
 						let lines[line_num] = { 'orig': current_line, 'marker': current_line }
 					endif
 
-					" Substitute marker character
-					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', s:index_to_key[single_group ? element : current_group], '')
+					let marker_char = s:index_to_key[single_group ? element : current_group]
+
+					if strlen(lines[line_num]['marker']) > 0
+						" Substitute marker character if line length > 0
+						let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', marker_char, '')
+					else
+						" Set the line to the marker character if the line is empty
+						let lines[line_num]['marker'] = marker_char
+					endif
 
 					" Add highlighting coordinates
 					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
