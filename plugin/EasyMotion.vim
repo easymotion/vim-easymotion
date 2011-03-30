@@ -50,14 +50,14 @@
 		nnoremap <silent> <Leader>T       :call EasyMotionT(0, 1)<CR>
 		vnoremap <silent> <Leader>T  :<C-U>call EasyMotionT(1, 1)<CR>
 
-		nnoremap <silent> <Leader>w       :call EasyMotionW(0)<CR>
-		vnoremap <silent> <Leader>w  :<C-U>call EasyMotionW(1)<CR>
+		nnoremap <silent> <Leader>w       :call EasyMotionWB(0, 0)<CR>
+		vnoremap <silent> <Leader>w  :<C-U>call EasyMotionWB(1, 0)<CR>
+
+		nnoremap <silent> <Leader>b       :call EasyMotionWB(0, 1)<CR>
+		vnoremap <silent> <Leader>b  :<C-U>call EasyMotionWB(1, 1)<CR>
 
 		nnoremap <silent> <Leader>e       :call EasyMotionE(0, 0)<CR>
 		vnoremap <silent> <Leader>e  :<C-U>call EasyMotionE(1, 0)<CR>
-
-		nnoremap <silent> <Leader>b       :call EasyMotionB(0)<CR>
-		vnoremap <silent> <Leader>b  :<C-U>call EasyMotionB(1)<CR>
 
 		nnoremap <silent> <Leader>ge      :call EasyMotionE(0, 1)<CR>
 		vnoremap <silent> <Leader>ge :<C-U>call EasyMotionE(1, 1)<CR>
@@ -104,14 +104,11 @@
 
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
 	endfunction " }}}
-	function! EasyMotionW(visualmode) " {{{
-		call s:EasyMotion('\<.', 0, a:visualmode ? visualmode() : '')
+	function! EasyMotionWB(visualmode, direction) " {{{
+		call s:EasyMotion('\<.', a:direction, a:visualmode ? visualmode() : '')
 	endfunction " }}}
 	function! EasyMotionE(visualmode, direction) " {{{
 		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '')
-	endfunction " }}}
-	function! EasyMotionB(visualmode) " {{{
-		call s:EasyMotion('\<.', 1, a:visualmode ? visualmode() : '')
 	endfunction " }}}
 " }}}
 " Helper functions {{{
