@@ -27,7 +27,7 @@
 		endif
 	endfunction " }}}
 
-	call s:InitOption('keys', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+	call s:InitOption('keys', 'aéæåøbcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 	call s:InitOption('target_hl', 'EasyMotionTarget')
 	call s:InitOption('shade_hl', 'EasyMotionShade')
 	call s:InitOption('do_shade', 1)
@@ -180,7 +180,7 @@
 	endfunction
 " }}}
 " Core functions {{{
-	function! s:PromptUser(groups) "{{{
+	function! s:PromptUser(groups, direction) "{{{
 		let single_group = len(a:groups) == 1
 		let targets_len = single_group ? len(a:groups[0]) : len(a:groups)
 
@@ -198,6 +198,7 @@
 
 			for group in a:groups
 				let element = 0
+				let col_shift = {}
 
 				for [line_num, col_num] in group
 					" Add original line and marker line
@@ -207,11 +208,27 @@
 						let lines[line_num] = { 'orig': current_line, 'marker': current_line }
 					endif
 
+					" Add column shift element for this line if it doesn't exist
+					if ! has_key(col_shift, line_num)
+						let col_shift[line_num] = 0
+					endif
+
+					let char = s:index_to_key[single_group ? element : current_group]
+
 					" Substitute marker character
-					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', s:index_to_key[single_group ? element : current_group], '')
+					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . (col_num + col_shift[line_num]) . 'c.', char, '')
 
 					" Add highlighting coordinates
-					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+					call add(hl_coords, '\%' . line_num . 'l\%' . (col_num + col_shift[line_num]) . 'c')
+
+					" Increment column shift
+					"
+					" Unicode chars with length > 1 shift the current column to the right while only occupying one column,
+					" this problem is solved by compensating the column number in the regexp in the next loop. The problem
+					" ONLY occurs when searching forwards because the text is substituted left-to-right.
+					if a:direction != 1
+						let col_shift[line_num] += strlen(char) - 1
+					endif
 
 					let element += 1
 				endfor
@@ -347,7 +364,7 @@
 			endif
 
 			" Prompt user for target group/character
-			let coords = s:PromptUser(groups)
+			let coords = s:PromptUser(groups, a:direction)
 
 			if ! empty(a:visualmode)
 				" Update selection
