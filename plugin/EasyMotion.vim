@@ -135,13 +135,13 @@
 		endif
 	endfunction " }}}
 	function! s:SetLines(lines, key) " {{{
-		for [line_num, line] in a:lines
-			try
-				" Try to join changes with previous undo block
-				undojoin
-			catch
-			endtry
+		try
+			" Try to join changes with previous undo block
+			undojoin
+		catch
+		endtry
 
+		for [line_num, line] in a:lines
 			call setline(line_num, line[a:key])
 		endfor
 	endfunction " }}}
