@@ -123,6 +123,7 @@ mode:
 	<Leader>w          See |w|
 	<Leader>e          See |e|
 	<Leader>b          See |b|
+	<Leader>ge         See |ge|
 
 Default: 1
 
