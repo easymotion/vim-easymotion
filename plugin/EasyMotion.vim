@@ -303,14 +303,11 @@
 			endwhile
 
 			let targets_len = len(targets)
-			let groups_len = len(s:index_to_key)
-
 			if targets_len == 0
 				throw 'No matches'
 			endif
 
-			" Restore cursor position
-			call cursor(orig_pos[0], orig_pos[1])
+			let groups_len = len(s:index_to_key)
 
 			" Split targets into key groups {{{
 				let groups = []
