@@ -61,13 +61,15 @@
 	endif
 " }}}
 " Initialize variables {{{
-	let s:index_to_key = split(g:EasyMotion_keys, '\zs')
+	let s:index_to_key = {}
 	let s:key_to_index = {}
 
-	let index = 0
-	for i in s:index_to_key
-	    let s:key_to_index[i] = index
-	    let index += 1
+	let idx = 0
+	for char in split(g:EasyMotion_keys, '\zs')
+		let s:index_to_key[idx]  = char
+		let s:key_to_index[char] = idx
+
+		let idx += 1
 	endfor
 
 	let s:var_reset = {}
