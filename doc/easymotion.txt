@@ -154,6 +154,8 @@ Source repository: https://github.com/Lokaltog/vim-easymotion
 ==============================================================================
 8. Credits                                                *easymotion-credits*
 
+- Ben Boeckel: ge motion
+
 EasyMotion is based on Bartlomiej Podolak's great PreciseJump script, which
 can be downloaded here:
 
