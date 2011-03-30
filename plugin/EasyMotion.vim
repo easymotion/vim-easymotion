@@ -207,8 +207,15 @@
 						let lines[line_num] = { 'orig': current_line, 'marker': current_line }
 					endif
 
-					" Substitute marker character
-					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', s:index_to_key[single_group ? element : current_group], '')
+					let marker_char = s:index_to_key[single_group ? element : current_group]
+
+					if strlen(lines[line_num]['marker']) > 0
+						" Substitute marker character if line length > 0
+						let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', marker_char, '')
+					else
+						" Set the line to the marker character if the line is empty
+						let lines[line_num]['marker'] = marker_char
+					endif
 
 					" Add highlighting coordinates
 					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
