@@ -124,6 +124,8 @@ mode:
 	<Leader>e          See |e|
 	<Leader>b          See |b|
 	<Leader>ge         See |ge|
+	<Leader>j          See |j|
+	<Leader>k          See |k|
 
 Default: 1
 
