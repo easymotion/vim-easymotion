@@ -3,8 +3,8 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 " Source repository: https://github.com/Lokaltog/vim-easymotion
 
-" Prevent double loading {{{
-	if exists('g:EasyMotion_loaded')
+" Script initialization {{{
+	if exists('g:EasyMotion_loaded') || &compatible || version < 702
 		finish
 	endif
 
