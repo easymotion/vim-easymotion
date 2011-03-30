@@ -38,29 +38,35 @@
 " }}}
 " Default key mapping {{{
 	if g:EasyMotion_do_mapping
-		nnoremap <silent> <Leader>f      :call EasyMotionF(0, 0)<CR>
-		vnoremap <silent> <Leader>f :<C-U>call EasyMotionF(1, 0)<CR>
+		nnoremap <silent> <Leader>f       :call EasyMotionF(0, 0)<CR>
+		vnoremap <silent> <Leader>f  :<C-U>call EasyMotionF(1, 0)<CR>
 
-		nnoremap <silent> <Leader>F      :call EasyMotionF(0, 1)<CR>
-		vnoremap <silent> <Leader>F :<C-U>call EasyMotionF(1, 1)<CR>
+		nnoremap <silent> <Leader>F       :call EasyMotionF(0, 1)<CR>
+		vnoremap <silent> <Leader>F  :<C-U>call EasyMotionF(1, 1)<CR>
 
-		nnoremap <silent> <Leader>t      :call EasyMotionT(0, 0)<CR>
-		vnoremap <silent> <Leader>t :<C-U>call EasyMotionT(1, 0)<CR>
+		nnoremap <silent> <Leader>t       :call EasyMotionT(0, 0)<CR>
+		vnoremap <silent> <Leader>t  :<C-U>call EasyMotionT(1, 0)<CR>
 
-		nnoremap <silent> <Leader>T      :call EasyMotionT(0, 1)<CR>
-		vnoremap <silent> <Leader>T :<C-U>call EasyMotionT(1, 1)<CR>
+		nnoremap <silent> <Leader>T       :call EasyMotionT(0, 1)<CR>
+		vnoremap <silent> <Leader>T  :<C-U>call EasyMotionT(1, 1)<CR>
 
-		nnoremap <silent> <Leader>w      :call EasyMotionW(0)<CR>
-		vnoremap <silent> <Leader>w :<C-U>call EasyMotionW(1)<CR>
+		nnoremap <silent> <Leader>w       :call EasyMotionWB(0, 0)<CR>
+		vnoremap <silent> <Leader>w  :<C-U>call EasyMotionWB(1, 0)<CR>
 
-		nnoremap <silent> <Leader>e      :call EasyMotionE(0)<CR>
-		vnoremap <silent> <Leader>e :<C-U>call EasyMotionE(1)<CR>
+		nnoremap <silent> <Leader>b       :call EasyMotionWB(0, 1)<CR>
+		vnoremap <silent> <Leader>b  :<C-U>call EasyMotionWB(1, 1)<CR>
 
-		nnoremap <silent> <Leader>b      :call EasyMotionB(0)<CR>
-		vnoremap <silent> <Leader>b :<C-U>call EasyMotionB(1)<CR>
+		nnoremap <silent> <Leader>e       :call EasyMotionE(0, 0)<CR>
+		vnoremap <silent> <Leader>e  :<C-U>call EasyMotionE(1, 0)<CR>
 
-		nnoremap <silent> <Leader>ge      :call EasyMotionGE(0)<CR>
-		vnoremap <silent> <Leader>ge :<C-U>call EasyMotionGE(1)<CR>
+		nnoremap <silent> <Leader>ge      :call EasyMotionE(0, 1)<CR>
+		vnoremap <silent> <Leader>ge :<C-U>call EasyMotionE(1, 1)<CR>
+
+		nnoremap <silent> <Leader>j       :call EasyMotionJK(0, 0)<CR>
+		vnoremap <silent> <Leader>j  :<C-U>call EasyMotionJK(1, 0)<CR>
+
+		nnoremap <silent> <Leader>k       :call EasyMotionJK(0, 1)<CR>
+		vnoremap <silent> <Leader>k  :<C-U>call EasyMotionJK(1, 1)<CR>
 	endif
 " }}}
 " Initialize variables {{{
@@ -104,17 +110,14 @@
 
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
 	endfunction " }}}
-	function! EasyMotionW(visualmode) " {{{
-		call s:EasyMotion('\<.', 0, a:visualmode ? visualmode() : '')
+	function! EasyMotionWB(visualmode, direction) " {{{
+		call s:EasyMotion('\<.', a:direction, a:visualmode ? visualmode() : '')
 	endfunction " }}}
-	function! EasyMotionE(visualmode) " {{{
-		call s:EasyMotion('.\>', 0, a:visualmode ? visualmode() : '')
+	function! EasyMotionE(visualmode, direction) " {{{
+		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '')
 	endfunction " }}}
-	function! EasyMotionB(visualmode) " {{{
-		call s:EasyMotion('\<.', 1, a:visualmode ? visualmode() : '')
-	endfunction " }}}
-	function! EasyMotionGE(visualmode) " {{{
-		call s:EasyMotion('\>.', 1, a:visualmode ? visualmode() : '')
+	function! EasyMotionJK(visualmode, direction) " {{{
+		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '')
 	endfunction " }}}
 " }}}
 " Helper functions {{{
@@ -213,8 +216,15 @@
 						let lines[line_num] = { 'orig': current_line, 'marker': current_line }
 					endif
 
-					" Substitute marker character
-					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', s:index_to_key[single_group ? element : current_group], '')
+					let marker_char = s:index_to_key[single_group ? element : current_group]
+
+					if strlen(lines[line_num]['marker']) > 0
+						" Substitute marker character if line length > 0
+						let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', marker_char, '')
+					else
+						" Set the line to the marker character if the line is empty
+						let lines[line_num]['marker'] = marker_char
+					endif
 
 					" Add highlighting coordinates
 					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')

@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 1.0.9.  Last change: 2011 Mar 30
+*easymotion.txt*	Version 1.0.10.  Last change: 2011 Mar 30
 
 
             ______                  __  ___       __  _
@@ -123,6 +123,9 @@ mode:
 	<Leader>w          See |w|
 	<Leader>e          See |e|
 	<Leader>b          See |b|
+	<Leader>ge         See |ge|
+	<Leader>j          See |j|
+	<Leader>k          See |k|
 
 Default: 1
 
@@ -139,7 +142,8 @@ http://creativecommons.org/licenses/by-sa/3.0/
 ==============================================================================
 6. Known bugs                                          *easymotion-known-bugs*
 
-None.
+- Lines jump to the left when usin j/k motions when a line is prepended
+  by a hard tab due to the tab being replaced with the marker character.
 
 ==============================================================================
 7. Contributing                                      *easymotion-contributing*
