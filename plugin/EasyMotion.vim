@@ -242,7 +242,9 @@
 			call s:SetLines(lines_items, 'orig')
 
 			" Un-highlight code
-			call matchdelete(target_hl_id)
+			if exists('target_hl_id')
+				call matchdelete(target_hl_id)
+			endif
 
 			redraw
 		endtry
