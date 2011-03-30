@@ -61,13 +61,15 @@
 	endif
 " }}}
 " Initialize variables {{{
-	let s:index_to_key = split(g:EasyMotion_keys, '\zs')
+	let s:index_to_key = {}
 	let s:key_to_index = {}
 
-	let index = 0
-	for i in s:index_to_key
-	    let s:key_to_index[i] = index
-	    let index += 1
+	let idx = 0
+	for char in split(g:EasyMotion_keys, '\zs')
+		let s:index_to_key[idx]  = char
+		let s:key_to_index[char] = idx
+
+		let idx += 1
 	endfor
 
 	let s:var_reset = {}
@@ -135,13 +137,13 @@
 		endif
 	endfunction " }}}
 	function! s:SetLines(lines, key) " {{{
-		for [line_num, line] in a:lines
-			try
-				" Try to join changes with previous undo block
-				undojoin
-			catch
-			endtry
+		try
+			" Try to join changes with previous undo block
+			undojoin
+		catch
+		endtry
 
+		for [line_num, line] in a:lines
 			call setline(line_num, line[a:key])
 		endfor
 	endfunction " }}}
@@ -242,7 +244,9 @@
 			call s:SetLines(lines_items, 'orig')
 
 			" Un-highlight code
-			call matchdelete(target_hl_id)
+			if exists('target_hl_id')
+				call matchdelete(target_hl_id)
+			endif
 
 			redraw
 		endtry
@@ -277,10 +281,10 @@
 			call s:VarReset('&readonly', 0)
 
 			" Find motion targets
-			while 1
-				let search_direction = (a:direction == 1 ? 'b' : '')
-				let search_stopline = line(a:direction == 1 ? 'w0' : 'w$')
+			let search_direction = (a:direction == 1 ? 'b' : '')
+			let search_stopline = line(a:direction == 1 ? 'w0' : 'w$')
 
+			while 1
 				let pos = searchpos(a:regexp, search_direction, search_stopline)
 
 				" Reached end of search range
@@ -303,14 +307,11 @@
 			endwhile
 
 			let targets_len = len(targets)
-			let groups_len = len(s:index_to_key)
-
 			if targets_len == 0
 				throw 'No matches'
 			endif
 
-			" Restore cursor position
-			call setpos('.', [0, orig_pos[0], orig_pos[1]])
+			let groups_len = len(s:index_to_key)
 
 			" Split targets into key groups {{{
 				let groups = []
@@ -350,13 +351,13 @@
 
 			if ! empty(a:visualmode)
 				" Update selection
-				call setpos('.', [0, orig_pos[0], orig_pos[1]])
+				call cursor(orig_pos[0], orig_pos[1])
 
 				exec 'normal! ' . a:visualmode
 			endif
 
 			" Update cursor position
-			call setpos('.', [0, coords[0], coords[1]])
+			call cursor(coords[0], coords[1])
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		catch
@@ -369,7 +370,7 @@
 			if ! empty(a:visualmode)
 				silent exec 'normal! gv'
 			else
-				call setpos('.', [0, orig_pos[0], orig_pos[1]])
+				call cursor(orig_pos[0], orig_pos[1])
 			endif
 		finally
 			" Restore properties
