@@ -170,7 +170,7 @@
 
 		return nr2char(char)
 	endfunction " }}}
-	function! s:GetSearchChar(visualmode)
+	function! s:GetSearchChar(visualmode) " {{{
 		call s:Prompt('Search for character')
 
 		let char = s:GetChar()
@@ -186,7 +186,7 @@
 		endif
 
 		return char
-	endfunction
+	endfunction " }}}
 " }}}
 " Core functions {{{
 	function! s:PromptUser(groups) "{{{
