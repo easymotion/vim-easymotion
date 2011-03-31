@@ -17,7 +17,7 @@
 		endif
 	endfunction " }}}
 	function! s:InitHL(group, colors) " {{{
-		let guihl = printf('guibg=%s guifg=#%s gui=%s', a:colors.gui[0], a:colors.gui[1], a:colors.gui[2])
+		let guihl = printf('guibg=%s guifg=%s gui=%s', a:colors.gui[0], a:colors.gui[1], a:colors.gui[2])
 		let ctermhl = &t_Co == 256
 			\ ? printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm256[0], a:colors.cterm256[1], a:colors.cterm256[2])
 			\ : printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm[0], a:colors.cterm[1], a:colors.cterm[2])
@@ -33,13 +33,13 @@
 
 	" Init highlighting {{{
 		let s:target_hl_defaults = {
-		\   'gui'     : ['NONE', 'ff0000'  , 'bold']
+		\   'gui'     : ['NONE', '#ff0000' , 'bold']
 		\ , 'cterm256': ['NONE', '196'     , 'bold']
 		\ , 'cterm'   : ['NONE', 'red'     , 'bold']
 		\ }
 
 		let s:shade_hl_defaults = {
-		\   'gui'     : ['NONE', '585858'  , 'NONE']
+		\   'gui'     : ['NONE', '#585858' , 'NONE']
 		\ , 'cterm256': ['NONE', '240'     , 'NONE']
 		\ , 'cterm'   : ['NONE', 'darkgrey', 'NONE']
 		\ }
