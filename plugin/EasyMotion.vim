@@ -70,17 +70,22 @@
 	endif
 " }}}
 " Initialize variables {{{
-	let s:index_to_key = {}
-	let s:key_to_index = {}
+	function! s:CreateIndex(chars) " {{{
+		let index_to_key = {}
+		let key_to_index = {}
 
-	let idx = 0
-	for char in split(g:EasyMotion_keys, '\zs')
-		let s:index_to_key[idx]  = char
-		let s:key_to_index[char] = idx
+		let idx = 0
+		for char in split(a:chars, '\zs')
+			let index_to_key[idx]  = char
+			let key_to_index[char] = idx
 
-		let idx += 1
-	endfor
+			let idx += 1
+		endfor
 
+		return [index_to_key, key_to_index]
+	endfunction "}}}
+
+	let [s:index_to_key, s:key_to_index] = s:CreateIndex(g:EasyMotion_keys)
 	let s:var_reset = {}
 " }}}
 " Motion functions {{{
