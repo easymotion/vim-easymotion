@@ -107,7 +107,6 @@
 	endfunction "}}}
 
 	let [s:index_to_key, s:key_to_index] = s:CreateIndex(g:EasyMotion_keys)
-	let s:var_reset = {}
 " }}}
 " Motion functions {{{
 	function! EasyMotionF(visualmode, direction) " {{{
@@ -156,6 +155,10 @@
 		echohl None
 	endfunction " }}}
 	function! s:VarReset(var, ...) " {{{
+		if ! exists('s:var_reset')
+			let s:var_reset = {}
+		endif
+
 		let buf = bufname("")
 
 		if a:0 == 0 && has_key(s:var_reset, a:var)
