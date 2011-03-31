@@ -146,13 +146,13 @@
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionWB(visualmode, direction) " {{{
-		call s:EasyMotion('\<.', a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion('\<.', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 	function! EasyMotionE(visualmode, direction) " {{{
-		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 	function! EasyMotionJK(visualmode, direction) " {{{
-		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 " }}}
 " Helper functions {{{
