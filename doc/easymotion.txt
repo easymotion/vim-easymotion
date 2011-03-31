@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 1.0.12.  Last change: 2011 Mar 31
+*easymotion.txt*	Version 1.1.  Last change: 2011 Mar 31
 
 
             ______                  __  ___       __  _
@@ -72,8 +72,8 @@ And that's it!
 ------------------------------------------------------------------------------
 2.1 Default mappings                             *easymotion-default-mappings*
 
-The default configuration provides the following mappings in both normal and
-visual mode:
+The default configuration defines the following mappings in normal,
+visual and operator-pending mode:
 
     Mapping           | Details
     ------------------|----------------------------------------------
