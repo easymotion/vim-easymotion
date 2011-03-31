@@ -72,8 +72,8 @@ And that's it!
 ------------------------------------------------------------------------------
 2.1 Default mappings                             *easymotion-default-mappings*
 
-The default configuration provides the following mappings in both normal and
-visual mode:
+The default configuration defines the following mappings in normal,
+visual and operator-pending mode:
 
     Mapping           | Details
     ------------------|----------------------------------------------
