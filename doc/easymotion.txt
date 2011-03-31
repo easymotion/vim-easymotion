@@ -15,6 +15,7 @@ CONTENTS                                                 *easymotion-contents*
 
     1. Introduction ....................... |easymotion-introduction|
     2. Usage .............................. |easymotion-usage|
+       2.1 Default mappings ............... |easymotion-default-mappings|
     3. Requirements ....................... |easymotion-requirements|
     4. Configuration ...................... |easymotion-configuration|
        4.1 EasyMotion_keys ................ |EasyMotion_keys|
@@ -40,24 +41,54 @@ following the cursor is faded, and motion targets are highlighted.
 ==============================================================================
 2. Usage                                                    *easymotion-usage*
 
-EasyMotion is triggered manually or by one of the provided mappings (see
+EasyMotion is triggered by one of the provided mappings (see
 |EasyMotion_do_mapping| for details).
 
 Example: >
 
-	<cursor>Lorem ipsum dolor sit amet.
+    <cursor>Lorem ipsum dolor sit amet.
 
-If the word motion |w| is triggered with the default mapping <Leader>w, the
-text is updated like this (no braces are actually added, the letters are
-highlighted in red by default): >
+Type <Leader>w to trigger the word motion |w|. See |mapleader| for details
+about the leader key. When the motion is triggered, the text is updated (no
+braces are actually added, the text is highlighted in red by default): >
 
-	<cursor>Lorem {a}psum {b}olor {c}it {d}met.
+    <cursor>Lorem {a}psum {b}olor {c}it {d}met.
 
 Press "c" to jump to the beginning of the word "sit": >
 
-	Lorem ipsum dolor <cursor>sit amet.
+    Lorem ipsum dolor <cursor>sit amet.
+
+Similarly, if you're looking for an "o", you can use the |f| motion.
+Type <Leader>fo, and all "o" characters are highlighted: >
+
+    <cursor>L{a}rem ipsum d{b}l{c}r sit amet.
+
+Press "b" to jump to the second "o": >
+
+    Lorem ipsum d<cursor>olor sit amet.
 
 And that's it!
+
+------------------------------------------------------------------------------
+2.1 Default mappings                             *easymotion-default-mappings*
+
+The default configuration provides the following mappings in both normal and
+visual mode:
+
+    Mapping           | Details
+    ------------------|----------------------------------------------
+    <Leader>f{char}   | Find {char} to the right. See |f|.
+    <Leader>F{char}   | Find {char} to the left. See |F|.
+    <Leader>t{char}   | Till before the {char} to the right. See |t|.
+    <Leader>T{char}   | Till after the {char} to the left. See |T|.
+    <Leader>w         | Beginning of word forward. See |w|.
+    <Leader>b         | Beginning of word backward. See |b|.
+    <Leader>e         | End of word forward. See |e|.
+    <Leader>ge        | End of word backward. See |ge| .
+    <Leader>j         | Line downward. See |j|.
+    <Leader>k         | Line upward. See |k|.
+
+See |mapleader| for details about the leader key.
 
 ==============================================================================
 3. Requirements                                      *easymotion-requirements*
@@ -70,67 +101,67 @@ Vi-compatible mode must be disabled.
 ==============================================================================
 4. Configuration                                    *easymotion-configuration*
 
-Set the configuration variables globally in your vimrc file.
+EasyMotion will work fine without any configuration, but you can override the
+default behavior by setting configuration variables globally in your |vimrc|
+file.
 
-Example: >
+Example (this will change the target keys and disable shading): >
 
-	let g:EasyMotion_keys = '1234567890'
-	let g:EasyMotion_do_shade = 0
+    let g:EasyMotion_keys = '1234567890'
+    let g:EasyMotion_do_shade = 0
 
 ------------------------------------------------------------------------------
 4.1 EasyMotion_keys                                          *EasyMotion_keys*
 
 Set the keys which will be used for motion targets. Add as many keys as you
-want. There's a lower chance that the motion targets will be grouped with many
-keys available.
+want. There's a lower chance that the motion targets will be grouped if many
+keys are available.
 
 Default: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 ------------------------------------------------------------------------------
 4.2 EasyMotion_target_hl                                *EasyMotion_target_hl*
 
-Set the highlighting group for motion targets.
+Set the highlighting group for motion targets. You can override the default
+target highlighting by either changing this variable to another highlighting
+group (e.g. |ErrorMsg|), or by using |hi| to override the default syntax
+colors: >
+
+    hi EasyMotionTarget ctermfg=green ctermbg=black cterm=reverse
 
 Default: 'EasyMotionTarget'
 
 ------------------------------------------------------------------------------
 4.3 EasyMotion_shade_hl                                  *EasyMotion_shade_hl*
 
-Set the highlighting group for shaded text.
+Set the highlighting group for shaded text (see |EasyMotion_do_shade|). You
+can override the default shade highlighting by either changing this variable
+to another highlighting group, or by using |hi| to override the default syntax
+colors: >
+
+    hi EasyMotionShade ctermfg=red ctermbg=black cterm=none
 
 Default: 'EasyMotionShade'
 
 ------------------------------------------------------------------------------
 4.4 EasyMotion_do_shade                                  *EasyMotion_do_shade*
 
-Set this to 0 if you want to disable text shading.
+The default behavior is to shade the text following the cursor (forward
+motions) or preceding the cursor (backward motions) to make the motion targets
+more visible. Set this option to 0 if you want to disable text shading.
 
 Default: 1
 
 ------------------------------------------------------------------------------
 4.5 EasyMotion_do_mapping                              *EasyMotion_do_mapping*
 
-Set this to 0 if you want to disable the default mappings. The default
-configuration provides the following mappings in both normal and visual
-mode:
-
-	Mapping            Details
-	--------------------------
-	<Leader>f{char}    See |f|
-	<Leader>F{char}    See |F|
-	<Leader>t{char}    See |t|
-	<Leader>T{char}    See |T|
-	<Leader>w          See |w|
-	<Leader>e          See |e|
-	<Leader>b          See |b|
-	<Leader>ge         See |ge|
-	<Leader>j          See |j|
-	<Leader>k          See |k|
-
-Default: 1
+Set this option to 0 if you want to disable the default mappings. See
+|easymotion-default-mappings| for details about the default mappings.
 
 Note: If you disable this option, you'll have to map the motions yourself. See
 the plugin source code for mapping details.
+
+Default: 1
 
 ==============================================================================
 5. License                                                *easymotion-license*
