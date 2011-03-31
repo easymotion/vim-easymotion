@@ -128,7 +128,7 @@
 
 		let re = '\C' . escape(char, '.$^~')
 
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionT(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
@@ -143,16 +143,16 @@
 			let re = '\C.' . escape(char, '.$^~')
 		endif
 
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '')
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionWB(visualmode, direction) " {{{
-		call s:EasyMotion('\<.', a:direction, a:visualmode ? visualmode() : '')
+		call s:EasyMotion('\<.', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionE(visualmode, direction) " {{{
-		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '')
+		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionJK(visualmode, direction) " {{{
-		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '')
+		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 " }}}
 " Helper functions {{{
@@ -324,7 +324,7 @@
 			return s:PromptUser([a:groups[s:key_to_index[char]]])
 		endif
 	endfunction "}}}
-	function! s:EasyMotion(regexp, direction, visualmode) " {{{
+	function! s:EasyMotion(regexp, direction, visualmode, mode) " {{{
 		let orig_pos = [line('.'), col('.')]
 		let targets = []
 
@@ -403,6 +403,17 @@
 				call cursor(orig_pos[0], orig_pos[1])
 
 				exec 'normal! ' . a:visualmode
+			endif
+
+			if a:mode == 'no'
+				" Operator-pending mode
+				"
+				" This mode requires that we eat one more
+				" character to the right if we're using
+				" a forward motion
+				if a:direction != 1
+					let coords[1] += 1
+				endif
 			endif
 
 			" Update cursor position
