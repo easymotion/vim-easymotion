@@ -246,6 +246,11 @@
 					let marker_char = s:index_to_key[single_group ? element : current_group]
 
 					if strlen(lines[line_num]['marker']) > 0
+						" Replace hard tab with spaces
+						if match(lines[line_num]['marker'], '\%' . col_num . 'c\t') != -1
+							let marker_char .= repeat(' ', string(&tabstop) - strlen(marker_char))
+						endif
+
 						" Substitute marker character if line length > 0
 						let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', marker_char, '')
 					else
