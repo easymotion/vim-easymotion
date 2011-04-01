@@ -58,46 +58,88 @@
 	" }}}
 " }}}
 " Default key mapping {{{
+
+    if !exists('g:EasyMotion_binding_f')
+        let g:EasyMotion_binding_f = '<Leader>f'
+    endif
+
+    if !exists('g:EasyMotion_binding_F')
+        let g:EasyMotion_binding_F = '<Leader>F'
+    endif
+
+    if !exists('g:EasyMotion_binding_t')
+        let g:EasyMotion_binding_t = '<Leader>t'
+    endif
+
+    if !exists('g:EasyMotion_binding_T')
+        let g:EasyMotion_binding_T = '<Leader>T'
+    endif
+
+    if !exists('g:EasyMotion_binding_w')
+        let g:EasyMotion_binding_w = '<Leader>w'
+    endif
+
+    if !exists('g:EasyMotion_binding_b')
+        let g:EasyMotion_binding_b = '<Leader>b'
+    endif
+
+    if !exists('g:EasyMotion_binding_e')
+        let g:EasyMotion_binding_e = '<Leader>e'
+    endif
+
+    if !exists('g:EasyMotion_binding_ge')
+        let g:EasyMotion_binding_ge = '<Leader>ge'
+    endif
+
+    if !exists('g:EasyMotion_binding_j')
+        let g:EasyMotion_binding_j = '<Leader>j'
+    endif
+
+    if !exists('g:EasyMotion_binding_k')
+        let g:EasyMotion_binding_k = '<Leader>k'
+    endif
+
+
 	if g:EasyMotion_do_mapping
-		nnoremap <silent> <Leader>f       :call EasyMotionF(0, 0)<CR>
-		onoremap <silent> <Leader>f       :call EasyMotionF(0, 0)<CR>
-		vnoremap <silent> <Leader>f  :<C-U>call EasyMotionF(1, 0)<CR>
+		silent exe 'nnoremap ' . g:EasyMotion_binding_f . ' :call EasyMotionF(0, 0)<CR>'
+		silent exe 'onoremap ' . g:EasyMotion_binding_f . ' :call EasyMotionF(0, 0)<CR>'
+		silent exe 'vnoremap ' . g:EasyMotion_binding_f . ' :<C-U>call EasyMotionF(1, 0)<CR>'
 
-		nnoremap <silent> <Leader>F       :call EasyMotionF(0, 1)<CR>
-		onoremap <silent> <Leader>F       :call EasyMotionF(0, 1)<CR>
-		vnoremap <silent> <Leader>F  :<C-U>call EasyMotionF(1, 1)<CR>
+		silent exe 'nnoremap ' . g:EasyMotion_binding_F . ' :call EasyMotionF(0, 1)<CR>'
+		silent exe 'onoremap ' . g:EasyMotion_binding_F . ' :call EasyMotionF(0, 1)<CR>'
+		silent exe 'vnoremap ' . g:EasyMotion_binding_F . ' :<C-U>call EasyMotionF(1, 1)<CR>'
 
-		nnoremap <silent> <Leader>t       :call EasyMotionT(0, 0)<CR>
-		onoremap <silent> <Leader>t       :call EasyMotionT(0, 0)<CR>
-		vnoremap <silent> <Leader>t  :<C-U>call EasyMotionT(1, 0)<CR>
+		silent exe 'nnoremap ' . g:EasyMotion_binding_t . ' :call EasyMotionT(0, 0)<CR>'
+		silent exe 'onoremap ' . g:EasyMotion_binding_t . ' :call EasyMotionT(0, 0)<CR>'
+		silent exe 'vnoremap ' . g:EasyMotion_binding_t . ' :<C-U>call EasyMotionT(1, 0)<CR>'
 
-		nnoremap <silent> <Leader>T       :call EasyMotionT(0, 1)<CR>
-		onoremap <silent> <Leader>T       :call EasyMotionT(0, 1)<CR>
-		vnoremap <silent> <Leader>T  :<C-U>call EasyMotionT(1, 1)<CR>
+		silent exe 'nnoremap ' . g:EasyMotion_binding_T . ' :call EasyMotionT(0, 1)<CR>'
+		silent exe 'onoremap ' . g:EasyMotion_binding_T . ' :call EasyMotionT(0, 1)<CR>'
+		silent exe 'vnoremap ' . g:EasyMotion_binding_T . ' :<C-U>call EasyMotionT(1, 1)<CR>'
 
-		nnoremap <silent> <Leader>w       :call EasyMotionWB(0, 0)<CR>
-		onoremap <silent> <Leader>w       :call EasyMotionWB(0, 0)<CR>
-		vnoremap <silent> <Leader>w  :<C-U>call EasyMotionWB(1, 0)<CR>
+		silent exe 'nnoremap ' . g:EasyMotion_binding_w . ' :call EasyMotionWB(0, 0)<CR>'
+		silent exe 'onoremap ' . g:EasyMotion_binding_w . ' :call EasyMotionWB(0, 0)<CR>'
+		silent exe 'vnoremap ' . g:EasyMotion_binding_w . ' :<C-U>call EasyMotionWB(1, 0)<CR>'
 
-		nnoremap <silent> <Leader>b       :call EasyMotionWB(0, 1)<CR>
-		onoremap <silent> <Leader>b       :call EasyMotionWB(0, 1)<CR>
-		vnoremap <silent> <Leader>b  :<C-U>call EasyMotionWB(1, 1)<CR>
+		silent exe 'nnoremap ' . g:EasyMotion_binding_b . ' :call EasyMotionWB(0, 1)<CR>'
+		silent exe 'onoremap ' . g:EasyMotion_binding_b . ' :call EasyMotionWB(0, 1)<CR>'
+		silent exe 'vnoremap ' . g:EasyMotion_binding_b . ' :<C-U>call EasyMotionWB(1, 1)<CR>'
 
-		nnoremap <silent> <Leader>e       :call EasyMotionE(0, 0)<CR>
-		onoremap <silent> <Leader>e       :call EasyMotionE(0, 0)<CR>
-		vnoremap <silent> <Leader>e  :<C-U>call EasyMotionE(1, 0)<CR>
+		silent exe 'nnoremap ' . g:EasyMotion_binding_e . ' :call EasyMotionE(0, 0)<CR>'
+		silent exe 'onoremap ' . g:EasyMotion_binding_e . ' :call EasyMotionE(0, 0)<CR>'
+		silent exe 'vnoremap ' . g:EasyMotion_binding_e . ' :<C-U>call EasyMotionE(1, 0)<CR>'
 
-		nnoremap <silent> <Leader>ge      :call EasyMotionE(0, 1)<CR>
-		onoremap <silent> <Leader>ge      :call EasyMotionE(0, 1)<CR>
-		vnoremap <silent> <Leader>ge :<C-U>call EasyMotionE(1, 1)<CR>
+		silent exe 'nnoremap ' . g:EasyMotion_binding_ge . ' :call EasyMotionE(0, 1)<CR>'
+		silent exe 'onoremap ' . g:EasyMotion_binding_ge . ' :call EasyMotionE(0, 1)<CR>'
+		silent exe 'vnoremap ' . g:EasyMotion_binding_ge . ' :<C-U>call EasyMotionE(1, 1)<CR>'
 
-		nnoremap <silent> <Leader>j       :call EasyMotionJK(0, 0)<CR>
-		onoremap <silent> <Leader>j       :call EasyMotionJK(0, 0)<CR>
-		vnoremap <silent> <Leader>j  :<C-U>call EasyMotionJK(1, 0)<CR>
+		silent exe 'nnoremap ' . g:EasyMotion_binding_j . ' :call EasyMotionJK(0, 0)<CR>'
+		silent exe 'onoremap ' . g:EasyMotion_binding_j . ' :call EasyMotionJK(0, 0)<CR>'
+		silent exe 'vnoremap ' . g:EasyMotion_binding_j . ' :<C-U>call EasyMotionJK(1, 0)<CR>'
 
-		nnoremap <silent> <Leader>k       :call EasyMotionJK(0, 1)<CR>
-		onoremap <silent> <Leader>k       :call EasyMotionJK(0, 1)<CR>
-		vnoremap <silent> <Leader>k  :<C-U>call EasyMotionJK(1, 1)<CR>
+		silent exe 'nnoremap ' . g:EasyMotion_binding_k . ' :call EasyMotionJK(0, 1)<CR>'
+		silent exe 'onoremap ' . g:EasyMotion_binding_k . ' :call EasyMotionJK(0, 1)<CR>'
+		silent exe 'vnoremap ' . g:EasyMotion_binding_k . ' :<C-U>call EasyMotionJK(1, 1)<CR>'
 	endif
 " }}}
 " Initialize variables {{{
