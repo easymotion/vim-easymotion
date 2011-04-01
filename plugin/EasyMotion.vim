@@ -24,6 +24,19 @@
 
 		execute printf('hi default %s %s %s', a:group, guihl, ctermhl)
 	endfunction " }}}
+	function! s:InitMappings(motions) "{{{
+		for motion in keys(a:motions)
+			call s:InitOption('mapping_' . motion, '<Leader>' . motion)
+		endfor
+
+		if g:EasyMotion_do_mapping
+			for [motion, fn] in items(a:motions)
+				silent exec 'nnoremap <silent> '. g:EasyMotion_mapping_{motion} .'      :call EasyMotion' . fn.name . '(0, ' . fn.dir . ')<CR>'
+				silent exec 'onoremap <silent> '. g:EasyMotion_mapping_{motion} .'      :call EasyMotion' . fn.name . '(0, ' . fn.dir . ')<CR>'
+				silent exec 'vnoremap <silent> '. g:EasyMotion_mapping_{motion} .' :<C-U>call EasyMotion' . fn.name . '(1, ' . fn.dir . ')<CR>'
+			endfor
+		endif
+	endfunction "}}}
 
 	call s:InitOption('keys', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 	call s:InitOption('target_hl', 'EasyMotionTarget')
@@ -56,49 +69,20 @@
 			augroup end
 		" }}}
 	" }}}
-" }}}
-" Default key mapping {{{
-	if g:EasyMotion_do_mapping
-		nnoremap <silent> <Leader>f       :call EasyMotionF(0, 0)<CR>
-		onoremap <silent> <Leader>f       :call EasyMotionF(0, 0)<CR>
-		vnoremap <silent> <Leader>f  :<C-U>call EasyMotionF(1, 0)<CR>
-
-		nnoremap <silent> <Leader>F       :call EasyMotionF(0, 1)<CR>
-		onoremap <silent> <Leader>F       :call EasyMotionF(0, 1)<CR>
-		vnoremap <silent> <Leader>F  :<C-U>call EasyMotionF(1, 1)<CR>
-
-		nnoremap <silent> <Leader>t       :call EasyMotionT(0, 0)<CR>
-		onoremap <silent> <Leader>t       :call EasyMotionT(0, 0)<CR>
-		vnoremap <silent> <Leader>t  :<C-U>call EasyMotionT(1, 0)<CR>
-
-		nnoremap <silent> <Leader>T       :call EasyMotionT(0, 1)<CR>
-		onoremap <silent> <Leader>T       :call EasyMotionT(0, 1)<CR>
-		vnoremap <silent> <Leader>T  :<C-U>call EasyMotionT(1, 1)<CR>
-
-		nnoremap <silent> <Leader>w       :call EasyMotionWB(0, 0)<CR>
-		onoremap <silent> <Leader>w       :call EasyMotionWB(0, 0)<CR>
-		vnoremap <silent> <Leader>w  :<C-U>call EasyMotionWB(1, 0)<CR>
-
-		nnoremap <silent> <Leader>b       :call EasyMotionWB(0, 1)<CR>
-		onoremap <silent> <Leader>b       :call EasyMotionWB(0, 1)<CR>
-		vnoremap <silent> <Leader>b  :<C-U>call EasyMotionWB(1, 1)<CR>
-
-		nnoremap <silent> <Leader>e       :call EasyMotionE(0, 0)<CR>
-		onoremap <silent> <Leader>e       :call EasyMotionE(0, 0)<CR>
-		vnoremap <silent> <Leader>e  :<C-U>call EasyMotionE(1, 0)<CR>
-
-		nnoremap <silent> <Leader>ge      :call EasyMotionE(0, 1)<CR>
-		onoremap <silent> <Leader>ge      :call EasyMotionE(0, 1)<CR>
-		vnoremap <silent> <Leader>ge :<C-U>call EasyMotionE(1, 1)<CR>
-
-		nnoremap <silent> <Leader>j       :call EasyMotionJK(0, 0)<CR>
-		onoremap <silent> <Leader>j       :call EasyMotionJK(0, 0)<CR>
-		vnoremap <silent> <Leader>j  :<C-U>call EasyMotionJK(1, 0)<CR>
-
-		nnoremap <silent> <Leader>k       :call EasyMotionJK(0, 1)<CR>
-		onoremap <silent> <Leader>k       :call EasyMotionJK(0, 1)<CR>
-		vnoremap <silent> <Leader>k  :<C-U>call EasyMotionJK(1, 1)<CR>
-	endif
+	" Default key mapping {{{
+		call s:InitMappings({
+		\   'f' : { 'name': 'F' , 'dir': 0 }
+		\ , 'F' : { 'name': 'F' , 'dir': 1 }
+		\ , 't' : { 'name': 'T' , 'dir': 0 }
+		\ , 'T' : { 'name': 'T' , 'dir': 1 }
+		\ , 'w' : { 'name': 'WB', 'dir': 0 }
+		\ , 'b' : { 'name': 'WB', 'dir': 1 }
+		\ , 'e' : { 'name': 'E' , 'dir': 0 }
+		\ , 'ge': { 'name': 'E' , 'dir': 1 }
+		\ , 'j' : { 'name': 'JK', 'dir': 0 }
+		\ , 'k' : { 'name': 'JK', 'dir': 1 }
+		\ })
+	" }}}
 " }}}
 " Initialize variables {{{
 	function! s:CreateIndex(chars) " {{{
