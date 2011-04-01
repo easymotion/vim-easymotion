@@ -43,7 +43,7 @@ following the cursor is faded, and motion targets are highlighted.
 2. Usage                                                    *easymotion-usage*
 
 EasyMotion is triggered by one of the provided mappings (see
-|EasyMotion_do_mapping| for details).
+|easymotion-default-mappings| for details).
 
 Example: >
 
