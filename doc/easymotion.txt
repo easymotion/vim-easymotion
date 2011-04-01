@@ -23,6 +23,7 @@ CONTENTS                                                 *easymotion-contents*
        4.3 EasyMotion_shade_hl ............ |EasyMotion_shade_hl|
        4.4 EasyMotion_do_shade ............ |EasyMotion_do_shade|
        4.5 EasyMotion_do_mapping .......... |EasyMotion_do_mapping|
+       4.6 Custom mappings ................ |easymotion-custom-mappings|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -89,6 +90,7 @@ visual and operator-pending mode:
     <Leader>k         | Line upward. See |k|.
 
 See |mapleader| for details about the leader key.
+See |easymotion-custom-mappings| for customizing default mappings.
 
 ==============================================================================
 3. Requirements                                      *easymotion-requirements*
@@ -159,9 +161,26 @@ Set this option to 0 if you want to disable the default mappings. See
 |easymotion-default-mappings| for details about the default mappings.
 
 Note: If you disable this option, you'll have to map the motions yourself. See
-the plugin source code for mapping details.
+the plugin source code for mapping details. You usually shouldn't need to do
+this, see |easymotion-custom-mappings| for customizing the default mappings.
 
 Default: 1
+
+------------------------------------------------------------------------------
+4.6 Custom mappings                               *easymotion-custom-mappings*
+
+EasyMotion allows you to customize all default mappings to avoid conflicts
+with existing mappings. All custom mappings follow the same variable format: >
+
+    EasyMotion_mapping_{motion} = {mapping}
+
+Example: >
+
+    let g:EasyMotion_mapping_f = '_f'
+    let g:EasyMotion_mapping_T = '<C-T>'
+
+See |easymotion-default-mappings| for a table of motions that can be mapped
+and their default values.
 
 ==============================================================================
 5. License                                                *easymotion-license*
