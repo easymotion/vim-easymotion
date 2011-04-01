@@ -11,10 +11,12 @@
 	let g:EasyMotion_loaded = 1
 " }}}
 " Default configuration {{{
-	function! s:InitOption(option, default) " {{{
-		if ! exists('g:EasyMotion_' . a:option)
-			exec 'let g:EasyMotion_' . a:option . ' = ' . string(a:default)
-		endif
+	function! s:InitOptions(options) " {{{
+		for [key, value] in items(a:options)
+			if ! exists('g:EasyMotion_' . key)
+				exec 'let g:EasyMotion_' . key . ' = ' . string(value)
+			endif
+		endfor
 	endfunction " }}}
 	function! s:InitHL(group, colors) " {{{
 		let guihl = printf('guibg=%s guifg=%s gui=%s', a:colors.gui[0], a:colors.gui[1], a:colors.gui[2])
@@ -26,7 +28,7 @@
 	endfunction " }}}
 	function! s:InitMappings(motions) "{{{
 		for motion in keys(a:motions)
-			call s:InitOption('mapping_' . motion, '<Leader>' . motion)
+			call s:InitOptions({ 'mapping_' . motion : '<Leader>' . motion })
 		endfor
 
 		if g:EasyMotion_do_mapping
@@ -37,14 +39,16 @@
 			endfor
 		endif
 	endfunction "}}}
-
-	call s:InitOption('keys', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
-	call s:InitOption('target_hl', 'EasyMotionTarget')
-	call s:InitOption('shade_hl', 'EasyMotionShade')
-	call s:InitOption('do_shade', 1)
-	call s:InitOption('do_mapping', 1)
-
-	" Init highlighting {{{
+	" Default options {{{
+		call s:InitOptions({
+		\   'keys'       : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+		\ , 'target_hl'  : 'EasyMotionTarget'
+		\ , 'shade_hl'   : 'EasyMotionShade'
+		\ , 'do_shade'   : 1
+		\ , 'do_mapping' : 1
+		\ })
+	" }}}
+	" Default highlighting {{{
 		let s:target_hl_defaults = {
 		\   'gui'     : ['NONE', '#ff0000' , 'bold']
 		\ , 'cterm256': ['NONE', '196'     , 'bold']
