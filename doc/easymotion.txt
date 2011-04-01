@@ -210,6 +210,7 @@ Source repository: https://github.com/Lokaltog/vim-easymotion
 
 - Ben Boeckel: ge motion
 - Drew Neil: operator-pending mappings
+- Rob O'Dwyer: customizable mappings without giving up all defaults
 
 EasyMotion is based on Bartlomiej Podolak's great PreciseJump script, which
 can be downloaded here:
