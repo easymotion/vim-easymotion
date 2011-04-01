@@ -133,7 +133,7 @@
 		call s:EasyMotion('\<.', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 	function! EasyMotionE(visualmode, direction) " {{{
-		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionJK(visualmode, direction) " {{{
 		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', '')
