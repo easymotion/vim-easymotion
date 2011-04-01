@@ -33,9 +33,9 @@
 
 		if g:EasyMotion_do_mapping
 			for [motion, fn] in items(a:motions)
-				silent exec 'nnoremap <silent> '. g:EasyMotion_mapping_{motion} .'      :call EasyMotion' . fn.name . '(0, ' . fn.dir . ')<CR>'
-				silent exec 'onoremap <silent> '. g:EasyMotion_mapping_{motion} .'      :call EasyMotion' . fn.name . '(0, ' . fn.dir . ')<CR>'
-				silent exec 'vnoremap <silent> '. g:EasyMotion_mapping_{motion} .' :<C-U>call EasyMotion' . fn.name . '(1, ' . fn.dir . ')<CR>'
+				silent exec 'nnoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion' . fn.name . '(0, ' . fn.dir . ')<CR>'
+				silent exec 'onoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion' . fn.name . '(0, ' . fn.dir . ')<CR>'
+				silent exec 'vnoremap <silent> ' . g:EasyMotion_mapping_{motion} . ' :<C-U>call EasyMotion' . fn.name . '(1, ' . fn.dir . ')<CR>'
 			endfor
 		endif
 	endfunction "}}}
@@ -87,24 +87,6 @@
 		\ , 'k' : { 'name': 'JK', 'dir': 1 }
 		\ })
 	" }}}
-" }}}
-" Initialize variables {{{
-	function! s:CreateIndex(chars) " {{{
-		let index_to_key = {}
-		let key_to_index = {}
-
-		let idx = 0
-		for char in split(a:chars, '\zs')
-			let index_to_key[idx]  = char
-			let key_to_index[char] = idx
-
-			let idx += 1
-		endfor
-
-		return [index_to_key, key_to_index]
-	endfunction "}}}
-
-	let [s:index_to_key, s:key_to_index] = s:CreateIndex(g:EasyMotion_keys)
 " }}}
 " Motion functions {{{
 	function! EasyMotionF(visualmode, direction) " {{{
@@ -216,11 +198,29 @@
 	endfunction " }}}
 " }}}
 " Core functions {{{
+	" Create key index {{{
+		function! s:CreateIndex(chars) " {{{
+			let index_to_key = {}
+			let key_to_index = {}
+
+			let idx = 0
+			for char in split(a:chars, '\zs')
+				let index_to_key[idx]  = char
+				let key_to_index[char] = idx
+
+				let idx += 1
+			endfor
+
+			return [index_to_key, key_to_index]
+		endfunction "}}}
+
+		let [s:index_to_key, s:key_to_index] = s:CreateIndex(g:EasyMotion_keys)
+	" }}}
 	function! s:PromptUser(groups) "{{{
 		let single_group = len(a:groups) == 1
 		let targets_len = single_group ? len(a:groups[0]) : len(a:groups)
 
-		" Only one possible match {{{
+		" If only one possible match, jump directly to it {{{
 			if single_group && targets_len == 1
 				redraw
 
@@ -264,9 +264,9 @@
 
 			let lines_items = items(lines)
 		" }}}
-
-		" Highlight source
-		let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
+		" Highlight targets {{{
+			let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
+		" }}}
 
 		try
 			" Set lines with markers
@@ -274,35 +274,38 @@
 
 			redraw
 
-			" Get target/group character
-			if single_group
-				call s:Prompt('Target character')
-			else
-				call s:Prompt('Group character')
-			endif
+			" Get target/group character {{{
+				if single_group
+					call s:Prompt('Target character')
+				else
+					call s:Prompt('Group character')
+				endif
 
-			let char = s:GetChar()
+				let char = s:GetChar()
+			" }}}
 		finally
 			" Restore original lines
 			call s:SetLines(lines_items, 'orig')
 
-			" Un-highlight code
-			if exists('target_hl_id')
-				call matchdelete(target_hl_id)
-			endif
+			" Un-highlight targets {{{
+				if exists('target_hl_id')
+					call matchdelete(target_hl_id)
+				endif
+			" }}}
 
 			redraw
 		endtry
 
-		" Check that we have an input char
-		if empty(char)
-			throw 'Cancelled'
-		endif
-
-		" Check if the input char is valid
-		if ! has_key(s:key_to_index, char) || s:key_to_index[char] >= targets_len
-			throw 'Invalid target'
-		endif
+		" Check if we have an input char {{{
+			if empty(char)
+				throw 'Cancelled'
+			endif
+		" }}}
+		" Check if the input char is valid {{{
+			if ! has_key(s:key_to_index, char) || s:key_to_index[char] >= targets_len
+				throw 'Invalid target'
+			endif
+		" }}}
 
 		if single_group
 			" Return target coordinates
@@ -317,40 +320,39 @@
 		let targets = []
 
 		try
-			" Reset properties
-			call s:VarReset('&scrolloff', 0)
-			call s:VarReset('&modified', 0)
-			call s:VarReset('&modifiable', 1)
-			call s:VarReset('&readonly', 0)
+			" Reset properties {{{
+				call s:VarReset('&scrolloff', 0)
+				call s:VarReset('&modified', 0)
+				call s:VarReset('&modifiable', 1)
+				call s:VarReset('&readonly', 0)
+			" }}}
+			" Find motion targets {{{
+				let search_direction = (a:direction == 1 ? 'b' : '')
+				let search_stopline = line(a:direction == 1 ? 'w0' : 'w$')
 
-			" Find motion targets
-			let search_direction = (a:direction == 1 ? 'b' : '')
-			let search_stopline = line(a:direction == 1 ? 'w0' : 'w$')
+				while 1
+					let pos = searchpos(a:regexp, search_direction, search_stopline)
 
-			while 1
-				let pos = searchpos(a:regexp, search_direction, search_stopline)
+					" Reached end of search range
+					if pos == [0, 0]
+						break
+					endif
 
-				" Reached end of search range
-				if pos == [0, 0]
-					break
+					" Skip folded lines
+					if foldclosed(pos[0]) != -1
+						continue
+					endif
+
+					call add(targets, pos)
+				endwhile
+
+				let targets_len = len(targets)
+				if targets_len == 0
+					throw 'No matches'
 				endif
-
-				" Skip folded lines
-				if foldclosed(pos[0]) != -1
-					continue
-				endif
-
-				call add(targets, pos)
-			endwhile
-
-			let targets_len = len(targets)
-			if targets_len == 0
-				throw 'No matches'
-			endif
-
-			let groups_len = len(s:index_to_key)
-
+			" }}}
 			" Split targets into key groups {{{
+				let groups_len = len(s:index_to_key)
 				let groups = []
 				let i = 0
 
@@ -367,42 +369,42 @@
 					let groups = groups[0 : groups_len - 1]
 				endif
 			" }}}
+			" Shade inactive source {{{
+				if g:EasyMotion_do_shade
+					let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
 
-			" Shade inactive source
-			if g:EasyMotion_do_shade
-				let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
+					if a:direction == 1
+						" Backward
+						let shade_hl_re = '\%'. line('w0') .'l\_.*' . shade_hl_pos
+					else
+						" Forward
+						let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
+					endif
 
-				if a:direction == 1
-					" Backward
-					let shade_hl_re = '\%'. line('w0') .'l\_.*' . shade_hl_pos
-				else
-					" Forward
-					let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
+					let shade_hl_id = matchadd(g:EasyMotion_shade_hl, shade_hl_re, 0)
 				endif
-
-				let shade_hl_id = matchadd(g:EasyMotion_shade_hl, shade_hl_re, 0)
-			endif
+			" }}}
 
 			" Prompt user for target group/character
 			let coords = s:PromptUser(groups)
 
-			if ! empty(a:visualmode)
-				" Update selection
-				call cursor(orig_pos[0], orig_pos[1])
+			" Update selection {{{
+				if ! empty(a:visualmode)
+					call cursor(orig_pos[0], orig_pos[1])
 
-				exec 'normal! ' . a:visualmode
-			endif
-
-			if a:mode == 'no'
-				" Operator-pending mode
-				"
-				" This mode requires that we eat one more
-				" character to the right if we're using
-				" a forward motion
-				if a:direction != 1
-					let coords[1] += 1
+					exec 'normal! ' . a:visualmode
 				endif
-			endif
+			" }}}
+			" Handle operator-pending mode {{{
+				if a:mode == 'no'
+					" This mode requires that we eat one more
+					" character to the right if we're using
+					" a forward motion
+					if a:direction != 1
+						let coords[1] += 1
+					endif
+				endif
+			" }}}
 
 			" Update cursor position
 			call cursor(coords[0], coords[1])
@@ -414,23 +416,25 @@
 			" Show exception message
 			call s:Message(v:exception)
 
-			" Restore cursor position/selection
-			if ! empty(a:visualmode)
-				silent exec 'normal! gv'
-			else
-				call cursor(orig_pos[0], orig_pos[1])
-			endif
+			" Restore original cursor position/selection {{{
+				if ! empty(a:visualmode)
+					silent exec 'normal! gv'
+				else
+					call cursor(orig_pos[0], orig_pos[1])
+				endif
+			" }}}
 		finally
-			" Restore properties
-			call s:VarReset('&scrolloff')
-			call s:VarReset('&modified')
-			call s:VarReset('&modifiable')
-			call s:VarReset('&readonly')
-
-			" Remove shading
-			if g:EasyMotion_do_shade && exists('shade_hl_id')
-				call matchdelete(shade_hl_id)
-			endif
+			" Restore properties {{{
+				call s:VarReset('&scrolloff')
+				call s:VarReset('&modified')
+				call s:VarReset('&modifiable')
+				call s:VarReset('&readonly')
+			" }}}
+			" Remove shading {{{
+				if g:EasyMotion_do_shade && exists('shade_hl_id')
+					call matchdelete(shade_hl_id)
+				endif
+			" }}}
 		endtry
 	endfunction " }}}
 " }}}
