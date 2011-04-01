@@ -192,8 +192,7 @@ http://creativecommons.org/licenses/by-sa/3.0/
 ==============================================================================
 6. Known bugs                                          *easymotion-known-bugs*
 
-- Lines jump to the left when usin j/k motions when a line is prepended
-  by a hard tab due to the tab being replaced with the marker character.
+None.
 
 ==============================================================================
 7. Contributing                                      *easymotion-contributing*
