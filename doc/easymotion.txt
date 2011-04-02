@@ -83,9 +83,13 @@ visual and operator-pending mode:
     <Leader>t{char}   | Till before the {char} to the right. See |t|.
     <Leader>T{char}   | Till after the {char} to the left. See |T|.
     <Leader>w         | Beginning of word forward. See |w|.
+    <Leader>W         | Beginning of WORD forward. See |W|.
     <Leader>b         | Beginning of word backward. See |b|.
+    <Leader>B         | Beginning of WORD backward. See |B|.
     <Leader>e         | End of word forward. See |e|.
-    <Leader>ge        | End of word backward. See |ge| .
+    <Leader>E         | End of WORD forward. See |E|.
+    <Leader>ge        | End of word backward. See |ge|.
+    <Leader>gE        | End of WORD backward. See |gE|.
     <Leader>j         | Line downward. See |j|.
     <Leader>k         | Line upward. See |k|.
 
@@ -207,7 +211,7 @@ Source repository: https://github.com/Lokaltog/vim-easymotion
 ==============================================================================
 8. Credits                                                *easymotion-credits*
 
-- Ben Boeckel: ge motion
+- Ben Boeckel: ge and WORD motions
 - Drew Neil: operator-pending mappings
 - Rob O'Dwyer: customizable mappings without giving up all defaults
 

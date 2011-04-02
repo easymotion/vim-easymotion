@@ -75,16 +75,20 @@
 	" }}}
 	" Default key mapping {{{
 		call s:InitMappings({
-		\   'f' : { 'name': 'F' , 'dir': 0 }
-		\ , 'F' : { 'name': 'F' , 'dir': 1 }
-		\ , 't' : { 'name': 'T' , 'dir': 0 }
-		\ , 'T' : { 'name': 'T' , 'dir': 1 }
-		\ , 'w' : { 'name': 'WB', 'dir': 0 }
-		\ , 'b' : { 'name': 'WB', 'dir': 1 }
-		\ , 'e' : { 'name': 'E' , 'dir': 0 }
-		\ , 'ge': { 'name': 'E' , 'dir': 1 }
-		\ , 'j' : { 'name': 'JK', 'dir': 0 }
-		\ , 'k' : { 'name': 'JK', 'dir': 1 }
+		\   'f' : { 'name': 'F'  , 'dir': 0 }
+		\ , 'F' : { 'name': 'F'  , 'dir': 1 }
+		\ , 't' : { 'name': 'T'  , 'dir': 0 }
+		\ , 'T' : { 'name': 'T'  , 'dir': 1 }
+		\ , 'w' : { 'name': 'WB' , 'dir': 0 }
+		\ , 'W' : { 'name': 'WBW', 'dir': 0 }
+		\ , 'b' : { 'name': 'WB' , 'dir': 1 }
+		\ , 'B' : { 'name': 'WBW', 'dir': 1 }
+		\ , 'e' : { 'name': 'E'  , 'dir': 0 }
+		\ , 'E' : { 'name': 'EW' , 'dir': 0 }
+		\ , 'ge': { 'name': 'E'  , 'dir': 1 }
+		\ , 'gE': { 'name': 'EW' , 'dir': 1 }
+		\ , 'j' : { 'name': 'JK' , 'dir': 0 }
+		\ , 'k' : { 'name': 'JK' , 'dir': 1 }
 		\ })
 	" }}}
 " }}}
@@ -118,8 +122,14 @@
 	function! EasyMotionWB(visualmode, direction) " {{{
 		call s:EasyMotion('\<.', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
+	function! EasyMotionWBW(visualmode, direction) " {{{
+		call s:EasyMotion('\(^\|\s\)\@<=\S', a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
 	function! EasyMotionE(visualmode, direction) " {{{
 		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
+	function! EasyMotionEW(visualmode, direction) " {{{
+		call s:EasyMotion('\S\(\s\|$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionJK(visualmode, direction) " {{{
 		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', '')
