@@ -325,26 +325,33 @@
 			return groups
 		endfunction
 	" }}}
-" }}}
-" Core functions {{{
-	" Create key index {{{
-		function! s:CreateIndex(chars) " {{{
-			let index_to_key = {}
-			let key_to_index = {}
+	" Coord/key dictionary creation {{{
+		function! s:CreateCoordKeyDict(groups, ...)
+			" Dict structure:
+			" 1,2 : a
+			" 2,3 : b
+			let coord_keys = {}
+			let group_key = a:0 == 1 ? a:1 : ''
 
-			let idx = 0
-			for char in split(a:chars, '\zs')
-				let index_to_key[idx]  = char
-				let key_to_index[char] = idx
+			for [key, item] in items(a:groups)
+				let key = ( ! empty(group_key) ? group_key : key)
 
-				let idx += 1
+				if type(item) == 3
+					" Destination coords
+					let coord_keys[join(item, ',')] = key
+				else
+					" Item is a dict (has children)
+					call extend(coord_keys, s:CreateCoordKeyDict(item, key))
+				endif
+
+				unlet item
 			endfor
 
-			return [index_to_key, key_to_index]
-		endfunction "}}}
-
-		let [s:index_to_key, s:key_to_index] = s:CreateIndex(g:EasyMotion_keys)
+			return coord_keys
+		endfunction
 	" }}}
+" }}}
+" Core functions {{{
 	function! s:PromptUser(groups) "{{{
 		let single_group = len(a:groups) == 1
 		let targets_len = single_group ? len(a:groups[0]) : len(a:groups)
