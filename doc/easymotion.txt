@@ -23,7 +23,8 @@ CONTENTS                                                 *easymotion-contents*
        4.3 EasyMotion_shade_hl ............ |EasyMotion_shade_hl|
        4.4 EasyMotion_do_shade ............ |EasyMotion_do_shade|
        4.5 EasyMotion_do_mapping .......... |EasyMotion_do_mapping|
-       4.6 Custom mappings ................ |easymotion-custom-mappings|
+       4.6 EasyMotion_grouping ............ |EasyMotion_grouping|
+       4.7 Custom mappings ................ |easymotion-custom-mappings|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -167,7 +168,51 @@ this, see |easymotion-custom-mappings| for customizing the default mappings.
 Default: 1
 
 ------------------------------------------------------------------------------
-4.6 Custom mappings                               *easymotion-custom-mappings*
+4.6 EasyMotion_grouping                                  *EasyMotion_grouping*
+
+When there are too many possible targets on the screen, the results have to be
+grouped. This configuration option lets you change which grouping algorithm
+you want to use. There are two grouping algorithms available:
+
+    *  Single-key priority (value: 1)
+       -------------------
+
+       This algorithm prioritizes single-key jumps for the targets closest to
+       the cursor and only groups the last jump targets to maximize the amount
+       of single-key jumps.
+
+       This algorithm works recursively and will work with as few keys as two.
+
+       Example (with |EasyMotion_keys| = "abcdef"): >
+
+       x x x x x x x x x
+<
+       The |w| motion is triggered: >
+
+       a b c d e f f f f
+       ^ ^ ^ ^ ^           Direct jump to target
+                 ^ ^ ^ ^   Enter group "f"
+<
+    *  Original (value: 2)
+       --------
+
+       This is the original algorithm which always groups all targets if there
+       are too many possible motion targets.
+
+       Example (with |EasyMotion_keys| = "abcdef"): >
+
+       x x x x x x x x x
+<
+       The |w| motion is triggered: >
+
+       a a a a a a b b b
+       ^ ^ ^ ^ ^ ^         Enter group "a"
+                   ^ ^ ^   Enter group "b"
+
+Default: 1
+
+------------------------------------------------------------------------------
+4.7 Custom mappings                               *easymotion-custom-mappings*
 
 EasyMotion allows you to customize all default mappings to avoid conflicts
 with existing mappings. All custom mappings follow the same variable format: >
