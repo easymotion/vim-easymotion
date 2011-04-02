@@ -219,14 +219,14 @@ with existing mappings. First, it is possible to change the default <leader>
 key of all mappings to another key or sequence. It is also possible to fine
 tune this plugin to your need by changing every single sequence.
 
-4.6.1 EasyMotion_leader_key                            *easymotion-leader-key*
+4.7.1 EasyMotion_leader_key                            *easymotion-leader-key*
 
 Set this option to the key sequence to use as the prefix of the mappings
 described in |easymotion-default-mappings|.
 
 Default: '<Leader>'
 
-4.6.2 Custom Keys
+4.7.2 Custom Keys
 
 All custom mappings follow the same variable format: >
 
