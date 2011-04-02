@@ -215,7 +215,20 @@ Default: 1
 4.7 Custom mappings                               *easymotion-custom-mappings*
 
 EasyMotion allows you to customize all default mappings to avoid conflicts
-with existing mappings. All custom mappings follow the same variable format: >
+with existing mappings. First, it is possible to change the default <leader>
+key of all mappings to another key or sequence. It is also possible to fine
+tune this plugin to your need by changing every single sequence.
+
+4.7.1 EasyMotion_leader_key                            *easymotion-leader-key*
+
+Set this option to the key sequence to use as the prefix of the mappings
+described in |easymotion-default-mappings|.
+
+Default: '<Leader>'
+
+4.7.2 Custom Keys
+
+All custom mappings follow the same variable format: >
 
     EasyMotion_mapping_{motion} = {mapping}
 
@@ -226,6 +239,9 @@ Example: >
 
 See |easymotion-default-mappings| for a table of motions that can be mapped
 and their default values.
+
+Note: The leader key defined by EasyMotion_leader_key is not prepended to your
+customized mappings. You have to give full key sequences.
 
 ==============================================================================
 5. License                                                *easymotion-license*
@@ -255,6 +271,7 @@ Source repository: https://github.com/Lokaltog/vim-easymotion
 - Ben Boeckel: ge motion
 - Drew Neil: operator-pending mappings
 - Rob O'Dwyer: customizable mappings without giving up all defaults
+- Michel D'Hooge: customizable leader
 
 EasyMotion is based on Bartlomiej Podolak's great PreciseJump script, which
 can be downloaded here:
