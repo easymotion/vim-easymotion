@@ -18,14 +18,6 @@
 			endif
 		endfor
 	endfunction " }}}
-	function! s:InitHL(group, colors) " {{{
-		let guihl = printf('guibg=%s guifg=%s gui=%s', a:colors.gui[0], a:colors.gui[1], a:colors.gui[2])
-		let ctermhl = &t_Co == 256
-			\ ? printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm256[0], a:colors.cterm256[1], a:colors.cterm256[2])
-			\ : printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm[0], a:colors.cterm[1], a:colors.cterm[2])
-
-		execute printf('hi default %s %s %s', a:group, guihl, ctermhl)
-	endfunction " }}}
 	function! s:InitMappings(motions) "{{{
 		for motion in keys(a:motions)
 			call s:InitOptions({ 'mapping_' . motion : '<Leader>' . motion })
@@ -49,29 +41,8 @@
 		\ })
 	" }}}
 	" Default highlighting {{{
-		let s:target_hl_defaults = {
-		\   'gui'     : ['NONE', '#ff0000' , 'bold']
-		\ , 'cterm256': ['NONE', '196'     , 'bold']
-		\ , 'cterm'   : ['NONE', 'red'     , 'bold']
-		\ }
-
-		let s:shade_hl_defaults = {
-		\   'gui'     : ['NONE', '#585858' , 'NONE']
-		\ , 'cterm256': ['NONE', '240'     , 'NONE']
-		\ , 'cterm'   : ['NONE', 'darkgrey', 'NONE']
-		\ }
-
-		call s:InitHL(g:EasyMotion_target_hl, s:target_hl_defaults)
-		call s:InitHL(g:EasyMotion_shade_hl,  s:shade_hl_defaults)
-
-		" Reset highlighting after loading a new color scheme {{{
-			augroup EasyMotionInitHL
-				autocmd!
-
-				autocmd ColorScheme * call s:InitHL(g:EasyMotion_target_hl, s:target_hl_defaults)
-				autocmd ColorScheme * call s:InitHL(g:EasyMotion_shade_hl,  s:shade_hl_defaults)
-			augroup end
-		" }}}
+		hi def link EasyMotionTarget ErrorMsg
+		hi def link EasyMotionTarget LineNr
 	" }}}
 	" Default key mapping {{{
 		call s:InitMappings({

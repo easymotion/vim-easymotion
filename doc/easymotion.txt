@@ -19,11 +19,9 @@ CONTENTS                                                 *easymotion-contents*
     3. Requirements ....................... |easymotion-requirements|
     4. Configuration ...................... |easymotion-configuration|
        4.1 EasyMotion_keys ................ |EasyMotion_keys|
-       4.2 EasyMotion_target_hl ........... |EasyMotion_target_hl|
-       4.3 EasyMotion_shade_hl ............ |EasyMotion_shade_hl|
-       4.4 EasyMotion_do_shade ............ |EasyMotion_do_shade|
-       4.5 EasyMotion_do_mapping .......... |EasyMotion_do_mapping|
-       4.6 Custom mappings ................ |easymotion-custom-mappings|
+       4.2 EasyMotion_do_shade ............ |EasyMotion_do_shade|
+       4.3 EasyMotion_do_mapping .......... |EasyMotion_do_mapping|
+       4.4 Custom mappings ................ |easymotion-custom-mappings|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -122,31 +120,7 @@ keys are available.
 Default: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 ------------------------------------------------------------------------------
-4.2 EasyMotion_target_hl                                *EasyMotion_target_hl*
-
-Set the highlighting group for motion targets. You can override the default
-target highlighting by either changing this variable to another highlighting
-group (e.g. |ErrorMsg|), or by using |hi| to override the default syntax
-colors: >
-
-    hi EasyMotionTarget ctermfg=green ctermbg=black cterm=reverse
-
-Default: 'EasyMotionTarget'
-
-------------------------------------------------------------------------------
-4.3 EasyMotion_shade_hl                                  *EasyMotion_shade_hl*
-
-Set the highlighting group for shaded text (see |EasyMotion_do_shade|). You
-can override the default shade highlighting by either changing this variable
-to another highlighting group, or by using |hi| to override the default syntax
-colors: >
-
-    hi EasyMotionShade ctermfg=red ctermbg=black cterm=none
-
-Default: 'EasyMotionShade'
-
-------------------------------------------------------------------------------
-4.4 EasyMotion_do_shade                                  *EasyMotion_do_shade*
+4.2 EasyMotion_do_shade                                  *EasyMotion_do_shade*
 
 The default behavior is to shade the text following the cursor (forward
 motions) or preceding the cursor (backward motions) to make the motion targets
@@ -155,7 +129,7 @@ more visible. Set this option to 0 if you want to disable text shading.
 Default: 1
 
 ------------------------------------------------------------------------------
-4.5 EasyMotion_do_mapping                              *EasyMotion_do_mapping*
+4.3 EasyMotion_do_mapping                              *EasyMotion_do_mapping*
 
 Set this option to 0 if you want to disable the default mappings. See
 |easymotion-default-mappings| for details about the default mappings.
@@ -167,7 +141,7 @@ this, see |easymotion-custom-mappings| for customizing the default mappings.
 Default: 1
 
 ------------------------------------------------------------------------------
-4.6 Custom mappings                               *easymotion-custom-mappings*
+4.4 Custom mappings                               *easymotion-custom-mappings*
 
 EasyMotion allows you to customize all default mappings to avoid conflicts
 with existing mappings. All custom mappings follow the same variable format: >
