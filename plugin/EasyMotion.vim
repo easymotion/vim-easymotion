@@ -46,6 +46,7 @@
 		\ , 'shade_hl'   : 'EasyMotionShade'
 		\ , 'do_shade'   : 1
 		\ , 'do_mapping' : 1
+		\ , 'grouping'   : 1
 		\ })
 	" }}}
 	" Default highlighting {{{
@@ -353,54 +354,44 @@
 " }}}
 " Core functions {{{
 	function! s:PromptUser(groups) "{{{
-		let single_group = len(a:groups) == 1
-		let targets_len = single_group ? len(a:groups[0]) : len(a:groups)
-
 		" If only one possible match, jump directly to it {{{
-			if single_group && targets_len == 1
+			let group_values = values(a:groups)
+
+			if len(group_values) == 1
 				redraw
 
-				return a:groups[0][0]
+				return group_values[0]
 			endif
 		" }}}
 		" Prepare marker lines {{{
 			let lines = {}
 			let hl_coords = []
-			let current_group = 0
 
-			for group in a:groups
-				let element = 0
+			for [coords, target_key] in items(s:CreateCoordKeyDict(a:groups))
+				let [line_num, col_num] = split(coords, ',')
 
-				for [line_num, col_num] in group
-					" Add original line and marker line
-					if ! has_key(lines, line_num)
-						let current_line = getline(line_num)
+				" Add original line and marker line
+				if ! has_key(lines, line_num)
+					let current_line = getline(line_num)
 
-						let lines[line_num] = { 'orig': current_line, 'marker': current_line }
+					let lines[line_num] = { 'orig': current_line, 'marker': current_line }
+				endif
+
+				if strlen(lines[line_num]['marker']) > 0
+					" Replace hard tab with spaces
+					if match(lines[line_num]['marker'], '\%' . col_num . 'c\t') != -1
+						let target_key .= repeat(' ', string(&tabstop) - strlen(target_key))
 					endif
 
-					let marker_char = s:index_to_key[single_group ? element : current_group]
+					" Substitute marker character if line length > 0
+					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', target_key, '')
+				else
+					" Set the line to the marker character if the line is empty
+					let lines[line_num]['marker'] = target_key
+				endif
 
-					if strlen(lines[line_num]['marker']) > 0
-						" Replace hard tab with spaces
-						if match(lines[line_num]['marker'], '\%' . col_num . 'c\t') != -1
-							let marker_char .= repeat(' ', string(&tabstop) - strlen(marker_char))
-						endif
-
-						" Substitute marker character if line length > 0
-						let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', marker_char, '')
-					else
-						" Set the line to the marker character if the line is empty
-						let lines[line_num]['marker'] = marker_char
-					endif
-
-					" Add highlighting coordinates
-					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
-
-					let element += 1
-				endfor
-
-				let current_group += 1
+				" Add highlighting coordinates
+				call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
 			endfor
 
 			let lines_items = items(lines)
@@ -415,12 +406,8 @@
 
 			redraw
 
-			" Get target/group character {{{
-				if single_group
-					call s:Prompt('Target character')
-				else
-					call s:Prompt('Group character')
-				endif
+			" Get target character {{{
+				call s:Prompt('Target key')
 
 				let char = s:GetChar()
 			" }}}
@@ -443,17 +430,19 @@
 			endif
 		" }}}
 		" Check if the input char is valid {{{
-			if ! has_key(s:key_to_index, char) || s:key_to_index[char] >= targets_len
+			if ! has_key(a:groups, char)
 				throw 'Invalid target'
 			endif
 		" }}}
 
-		if single_group
+		let target = a:groups[char]
+
+		if type(target) == 3
 			" Return target coordinates
-			return a:groups[0][s:key_to_index[char]]
+			return target
 		else
-			" Prompt for target character
-			return s:PromptUser([a:groups[s:key_to_index[char]]])
+			" Prompt for new target character
+			return s:PromptUser(target)
 		endif
 	endfunction "}}}
 	function! s:EasyMotion(regexp, direction, visualmode, mode) " {{{
@@ -492,24 +481,10 @@
 					throw 'No matches'
 				endif
 			" }}}
-			" Split targets into key groups {{{
-				let groups_len = len(s:index_to_key)
-				let groups = []
-				let i = 0
 
-				while i < targets_len
-					call add(groups, targets[i : i + groups_len - 1])
+			let GroupingFn = function('s:GroupingAlgorithm' . s:grouping_algorithms[g:EasyMotion_grouping])
+			let groups = GroupingFn(targets, split(g:EasyMotion_keys, '\zs'))
 
-					let i += groups_len
-				endwhile
-			" }}}
-			" Too many groups; only display the first ones {{{
-				if len(groups) > groups_len
-					call s:Message('Only displaying the first matches')
-
-					let groups = groups[0 : groups_len - 1]
-				endif
-			" }}}
 			" Shade inactive source {{{
 				if g:EasyMotion_do_shade
 					let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
