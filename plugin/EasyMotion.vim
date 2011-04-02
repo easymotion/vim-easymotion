@@ -218,11 +218,21 @@
 				" We need to know exactly how many child nodes (targets) this branch will have
 				" in order to pass the correct amount of targets to the recursive function.
 
-				" Prepare target count array {{{
-					let keys_count = {}
+				" Prepare sorted target count list {{{
+					" This is horrible, I know. But dicts aren't sorted in vim, so we need to
+					" work around that. That is done by having one sorted list with key counts,
+					" and a dict which connects the key with the keys_count list.
 
+					let keys_count = []
+					let keys_count_keys = {}
+
+					let i = 0
 					for key in keys
-						let keys_count[key] = 0
+						call add(keys_count, 0)
+
+						let keys_count_keys[key] = i
+
+						let i += 1
 					endfor
 				" }}}
 
@@ -236,7 +246,7 @@
 
 					for key in keys
 						" Add child node count to the keys_count array
-						let keys_count[key] += childs_len
+						let keys_count[keys_count_keys[key]] += childs_len
 
 						" Subtract the child node count
 						let targets_left -= childs_len
@@ -244,7 +254,7 @@
 						if targets_left <= 0
 							" Subtract the targets left if we added too many too
 							" many child nodes to the key count
-							let keys_count[key] += targets_left
+							let keys_count[keys_count_keys[key]] += targets_left
 
 							break
 						endif
@@ -259,7 +269,9 @@
 				let i = 0
 				let key = 0
 
-				for [key_key, key_count] in items(keys_count)
+				call reverse(keys_count)
+
+				for key_count in keys_count
 					if key_count > 1
 						" We need to create a subgroup
 						" Recurse one level deeper
