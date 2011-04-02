@@ -28,7 +28,7 @@
 	endfunction " }}}
 	function! s:InitMappings(motions) "{{{
 		for motion in keys(a:motions)
-			call s:InitOptions({ 'mapping_' . motion : '<Leader>' . motion })
+			call s:InitOptions({ 'mapping_' . motion : g:EasyMotion_leader_key . motion })
 		endfor
 
 		if g:EasyMotion_do_mapping
@@ -41,7 +41,8 @@
 	endfunction "}}}
 	" Default options {{{
 		call s:InitOptions({
-		\   'keys'       : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+		\   'leader_key' : '<Leader>'
+		\ , 'keys'       : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 		\ , 'target_hl'  : 'EasyMotionTarget'
 		\ , 'shade_hl'   : 'EasyMotionShade'
 		\ , 'do_shade'   : 1
