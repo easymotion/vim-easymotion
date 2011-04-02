@@ -120,16 +120,16 @@
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionWB(visualmode, direction) " {{{
-		call s:EasyMotion('\<.', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 	function! EasyMotionWBW(visualmode, direction) " {{{
-		call s:EasyMotion('\(^\|\s\)\@<=\S', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 	function! EasyMotionE(visualmode, direction) " {{{
-		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionEW(visualmode, direction) " {{{
-		call s:EasyMotion('\S\(\s\|$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionJK(visualmode, direction) " {{{
 		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', '')
