@@ -19,12 +19,29 @@
 		endfor
 	endfunction " }}}
 	function! s:InitHL(group, colors) " {{{
+		let group_default = a:group . 'Default'
+
+		" Prepare highlighting variables
 		let guihl = printf('guibg=%s guifg=%s gui=%s', a:colors.gui[0], a:colors.gui[1], a:colors.gui[2])
 		let ctermhl = &t_Co == 256
 			\ ? printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm256[0], a:colors.cterm256[1], a:colors.cterm256[2])
 			\ : printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm[0], a:colors.cterm[1], a:colors.cterm[2])
 
-		execute printf('hi default %s %s %s', a:group, guihl, ctermhl)
+		" Create default highlighting group
+		execute printf('hi default %s %s %s', group_default, guihl, ctermhl)
+
+		" Check if the hl group exists
+		if hlexists(a:group)
+			redir => hlstatus | exec 'silent hi ' . a:group | redir END
+
+			" Return if the group isn't cleared
+			if hlstatus !~ 'cleared'
+				return
+			endif
+		endif
+
+		" No colors are defined for this group, link to defaults
+		execute printf('hi default link %s %s', a:group, group_default)
 	endfunction " }}}
 	function! s:InitMappings(motions) "{{{
 		for motion in keys(a:motions)
@@ -43,14 +60,15 @@
 		call s:InitOptions({
 		\   'leader_key' : '<Leader>'
 		\ , 'keys'       : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-		\ , 'target_hl'  : 'EasyMotionTarget'
-		\ , 'shade_hl'   : 'EasyMotionShade'
 		\ , 'do_shade'   : 1
 		\ , 'do_mapping' : 1
 		\ , 'grouping'   : 1
 		\ })
 	" }}}
 	" Default highlighting {{{
+		let s:hl_group_target = 'EasyMotionTarget'
+		let s:hl_group_shade  = 'EasyMotionShade'
+
 		let s:target_hl_defaults = {
 		\   'gui'     : ['NONE', '#ff0000' , 'bold']
 		\ , 'cterm256': ['NONE', '196'     , 'bold']
@@ -63,15 +81,15 @@
 		\ , 'cterm'   : ['NONE', 'darkgrey', 'NONE']
 		\ }
 
-		call s:InitHL(g:EasyMotion_target_hl, s:target_hl_defaults)
-		call s:InitHL(g:EasyMotion_shade_hl,  s:shade_hl_defaults)
+		call s:InitHL(s:hl_group_target, s:target_hl_defaults)
+		call s:InitHL(s:hl_group_shade,  s:shade_hl_defaults)
 
 		" Reset highlighting after loading a new color scheme {{{
 			augroup EasyMotionInitHL
 				autocmd!
 
-				autocmd ColorScheme * call s:InitHL(g:EasyMotion_target_hl, s:target_hl_defaults)
-				autocmd ColorScheme * call s:InitHL(g:EasyMotion_shade_hl,  s:shade_hl_defaults)
+				autocmd ColorScheme * call s:InitHL(s:hl_group_target, s:target_hl_defaults)
+				autocmd ColorScheme * call s:InitHL(s:hl_group_shade,  s:shade_hl_defaults)
 			augroup end
 		" }}}
 	" }}}
@@ -408,7 +426,7 @@
 			let lines_items = items(lines)
 		" }}}
 		" Highlight targets {{{
-			let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
+			let target_hl_id = matchadd(s:hl_group_target, join(hl_coords, '\|'), 1)
 		" }}}
 
 		try
@@ -508,7 +526,7 @@
 						let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
 					endif
 
-					let shade_hl_id = matchadd(g:EasyMotion_shade_hl, shade_hl_re, 0)
+					let shade_hl_id = matchadd(s:hl_group_shade, shade_hl_re, 0)
 				endif
 			" }}}
 
