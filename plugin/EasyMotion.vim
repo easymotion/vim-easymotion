@@ -19,16 +19,33 @@
 		endfor
 	endfunction " }}}
 	function! s:InitHL(group, colors) " {{{
+		let group_default = a:group . 'Default'
+
+		" Prepare highlighting variables
 		let guihl = printf('guibg=%s guifg=%s gui=%s', a:colors.gui[0], a:colors.gui[1], a:colors.gui[2])
 		let ctermhl = &t_Co == 256
 			\ ? printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm256[0], a:colors.cterm256[1], a:colors.cterm256[2])
 			\ : printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm[0], a:colors.cterm[1], a:colors.cterm[2])
 
-		execute printf('hi default %s %s %s', a:group, guihl, ctermhl)
+		" Create default highlighting group
+		execute printf('hi default %s %s %s', group_default, guihl, ctermhl)
+
+		" Check if the hl group exists
+		if hlexists(a:group)
+			redir => hlstatus | exec 'silent hi ' . a:group | redir END
+
+			" Return if the group isn't cleared
+			if hlstatus !~ 'cleared'
+				return
+			endif
+		endif
+
+		" No colors are defined for this group, link to defaults
+		execute printf('hi default link %s %s', a:group, group_default)
 	endfunction " }}}
 	function! s:InitMappings(motions) "{{{
 		for motion in keys(a:motions)
-			call s:InitOptions({ 'mapping_' . motion : '<Leader>' . motion })
+			call s:InitOptions({ 'mapping_' . motion : g:EasyMotion_leader_key . motion })
 		endfor
 
 		if g:EasyMotion_do_mapping
@@ -41,14 +58,17 @@
 	endfunction "}}}
 	" Default options {{{
 		call s:InitOptions({
-		\   'keys'       : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-		\ , 'target_hl'  : 'EasyMotionTarget'
-		\ , 'shade_hl'   : 'EasyMotionShade'
+		\   'leader_key' : '<Leader>'
+		\ , 'keys'       : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 		\ , 'do_shade'   : 1
 		\ , 'do_mapping' : 1
+		\ , 'grouping'   : 1
 		\ })
 	" }}}
 	" Default highlighting {{{
+		let s:hl_group_target = 'EasyMotionTarget'
+		let s:hl_group_shade  = 'EasyMotionShade'
+
 		let s:target_hl_defaults = {
 		\   'gui'     : ['NONE', '#ff0000' , 'bold']
 		\ , 'cterm256': ['NONE', '196'     , 'bold']
@@ -61,30 +81,34 @@
 		\ , 'cterm'   : ['NONE', 'darkgrey', 'NONE']
 		\ }
 
-		call s:InitHL(g:EasyMotion_target_hl, s:target_hl_defaults)
-		call s:InitHL(g:EasyMotion_shade_hl,  s:shade_hl_defaults)
+		call s:InitHL(s:hl_group_target, s:target_hl_defaults)
+		call s:InitHL(s:hl_group_shade,  s:shade_hl_defaults)
 
 		" Reset highlighting after loading a new color scheme {{{
 			augroup EasyMotionInitHL
 				autocmd!
 
-				autocmd ColorScheme * call s:InitHL(g:EasyMotion_target_hl, s:target_hl_defaults)
-				autocmd ColorScheme * call s:InitHL(g:EasyMotion_shade_hl,  s:shade_hl_defaults)
+				autocmd ColorScheme * call s:InitHL(s:hl_group_target, s:target_hl_defaults)
+				autocmd ColorScheme * call s:InitHL(s:hl_group_shade,  s:shade_hl_defaults)
 			augroup end
 		" }}}
 	" }}}
 	" Default key mapping {{{
 		call s:InitMappings({
-		\   'f' : { 'name': 'F' , 'dir': 0 }
-		\ , 'F' : { 'name': 'F' , 'dir': 1 }
-		\ , 't' : { 'name': 'T' , 'dir': 0 }
-		\ , 'T' : { 'name': 'T' , 'dir': 1 }
-		\ , 'w' : { 'name': 'WB', 'dir': 0 }
-		\ , 'b' : { 'name': 'WB', 'dir': 1 }
-		\ , 'e' : { 'name': 'E' , 'dir': 0 }
-		\ , 'ge': { 'name': 'E' , 'dir': 1 }
-		\ , 'j' : { 'name': 'JK', 'dir': 0 }
-		\ , 'k' : { 'name': 'JK', 'dir': 1 }
+		\   'f' : { 'name': 'F'  , 'dir': 0 }
+		\ , 'F' : { 'name': 'F'  , 'dir': 1 }
+		\ , 't' : { 'name': 'T'  , 'dir': 0 }
+		\ , 'T' : { 'name': 'T'  , 'dir': 1 }
+		\ , 'w' : { 'name': 'WB' , 'dir': 0 }
+		\ , 'W' : { 'name': 'WBW', 'dir': 0 }
+		\ , 'b' : { 'name': 'WB' , 'dir': 1 }
+		\ , 'B' : { 'name': 'WBW', 'dir': 1 }
+		\ , 'e' : { 'name': 'E'  , 'dir': 0 }
+		\ , 'E' : { 'name': 'EW' , 'dir': 0 }
+		\ , 'ge': { 'name': 'E'  , 'dir': 1 }
+		\ , 'gE': { 'name': 'EW' , 'dir': 1 }
+		\ , 'j' : { 'name': 'JK' , 'dir': 0 }
+		\ , 'k' : { 'name': 'JK' , 'dir': 1 }
 		\ })
 	" }}}
 " }}}
@@ -116,10 +140,16 @@
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionWB(visualmode, direction) " {{{
-		call s:EasyMotion('\<.', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
+	function! EasyMotionWBW(visualmode, direction) " {{{
+		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 	function! EasyMotionE(visualmode, direction) " {{{
-		call s:EasyMotion('.\>', a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
+	function! EasyMotionEW(visualmode, direction) " {{{
+		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionJK(visualmode, direction) " {{{
 		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', '')
@@ -197,80 +227,206 @@
 		return char
 	endfunction " }}}
 " }}}
-" Core functions {{{
-	" Create key index {{{
-		function! s:CreateIndex(chars) " {{{
-			let index_to_key = {}
-			let key_to_index = {}
+" Grouping algorithms {{{
+	let s:grouping_algorithms = {
+	\   1: 'SCTree'
+	\ , 2: 'Original'
+	\ }
+	" Single-key/closest target priority tree {{{
+		" This algorithm tries to assign one-key jumps to all the targets closest to the cursor.
+		" It works recursively and will work correctly with as few keys as two.
+		function! s:GroupingAlgorithmSCTree(targets, keys)
+			" Prepare variables for working
+			let targets_len = len(a:targets)
+			let keys_len = len(a:keys)
 
-			let idx = 0
-			for char in split(a:chars, '\zs')
-				let index_to_key[idx]  = char
-				let key_to_index[char] = idx
+			let groups = {}
 
-				let idx += 1
+			let keys = reverse(copy(a:keys))
+
+			" Semi-recursively count targets {{{
+				" We need to know exactly how many child nodes (targets) this branch will have
+				" in order to pass the correct amount of targets to the recursive function.
+
+				" Prepare sorted target count list {{{
+					" This is horrible, I know. But dicts aren't sorted in vim, so we need to
+					" work around that. That is done by having one sorted list with key counts,
+					" and a dict which connects the key with the keys_count list.
+
+					let keys_count = []
+					let keys_count_keys = {}
+
+					let i = 0
+					for key in keys
+						call add(keys_count, 0)
+
+						let keys_count_keys[key] = i
+
+						let i += 1
+					endfor
+				" }}}
+
+				let targets_left = targets_len
+				let level = 0
+				let i = 0
+
+				while targets_left > 0
+					" Calculate the amount of child nodes based on the current level
+					let childs_len = (level == 0 ? 1 : (keys_len - 1) )
+
+					for key in keys
+						" Add child node count to the keys_count array
+						let keys_count[keys_count_keys[key]] += childs_len
+
+						" Subtract the child node count
+						let targets_left -= childs_len
+
+						if targets_left <= 0
+							" Subtract the targets left if we added too many too
+							" many child nodes to the key count
+							let keys_count[keys_count_keys[key]] += targets_left
+
+							break
+						endif
+
+						let i += 1
+					endfor
+
+					let level += 1
+				endwhile
+			" }}}
+			" Create group tree {{{
+				let i = 0
+				let key = 0
+
+				call reverse(keys_count)
+
+				for key_count in keys_count
+					if key_count > 1
+						" We need to create a subgroup
+						" Recurse one level deeper
+						let groups[a:keys[key]] = s:GroupingAlgorithmSCTree(a:targets[i : i + key_count - 1], a:keys)
+					elseif key_count == 1
+						" Assign single target key
+						let groups[a:keys[key]] = a:targets[i]
+					else
+						" No target
+						continue
+					endif
+
+					let key += 1
+					let i += key_count
+				endfor
+			" }}}
+
+			" Finally!
+			return groups
+		endfunction
+	" }}}
+	" Original {{{
+		function! s:GroupingAlgorithmOriginal(targets, keys)
+			" Split targets into groups (1 level)
+			let targets_len = len(a:targets)
+			let keys_len = len(a:keys)
+
+			let groups = {}
+
+			let i = 0
+			let root_group = 0
+			try
+				while root_group < targets_len
+					let groups[a:keys[root_group]] = {}
+
+					for key in a:keys
+						let groups[a:keys[root_group]][key] = a:targets[i]
+
+						let i += 1
+					endfor
+
+					let root_group += 1
+				endwhile
+			catch | endtry
+
+			" Flatten the group array
+			if len(groups) == 1
+				let groups = groups[a:keys[0]]
+			endif
+
+			return groups
+		endfunction
+	" }}}
+	" Coord/key dictionary creation {{{
+		function! s:CreateCoordKeyDict(groups, ...)
+			" Dict structure:
+			" 1,2 : a
+			" 2,3 : b
+			let coord_keys = {}
+			let group_key = a:0 == 1 ? a:1 : ''
+
+			for [key, item] in items(a:groups)
+				let key = ( ! empty(group_key) ? group_key : key)
+
+				if type(item) == 3
+					" Destination coords
+					let coord_keys[join(item, ',')] = key
+				else
+					" Item is a dict (has children)
+					call extend(coord_keys, s:CreateCoordKeyDict(item, key))
+				endif
+
+				unlet item
 			endfor
 
-			return [index_to_key, key_to_index]
-		endfunction "}}}
-
-		let [s:index_to_key, s:key_to_index] = s:CreateIndex(g:EasyMotion_keys)
+			return coord_keys
+		endfunction
 	" }}}
+" }}}
+" Core functions {{{
 	function! s:PromptUser(groups) "{{{
-		let single_group = len(a:groups) == 1
-		let targets_len = single_group ? len(a:groups[0]) : len(a:groups)
-
 		" If only one possible match, jump directly to it {{{
-			if single_group && targets_len == 1
+			let group_values = values(a:groups)
+
+			if len(group_values) == 1
 				redraw
 
-				return a:groups[0][0]
+				return group_values[0]
 			endif
 		" }}}
 		" Prepare marker lines {{{
 			let lines = {}
 			let hl_coords = []
-			let current_group = 0
 
-			for group in a:groups
-				let element = 0
+			for [coords, target_key] in items(s:CreateCoordKeyDict(a:groups))
+				let [line_num, col_num] = split(coords, ',')
 
-				for [line_num, col_num] in group
-					" Add original line and marker line
-					if ! has_key(lines, line_num)
-						let current_line = getline(line_num)
+				" Add original line and marker line
+				if ! has_key(lines, line_num)
+					let current_line = getline(line_num)
 
-						let lines[line_num] = { 'orig': current_line, 'marker': current_line }
+					let lines[line_num] = { 'orig': current_line, 'marker': current_line }
+				endif
+
+				if strlen(lines[line_num]['marker']) > 0
+					" Replace hard tab with spaces
+					if match(lines[line_num]['marker'], '\%' . col_num . 'c\t') != -1
+						let target_key .= repeat(' ', string(&tabstop) - strlen(target_key))
 					endif
 
-					let marker_char = s:index_to_key[single_group ? element : current_group]
+					" Substitute marker character if line length > 0
+					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', target_key, '')
+				else
+					" Set the line to the marker character if the line is empty
+					let lines[line_num]['marker'] = target_key
+				endif
 
-					if strlen(lines[line_num]['marker']) > 0
-						" Replace hard tab with spaces
-						if match(lines[line_num]['marker'], '\%' . col_num . 'c\t') != -1
-							let marker_char .= repeat(' ', string(&tabstop) - strlen(marker_char))
-						endif
-
-						" Substitute marker character if line length > 0
-						let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', marker_char, '')
-					else
-						" Set the line to the marker character if the line is empty
-						let lines[line_num]['marker'] = marker_char
-					endif
-
-					" Add highlighting coordinates
-					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
-
-					let element += 1
-				endfor
-
-				let current_group += 1
+				" Add highlighting coordinates
+				call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
 			endfor
 
 			let lines_items = items(lines)
 		" }}}
 		" Highlight targets {{{
-			let target_hl_id = matchadd(g:EasyMotion_target_hl, join(hl_coords, '\|'), 1)
+			let target_hl_id = matchadd(s:hl_group_target, join(hl_coords, '\|'), 1)
 		" }}}
 
 		try
@@ -279,12 +435,8 @@
 
 			redraw
 
-			" Get target/group character {{{
-				if single_group
-					call s:Prompt('Target character')
-				else
-					call s:Prompt('Group character')
-				endif
+			" Get target character {{{
+				call s:Prompt('Target key')
 
 				let char = s:GetChar()
 			" }}}
@@ -307,17 +459,19 @@
 			endif
 		" }}}
 		" Check if the input char is valid {{{
-			if ! has_key(s:key_to_index, char) || s:key_to_index[char] >= targets_len
+			if ! has_key(a:groups, char)
 				throw 'Invalid target'
 			endif
 		" }}}
 
-		if single_group
+		let target = a:groups[char]
+
+		if type(target) == 3
 			" Return target coordinates
-			return a:groups[0][s:key_to_index[char]]
+			return target
 		else
-			" Prompt for target character
-			return s:PromptUser([a:groups[s:key_to_index[char]]])
+			" Prompt for new target character
+			return s:PromptUser(target)
 		endif
 	endfunction "}}}
 	function! s:EasyMotion(regexp, direction, visualmode, mode) " {{{
@@ -356,24 +510,10 @@
 					throw 'No matches'
 				endif
 			" }}}
-			" Split targets into key groups {{{
-				let groups_len = len(s:index_to_key)
-				let groups = []
-				let i = 0
 
-				while i < targets_len
-					call add(groups, targets[i : i + groups_len - 1])
+			let GroupingFn = function('s:GroupingAlgorithm' . s:grouping_algorithms[g:EasyMotion_grouping])
+			let groups = GroupingFn(targets, split(g:EasyMotion_keys, '\zs'))
 
-					let i += groups_len
-				endwhile
-			" }}}
-			" Too many groups; only display the first ones {{{
-				if len(groups) > groups_len
-					call s:Message('Only displaying the first matches')
-
-					let groups = groups[0 : groups_len - 1]
-				endif
-			" }}}
 			" Shade inactive source {{{
 				if g:EasyMotion_do_shade
 					let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
@@ -386,7 +526,7 @@
 						let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
 					endif
 
-					let shade_hl_id = matchadd(g:EasyMotion_shade_hl, shade_hl_re, 0)
+					let shade_hl_id = matchadd(s:hl_group_shade, shade_hl_re, 0)
 				endif
 			" }}}
 
