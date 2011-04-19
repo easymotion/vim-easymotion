@@ -433,6 +433,8 @@
 			" Set lines with markers
 			call s:SetLines(lines_items, 'marker')
 
+                        let spell_save = &spell
+                        set nospell
 			redraw
 
 			" Get target character {{{
@@ -450,6 +452,7 @@
 				endif
 			" }}}
 
+                        let &spell = spell_save
 			redraw
 		endtry
 
