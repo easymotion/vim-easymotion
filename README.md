@@ -11,6 +11,23 @@ highlighted.
 
 EasyMotion is triggered by one of the provided mappings.
 
+# Important notes about the default bindings
+
+The default bindings may conflict with other plugins you have installed, 
+e.g. Command-T. Please read the docs about the default bindings, it's 
+easy to rebind the EasyMotion keys or rebind the leader key in order to 
+"namespace" the plugin.
+
+You can rebind the leader key in your vimrc:
+
+	let g:EasyMotion_leader_key = '<Leader>m'
+
+All the motions will now be triggered with `<Leader>m` first, e.g. 
+`<Leader>mt`, `<Leader>mgE`. You can also remap single motions:
+
+	let g:EasyMotion_mapping_t  = '_t'
+	let g:EasyMotion_mapping_gE = '_gE'
+
 ## Usage example
 
 Type `<Leader>w` to trigger the word motion `w`. When the motion is 
