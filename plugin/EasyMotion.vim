@@ -109,6 +109,8 @@
 		\ , 'gE': { 'name': 'EW' , 'dir': 1 }
 		\ , 'j' : { 'name': 'JK' , 'dir': 0 }
 		\ , 'k' : { 'name': 'JK' , 'dir': 1 }
+		\ , 'n' : { 'name': 'Search' , 'dir': 0 }
+		\ , 'N' : { 'name': 'Search' , 'dir': 1 }
 		\ })
 	" }}}
 " }}}
@@ -153,6 +155,9 @@
 	endfunction " }}}
 	function! EasyMotionJK(visualmode, direction) " {{{
 		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
+	function! EasyMotionSearch(visualmode, direction) " {{{
+		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 " }}}
 " Helper functions {{{
