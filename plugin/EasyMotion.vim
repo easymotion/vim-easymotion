@@ -484,6 +484,7 @@
 				call s:VarReset('&modified', 0)
 				call s:VarReset('&modifiable', 1)
 				call s:VarReset('&readonly', 0)
+				call s:VarReset('&spell', 0)
 			" }}}
 			" Find motion targets {{{
 				let search_direction = (a:direction == 1 ? 'b' : '')
@@ -574,6 +575,7 @@
 				call s:VarReset('&modified')
 				call s:VarReset('&modifiable')
 				call s:VarReset('&readonly')
+				call s:VarReset('&spell')
 			" }}}
 			" Remove shading {{{
 				if g:EasyMotion_do_shade && exists('shade_hl_id')
