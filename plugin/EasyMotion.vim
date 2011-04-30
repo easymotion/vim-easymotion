@@ -50,6 +50,10 @@
 
 		if g:EasyMotion_do_mapping
 			for [motion, fn] in items(a:motions)
+				if empty(g:EasyMotion_mapping_{motion})
+					continue
+				endif
+
 				silent exec 'nnoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion' . fn.name . '(0, ' . fn.dir . ')<CR>'
 				silent exec 'onoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion' . fn.name . '(0, ' . fn.dir . ')<CR>'
 				silent exec 'vnoremap <silent> ' . g:EasyMotion_mapping_{motion} . ' :<C-U>call EasyMotion' . fn.name . '(1, ' . fn.dir . ')<CR>'
