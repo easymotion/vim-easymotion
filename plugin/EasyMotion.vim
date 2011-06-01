@@ -156,7 +156,7 @@
 		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionJK(visualmode, direction) " {{{
-		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', '')
+    call s:EasyMotion('^\(\w\|\s*\zs\s\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 " }}}
 " Helper functions {{{
