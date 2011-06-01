@@ -80,9 +80,9 @@
 		\ }
 
 		let s:shade_hl_defaults = {
-		\   'gui'     : ['NONE', '#585858' , 'NONE']
-		\ , 'cterm256': ['NONE', '240'     , 'NONE']
-		\ , 'cterm'   : ['NONE', 'darkgrey', 'NONE']
+		\   'gui'     : ['NONE', '#777777' , 'NONE']
+		\ , 'cterm256': ['NONE', '242'     , 'NONE']
+		\ , 'cterm'   : ['NONE', 'grey'    , 'NONE']
 		\ }
 
 		call s:InitHL(s:hl_group_target, s:target_hl_defaults)
