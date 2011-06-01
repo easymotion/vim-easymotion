@@ -156,7 +156,7 @@
 		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotionJK(visualmode, direction) " {{{
-		call s:EasyMotion('\%1v', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 " }}}
 " Helper functions {{{
@@ -411,11 +411,6 @@
 				endif
 
 				if strlen(lines[line_num]['marker']) > 0
-					" Replace hard tab with spaces
-					if match(lines[line_num]['marker'], '\%' . col_num . 'c\t') != -1
-						let target_key .= repeat(' ', string(&tabstop) - strlen(target_key))
-					endif
-
 					" Substitute marker character if line length > 0
 					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', target_key, '')
 				else
