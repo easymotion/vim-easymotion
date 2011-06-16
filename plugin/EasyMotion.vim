@@ -587,3 +587,4 @@
 		endtry
 	endfunction " }}}
 " }}}
+" vim: foldmethod=marker:noexpandtab:ts=4:sts=4
