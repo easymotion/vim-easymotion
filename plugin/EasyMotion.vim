@@ -535,7 +535,7 @@
 
 			" Update selection {{{
 				if ! empty(a:visualmode)
-					call cursor(orig_pos[0], orig_pos[1])
+					keepjumps call cursor(orig_pos[0], orig_pos[1])
 
 					exec 'normal! ' . a:visualmode
 				endif
@@ -552,6 +552,8 @@
 			" }}}
 
 			" Update cursor position
+            call cursor(orig_pos[0], orig_pos[1])
+            mark '
 			call cursor(coords[0], coords[1])
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
@@ -565,7 +567,7 @@
 				if ! empty(a:visualmode)
 					silent exec 'normal! gv'
 				else
-					call cursor(orig_pos[0], orig_pos[1])
+					keepjumps call cursor(orig_pos[0], orig_pos[1])
 				endif
 			" }}}
 		finally
