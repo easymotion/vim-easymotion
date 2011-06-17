@@ -369,6 +369,7 @@
 			" Dict structure:
 			" 1,2 : a
 			" 2,3 : b
+			let sort_list = []
 			let coord_keys = {}
 			let group_key = a:0 == 1 ? a:1 : ''
 
@@ -377,16 +378,29 @@
 
 				if type(item) == 3
 					" Destination coords
-					let coord_keys[join(item, ',')] = key
+
+					" The key needs to be zero-padded in order to
+					" sort correctly
+					let dict_key = printf('%05d,%05d', item[0], item[1])
+					let coord_keys[dict_key] = key
+
+					" We need a sorting list to loop correctly in
+					" PromptUser, dicts are unsorted
+					call add(sort_list, dict_key)
 				else
 					" Item is a dict (has children)
-					call extend(coord_keys, s:CreateCoordKeyDict(item, key))
+					let coord_key_dict = s:CreateCoordKeyDict(item, key)
+
+					" Make sure to extend both the sort list and the
+					" coord key dict
+					call extend(sort_list, coord_key_dict[0])
+					call extend(coord_keys, coord_key_dict[1])
 				endif
 
 				unlet item
 			endfor
 
-			return coord_keys
+			return [sort_list, coord_keys]
 		endfunction
 	" }}}
 " }}}
@@ -404,16 +418,34 @@
 		" Prepare marker lines {{{
 			let lines = {}
 			let hl_coords = []
+			let coord_key_dict = s:CreateCoordKeyDict(a:groups)
 
-			for [coords, target_key] in items(s:CreateCoordKeyDict(a:groups))
-				let [line_num, col_num] = split(coords, ',')
+			for dict_key in sort(coord_key_dict[0])
+				let target_key = coord_key_dict[1][dict_key]
+				let [line_num, col_num] = split(dict_key, ',')
+
+				let line_num = str2nr(line_num)
+				let col_num = str2nr(col_num)
 
 				" Add original line and marker line
 				if ! has_key(lines, line_num)
 					let current_line = getline(line_num)
 
-					let lines[line_num] = { 'orig': current_line, 'marker': current_line }
+					let lines[line_num] = { 'orig': current_line, 'marker': current_line, 'mb_compensation': 0 }
 				endif
+
+				" Compensate for byte difference between marker
+				" character and target character
+				"
+				" This has to be done in order to match the correct
+				" column; \%c matches the byte column and not display
+				" column.
+				let target_char_len = strlen(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
+				let target_key_len = strlen(target_key)
+
+				" Solve multibyte issues by matching the byte column
+				" number instead of the visual column
+				let col_num -= lines[line_num]['mb_compensation']
 
 				if strlen(lines[line_num]['marker']) > 0
 					" Substitute marker character if line length > 0
@@ -425,6 +457,10 @@
 
 				" Add highlighting coordinates
 				call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+
+				" Add marker/target lenght difference for multibyte
+				" compensation
+				let lines[line_num]['mb_compensation'] += (target_char_len - target_key_len)
 			endfor
 
 			let lines_items = items(lines)
@@ -489,6 +525,7 @@
 				call s:VarReset('&modifiable', 1)
 				call s:VarReset('&readonly', 0)
 				call s:VarReset('&spell', 0)
+				call s:VarReset('&virtualedit', '')
 			" }}}
 			" Find motion targets {{{
 				let search_direction = (a:direction == 1 ? 'b' : '')
@@ -580,6 +617,7 @@
 				call s:VarReset('&modifiable')
 				call s:VarReset('&readonly')
 				call s:VarReset('&spell')
+				call s:VarReset('&virtualedit')
 			" }}}
 			" Remove shading {{{
 				if g:EasyMotion_do_shade && exists('shade_hl_id')
