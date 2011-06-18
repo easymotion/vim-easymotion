@@ -308,6 +308,7 @@ Source repository: https://github.com/Lokaltog/vim-easymotion
 - Michel D'Hooge: customizable leader
 - Maxime Bourget: search motion, improved JK motion behavior
 - Kearn Holliday: fix jumplist issues
+- Shougo Matsushita: fix CSApprox issue
 
 EasyMotion is based on Bartlomiej Podolak's great PreciseJump script, which
 can be downloaded here:
