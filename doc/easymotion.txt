@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 1.2.  Last change: 2011 Apr 3
+*easymotion.txt*	Version 1.3.  Last change: 2011 Nov 7
 
 
             ______                  __  ___       __  _
@@ -51,7 +51,7 @@ Example: >
 
     <cursor>Lorem ipsum dolor sit amet.
 
-Type <Leader>ew to trigger the word motion |w|. See
+Type <Leader><Leader>w to trigger the word motion |w|. See
 |easymotion-leader-key| for details about the leader key. When the
 motion is triggered, the text is updated (no braces are actually added,
 the text is highlighted in red by default): >
@@ -63,7 +63,7 @@ Press "c" to jump to the beginning of the word "sit": >
     Lorem ipsum dolor <cursor>sit amet.
 
 Similarly, if you're looking for an "o", you can use the |f| motion.
-Type <Leader>efo, and all "o" characters are highlighted: >
+Type <Leader><Leader>fo, and all "o" characters are highlighted: >
 
     <cursor>L{a}rem ipsum d{b}l{c}r sit amet.
 
@@ -251,13 +251,13 @@ The default leader key can be changed with the configuration option
 Set this option to the key sequence to use as the prefix of the mappings
 described in |easymotion-default-mappings|.
 
-Note: The default leader key has been changed to '<Leader>e' to avoid
-conflicts with other plugins. You can revert to the original leader by setting
-this option in your vimrc: >
+Note: The default leader key has been changed to '<Leader><Leader>' to 
+avoid conflicts with other plugins. You can revert to the original 
+leader by setting this option in your vimrc: >
 
     let g:EasyMotion_leader_key = '<Leader>'
 <
-Default: '<Leader>e'
+Default: '<Leader><Leader>'
 
 4.6.2 Custom Keys                                     *easymotion-custom-keys*
 
