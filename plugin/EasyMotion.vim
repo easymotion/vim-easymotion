@@ -13,7 +13,7 @@
 " Default configuration {{{
 	" Default options {{{
 		call EasyMotion#InitOptions({
-		\   'leader_key'      : '<Leader>e'
+		\   'leader_key'      : '<Leader><Leader>'
 		\ , 'keys'            : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 		\ , 'do_shade'        : 1
 		\ , 'do_mapping'      : 1
