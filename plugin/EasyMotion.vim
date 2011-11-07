@@ -43,8 +43,8 @@
 			augroup EasyMotionInitHL
 				autocmd!
 
-				autocmd ColorScheme * call EasyMotion#InitHL(s:hl_group_target, s:target_hl_defaults)
-				autocmd ColorScheme * call EasyMotion#InitHL(s:hl_group_shade,  s:shade_hl_defaults)
+				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
+				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
 			augroup end
 		" }}}
 	" }}}
