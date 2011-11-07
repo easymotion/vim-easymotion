@@ -13,18 +13,18 @@ EasyMotion is triggered by one of the provided mappings.
 
 # Important notes about the default bindings
 
-The default leader has been changed to `<Leader>e` to avoid conflicts
-with other plugins you may have installed. This can easily be changed
-back by rebinding the leader in your vimrc:
+**The default leader has been changed to `<Leader><Leader>` to avoid 
+conflicts with other plugins you may have installed.** This can easily be 
+changed back to pre-1.3 behavior by rebinding the leader in your vimrc:
 
 	let g:EasyMotion_leader_key = '<Leader>'
 
-All motions are now triggered with `<Leader>e` by default, e.g.
-`<Leader>et`, `<Leader>egE`.
+All motions are now triggered with `<Leader><Leader>` by default, e.g.
+`<Leader><Leader>t`, `<Leader><Leader>gE`.
 
 ## Usage example
 
-Type `<Leader>ew` to trigger the word motion `w`. When the motion is
+Type `<Leader><Leader>w` to trigger the word motion `w`. When the motion is
 triggered, the text is updated (no braces are actually added, the text
 is highlighted in red by default):
 
@@ -35,7 +35,7 @@ Press `c` to jump to the beginning of the word "sit":
 	Lorem ipsum dolor <cursor>sit amet.
 
 Similarly, if you're looking for an "o", you can use the `f` motion.
-Type `<Leader>efo`, and all "o" characters are highlighted:
+Type `<Leader><Leader>fo`, and all "o" characters are highlighted:
 
 	<cursor>L{a}rem ipsum d{b}l{c}r sit amet.
 
