@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 1.2.  Last change: 2011 Apr 3
+*easymotion.txt*	Version 1.3.  Last change: 2011 Nov 7
 
 
             ______                  __  ___       __  _
@@ -24,6 +24,8 @@ CONTENTS                                                 *easymotion-contents*
        4.4 EasyMotion_grouping ............ |EasyMotion_grouping|
        4.5 Custom highlighting ............ |easymotion-custom-hl|
        4.6 Custom mappings ................ |easymotion-custom-mappings|
+           4.6.1 Leader key ............... |easymotion-leader-key|
+           4.6.2 Custom keys .............. |easymotion-custom-keys|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -49,9 +51,10 @@ Example: >
 
     <cursor>Lorem ipsum dolor sit amet.
 
-Type <Leader>w to trigger the word motion |w|. See |mapleader| for details
-about the leader key. When the motion is triggered, the text is updated (no
-braces are actually added, the text is highlighted in red by default): >
+Type <Leader><Leader>w to trigger the word motion |w|. See
+|easymotion-leader-key| for details about the leader key. When the
+motion is triggered, the text is updated (no braces are actually added,
+the text is highlighted in red by default): >
 
     <cursor>Lorem {a}psum {b}olor {c}it {d}met.
 
@@ -60,7 +63,7 @@ Press "c" to jump to the beginning of the word "sit": >
     Lorem ipsum dolor <cursor>sit amet.
 
 Similarly, if you're looking for an "o", you can use the |f| motion.
-Type <Leader>fo, and all "o" characters are highlighted: >
+Type <Leader><Leader>fo, and all "o" characters are highlighted: >
 
     <cursor>L{a}rem ipsum d{b}l{c}r sit amet.
 
@@ -92,9 +95,11 @@ visual and operator-pending mode:
     <Leader>gE        | End of WORD backward. See |gE|.
     <Leader>j         | Line downward. See |j|.
     <Leader>k         | Line upward. See |k|.
+    <Leader>n         | Jump to latest "/" or "?" forward. See |n|.
+    <Leader>N         | Jump to latest "/" or "?" backward. See |N|.
 
-See |mapleader| for details about the leader key.
-See |easymotion-custom-mappings| for customizing default mappings.
+See |easymotion-leader-key| and |mapleader| for details about the leader key.
+See |easymotion-custom-mappings| for customizing the default mappings.
 
 ==============================================================================
 3. Requirements                                      *easymotion-requirements*
@@ -234,33 +239,43 @@ There are two ways to override the default colors:
 4.6 Custom mappings                               *easymotion-custom-mappings*
 
 EasyMotion allows you to customize all default mappings to avoid conflicts
-with existing mappings. First, it is possible to change the default <leader>
-key of all mappings to another key or sequence. It is also possible to fine
-tune this plugin to your need by changing every single sequence.
+with existing mappings. It is possible to change the default leader key
+of all mappings to another key or sequence. It is also possible to fine
+tune the plugin to your need by changing every single sequence.
 
-4.6.1 EasyMotion_leader_key                            *easymotion-leader-key*
+4.6.1 Leader key               *EasyMotion_leader_key* *easymotion-leader-key*
+
+The default leader key can be changed with the configuration option
+|EasyMotion_leader_key|.
 
 Set this option to the key sequence to use as the prefix of the mappings
 described in |easymotion-default-mappings|.
 
-Default: '<Leader>'
+Note: The default leader key has been changed to '<Leader><Leader>' to 
+avoid conflicts with other plugins. You can revert to the original 
+leader by setting this option in your vimrc: >
 
-4.6.2 Custom Keys
+    let g:EasyMotion_leader_key = '<Leader>'
+<
+Default: '<Leader><Leader>'
+
+4.6.2 Custom Keys                                     *easymotion-custom-keys*
 
 All custom mappings follow the same variable format: >
 
     EasyMotion_mapping_{motion} = {mapping}
-
+<
 Example: >
 
     let g:EasyMotion_mapping_f = '_f'
     let g:EasyMotion_mapping_T = '<C-T>'
-
+<
 See |easymotion-default-mappings| for a table of motions that can be mapped
 and their default values.
 
-Note: The leader key defined by EasyMotion_leader_key is not prepended to your
-customized mappings. You have to give full key sequences.
+Note: The leader key defined by |EasyMotion_leader_key| is not prepended to
+your customized mappings! You have to provide full key sequences when setting
+these options.
 
 ==============================================================================
 5. License                                                *easymotion-license*
@@ -291,6 +306,9 @@ Source repository: https://github.com/Lokaltog/vim-easymotion
 - Drew Neil: operator-pending mappings
 - Rob O'Dwyer: customizable mappings without giving up all defaults
 - Michel D'Hooge: customizable leader
+- Maxime Bourget: search motion, improved JK motion behavior
+- Kearn Holliday: fix jumplist issues
+- Shougo Matsushita: fix CSApprox issue
 
 EasyMotion is based on Bartlomiej Podolak's great PreciseJump script, which
 can be downloaded here:
