@@ -456,6 +456,8 @@
 	endfunction "}}}
 	function! s:EasyMotion(regexp, direction, visualmode, mode) " {{{
 		let orig_pos = [line('.'), col('.')]
+		let orig_mark_backtick = getpos("'`")
+		normal! m`
 		let targets = []
 
 		try
@@ -544,6 +546,8 @@
 
 			" Show exception message
 			call s:Message(v:exception)
+
+			call setpos("'`", orig_mark_backtick) " Restore previous position of ` mark
 
 			" Restore original cursor position/selection {{{
 				if ! empty(a:visualmode)
