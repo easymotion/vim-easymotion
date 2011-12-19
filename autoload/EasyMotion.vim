@@ -98,7 +98,11 @@
 		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotion#JK(visualmode, direction) " {{{
-		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		if &startofline
+			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		else
+			call s:EasyMotion('\%'.virtcol('.').'v', a:direction, a:visualmode ? visualmode() : '', '')
+		endif
 	endfunction " }}}
 	function! EasyMotion#Search(visualmode, direction) " {{{
 		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')

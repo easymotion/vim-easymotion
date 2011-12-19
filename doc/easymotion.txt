@@ -32,7 +32,7 @@ CONTENTS                                                 *easymotion-contents*
     8. Credits ............................ |easymotion-credits|
 
 ==============================================================================
-1. Introduction                         *easymotion* *easymotion-introduction*
+1. Introduction                           *easymotion* *easymotion-introduction*
 
 EasyMotion provides a much simpler way to use some motions in vim. It takes
 the <number> out of <number>w or <number>f{char} by highlighting all possible
@@ -79,24 +79,24 @@ And that's it!
 The default configuration defines the following mappings in normal,
 visual and operator-pending mode:
 
-    Mapping           | Details
-    ------------------|----------------------------------------------
-    <Leader>f{char}   | Find {char} to the right. See |f|.
-    <Leader>F{char}   | Find {char} to the left. See |F|.
-    <Leader>t{char}   | Till before the {char} to the right. See |t|.
-    <Leader>T{char}   | Till after the {char} to the left. See |T|.
-    <Leader>w         | Beginning of word forward. See |w|.
-    <Leader>W         | Beginning of WORD forward. See |W|.
-    <Leader>b         | Beginning of word backward. See |b|.
-    <Leader>B         | Beginning of WORD backward. See |B|.
-    <Leader>e         | End of word forward. See |e|.
-    <Leader>E         | End of WORD forward. See |E|.
-    <Leader>ge        | End of word backward. See |ge|.
-    <Leader>gE        | End of WORD backward. See |gE|.
-    <Leader>j         | Line downward. See |j|.
-    <Leader>k         | Line upward. See |k|.
-    <Leader>n         | Jump to latest "/" or "?" forward. See |n|.
-    <Leader>N         | Jump to latest "/" or "?" backward. See |N|.
+    Mapping                   | Details
+    --------------------------|--------------------------------------
+    <Leader><Leader>f{char}   | Find {char} to the right. See |f|.
+    <Leader><Leader>F{char}   | Find {char} to the left. See |F|.
+    <Leader><Leader>t{char}   | Till before the {char} to the right. See |t|.
+    <Leader><Leader>T{char}   | Till after the {char} to the left. See |T|.
+    <Leader><Leader>w         | Beginning of word forward. See |w|.
+    <Leader><Leader>W         | Beginning of WORD forward. See |W|.
+    <Leader><Leader>b         | Beginning of word backward. See |b|.
+    <Leader><Leader>B         | Beginning of WORD backward. See |B|.
+    <Leader><Leader>e         | End of word forward. See |e|.
+    <Leader><Leader>E         | End of WORD forward. See |E|.
+    <Leader><Leader>ge        | End of word backward. See |ge|.
+    <Leader><Leader>gE        | End of WORD backward. See |gE|.
+    <Leader><Leader>j         | Line downward. See |j|.
+    <Leader><Leader>k         | Line upward. See |k|.
+    <Leader><Leader>n         | Jump to latest "/" or "?" forward. See |n|.
+    <Leader><Leader>N         | Jump to latest "/" or "?" backward. See |N|.
 
 See |easymotion-leader-key| and |mapleader| for details about the leader key.
 See |easymotion-custom-mappings| for customizing the default mappings.
@@ -116,31 +116,34 @@ EasyMotion will work fine without any configuration, but you can override the
 default behavior by setting configuration variables globally in your |vimrc|
 file.
 
-Example (this will change the target keys and disable shading): >
-
-    let g:EasyMotion_keys = '1234567890'
-    let g:EasyMotion_do_shade = 0
-
 ------------------------------------------------------------------------------
-4.1 EasyMotion_keys                                          *EasyMotion_keys*
+4.1 EasyMotion_keys                        *g:EasyMotion_keys* *EasyMotion_keys*
 
 Set the keys which will be used for motion targets. Add as many keys as you
 want. There's a lower chance that the motion targets will be grouped if many
-keys are available.
+keys are available.  >
 
+    let g:EasyMotion_keys = '1234567890'
+<
 Default: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
+You may want to customize it to have the first keys according to your
+keyboard layout. For example with a standard QWERTY keyboard you might want
+to start with “fjdkslam” (under your index, medius, fourth and fifth fingers)
+
 ------------------------------------------------------------------------------
-4.2 EasyMotion_do_shade                                  *EasyMotion_do_shade*
+4.2 EasyMotion_do_shade            *g:EasyMotion_do_shade* *EasyMotion_do_shade*
 
 The default behavior is to shade the text following the cursor (forward
 motions) or preceding the cursor (backward motions) to make the motion targets
-more visible. Set this option to 0 if you want to disable text shading.
+more visible. Set this option to 0 if you want to disable text shading. >
 
+    let g:EasyMotion_do_shade = 0
+<
 Default: 1
 
 ------------------------------------------------------------------------------
-4.3 EasyMotion_do_mapping                              *EasyMotion_do_mapping*
+4.3 EasyMotion_do_mapping      *g:EasyMotion_do_mapping* *EasyMotion_do_mapping*
 
 Set this option to 0 if you want to disable the default mappings. See
 |easymotion-default-mappings| for details about the default mappings.
@@ -152,15 +155,15 @@ this, see |easymotion-custom-mappings| for customizing the default mappings.
 Default: 1
 
 ------------------------------------------------------------------------------
-4.4 EasyMotion_grouping                                  *EasyMotion_grouping*
+4.4 EasyMotion_grouping            *g:EasyMotion_grouping* *EasyMotion_grouping*
 
 When there are too many possible targets on the screen, the results have to be
 grouped. This configuration option lets you change which grouping algorithm
 you want to use. There are two grouping algorithms available:
 
-    *  Single-key priority (value: 1)
-       -------------------
-
+    *  Single-key priority >
+           let g:EasyMotion_grouping = 1
+<
        This algorithm prioritizes single-key jumps for the targets closest to
        the cursor and only groups the last jump targets to maximize the amount
        of single-key jumps.
@@ -177,9 +180,9 @@ you want to use. There are two grouping algorithms available:
        ^ ^ ^ ^ ^           Direct jump to target
                  ^ ^ ^ ^   Enter group "f"
 <
-    *  Original (value: 2)
-       --------
-
+    *  Original >
+           let g:EasyMotion_grouping = 2
+<
        This is the original algorithm which always groups all targets if there
        are too many possible motion targets.
 
@@ -197,7 +200,8 @@ Default: 1
 
 ------------------------------------------------------------------------------
 4.5 Custom highlighting                                 *easymotion-custom-hl*
-
+                                                 *g:EasyMotion_hl_group_shade*
+                                                *g:EasyMotion_hl_group_target*
 The default EasyMotion configuration uses two highlighting groups that link
 to groups with default values. The highlighting groups are:
 
@@ -208,6 +212,9 @@ to groups with default values. The highlighting groups are:
     * EasyMotionShade
 
       Highlights shaded text, the default value is dark gray
+
+You can customize the names of those groups with the global variables
+g:EasyMotion_hl_group_target and g:EasyMotion_hl_group_shade resp.
 
 There are two ways to override the default colors:
 
@@ -243,7 +250,7 @@ with existing mappings. It is possible to change the default leader key
 of all mappings to another key or sequence. It is also possible to fine
 tune the plugin to your need by changing every single sequence.
 
-4.6.1 Leader key               *EasyMotion_leader_key* *easymotion-leader-key*
+4.6.1 Leader key                 *EasyMotion_leader_key* *easymotion-leader-key*
 
 The default leader key can be changed with the configuration option
 |EasyMotion_leader_key|.
@@ -287,7 +294,7 @@ http://creativecommons.org/licenses/by-sa/3.0/
 ==============================================================================
 6. Known bugs                                          *easymotion-known-bugs*
 
-None.
+List available at https://github.com/Lokaltog/vim-easymotion/issues
 
 ==============================================================================
 7. Contributing                                      *easymotion-contributing*
