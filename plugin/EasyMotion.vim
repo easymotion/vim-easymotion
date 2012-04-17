@@ -12,7 +12,7 @@
 " }}}
 " Default configuration {{{
 	" Default options {{{
-		call EasyMotion#InitOptions({
+		call EasyMotion#Init#InitOptions({
 		\   'leader_key'      : '<Leader><Leader>'
 		\ , 'keys'            : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 		\ , 'do_shade'        : 1
@@ -36,20 +36,20 @@
 		\ , 'cterm'   : ['NONE', 'grey'    , 'NONE']
 		\ }
 
-		call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
-		call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
+		call EasyMotion#Init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
+		call EasyMotion#Init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
 
 		" Reset highlighting after loading a new color scheme {{{
 			augroup EasyMotionInitHL
 				autocmd!
 
-				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
-				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
+				autocmd ColorScheme * call EasyMotion#Init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
+				autocmd ColorScheme * call EasyMotion#Init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
 			augroup end
 		" }}}
 	" }}}
 	" Default key mapping {{{
-		call EasyMotion#InitMappings({
+		call EasyMotion#Init#InitMappings({
 		\   'f' : { 'name': 'F'  , 'dir': 0 }
 		\ , 'F' : { 'name': 'F'  , 'dir': 1 }
 		\ , 't' : { 'name': 'T'  , 'dir': 0 }
