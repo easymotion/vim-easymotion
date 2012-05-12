@@ -146,17 +146,14 @@
 	endfunction " }}}
 	function! s:GetChar() " {{{
 		let char = getchar()
-
-		if char == 27
-			" Escape key pressed
+		if char == 27 " Escape key pressed
 			redraw
-
-			call s:Message('Cancelled')
-
-			return ''
+			throw("Cancelled")
 		endif
-
 		return nr2char(char)
+	endfunction " }}}
+	function! s:GetTwoCharKeyCombo() " {{{
+		return s:GetChar() . s:GetChar()
 	endfunction " }}}
 	function! s:GetSearchChar(visualmode) " {{{
 		call s:Prompt('Search for character')
@@ -174,6 +171,21 @@
 		endif
 
 		return char
+	endfunction " }}}
+	function! s:GenerateTwoKeyCombos() " {{{
+		let usable_keys = split(g:EasyMotion_keys, '\zs')
+
+		let difficult_to_type_combos = {'fv':1,'fg':1,'hj':1,'nj':1,'mj':1,'ft':1,'fr':1,'fb':1,'fc':1,'de':1,'sw':1,'sx':1,'aq':1,'az':1}
+
+		let two_key_combos = []
+		for key1 in usable_keys
+			for key2 in usable_keys
+				if !has_key(difficult_to_type_combos, key1 . key2) && !has_key(difficult_to_type_combos, key2 . key1)
+					let two_key_combos += [key1 . key2]
+				end
+			endfor
+		endfor
+		return two_key_combos
 	endfunction " }}}
 " }}}
 " Grouping algorithms {{{
@@ -380,7 +392,7 @@
 				" This has to be done in order to match the correct
 				" column; \%c matches the byte column and not display
 				" column.
-				let target_char_len = strlen(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
+				let target_char_len = strlen(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c..'))
 				let target_key_len = strlen(target_key)
 
 				" Solve multibyte issues by matching the byte column
@@ -389,14 +401,14 @@
 
 				if strlen(lines[line_num]['marker']) > 0
 					" Substitute marker character if line length > 0
-					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', target_key, '')
+					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c..', target_key, '')
 				else
 					" Set the line to the marker character if the line is empty
 					let lines[line_num]['marker'] = target_key
 				endif
 
 				" Add highlighting coordinates
-				call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+				call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c..')
 
 				" Add marker/target lenght difference for multibyte
 				" compensation
@@ -417,8 +429,7 @@
 
 			" Get target character {{{
 				call s:Prompt('Target key')
-
-				let char = s:GetChar()
+				let char = s:GetTwoCharKeyCombo()
 			" }}}
 		finally
 			" Restore original lines
@@ -494,11 +505,13 @@
 			" }}}
 
 			let GroupingFn = function('s:GroupingAlgorithm' . s:grouping_algorithms[g:EasyMotion_grouping])
-			let groups = GroupingFn(targets, split(g:EasyMotion_keys, '\zs'))
+
+			" Take available keys and generate all possible two key combos
+			let groups = GroupingFn(targets, s:GenerateTwoKeyCombos())
 
 			" Shade inactive source {{{
 				if g:EasyMotion_do_shade
-					let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
+					let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c..'
 
 					if a:direction == 1
 						" Backward
