@@ -47,6 +47,15 @@ Jeffrey Way of Nettuts+ has also [written
 a tutorial](http://net.tutsplus.com/tutorials/other/vim-essential-plugin-easymotion/)
 about EasyMotion.
 
+## Two Character Combos
+
+Two character combo support was added by Yan Pritzker (@skwp). This changes the
+default behavior of EasyMotion to highlight everything with a two-key combo. This
+makes it possible to immediately reach any location without going through multiple
+rounds of typing and looking, making usage much faster. This change is currently
+available only on the @skwp fork of easy motion. It is not currently possible 
+to disable this behavior.
+
 ## Animated demonstration
 
 ![Animated demonstration](http://oi54.tinypic.com/2yysefm.jpg)
