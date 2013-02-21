@@ -371,7 +371,7 @@
 				if ! has_key(lines, line_num)
 					let current_line = getline(line_num)
 
-					let lines[line_num] = { 'orig': current_line, 'marker': current_line, 'mb_compensation': 0 }
+					let lines[line_num] = { 'orig': current_line, 'marker': current_line }
 				endif
 
 				" Compensate for byte difference between marker
@@ -380,16 +380,12 @@
 				" This has to be done in order to match the correct
 				" column; \%c matches the byte column and not display
 				" column.
-				let target_char_len = strlen(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
-				let target_key_len = strlen(target_key)
-
-				" Solve multibyte issues by matching the byte column
-				" number instead of the visual column
-				let col_num -= lines[line_num]['mb_compensation']
+				let target_char_len = strdisplaywidth(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
+				let target_key_len = strdisplaywidth(target_key)
 
 				if strlen(lines[line_num]['marker']) > 0
 					" Substitute marker character if line length > 0
-					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', target_key, '')
+					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', target_key . repeat(' ', target_char_len - target_key_len), '')
 				else
 					" Set the line to the marker character if the line is empty
 					let lines[line_num]['marker'] = target_key
@@ -397,10 +393,6 @@
 
 				" Add highlighting coordinates
 				call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
-
-				" Add marker/target lenght difference for multibyte
-				" compensation
-				let lines[line_num]['mb_compensation'] += (target_char_len - target_key_len)
 			endfor
 
 			let lines_items = items(lines)
