@@ -21,6 +21,7 @@
 		\
 		\ , 'hl_group_target' : 'EasyMotionTarget'
 		\ , 'hl2_group_target' : 'EasyMotionTarget2'
+		\ , 'hl_group_overlap' : 'EasyMotionOverlap'
 		\ , 'hl_group_shade'  : 'EasyMotionShade'
 		\ })
 	" }}}
@@ -37,6 +38,13 @@
 		\ , 'cterm'   : ['NONE', 'red'     , 'bold']
 		\ }
 
+		let s:target_hl_overlap_defaults = {
+		\   'gui'     : ['NONE', '#ff0000' , 'bold']
+		\ , 'cterm256': ['NONE', '196'     , 'bold']
+		\ , 'cterm'   : ['NONE', 'red'     , 'bold']
+		\ }
+
+
 		let s:shade_hl_defaults = {
 		\   'gui'     : ['NONE', '#777777' , 'NONE']
 		\ , 'cterm256': ['NONE', '242'     , 'NONE']
@@ -45,6 +53,7 @@
 
 		call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
 		call EasyMotion#InitHL(g:EasyMotion_hl2_group_target, s:target_hl2_defaults)
+		call EasyMotion#InitHL(g:EasyMotion_hl_group_overlap, s:target_hl_overlap_defaults)
 		call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
 
 		" Reset highlighting after loading a new color scheme {{{
@@ -53,6 +62,7 @@
 
 				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
 				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl2_group_target, s:target_hl2_defaults)
+				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_overlap, s:target_hl_overlap_defaults)
 				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
 			augroup end
 		" }}}

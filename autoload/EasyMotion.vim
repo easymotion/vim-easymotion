@@ -358,8 +358,10 @@
 		" }}}
 		" Prepare marker lines {{{
 			let lines = {}
+			let lines_marks = {}
 			let hl_coords = []
 			let hl_coords2 = [] " Highlight for two characters
+			let overlap_coords = [] " Highlight for two characters
 
 			let coord_key_dict = s:CreateCoordKeyDict(a:groups)
 
@@ -375,6 +377,8 @@
 					let current_line = getline(line_num)
 
 					let lines[line_num] = { 'orig': current_line, 'marker': current_line, 'mb_compensation': 0 }
+					let lines_marks[line_num] = {}
+
 				endif
 
 				" Compensate for byte difference between marker
@@ -405,12 +409,24 @@
 
 				" Add highlighting coordinates
 				if target_key_len == 1
-					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+					if has_key(lines_marks[line_num], col_num)
+						call add(overlap_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+					else
+						call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+					endif
+
+					let lines_marks[line_num][col_num] = 1
 				else
 					let c = 0
 
 					while c < target_key_len
-						call add(hl_coords2, '\%' . line_num . 'l\%' . (col_num + c) . 'c')
+						if has_key(lines_marks[line_num], col_num + c)
+							call add(overlap_coords, '\%' . line_num . 'l\%' . (col_num + c) . 'c')
+						else
+							call add(hl_coords2, '\%' . line_num . 'l\%' . (col_num + c) . 'c')
+						endif
+						let lines_marks[line_num][col_num + c] = 1
+
 						let c += 1
 					endwhile
 				endif
@@ -425,7 +441,13 @@
 		" }}}
 		" Highlight targets {{{
 			let target_hl_id = matchadd(g:EasyMotion_hl_group_target, join(hl_coords, '\|'), 1)
-			let target_hl2_id = matchadd(g:EasyMotion_hl2_group_target, join(hl_coords2, '\|'), 1)
+			if len(hl_coords2) > 0
+				let target_hl2_id = matchadd(g:EasyMotion_hl2_group_target, join(hl_coords2, '\|'), 1)
+			endif
+			if len(overlap_coords) > 0
+				let target_overlap_id = matchadd(g:EasyMotion_hl_group_overlap, join(overlap_coords, '\|'), 1)
+			endif
+
 		" }}}
 
 		try
@@ -449,6 +471,9 @@
 				endif
 				if exists('target_hl2_id')
 					call matchdelete(target_hl2_id)
+				endif
+				if exists('target_overlap_id')
+					call matchdelete(target_overlap_id)
 				endif
 			" }}}
 
