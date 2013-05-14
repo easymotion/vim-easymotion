@@ -314,8 +314,8 @@
 			let group_key = a:0 == 1 ? a:1 : ''
 
 			for [key, item] in items(a:groups)
-				"let key = group_key . key "( ! empty(group_key) ? group_key : key)
-				let key = ( ! empty(group_key) ? group_key : key)
+				let key = group_key . key "( ! empty(group_key) ? group_key : key)
+				"let key = ( ! empty(group_key) ? group_key : key)
 
 				if type(item) == 3
 					" Destination coords
@@ -359,6 +359,8 @@
 		" Prepare marker lines {{{
 			let lines = {}
 			let hl_coords = []
+			let hl_coords2 = [] " Highlight for two characters
+
 			let coord_key_dict = s:CreateCoordKeyDict(a:groups)
 
 			for dict_key in sort(coord_key_dict[0])
@@ -391,29 +393,39 @@
 				if strlen(lines[line_num]['marker']) > 0
 					" Substitute marker character if line length > 0
 					
-					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', target_key, '')
-					"let c = 0
-					"while c < target_key_len
-						"let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . (col_num + c) . 'c.', strpart(target_key, c, 1), '')
-						"let c += 1
-					"endwhile
+					let c = 0
+					while c < target_key_len
+						let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . (col_num + c) . 'c.', strpart(target_key, c, 1), '')
+						let c += 1
+					endwhile
 				else
 					" Set the line to the marker character if the line is empty
 					let lines[line_num]['marker'] = target_key
 				endif
 
 				" Add highlighting coordinates
-				call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+				if target_key_len == 1
+					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+				else
+					let c = 0
+
+					while c < target_key_len
+						call add(hl_coords2, '\%' . line_num . 'l\%' . (col_num + c) . 'c')
+						let c += 1
+					endwhile
+				endif
 
 				" Add marker/target lenght difference for multibyte
 				" compensation
-				let lines[line_num]['mb_compensation'] += (target_char_len - target_key_len)
+				"let lines[line_num]['mb_compensation'] += (target_char_len - target_key_len)
+				let lines[line_num]['mb_compensation'] += (target_char_len - 1)
 			endfor
 
 			let lines_items = items(lines)
 		" }}}
 		" Highlight targets {{{
 			let target_hl_id = matchadd(g:EasyMotion_hl_group_target, join(hl_coords, '\|'), 1)
+			let target_hl2_id = matchadd(g:EasyMotion_hl2_group_target, join(hl_coords2, '\|'), 1)
 		" }}}
 
 		try
@@ -434,6 +446,9 @@
 			" Un-highlight targets {{{
 				if exists('target_hl_id')
 					call matchdelete(target_hl_id)
+				endif
+				if exists('target_hl2_id')
+					call matchdelete(target_hl2_id)
 				endif
 			" }}}
 
