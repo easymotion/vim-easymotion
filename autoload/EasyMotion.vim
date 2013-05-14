@@ -314,6 +314,7 @@
 			let group_key = a:0 == 1 ? a:1 : ''
 
 			for [key, item] in items(a:groups)
+				"let key = group_key . key "( ! empty(group_key) ? group_key : key)
 				let key = ( ! empty(group_key) ? group_key : key)
 
 				if type(item) == 3
@@ -389,7 +390,13 @@
 
 				if strlen(lines[line_num]['marker']) > 0
 					" Substitute marker character if line length > 0
+					
 					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', target_key, '')
+					"let c = 0
+					"while c < target_key_len
+						"let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . (col_num + c) . 'c.', strpart(target_key, c, 1), '')
+						"let c += 1
+					"endwhile
 				else
 					" Set the line to the marker character if the line is empty
 					let lines[line_num]['marker'] = target_key
