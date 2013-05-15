@@ -70,6 +70,19 @@
 
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
+
+	function! EasyMotion#S(visualmode, direction) " {{{
+		let char = s:GetSearchChar(a:visualmode)
+
+		if empty(char)
+			return
+		endif
+
+		let re = '\C' . escape(char, '.$^~')
+
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
+
 	function! EasyMotion#T(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
 
@@ -360,8 +373,8 @@
 			let lines = {}
 			let lines_marks = {}
 			let hl_coords = []
-			let hl_coords2 = [] " Highlight for two characters
-			let overlap_coords = [] " Highlight for two characters
+			let hl2_first_coords = [] " Highlight for two characters
+			let hl2_second_coords = [] " Highlight for two characters
 
 			let coord_key_dict = s:CreateCoordKeyDict(a:groups)
 
@@ -398,8 +411,12 @@
 					" Substitute marker character if line length > 0
 					
 					let c = 0
-					while c < target_key_len
-						let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . (col_num + c) . 'c.', strpart(target_key, c, 1), '')
+					while c < target_key_len && c < 2
+						if strlen(lines[line_num]['marker']) >= col_num + c
+							let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . (col_num + c) . 'c.', strpart(target_key, c, 1), '')
+						else
+							let lines[line_num]['marker'] = lines[line_num]['marker'] . strpart(target_key, c, 1)
+						endif
 						let c += 1
 					endwhile
 				else
@@ -409,26 +426,13 @@
 
 				" Add highlighting coordinates
 				if target_key_len == 1
-					if has_key(lines_marks[line_num], col_num)
-						call add(overlap_coords, '\%' . line_num . 'l\%' . col_num . 'c')
-					else
-						call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
-					endif
-
+					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
 					let lines_marks[line_num][col_num] = 1
 				else
-					let c = 0
-
-					while c < target_key_len
-						if has_key(lines_marks[line_num], col_num + c)
-							call add(overlap_coords, '\%' . line_num . 'l\%' . (col_num + c) . 'c')
-						else
-							call add(hl_coords2, '\%' . line_num . 'l\%' . (col_num + c) . 'c')
-						endif
-						let lines_marks[line_num][col_num + c] = 1
-
-						let c += 1
-					endwhile
+					call add(hl2_first_coords, '\%' . line_num . 'l\%' . (col_num) . 'c')
+					call add(hl2_second_coords, '\%' . line_num . 'l\%' . (col_num + 1) . 'c')
+					let lines_marks[line_num][col_num] = 1
+					let lines_marks[line_num][col_num + 1] = 1
 				endif
 
 				" Add marker/target lenght difference for multibyte
@@ -440,16 +444,17 @@
 			let lines_items = items(lines)
 		" }}}
 		" Highlight targets {{{
-			let target_hl_id = matchadd(g:EasyMotion_hl_group_target, join(hl_coords, '\|'), 1)
-			if len(hl_coords2) > 0
-				let target_hl2_id = matchadd(g:EasyMotion_hl2_group_target, join(hl_coords2, '\|'), 1)
+			if len(hl_coords) > 0
+				let target_hl_id = matchadd(g:EasyMotion_hl_group_target, join(hl_coords, '\|'), 1)
 			endif
-			if len(overlap_coords) > 0
-				let target_overlap_id = matchadd(g:EasyMotion_hl_group_overlap, join(overlap_coords, '\|'), 1)
+			if len(hl2_second_coords) > 0
+				let target_hl2_second_id = matchadd(g:EasyMotion_hl2_second_group_target, join(hl2_second_coords, '\|'), 1)
+			endif
+			if len(hl2_first_coords) > 0
+				let target_hl2_first_id = matchadd(g:EasyMotion_hl2_first_group_target, join(hl2_first_coords, '\|'), 1)
 			endif
 
 		" }}}
-
 		try
 			" Set lines with markers
 			call s:SetLines(lines_items, 'marker')
@@ -469,11 +474,11 @@
 				if exists('target_hl_id')
 					call matchdelete(target_hl_id)
 				endif
-				if exists('target_hl2_id')
-					call matchdelete(target_hl2_id)
+				if exists('target_hl2_first_id')
+					call matchdelete(target_hl2_first_id)
 				endif
-				if exists('target_overlap_id')
-					call matchdelete(target_overlap_id)
+				if exists('target_hl2_second_id')
+					call matchdelete(target_hl2_second_id)
 				endif
 			" }}}
 
@@ -515,8 +520,8 @@
 				call s:VarReset('&virtualedit', '')
 			" }}}
 			" Find motion targets {{{
-				let search_direction = (a:direction == 1 ? 'b' : '')
-				let search_stopline = line(a:direction == 1 ? 'w0' : 'w$')
+				let search_direction = (a:direction >= 1 ? 'b' : '')
+				let search_stopline = line(a:direction >= 1 ? 'w0' : 'w$')
 
 				while 1
 					let pos = searchpos(a:regexp, search_direction, search_stopline)
@@ -534,6 +539,38 @@
 					call add(targets, pos)
 				endwhile
 
+				if a:direction == 2
+					keepjumps call cursor(orig_pos[0], orig_pos[1])
+					let targets2 = []
+					while 1
+						let pos = searchpos(a:regexp, '', line('w$'))
+						if pos == [0, 0]
+							break
+						endif
+
+						if foldclosed(pos[0]) != -1
+							continue
+						endif
+
+						call add(targets2, pos)
+					endwhile
+					let t1 = 0
+					let t2 = 0
+					let targets3 = []
+					while t1 < len(targets) || t2 < len(targets2)
+						if t1 < len(targets)
+							call add(targets3, targets[t1])
+							let t1 += 1
+						endif
+						if t2 < len(targets2)
+							call add(targets3, targets2[t2])
+							let t2 += 1
+						endif
+					endwhile
+					let targets = targets3
+
+				endif
+
 				let targets_len = len(targets)
 				if targets_len == 0
 					throw 'No matches'
@@ -550,9 +587,12 @@
 					if a:direction == 1
 						" Backward
 						let shade_hl_re = '\%'. line('w0') .'l\_.*' . shade_hl_pos
-					else
+					elseif a:direction == 0
 						" Forward
 						let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
+					elseif a:direction == 2
+						" Both directions"
+						let shade_hl_re = '\%'. line('w0') .'l\_.*\%'. line('w$') .'l'
 					endif
 
 					let shade_hl_id = matchadd(g:EasyMotion_hl_group_shade, shade_hl_re, 0)

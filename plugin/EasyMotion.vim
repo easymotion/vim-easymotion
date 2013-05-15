@@ -19,10 +19,10 @@
 		\ , 'do_mapping'      : 1
 		\ , 'grouping'        : 1
 		\
-		\ , 'hl_group_target' : 'EasyMotionTarget'
-		\ , 'hl2_group_target' : 'EasyMotionTarget2'
-		\ , 'hl_group_overlap' : 'EasyMotionOverlap'
-		\ , 'hl_group_shade'  : 'EasyMotionShade'
+		\ , 'hl_group_target'         : 'EasyMotionTarget'
+		\ , 'hl2_first_group_target'  : 'EasyMotionTarget2First'
+		\ , 'hl2_second_group_target' : 'EasyMotionTarget2Second'
+		\ , 'hl_group_shade'          : 'EasyMotionShade'
 		\ })
 	" }}}
 	" Default highlighting {{{
@@ -32,14 +32,14 @@
 		\ , 'cterm'   : ['NONE', 'red'     , 'bold']
 		\ }
 
-		let s:target_hl2_defaults = {
+		let s:target_hl2_first_defaults = {
 		\   'gui'     : ['NONE', '#ffb400' , 'bold']
 		\ , 'cterm256': ['NONE', '196'     , 'bold']
 		\ , 'cterm'   : ['NONE', 'red'     , 'bold']
 		\ }
 
-		let s:target_hl_overlap_defaults = {
-		\   'gui'     : ['NONE', '#ff0000' , 'bold']
+		let s:target_hl2_second_defaults = {
+		\   'gui'     : ['NONE', '#b98300' , 'bold']
 		\ , 'cterm256': ['NONE', '196'     , 'bold']
 		\ , 'cterm'   : ['NONE', 'red'     , 'bold']
 		\ }
@@ -52,8 +52,8 @@
 		\ }
 
 		call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
-		call EasyMotion#InitHL(g:EasyMotion_hl2_group_target, s:target_hl2_defaults)
-		call EasyMotion#InitHL(g:EasyMotion_hl_group_overlap, s:target_hl_overlap_defaults)
+		call EasyMotion#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
+		call EasyMotion#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
 		call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
 
 		" Reset highlighting after loading a new color scheme {{{
@@ -61,8 +61,8 @@
 				autocmd!
 
 				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
-				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl2_group_target, s:target_hl2_defaults)
-				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_overlap, s:target_hl_overlap_defaults)
+				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
+				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
 				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
 			augroup end
 		" }}}
@@ -71,6 +71,7 @@
 		call EasyMotion#InitMappings({
 		\   'f' : { 'name': 'F'  , 'dir': 0 }
 		\ , 'F' : { 'name': 'F'  , 'dir': 1 }
+		\ , 's' : { 'name': 'S'  , 'dir': 2 }
 		\ , 't' : { 'name': 'T'  , 'dir': 0 }
 		\ , 'T' : { 'name': 'T'  , 'dir': 1 }
 		\ , 'w' : { 'name': 'WB' , 'dir': 0 }
