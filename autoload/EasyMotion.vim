@@ -61,7 +61,6 @@
 " Motion functions {{{
 	function! EasyMotion#SelectLines()
 		let orig_pos = [line('.'), col('.')]
-		mark e
 		call EasyMotion#JK(0, 2) 	
 		if g:EasyMotion_cancelled 
 			return ''
