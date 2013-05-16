@@ -59,8 +59,9 @@
 	endfunction "}}}
 " }}}
 " Motion functions {{{
-	function! EasyMotion#LineYank()
+	function! EasyMotion#SelectLines()
 		let orig_pos = [line('.'), col('.')]
+		mark e
 		call EasyMotion#JK(0, 2) 	
 		if g:EasyMotion_cancelled 
 			return ''
@@ -73,9 +74,6 @@
 			else
 				normal! V
 				keepjumps call cursor(pos1[0], pos1[1])
-				normal! y
-				keepjumps call cursor(orig_pos[0], orig_pos[1])
-				normal! p
 			endif
 		endif
 	endfunction
