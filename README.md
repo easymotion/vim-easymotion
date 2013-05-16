@@ -1,4 +1,4 @@
-# Modification to the original Lokaltog's EasyMotion
+# Modification to Lokaltog's EasyMotion
 1. Use one - two character key jump. Display two keys if one-character key is not enough, so you can see what two keys to type without waiting after pressing the first key.
 2. Added forward-backward search (bidirectional) search. You can jump to forward or backward at the same time.
 3. Add SelectLines function which allows you to select any range of lines using consecutive easymotion calls.
