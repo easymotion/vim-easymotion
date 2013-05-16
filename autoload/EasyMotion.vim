@@ -59,6 +59,26 @@
 	endfunction "}}}
 " }}}
 " Motion functions {{{
+	function! EasyMotion#LineYank()
+		let orig_pos = [line('.'), col('.')]
+		call EasyMotion#JK(0, 2) 	
+		if g:EasyMotion_cancelled 
+			return ''
+		else
+			let pos1 = [line('.'), col('.')]
+			keepjumps call cursor(orig_pos[0], orig_pos[1])
+			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', pos1[0])
+			if g:EasyMotion_cancelled 
+				return ''
+			else
+				normal! V
+				keepjumps call cursor(pos1[0], pos1[1])
+				normal! y
+				keepjumps call cursor(orig_pos[0], orig_pos[1])
+				normal! p
+			endif
+		endif
+	endfunction
 	function! EasyMotion#F(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
 
@@ -68,7 +88,7 @@
 
 		let re = '\C' . escape(char, '.$^~')
 
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1), 0)
 	endfunction " }}}
 
 	function! EasyMotion#S(visualmode, direction) " {{{
@@ -80,7 +100,7 @@
 
 		let re = '\C' . escape(char, '.$^~')
 
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1), 0)
 	endfunction " }}}
 
 	function! EasyMotion#T(visualmode, direction) " {{{
@@ -96,25 +116,25 @@
 			let re = '\C.' . escape(char, '.$^~')
 		endif
 
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1), 0)
 	endfunction " }}}
 	function! EasyMotion#WB(visualmode, direction) " {{{
-		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '', 0)
 	endfunction " }}}
 	function! EasyMotion#WBW(visualmode, direction) " {{{
-		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '', 0)
 	endfunction " }}}
 	function! EasyMotion#E(visualmode, direction) " {{{
-		call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1), 0)
 	endfunction " }}}
 	function! EasyMotion#EW(visualmode, direction) " {{{
-		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1), 0)
 	endfunction " }}}
 	function! EasyMotion#JK(visualmode, direction) " {{{
-		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '', 0)
 	endfunction " }}}
 	function! EasyMotion#Search(visualmode, direction) " {{{
-		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '', 0)
 	endfunction " }}}
 " }}}
 " Helper functions {{{
@@ -506,7 +526,7 @@
 			return s:PromptUser(target)
 		endif
 	endfunction "}}}
-	function! s:EasyMotion(regexp, direction, visualmode, mode) " {{{
+	function! s:EasyMotion(regexp, direction, visualmode, mode, hlcurrent) " {{{
 		let orig_pos = [line('.'), col('.')]
 		let targets = []
 
@@ -597,6 +617,9 @@
 
 					let shade_hl_id = matchadd(g:EasyMotion_hl_group_shade, shade_hl_re, 0)
 				endif
+				if a:hlcurrent != 0
+					let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. a:hlcurrent .'l.*', 1)
+				endif
 			" }}}
 
 			" Prompt user for target group/character
@@ -626,6 +649,7 @@
 			call cursor(coords[0], coords[1])
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
+			let g:EasyMotion_cancelled = 0
 		catch
 			redraw
 
@@ -639,6 +663,7 @@
 					keepjumps call cursor(orig_pos[0], orig_pos[1])
 				endif
 			" }}}
+			let g:EasyMotion_cancelled = 1
 		finally
 			" Restore properties {{{
 				call s:VarReset('&scrolloff')
@@ -651,6 +676,9 @@
 			" Remove shading {{{
 				if g:EasyMotion_do_shade && exists('shade_hl_id')
 					call matchdelete(shade_hl_id)
+				endif
+				if a:hlcurrent && exists('shade_hl_line_id')
+					call matchdelete(shade_hl_line_id)
 				endif
 			" }}}
 		endtry

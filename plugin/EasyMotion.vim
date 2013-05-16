@@ -23,6 +23,7 @@
 		\ , 'hl2_first_group_target'  : 'EasyMotionTarget2First'
 		\ , 'hl2_second_group_target' : 'EasyMotionTarget2Second'
 		\ , 'hl_group_shade'          : 'EasyMotionShade'
+		\ , 'hl_line_group_shade'          : 'EasyMotionShadeLine'
 		\ })
 	" }}}
 	" Default highlighting {{{
@@ -44,9 +45,14 @@
 		\ , 'cterm'   : ['NONE', 'red'     , 'bold']
 		\ }
 
-
 		let s:shade_hl_defaults = {
 		\   'gui'     : ['NONE', '#777777' , 'NONE']
+		\ , 'cterm256': ['NONE', '242'     , 'NONE']
+		\ , 'cterm'   : ['NONE', 'grey'    , 'NONE']
+		\ }
+
+		let s:shade_hl_line_defaults = {
+		\   'gui'     : ['NONE', '#FFFFFF' , 'NONE']
 		\ , 'cterm256': ['NONE', '242'     , 'NONE']
 		\ , 'cterm'   : ['NONE', 'grey'    , 'NONE']
 		\ }
@@ -55,6 +61,7 @@
 		call EasyMotion#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
 		call EasyMotion#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
 		call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
+		call EasyMotion#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
 
 		" Reset highlighting after loading a new color scheme {{{
 			augroup EasyMotionInitHL
@@ -64,6 +71,7 @@
 				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
 				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
 				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
+				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
 			augroup end
 		" }}}
 	" }}}
@@ -84,6 +92,7 @@
 		\ , 'gE': { 'name': 'EW' , 'dir': 1 }
 		\ , 'j' : { 'name': 'JK' , 'dir': 0 }
 		\ , 'k' : { 'name': 'JK' , 'dir': 1 }
+		\ , 'l' : { 'name': 'JK' , 'dir': 2 }
 		\ , 'n' : { 'name': 'Search' , 'dir': 0 }
 		\ , 'N' : { 'name': 'Search' , 'dir': 1 }
 		\ })
