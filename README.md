@@ -1,6 +1,6 @@
 # Modifications to Lokaltog's EasyMotion
 1. Use one - two character key jump. Display two keys if one-character key is not enough, so you can see what two keys to type without waiting after pressing the first key.
-2. Added forward-backward search (bidirectional) search. You can jump to forward or backward at the same time. "<leader>s"
+2. Added forward-backward search (bidirectional) search. You can jump to forward or backward at the same time. `<Leader>s`
 3. Add SelectLines function which allows you to select any range of lines using consecutive easymotion calls. E.g. Using "omap l :call EasyMotion#SelectLines()<CR>", and "vmap l :call EasyMotion#SelectLines()<CR>"
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion.png)
 
