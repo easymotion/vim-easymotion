@@ -4,6 +4,7 @@
 3. Add SelectLines function which allows you to select any range of lines using consecutive easymotion calls. E.g. Using "omap l :call EasyMotion#SelectLines()<CR>", and "vmap l :call EasyMotion#SelectLines()<CR>"
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion.png)
 
+This is an alpha version, which breaks multi-byte support, and others.
 # Introduction
 
 EasyMotion provides a much simpler way to use some motions in vim. It
