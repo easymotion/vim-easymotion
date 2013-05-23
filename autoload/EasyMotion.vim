@@ -59,6 +59,15 @@
 	endfunction "}}}
 " }}}
 " Motion functions {{{
+
+	function! EasyMotion#SelectLinesPaste()
+		let orig_pos = [line('.'), col('.')]
+		call EasyMotion#SelectLines()
+		normal y
+		keepjumps call cursor(orig_pos[0], orig_pos[1])
+		normal p
+	endfunction
+
 	function! EasyMotion#SelectLines()
 		let orig_pos = [line('.'), col('.')]
 		let g:wait_for_repeat = 0
@@ -72,9 +81,6 @@
 			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', pos1[0])
 			if g:EasyMotion_cancelled 
 				return ''
-			elseif g:wait_for_repeat == 2 " User pressed '.'
-				keepjumps call cursor(pos1[0], pos1[1])
-				"normal! V
 			else
 				normal! V
 				keepjumps call cursor(pos1[0], pos1[1])
