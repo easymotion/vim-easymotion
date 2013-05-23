@@ -61,20 +61,26 @@
 " Motion functions {{{
 	function! EasyMotion#SelectLines()
 		let orig_pos = [line('.'), col('.')]
+		let g:wait_for_repeat = 0
 		call EasyMotion#JK(0, 2) 	
 		if g:EasyMotion_cancelled 
 			return ''
 		else
 			let pos1 = [line('.'), col('.')]
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
+			let g:wait_for_repeat = 1
 			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', pos1[0])
 			if g:EasyMotion_cancelled 
 				return ''
+			elseif g:wait_for_repeat == 2 " User pressed '.'
+				keepjumps call cursor(pos1[0], pos1[1])
+				"normal! V
 			else
 				normal! V
 				keepjumps call cursor(pos1[0], pos1[1])
 			endif
 		endif
+		let g:wait_for_repeat = 0
 	endfunction
 	function! EasyMotion#F(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
@@ -508,19 +514,23 @@
 			endif
 		" }}}
 		" Check if the input char is valid {{{
+		if g:wait_for_repeat && char == '.'
+			return g:old_target
+		else
 			if ! has_key(a:groups, char)
 				throw 'Invalid target'
 			endif
 		" }}}
 
-		let target = a:groups[char]
+			let target = a:groups[char]
 
-		if type(target) == 3
-			" Return target coordinates
-			return target
-		else
-			" Prompt for new target character
-			return s:PromptUser(target)
+			if type(target) == 3
+				" Return target coordinates
+				return target
+			else
+				" Prompt for new target character
+				return s:PromptUser(target)
+			endif
 		endif
 	endfunction "}}}
 	function! s:EasyMotion(regexp, direction, visualmode, mode, hlcurrent) " {{{
@@ -621,6 +631,7 @@
 
 			" Prompt user for target group/character
 			let coords = s:PromptUser(groups)
+			let g:old_target = coords
 
 			" Update selection {{{
 				if ! empty(a:visualmode)
