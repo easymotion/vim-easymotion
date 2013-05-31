@@ -52,9 +52,9 @@
 		\ }
 
 		let s:shade_hl_line_defaults = {
-		\   'gui'     : ['#FF0000', '#FFFFFF' , 'NONE']
-		\ , 'cterm256': ['NONE', '242'     , 'NONE']
-		\ , 'cterm'   : ['NONE', 'grey'    , 'NONE']
+		\   'gui'     : ['#FF0000' , '#FFFFFF' , 'NONE']
+		\ , 'cterm256': ['NONE'    , '242'     , 'NONE']
+		\ , 'cterm'   : ['NONE'    , 'grey'    , 'NONE']
 		\ }
 
 		call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
