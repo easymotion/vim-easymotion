@@ -468,13 +468,23 @@
 
 				if target_key_len < 2
 					let text = target_key . ' '
-					call add(hl_coords, '\%' . line_num . 'l\%' . (strlen(leftText) + 1) . 'c')
+					call add(hl_coords, '\%' . line_num . 'l\%' . (1) . 'c')
 				else
 					let text = target_key
-					call add(hl2_first_coords, '\%' . line_num . 'l\%' . (strlen(leftText) + 1) . 'c')
-					call add(hl2_second_coords, '\%' . line_num . 'l\%' . (strlen(leftText) + 2) . 'c')
-				endif
-				let lines[line_num]['marker'] = leftText . text . rightText
+					call add(hl2_first_coords, '\%' . line_num . 'l\%' . (1) . 'c')
+					call add(hl2_second_coords, '\%' . line_num . 'l\%' . (2) . 'c')
+				endif 
+				let lines[line_num]['marker'] = text . lines[line_num]['marker'] 
+
+				"if target_key_len < 2
+					"let text = target_key . ' '
+					"call add(hl_coords, '\%' . line_num . 'l\%' . (strlen(lines[line_num]['marker']) + 1) . 'c')
+				"else
+					"let text = target_key
+					"call add(hl2_first_coords, '\%' . line_num . 'l\%' . (strlen(lines[line_num]['marker']) + 1) . 'c')
+					"call add(hl2_second_coords, '\%' . line_num . 'l\%' . (strlen(lines[line_num]['marker']) + 2) . 'c')
+				"endif 
+				"let lines[line_num]['marker'] = lines[line_num]['marker'] . text
 			else
 				if strlen(lines[line_num]['marker']) > 0
 				" Substitute marker character if line length > 0
@@ -497,7 +507,7 @@
 			" Add highlighting coordinates
 
 
-			"if !exists('g:EasyMotion_fixed_column') || !g:EasyMotion_fixed_column
+			if !exists('g:EasyMotion_fixed_column') || !g:EasyMotion_fixed_column
 				if target_key_len == 1
 					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
 				else

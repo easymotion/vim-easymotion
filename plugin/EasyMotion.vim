@@ -52,7 +52,7 @@
 		\ }
 
 		let s:shade_hl_line_defaults = {
-		\   'gui'     : ['NONE', '#FFFFFF' , 'NONE']
+		\   'gui'     : ['#FF0000', '#FFFFFF' , 'NONE']
 		\ , 'cterm256': ['NONE', '242'     , 'NONE']
 		\ , 'cterm'   : ['NONE', 'grey'    , 'NONE']
 		\ }
