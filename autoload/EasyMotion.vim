@@ -497,7 +497,7 @@
 			" Add highlighting coordinates
 
 
-			if !exists('g:EasyMotion_fixed_column') || !g:EasyMotion_fixed_column
+			"if !exists('g:EasyMotion_fixed_column') || !g:EasyMotion_fixed_column
 				if target_key_len == 1
 					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
 				else
