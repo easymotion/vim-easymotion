@@ -467,12 +467,12 @@
 				endif
 
 				if target_key_len < 2
-					let text = target_key . ' '
-					call add(hl_coords, '\%' . line_num . 'l\%' . (1) . 'c')
+					let text = ' ' . target_key
+					call add(hl_coords, '\%' . line_num . 'l\%2c')
 				else
 					let text = target_key
-					call add(hl2_first_coords, '\%' . line_num . 'l\%' . (1) . 'c')
-					call add(hl2_second_coords, '\%' . line_num . 'l\%' . (2) . 'c')
+					call add(hl2_first_coords, '\%' . line_num . 'l\%1c')
+					call add(hl2_second_coords, '\%' . line_num . 'l\%2c')
 				endif 
 				let lines[line_num]['marker'] = text . lines[line_num]['marker'] 
 
