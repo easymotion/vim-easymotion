@@ -65,28 +65,44 @@
 		call EasyMotion#SelectLines()
 		normal y
 		keepjumps call cursor(orig_pos[0], orig_pos[1])
-		normal p
+		if !g:EasyMotion_cancelled
+			normal p
+		endif
+	endfunction
+
+	function! EasyMotion#SelectLinesYank()
+		let orig_pos = [line('.'), col('.')]
+		call EasyMotion#SelectLines()
+		normal y
+		keepjumps call cursor(orig_pos[0], orig_pos[1])
+		"normal p
 	endfunction
 
 	function! EasyMotion#SelectLines()
 		let orig_pos = [line('.'), col('.')]
-		let g:wait_for_repeat = 0
+		let g:EasyMotion_wait_for_repeat = 0
+		let g:EasyMotion_fixed_column = 1
 		call EasyMotion#JK(0, 2) 	
 		if g:EasyMotion_cancelled 
+			let g:EasyMotion_fixed_column = 0
 			return ''
 		else
 			let pos1 = [line('.'), col('.')]
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
-			let g:wait_for_repeat = 1
+			let g:EasyMotion_wait_for_repeat = 1
+			let g:EasyMotion_fixed_column = 1
 			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', pos1[0])
 			if g:EasyMotion_cancelled 
+				let g:EasyMotion_wait_for_repeat = 0
+				let g:EasyMotion_fixed_column = 0
 				return ''
 			else
 				normal! V
 				keepjumps call cursor(pos1[0], pos1[1])
 			endif
 		endif
-		let g:wait_for_repeat = 0
+		let g:EasyMotion_wait_for_repeat = 0
+		let g:EasyMotion_fixed_column = 0
 	endfunction
 	function! EasyMotion#F(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
@@ -399,46 +415,70 @@
 			endif
 		" }}}
 		" Prepare marker lines {{{
-			let lines = {}
-			let lines_marks = {}
-			let hl_coords = []
-			let hl2_first_coords = [] " Highlight for two characters
-			let hl2_second_coords = [] " Highlight for two characters
+		let lines = {}
+		let hl_coords = []
+		let hl2_first_coords = [] " Highlight for two characters
+		let hl2_second_coords = [] " Highlight for two characters
 
-			let coord_key_dict = s:CreateCoordKeyDict(a:groups)
+		let coord_key_dict = s:CreateCoordKeyDict(a:groups)
 
-			for dict_key in sort(coord_key_dict[0])
-				let target_key = coord_key_dict[1][dict_key]
-				let [line_num, col_num] = split(dict_key, ',')
+		for dict_key in sort(coord_key_dict[0])
+			let target_key = coord_key_dict[1][dict_key]
+			let [line_num, col_num] = split(dict_key, ',')
 
-				let line_num = str2nr(line_num)
-				let col_num = str2nr(col_num)
+			let line_num = str2nr(line_num)
+			let col_num = str2nr(col_num)
 
-				" Add original line and marker line
-				if ! has_key(lines, line_num)
-					let current_line = getline(line_num)
+			" Add original line and marker line
+			if ! has_key(lines, line_num)
+				let current_line = getline(line_num)
 
-					let lines[line_num] = { 'orig': current_line, 'marker': current_line, 'mb_compensation': 0 }
-					let lines_marks[line_num] = {}
+				let lines[line_num] = { 'orig': current_line, 'marker': current_line, 'mb_compensation': 0 }
 
+			endif
+
+			" Compensate for byte difference between marker
+			" character and target character
+			"
+			" This has to be done in order to match the correct
+			" column; \%c matches the byte column and not display
+			" column.
+			let target_char_len = strlen(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
+			let target_key_len = strlen(target_key)
+
+
+			" Solve multibyte issues by matching the byte column
+			" number instead of the visual column
+			let col_num -= lines[line_num]['mb_compensation']
+			if exists('g:EasyMotion_fixed_column') && g:EasyMotion_fixed_column
+				let firstS = match(lines[line_num]['marker'], '\S') 
+				if firstS >= 4
+					let leftText = strpart(lines[line_num]['marker'], 0, firstS - 3)
+				else
+					let leftText = ''
 				endif
 
-				" Compensate for byte difference between marker
-				" character and target character
-				"
-				" This has to be done in order to match the correct
-				" column; \%c matches the byte column and not display
-				" column.
-				let target_char_len = strlen(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
-				let target_key_len = strlen(target_key)
+				if firstS >= 1
+					let rightText = strpart(lines[line_num]['marker'], firstS - 1)
+				elseif firstS == 0
+					let rightText = ' ' . lines[line_num]['marker']
+				else
+					let rightText = ''
+				endif
 
-				" Solve multibyte issues by matching the byte column
-				" number instead of the visual column
-				let col_num -= lines[line_num]['mb_compensation']
-
+				if target_key_len < 2
+					let text = target_key . ' '
+					call add(hl_coords, '\%' . line_num . 'l\%' . (strlen(leftText) + 1) . 'c')
+				else
+					let text = target_key
+					call add(hl2_first_coords, '\%' . line_num . 'l\%' . (strlen(leftText) + 1) . 'c')
+					call add(hl2_second_coords, '\%' . line_num . 'l\%' . (strlen(leftText) + 2) . 'c')
+				endif
+				let lines[line_num]['marker'] = leftText . text . rightText
+			else
 				if strlen(lines[line_num]['marker']) > 0
-					" Substitute marker character if line length > 0
-					
+				" Substitute marker character if line length > 0
+
 					let c = 0
 					while c < target_key_len && c < 2
 						if strlen(lines[line_num]['marker']) >= col_num + c
@@ -449,31 +489,33 @@
 						let c += 1
 					endwhile
 				else
-					" Set the line to the marker character if the line is empty
+				" Set the line to the marker character if the line is empty
 					let lines[line_num]['marker'] = target_key
 				endif
+			endif
 
-				" Add highlighting coordinates
+			" Add highlighting coordinates
+
+
+			if !exists('g:EasyMotion_fixed_column') || !g:EasyMotion_fixed_column
 				if target_key_len == 1
 					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
-					let lines_marks[line_num][col_num] = 1
 				else
 					call add(hl2_first_coords, '\%' . line_num . 'l\%' . (col_num) . 'c')
 					call add(hl2_second_coords, '\%' . line_num . 'l\%' . (col_num + 1) . 'c')
-					let lines_marks[line_num][col_num] = 1
-					let lines_marks[line_num][col_num + 1] = 1
 				endif
+			endif
 
-				" Add marker/target lenght difference for multibyte
-				" compensation
-				"let lines[line_num]['mb_compensation'] += (target_char_len - target_key_len)
-				let lines[line_num]['mb_compensation'] += (target_char_len - 1)
-			endfor
+			" Add marker/target lenght difference for multibyte
+			" compensation
+			"let lines[line_num]['mb_compensation'] += (target_char_len - target_key_len)
+			let lines[line_num]['mb_compensation'] += (target_char_len - 1)
+		endfor
 
-			let lines_items = items(lines)
+		let lines_items = items(lines)
 		" }}}
 		" Highlight targets {{{
-			if len(hl_coords) > 0
+			if len(hl_coords) > 0 
 				let target_hl_id = matchadd(g:EasyMotion_hl_group_target, join(hl_coords, '\|'), 1)
 			endif
 			if len(hl2_second_coords) > 0
@@ -500,7 +542,7 @@
 			call s:SetLines(lines_items, 'orig')
 
 			" Un-highlight targets {{{
-				if exists('target_hl_id')
+				if exists('target_hl_id') 
 					call matchdelete(target_hl_id)
 				endif
 				if exists('target_hl2_first_id')
@@ -520,7 +562,7 @@
 			endif
 		" }}}
 		" Check if the input char is valid {{{
-		if g:wait_for_repeat && char == '.'
+		if exists('g:EasyMotion_wait_for_repeat') && g:EasyMotion_wait_for_repeat && char == '.'
 			return g:old_target
 		else
 			if ! has_key(a:groups, char)
@@ -627,10 +669,11 @@
 						" Both directions"
 						let shade_hl_re = '\%'. line('w0') .'l\_.*\%'. line('w$') .'l'
 					endif
-
-					let shade_hl_id = matchadd(g:EasyMotion_hl_group_shade, shade_hl_re, 0)
+					if (!exists('g:EasyMotion_fixed_column') || !g:EasyMotion_fixed_column)
+						let shade_hl_id = matchadd(g:EasyMotion_hl_group_shade, shade_hl_re, 0)
+					endif
 				endif
-				if a:hlcurrent != 0
+				if a:hlcurrent != 0 
 					let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. a:hlcurrent .'l.*', 1)
 				endif
 			" }}}
@@ -688,7 +731,7 @@
 				call s:VarReset('&virtualedit')
 			" }}}
 			" Remove shading {{{
-				if g:EasyMotion_do_shade && exists('shade_hl_id')
+				if g:EasyMotion_do_shade && exists('shade_hl_id') && (!exists('g:EasyMotion_fixed_column') || !g:EasyMotion_fixed_column)
 					call matchdelete(shade_hl_id)
 				endif
 				if a:hlcurrent && exists('shade_hl_line_id')
