@@ -35,14 +35,14 @@
 
 		let s:target_hl2_first_defaults = {
 		\   'gui'     : ['NONE', '#ffb400' , 'bold']
-		\ , 'cterm256': ['NONE', '196'     , 'bold']
-		\ , 'cterm'   : ['NONE', 'red'     , 'bold']
+		\ , 'cterm256': ['NONE', '11'     , 'bold']
+		\ , 'cterm'   : ['NONE', '11'     , 'bold']
 		\ }
 
 		let s:target_hl2_second_defaults = {
 		\   'gui'     : ['NONE', '#b98300' , 'bold']
-		\ , 'cterm256': ['NONE', '196'     , 'bold']
-		\ , 'cterm'   : ['NONE', 'red'     , 'bold']
+		\ , 'cterm256': ['NONE', '3'     , 'bold']
+		\ , 'cterm'   : ['NONE', '3'     , 'bold']
 		\ }
 
 		let s:shade_hl_defaults = {
@@ -52,9 +52,9 @@
 		\ }
 
 		let s:shade_hl_line_defaults = {
-		\   'gui'     : ['#FF0000' , '#FFFFFF' , 'NONE']
-		\ , 'cterm256': ['NONE'    , '242'     , 'NONE']
-		\ , 'cterm'   : ['NONE'    , 'grey'    , 'NONE']
+		\   'gui'     : ['red' , '#FFFFFF' , 'NONE']
+		\ , 'cterm256': ['red' , '242'     , 'NONE']
+		\ , 'cterm'   : ['red' , 'grey'    , 'NONE']
 		\ }
 
 		call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
