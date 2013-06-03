@@ -13,7 +13,7 @@ Select lines using `vl`
 
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion2.gif)
 
-Yank lines using `yl`
+Yank lines using `yl`. You can copy lines without moving cursor back and forth between line you want to yank and line you want to paste.
 
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion3.gif)
 
