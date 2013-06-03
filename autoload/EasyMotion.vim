@@ -57,6 +57,15 @@
 			endfor
 		endif
 	endfunction "}}}
+
+	function! EasyMotion#SpecialMappings(motion) "{{{
+
+		if g:EasyMotion_special_select_line
+			silent exec 'onoremap <silent> ' . a:motion . ' :call EasyMotion#SelectLines()<CR>'
+			silent exec 'nnoremap <silent> v' . a:motion . ' :call EasyMotion#SelectLines()<CR>'
+			silent exec 'nnoremap <silent> y' . a:motion . ' :call EasyMotion#SelectLinesYank()<CR>'
+		endif
+	endfunction "}}}
 " }}}
 " Motion functions {{{
 
@@ -80,30 +89,25 @@
 
 	function! EasyMotion#SelectLines()
 		let orig_pos = [line('.'), col('.')]
-		let g:EasyMotion_wait_for_repeat = 0
-		let g:EasyMotion_fixed_column = 1
-		call EasyMotion#JK(0, 2) 	
+
+		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', 0, 0, 1)
 		if g:EasyMotion_cancelled 
-			let g:EasyMotion_fixed_column = 0
+			keepjumps call cursor(orig_pos[0], orig_pos[1])
 			return ''
 		else
 			let pos1 = [line('.'), col('.')]
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
-			let g:EasyMotion_wait_for_repeat = 1
-			let g:EasyMotion_fixed_column = 1
-			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', pos1[0])
+			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', pos1[0], 1, 1)
 			if g:EasyMotion_cancelled 
-				let g:EasyMotion_wait_for_repeat = 0
-				let g:EasyMotion_fixed_column = 0
+				keepjumps call cursor(orig_pos[0], orig_pos[1])
 				return ''
 			else
 				normal! V
 				keepjumps call cursor(pos1[0], pos1[1])
 			endif
 		endif
-		let g:EasyMotion_wait_for_repeat = 0
-		let g:EasyMotion_fixed_column = 0
 	endfunction
+
 	function! EasyMotion#F(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
 
@@ -113,7 +117,7 @@
 
 		let re = '\C' . escape(char, '.$^~')
 
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1), 0)
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 
 	function! EasyMotion#S(visualmode, direction) " {{{
@@ -125,7 +129,7 @@
 
 		let re = '\C' . escape(char, '.$^~')
 
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1), 0)
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 
 	function! EasyMotion#T(visualmode, direction) " {{{
@@ -141,25 +145,25 @@
 			let re = '\C.' . escape(char, '.$^~')
 		endif
 
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1), 0)
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotion#WB(visualmode, direction) " {{{
-		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '', 0)
+		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 	function! EasyMotion#WBW(visualmode, direction) " {{{
-		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '', 0)
+		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 	function! EasyMotion#E(visualmode, direction) " {{{
-		call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1), 0)
+		call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotion#EW(visualmode, direction) " {{{
-		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1), 0)
+		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotion#JK(visualmode, direction) " {{{
-		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '', 0)
+		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 	function! EasyMotion#Search(visualmode, direction) " {{{
-		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '', 0)
+		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 " }}}
 " Helper functions {{{
@@ -404,7 +408,8 @@
 	" }}}
 " }}}
 " Core functions {{{
-	function! s:PromptUser(groups) "{{{
+	function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
+
 		" If only one possible match, jump directly to it {{{
 			let group_values = values(a:groups)
 
@@ -450,7 +455,7 @@
 			" Solve multibyte issues by matching the byte column
 			" number instead of the visual column
 			let col_num -= lines[line_num]['mb_compensation']
-			if exists('g:EasyMotion_fixed_column') && g:EasyMotion_fixed_column
+			if a:fixed_column 
 				let firstS = match(lines[line_num]['marker'], '\S') 
 				if firstS >= 4
 					let leftText = strpart(lines[line_num]['marker'], 0, firstS - 3)
@@ -474,7 +479,7 @@
 					call add(hl2_first_coords, '\%' . line_num . 'l\%1c')
 					call add(hl2_second_coords, '\%' . line_num . 'l\%2c')
 				endif 
-				let lines[line_num]['marker'] = text . lines[line_num]['marker'] 
+				let lines[line_num]['marker'] = text . ' ' . lines[line_num]['marker'] 
 
 				"if target_key_len < 2
 					"let text = target_key . ' '
@@ -507,7 +512,7 @@
 			" Add highlighting coordinates
 
 
-			if !exists('g:EasyMotion_fixed_column') || !g:EasyMotion_fixed_column
+			if !a:fixed_column
 				if target_key_len == 1
 					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
 				else
@@ -572,7 +577,7 @@
 			endif
 		" }}}
 		" Check if the input char is valid {{{
-		if exists('g:EasyMotion_wait_for_repeat') && g:EasyMotion_wait_for_repeat && char == '.'
+		if a:allows_repeat && char == '.'
 			return g:old_target
 		else
 			if ! has_key(a:groups, char)
@@ -587,11 +592,21 @@
 				return target
 			else
 				" Prompt for new target character
-				return s:PromptUser(target)
+				return s:PromptUser(target, a:allows_repeat, a:fixed_column)
 			endif
 		endif
 	endfunction "}}}
-	function! s:EasyMotion(regexp, direction, visualmode, mode, hlcurrent) " {{{
+
+	function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
+		" For SelectLines(), to highlight previous selected line
+		let hlcurrent = a:0 >= 1 ? a:1 : 0 
+		" For SelectLines(), to allows '.' to repeat the previously pressed 
+		" character 
+		let allows_repeat = a:0 >= 2 ? a:2 : 0
+		" For SelectLines(), a flag to display character only at the beginning
+		" of the line
+		let fixed_column = a:0 >= 3 ? a:3 : 0
+
 		let orig_pos = [line('.'), col('.')]
 		let targets = []
 
@@ -608,8 +623,10 @@
 				let search_direction = (a:direction >= 1 ? 'b' : '')
 				let search_stopline = line(a:direction >= 1 ? 'w0' : 'w$')
 
+				let search_at_cursor = fixed_column ? 'c' : ''
 				while 1
-					let pos = searchpos(a:regexp, search_direction, search_stopline)
+					let pos = searchpos(a:regexp, search_direction . search_at_cursor, search_stopline)
+					let search_at_cursor = ''
 
 					" Reached end of search range
 					if pos == [0, 0]
@@ -679,17 +696,17 @@
 						" Both directions"
 						let shade_hl_re = '\%'. line('w0') .'l\_.*\%'. line('w$') .'l'
 					endif
-					if (!exists('g:EasyMotion_fixed_column') || !g:EasyMotion_fixed_column)
+					if !fixed_column
 						let shade_hl_id = matchadd(g:EasyMotion_hl_group_shade, shade_hl_re, 0)
 					endif
 				endif
-				if a:hlcurrent != 0 
-					let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. a:hlcurrent .'l.*', 1)
+				if hlcurrent != 0 
+					let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. hlcurrent .'l.*', 1)
 				endif
 			" }}}
 
 			" Prompt user for target group/character
-			let coords = s:PromptUser(groups)
+			let coords = s:PromptUser(groups, allows_repeat, fixed_column)
 			let g:old_target = coords
 
 			" Update selection {{{
@@ -741,10 +758,10 @@
 				call s:VarReset('&virtualedit')
 			" }}}
 			" Remove shading {{{
-				if g:EasyMotion_do_shade && exists('shade_hl_id') && (!exists('g:EasyMotion_fixed_column') || !g:EasyMotion_fixed_column)
+				if g:EasyMotion_do_shade && exists('shade_hl_id') && (!fixed_column)
 					call matchdelete(shade_hl_id)
 				endif
-				if a:hlcurrent && exists('shade_hl_line_id')
+				if hlcurrent && exists('shade_hl_line_id')
 					call matchdelete(shade_hl_line_id)
 				endif
 			" }}}
