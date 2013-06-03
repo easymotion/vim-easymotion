@@ -9,11 +9,11 @@ Two-key combo
 
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion.gif)
 
-Select line using `vl`
+Select lines using `vl`
 
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion2.gif)
 
-Yank line using `yl`
+Yank lines using `yl`
 
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion3.gif)
 
