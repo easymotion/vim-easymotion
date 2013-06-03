@@ -2,7 +2,7 @@
 1. Use one - two character key jump. Display two keys if one-character key is not enough, so you can see what two keys to type without waiting after pressing the first key.
 2. Added forward-backward search (bidirectional) search. You can jump forward or backward at the same time. `<Leader>s`. One useful  trick is to map nmap <SPACE> <leader>s' and `vmap <SPACE> <leader>s' to use space bar instead and save one keystroke!
 ''
-3. Added SelectLines function which allows you to select any range of lines using two consecutive easymotion calls. E.g. Using "omap l :call EasyMotion#SelectLines()<CR>", and "vmap l :call EasyMotion#SelectLines()<CR>". Then "vl" would ask you to specify two start/end lines using easymotion.
+3. Added SelectLines function which allows you to select any range of lines using two consecutive easymotion calls. Default mappings are `cl, dl, vl, yl'.
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion.gif)
 
 This is an alpha version, which breaks multi-byte support, and others.
