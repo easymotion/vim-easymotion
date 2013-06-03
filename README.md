@@ -6,10 +6,15 @@
 ## Animated demonstration
 
 Two-key combo
+
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion.gif)
+
 Select line using `vl`
+
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion2.gif)
+
 Yank line using `yl`
+
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion3.gif)
 
 This is an alpha version, which breaks multi-byte support, and others.
