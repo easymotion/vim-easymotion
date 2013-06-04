@@ -2,7 +2,7 @@
 1. Use one - two character key jump. Display two keys if one-character key is not enough, so you can see what two keys to type without waiting after pressing the first key.
 2. Added forward-backward search (bidirectional) search. You can jump forward or backward at the same time. `<Leader>s`. One useful  trick is to map `nmap <SPACE> <leader>s` and `vmap <SPACE> <leader>s` to use space bar instead and save one keystroke!
 3. Added SelectLines function which allows you to select any range of lines using two consecutive easymotion calls. Default mappings are `cl, dl, vl, yl`. To yank a single line you can either type the same character(s) twice, or use '.' character. E.g. `vlb.` will select the line with character 'b'. Note: to promote good Vim habits, you should learn standard movement commands like `}}, vi(, va(, %, ][, ]], [(, etc.` before resorting to this function. 
-4. (Experimental) Added SelectPhrase function which allows you to make selection between any two characters. Default mapping are `cp, dp, vp, yp`. 
+4. (Experimental) Added SelectPhrase function which allows you to make selection between any two characters. Default mapping are `cp, dp, vp, yp`. Example usage: type `vp` then press two input characters. Now the two input characters will be highlight on the same screen, and you can then type two combos to make selection.
 
 ## Animated demonstration
 
