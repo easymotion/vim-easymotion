@@ -58,12 +58,20 @@
 		endif
 	endfunction "}}}
 
-	function! EasyMotion#SpecialMappings(motion) "{{{
+	function! EasyMotion#SelectLinesMappings(motion) "{{{
 
 		if g:EasyMotion_special_select_line
 			silent exec 'onoremap <silent> ' . a:motion . ' :call EasyMotion#SelectLines()<CR>'
 			silent exec 'nnoremap <silent> v' . a:motion . ' :call EasyMotion#SelectLines()<CR>'
 			silent exec 'nnoremap <silent> y' . a:motion . ' :call EasyMotion#SelectLinesYank()<CR>'
+		endif
+	endfunction "}}}
+
+	function! EasyMotion#SelectPhraseMappings(motion) "{{{
+		if g:EasyMotion_special_select_phrase
+			silent exec 'onoremap <silent> ' . a:motion . ' :call EasyMotion#SelectPhrase()<CR>'
+			silent exec 'nnoremap <silent> v' . a:motion . ' :call EasyMotion#SelectPhrase()<CR>'
+			silent exec 'nnoremap <silent> y' . a:motion . ' :call EasyMotion#SelectPhraseYank()<CR>'
 		endif
 	endfunction "}}}
 " }}}
@@ -107,6 +115,42 @@
 			endif
 		endif
 	endfunction
+
+	function! EasyMotion#SelectPhrase()
+		let chars = s:GetSearchChar2(0)
+		if empty(chars)
+			return
+		endif
+
+		let orig_pos = [line('.'), col('.')]
+
+		let re = '\C' . escape(chars[0], '.$^~') . '\|\C' . escape(chars[1], '.$^~')  
+		call s:EasyMotion(re, 2, '', '', 0, 0, 0, 0)
+		if g:EasyMotion_cancelled 
+			keepjumps call cursor(orig_pos[0], orig_pos[1])
+			return ''
+		else
+			let pos1 = [line('.'), col('.')]
+			keepjumps call cursor(orig_pos[0], orig_pos[1])
+			call s:EasyMotion(re, 2, '', '', 0, 0, 0, pos1)
+			if g:EasyMotion_cancelled 
+				keepjumps call cursor(orig_pos[0], orig_pos[1])
+				return ''
+			else
+				normal! v
+				keepjumps call cursor(pos1[0], pos1[1])
+			endif
+		endif
+	endfunction
+
+	function! EasyMotion#SelectPhraseYank()
+		let orig_pos = [line('.'), col('.')]
+		
+		call EasyMotion#SelectPhrase()
+		normal y
+		keepjumps call cursor(orig_pos[0], orig_pos[1])
+	endfunction
+
 
 	function! EasyMotion#F(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
@@ -220,6 +264,32 @@
 
 		return nr2char(char)
 	endfunction " }}}
+
+	function! s:GetSearchChar2(visualmode) " {{{
+
+		let chars = [] 
+		for i in [1, 2]
+			redraw
+			
+			call s:Prompt('Search for character ' . i)
+			let char = s:GetChar()
+
+			" Check that we have an input char
+			if empty(char)
+				" Restore selection
+				if ! empty(a:visualmode)
+					silent exec 'normal! gv'
+				endif
+
+				return ''
+			endif
+			call add(chars, char)
+		endfor
+
+		return chars
+	endfunction " }}}
+
+
 	function! s:GetSearchChar(visualmode) " {{{
 		call s:Prompt('Search for character')
 
@@ -607,6 +677,8 @@
 		" of the line
 		let fixed_column = a:0 >= 3 ? a:3 : 0
 
+		let hlchar = a:0 >= 4 ? a:4 : 0
+
 		let orig_pos = [line('.'), col('.')]
 		let targets = []
 
@@ -638,7 +710,9 @@
 						continue
 					endif
 
-					call add(targets, pos)
+					if empty(hlchar) || pos != hlchar
+						call add(targets, pos)
+					endif
 				endwhile
 
 				if a:direction == 2
@@ -654,7 +728,9 @@
 							continue
 						endif
 
-						call add(targets2, pos)
+						if empty(hlchar) || pos != hlchar
+							call add(targets2, pos)
+						endif
 					endwhile
 					let t1 = 0
 					let t2 = 0
@@ -702,6 +778,9 @@
 				endif
 				if hlcurrent != 0 
 					let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. hlcurrent .'l.*', 1)
+				endif
+				if !empty(hlchar)
+					let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. hlchar[0] .'l\%' . hlchar[1] .'c' , 1)
 				endif
 			" }}}
 
@@ -761,7 +840,7 @@
 				if g:EasyMotion_do_shade && exists('shade_hl_id') && (!fixed_column)
 					call matchdelete(shade_hl_id)
 				endif
-				if hlcurrent && exists('shade_hl_line_id')
+				if (hlcurrent || !empty(hlchar)) && exists('shade_hl_line_id')
 					call matchdelete(shade_hl_line_id)
 				endif
 			" }}}

@@ -13,12 +13,13 @@
 " Default configuration {{{
 	" Default options {{{
 		call EasyMotion#InitOptions({
-		\   'leader_key'           : '<Leader><Leader>'
-		\ , 'keys'                 : 'abcdeghiklmnopqrstuvwxyzfj'
-		\ , 'do_shade'             : 1
-		\ , 'do_mapping'           : 1
-		\ , 'special_select_line'  : 1
-		\ , 'grouping'             : 1
+		\   'leader_key'             : '<Leader><Leader>'
+		\ , 'keys'                   : 'abcdeghiklmnopqrstuvwxyzfj'
+		\ , 'do_shade'               : 1
+		\ , 'do_mapping'             : 1
+		\ , 'special_select_line'    : 1
+		\ , 'special_select_phrase'  : 1
+		\ , 'grouping'               : 1
 		\
 		\ , 'hl_group_target'         : 'EasyMotionTarget'
 		\ , 'hl2_first_group_target'  : 'EasyMotionTarget2First'
@@ -97,9 +98,9 @@
 		\ , 'N' : { 'name': 'Search' , 'dir': 1 }
 		\ })
 	" }}}
-	" Special mapping for SelectLine function {{{
-	call EasyMotion#SpecialMappings('l')
-"
+	" Special mapping for other functions {{{
+		call EasyMotion#SelectLinesMappings('l')
+		call EasyMotion#SelectPhraseMappings('p')
 	" }}}
 " }}}
 
