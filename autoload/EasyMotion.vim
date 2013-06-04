@@ -776,7 +776,7 @@
 					let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. hlcurrent .'l.*', 1)
 				endif
 				if !empty(hlchar)
-					let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. hlchar[0] .'l\%' . hlchar[1] .'c' , 1)
+					let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. hlchar[0] .'l\%' . hlchar[1] .'c' , 2)
 				endif
 			" }}}
 
