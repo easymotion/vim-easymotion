@@ -710,9 +710,7 @@
 						continue
 					endif
 
-					if empty(hlchar) || pos != hlchar
-						call add(targets, pos)
-					endif
+					call add(targets, pos)
 				endwhile
 
 				if a:direction == 2
@@ -728,9 +726,7 @@
 							continue
 						endif
 
-						if empty(hlchar) || pos != hlchar
-							call add(targets2, pos)
-						endif
+						call add(targets2, pos)
 					endwhile
 					let t1 = 0
 					let t2 = 0
