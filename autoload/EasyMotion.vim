@@ -145,7 +145,7 @@
 
 	function! EasyMotion#SelectPhraseYank()
 		let orig_pos = [line('.'), col('.')]
-		
+
 		call EasyMotion#SelectPhrase()
 		normal y
 		keepjumps call cursor(orig_pos[0], orig_pos[1])
@@ -270,7 +270,7 @@
 		let chars = [] 
 		for i in [1, 2]
 			redraw
-			
+
 			call s:Prompt('Search for character ' . i)
 			let char = s:GetChar()
 
@@ -690,6 +690,7 @@
 				call s:VarReset('&readonly', 0)
 				call s:VarReset('&spell', 0)
 				call s:VarReset('&virtualedit', '')
+                call s:VarReset('&foldmethod', 'manual')
 			" }}}
 			" Find motion targets {{{
 				let search_direction = (a:direction >= 1 ? 'b' : '')
@@ -831,6 +832,7 @@
 				call s:VarReset('&readonly')
 				call s:VarReset('&spell')
 				call s:VarReset('&virtualedit')
+                call s:VarReset('&foldmethod')
 			" }}}
 			" Remove shading {{{
 				if g:EasyMotion_do_shade && exists('shade_hl_id') && (!fixed_column)
