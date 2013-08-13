@@ -13,6 +13,7 @@
 	endfunction " }}}
 	function! EasyMotion#InitHL(group, colors) " {{{
 		let group_default = a:group . 'Default'
+        let g:key_groups = []
 
 		" Prepare highlighting variables
 		let guihl = printf('guibg=%s guifg=%s gui=%s', a:colors.gui[0], a:colors.gui[1], a:colors.gui[2])
@@ -254,6 +255,8 @@
 					if key_count > 1
 						" We need to create a subgroup
 						" Recurse one level deeper
+                        let g:key_groups += [key_count]
+
 						let groups[a:keys[key]] = s:GroupingAlgorithmSCTree(a:targets[i : i + key_count - 1], a:keys)
 					elseif key_count == 1
 						" Assign single target key
@@ -406,7 +409,56 @@
 			let lines_items = items(lines)
 		" }}}
 		" Highlight targets {{{
-			let target_hl_id = matchadd(g:EasyMotion_hl_group_target, join(hl_coords, '\|'), 1)
+            " just need to turn calculations below into an algorithm that
+            " works even when key_groups size varies. 
+            if g:EasyMotion_hl_group_odd
+                let hl_coords_length = len(g:key_groups)
+
+                let first_range_holder = 52 - len(g:key_groups)
+                let even_coords = hl_coords[0 : first_range_holder-1]
+                if len(g:key_groups) > 0
+                    "let even_coords = hl_coords[(first_range_holder) : (first_range_holder+g:key_groups[0]-1)]
+                    "let odd_coords += hl_coords[(first_range_holder+g:key_groups[0]) : (first_range_holder+g:key_groups[0]+g:key_groups[1]-1)]
+                    "let even_coords += hl_coords[(first_range_holder+g:key_groups[0]+g:key_groups[1]) : (first_range_holder+g:key_groups[0]+g:key_groups[1]+g:key_groups[2]-1)]
+                    let group_count = 0
+                    let even_coords = []
+                    let odd_coords = []
+                    let upper_range = 0
+                    while group_count <= len(g:key_groups)
+                        let lower_range = upper_range
+                        if group_count == 0
+                            let upper_range = first_range_holder-1
+                            let even_coords += hl_coords[lower_range : upper_range]
+                            let upper_range = first_range_holder
+                        elseif group_count % 2 == 0
+                            if group_count == len(g:key_groups)
+                                let even_coords += hl_coords[lower_range : ]
+                            else
+                                let upper_range += g:key_groups[group_count-1] - 1
+                                let even_coords += hl_coords[lower_range : upper_range]
+                                let upper_range += 1
+                            endif
+                        else
+                            if group_count == len(g:key_groups)
+                                let odd_coords += hl_coords[lower_range : ]
+                            else
+                                let upper_range += g:key_groups[group_count-1] - 1
+                                let odd_coords += hl_coords[lower_range : upper_range]
+                                let upper_range += 1
+                            endif
+                        endif
+                        let group_count += 1
+                    endwhile
+                endif
+
+                let target_hl_id = matchadd(g:EasyMotion_hl_group_target, join(even_coords, '\|'), 1)
+                if len(g:key_groups) > 0
+                    let target_hl_id2 = matchadd(g:EasyMotion_hl_group_odd, join(odd_coords, '\|'), 1)
+                endif
+                let g:key_groups = []
+            else
+                let target_hl_id = matchadd(g:EasyMotion_hl_group_target, join(hl_coords, '\|'), 1)
+            endif
 		" }}}
 
 		try
@@ -427,6 +479,9 @@
 			" Un-highlight targets {{{
 				if exists('target_hl_id')
 					call matchdelete(target_hl_id)
+				endif
+				if exists('target_hl_id2')
+					call matchdelete(target_hl_id2)
 				endif
 			" }}}
 

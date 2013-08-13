@@ -20,6 +20,7 @@
 		\ , 'grouping'        : 1
 		\
 		\ , 'hl_group_target' : 'EasyMotionTarget'
+		\ , 'hl_group_odd'    : 'EasyMotionOdd'
 		\ , 'hl_group_shade'  : 'EasyMotionShade'
 		\ })
 	" }}}
@@ -30,6 +31,12 @@
 		\ , 'cterm'   : ['NONE', 'red'     , 'bold']
 		\ }
 
+		let s:odd_hl_defaults = {
+		\   'gui'     : ['NONE', '#003366' , 'bold']
+		\ , 'cterm256': ['NONE', '019'     , 'bold']
+		\ , 'cterm'   : ['NONE', 'blue'    , 'bold']
+		\ }
+        
 		let s:shade_hl_defaults = {
 		\   'gui'     : ['NONE', '#777777' , 'NONE']
 		\ , 'cterm256': ['NONE', '242'     , 'NONE']
@@ -37,6 +44,7 @@
 		\ }
 
 		call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
+		"call EasyMotion#InitHL(g:EasyMotion_hl_group_odd,    s:odd_hl_defaults)
 		call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
 
 		" Reset highlighting after loading a new color scheme {{{
