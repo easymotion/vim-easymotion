@@ -1,3 +1,24 @@
+# Modifications to Lokaltog's EasyMotion
+1. Use one - two character key jump. Display two keys if one-character key is not enough, so you can see what two keys to type without waiting after pressing the first key.
+2. Added forward-backward search (bidirectional) search. You can jump forward or backward at the same time. `<Leader>s`. One useful  trick is to map `nmap <SPACE> <leader>s` and `vmap <SPACE> <leader>s` to use space bar instead and save one keystroke!
+3. Added SelectLines function which allows you to select any range of lines using two consecutive easymotion calls. Default mappings are `cl, dl, vl, yl`. To yank a single line you can either type the same character(s) twice, or use '.' character. E.g. `vlb.` will select the line with character 'b'. Note: to promote good Vim habits, you should learn standard movement commands like `}}, vi(, va(, %, ][, ]], [(, etc.` before resorting to this function. 
+4. (Experimental) Added SelectPhrase function which allows you to make selection between any two characters. Default mapping are `cp, dp, vp, yp`. Example usage: type `vp` then press two input characters. Now the two input characters will be highlight on the same screen, and you can then type two combos to make selection.
+
+## Animated demonstration
+
+Two-key combo
+
+![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion.gif)
+
+Select lines using `vl`
+
+![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion2.gif)
+
+Yank lines using `yl`. You can copy lines without moving cursor back and forth between line you want to yank and line you want to paste.
+
+![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion3.gif)
+
+This is an alpha version, which breaks multi-byte support, and others.
 # Introduction
 
 EasyMotion provides a much simpler way to use some motions in vim. It
