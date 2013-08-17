@@ -99,7 +99,7 @@
 		\ })
 	" }}}
 	" Special mapping for other functions {{{
-		call EasyMotion#SelectLinesMappings('l')
+		call EasyMotion#SelectLinesMappings('u')
 		call EasyMotion#SelectPhraseMappings('p')
 	" }}}
 " }}}
