@@ -44,7 +44,7 @@
 		\ }
 
 		call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
-		"call EasyMotion#InitHL(g:EasyMotion_hl_group_odd,    s:odd_hl_defaults)
+		call EasyMotion#InitHL(g:EasyMotion_hl_group_odd,    s:odd_hl_defaults)
 		call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
 
 		" Reset highlighting after loading a new color scheme {{{
