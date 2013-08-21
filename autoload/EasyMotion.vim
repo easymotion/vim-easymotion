@@ -535,8 +535,10 @@
 
 			" Update cursor position
 			call cursor(orig_pos[0], orig_pos[1])
-			mark '
-			call cursor(coords[0], coords[1])
+			let mark_save = getpos("'e")
+			call setpos("'e", [bufnr('%'), coords[0], coords[1], 0])
+			execute 'normal! `e'
+			call setpos("'e", mark_save)
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		catch
