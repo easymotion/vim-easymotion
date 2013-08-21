@@ -18,6 +18,7 @@
 		\ , 'do_shade'        : 1
 		\ , 'do_mapping'      : 1
 		\ , 'grouping'        : 1
+		\ , 'startofline'     : 1
 		\
 		\ , 'hl_group_target' : 'EasyMotionTarget'
 		\ , 'hl_group_shade'  : 'EasyMotionShade'
