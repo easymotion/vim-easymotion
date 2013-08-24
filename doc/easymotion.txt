@@ -97,6 +97,10 @@ visual and operator-pending mode:
     <Leader>k         | Line upward. See |k|.
     <Leader>n         | Jump to latest "/" or "?" forward. See |n|.
     <Leader>N         | Jump to latest "/" or "?" backward. See |N|.
+    <Leader>s         | Beginning of sentence forward. See |(|.
+    <Leader>S         | Beginning of sentence backward. See |)|.
+    <Leader>p         | Beginning of paragraph forward. See |{|.
+    <Leader>P         | Beginning of paragraph backward. See |}|.
 
 See |easymotion-leader-key| and |mapleader| for details about the leader key.
 See |easymotion-custom-mappings| for customizing the default mappings.
