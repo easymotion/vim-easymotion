@@ -49,7 +49,7 @@
 
 		let s:shade_hl_defaults = {
 		\   'gui'     : ['NONE', '#777777' , 'NONE']
-		\ , 'cterm256': ['NONE', '242'     , 'NONE']
+		\ , 'cterm256': ['NONE', '230'     , 'NONE']
 		\ , 'cterm'   : ['NONE', 'grey'    , 'NONE']
 		\ }
 
