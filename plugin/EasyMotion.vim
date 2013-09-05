@@ -66,6 +66,10 @@
 		\ , 'k' : { 'name': 'JK' , 'dir': 1 }
 		\ , 'n' : { 'name': 'Search' , 'dir': 0 }
 		\ , 'N' : { 'name': 'Search' , 'dir': 1 }
+		\ , 's' : { 'name': 'Sentence' , 'dir': 0 }
+		\ , 'S' : { 'name': 'Sentence' , 'dir': 1 }
+		\ , 'p' : { 'name': 'Paragraph' , 'dir': 0 }
+		\ , 'P' : { 'name': 'Paragraph' , 'dir': 1 }
 		\ })
 	" }}}
 " }}}

@@ -103,6 +103,12 @@
 	function! EasyMotion#Search(visualmode, direction) " {{{
 		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
+	function! EasyMotion#Sentence(visualmode, direction) " {{{
+		call s:EasyMotion('\(\%^\|\n\s*\n\|[.!?][])''"]*\s\+\)\zs', a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
+	function! EasyMotion#Paragraph(visualmode, direction) " {{{
+		call s:EasyMotion('\(\%^\|\n\s*\n\)\zs', a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
 " }}}
 " Helper functions {{{
 	function! s:Message(message) " {{{
