@@ -57,8 +57,101 @@
 			endfor
 		endif
 	endfunction "}}}
+
+	function! EasyMotion#SelectLinesMappings(motion) "{{{
+
+		if g:EasyMotion_special_select_line
+			silent exec 'onoremap <silent> ' . a:motion . ' :call EasyMotion#SelectLines()<CR>'
+			silent exec 'nnoremap <silent> v' . a:motion . ' :call EasyMotion#SelectLines()<CR>'
+			silent exec 'nnoremap <silent> y' . a:motion . ' :call EasyMotion#SelectLinesYank()<CR>'
+		endif
+	endfunction "}}}
+
+	function! EasyMotion#SelectPhraseMappings(motion) "{{{
+		if g:EasyMotion_special_select_phrase
+			silent exec 'onoremap <silent> ' . a:motion . ' :call EasyMotion#SelectPhrase()<CR>'
+			silent exec 'nnoremap <silent> v' . a:motion . ' :call EasyMotion#SelectPhrase()<CR>'
+			silent exec 'nnoremap <silent> y' . a:motion . ' :call EasyMotion#SelectPhraseYank()<CR>'
+		endif
+	endfunction "}}}
 " }}}
 " Motion functions {{{
+
+	function! EasyMotion#SelectLinesPaste()
+		let orig_pos = [line('.'), col('.')]
+		call EasyMotion#SelectLines()
+		normal y
+		keepjumps call cursor(orig_pos[0], orig_pos[1])
+		if !g:EasyMotion_cancelled
+			normal p
+		endif
+	endfunction
+
+	function! EasyMotion#SelectLinesYank()
+		let orig_pos = [line('.'), col('.')]
+		call EasyMotion#SelectLines()
+		normal y
+		keepjumps call cursor(orig_pos[0], orig_pos[1])
+		"normal p
+	endfunction
+
+	function! EasyMotion#SelectLines()
+		let orig_pos = [line('.'), col('.')]
+
+		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', 0, 0, 1)
+		if g:EasyMotion_cancelled 
+			keepjumps call cursor(orig_pos[0], orig_pos[1])
+			return ''
+		else
+			let pos1 = [line('.'), col('.')]
+			keepjumps call cursor(orig_pos[0], orig_pos[1])
+			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', pos1[0], 1, 1)
+			if g:EasyMotion_cancelled 
+				keepjumps call cursor(orig_pos[0], orig_pos[1])
+				return ''
+			else
+				normal! V
+				keepjumps call cursor(pos1[0], pos1[1])
+			endif
+		endif
+	endfunction
+
+	function! EasyMotion#SelectPhrase()
+		let chars = s:GetSearchChar2(0)
+		if empty(chars)
+			return
+		endif
+
+		let orig_pos = [line('.'), col('.')]
+
+		let re = '\C' . escape(chars[0], '.$^~') . '\|\C' . escape(chars[1], '.$^~')  
+		call s:EasyMotion(re, 2, '', '', 0, 0, 0, 0)
+		if g:EasyMotion_cancelled 
+			keepjumps call cursor(orig_pos[0], orig_pos[1])
+			return ''
+		else
+			let pos1 = [line('.'), col('.')]
+			keepjumps call cursor(orig_pos[0], orig_pos[1])
+			call s:EasyMotion(re, 2, '', '', 0, 0, 0, pos1)
+			if g:EasyMotion_cancelled 
+				keepjumps call cursor(orig_pos[0], orig_pos[1])
+				return ''
+			else
+				normal! v
+				keepjumps call cursor(pos1[0], pos1[1])
+			endif
+		endif
+	endfunction
+
+	function! EasyMotion#SelectPhraseYank()
+		let orig_pos = [line('.'), col('.')]
+
+		call EasyMotion#SelectPhrase()
+		normal y
+		keepjumps call cursor(orig_pos[0], orig_pos[1])
+	endfunction
+
+
 	function! EasyMotion#F(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
 
@@ -70,6 +163,19 @@
 
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
+
+	function! EasyMotion#S(visualmode, direction) " {{{
+		let char = s:GetSearchChar(a:visualmode)
+
+		if empty(char)
+			return
+		endif
+
+		let re = '\C' . escape(char, '.$^~')
+
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
+
 	function! EasyMotion#T(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
 
@@ -86,7 +192,9 @@
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotion#WB(visualmode, direction) " {{{
-		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+	    " from camelcasemotion.vim: beginning of ...
+	    " word | empty line | non-keyword after whitespaces | non-whitespace after word | number | ACRONYM followed by CamelCase or number | CamelCase | underscore followed by ACRONYM, Camel, lowercase or number
+		call s:EasyMotion('\<\D\|^$\|\%(^\|\s\)\+\zs\k\@!\S\|\>\S\|\d\+\|\u\+\ze\%(\u\l\|\d\)\|\u\l\+\|_\zs\%(\u\+\|\u\l\+\|\l\+\|\d\+\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 	function! EasyMotion#WBW(visualmode, direction) " {{{
 		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
@@ -162,6 +270,32 @@
 
 		return nr2char(char)
 	endfunction " }}}
+
+	function! s:GetSearchChar2(visualmode) " {{{
+
+		let chars = [] 
+		for i in [1, 2]
+			redraw
+
+			call s:Prompt('Search for character ' . i)
+			let char = s:GetChar()
+
+			" Check that we have an input char
+			if empty(char)
+				" Restore selection
+				if ! empty(a:visualmode)
+					silent exec 'normal! gv'
+				endif
+
+				return ''
+			endif
+			call add(chars, char)
+		endfor
+
+		return chars
+	endfunction " }}}
+
+
 	function! s:GetSearchChar(visualmode) " {{{
 		call s:Prompt('Search for character')
 
@@ -318,7 +452,8 @@
 			let group_key = a:0 == 1 ? a:1 : ''
 
 			for [key, item] in items(a:groups)
-				let key = ( ! empty(group_key) ? group_key : key)
+				let key = group_key . key "( ! empty(group_key) ? group_key : key)
+				"let key = ( ! empty(group_key) ? group_key : key)
 
 				if type(item) == 3
 					" Destination coords
@@ -349,7 +484,8 @@
 	" }}}
 " }}}
 " Core functions {{{
-	function! s:PromptUser(groups) "{{{
+	function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
+
 		" If only one possible match, jump directly to it {{{
 			let group_values = values(a:groups)
 
@@ -360,59 +496,127 @@
 			endif
 		" }}}
 		" Prepare marker lines {{{
-			let lines = {}
-			let hl_coords = []
-			let coord_key_dict = s:CreateCoordKeyDict(a:groups)
+		let lines = {}
+		let hl_coords = []
+		let hl2_first_coords = [] " Highlight for two characters
+		let hl2_second_coords = [] " Highlight for two characters
 
-			for dict_key in sort(coord_key_dict[0])
-				let target_key = coord_key_dict[1][dict_key]
-				let [line_num, col_num] = split(dict_key, ',')
+		let coord_key_dict = s:CreateCoordKeyDict(a:groups)
 
-				let line_num = str2nr(line_num)
-				let col_num = str2nr(col_num)
+		for dict_key in sort(coord_key_dict[0])
+			let target_key = coord_key_dict[1][dict_key]
+			let [line_num, col_num] = split(dict_key, ',')
 
-				" Add original line and marker line
-				if ! has_key(lines, line_num)
-					let current_line = getline(line_num)
+			let line_num = str2nr(line_num)
+			let col_num = str2nr(col_num)
 
-					let lines[line_num] = { 'orig': current_line, 'marker': current_line, 'mb_compensation': 0 }
+			" Add original line and marker line
+			if ! has_key(lines, line_num)
+				let current_line = getline(line_num)
+
+				let lines[line_num] = { 'orig': current_line, 'marker': current_line, 'mb_compensation': 0 }
+
+			endif
+
+			" Compensate for byte difference between marker
+			" character and target character
+			"
+			" This has to be done in order to match the correct
+			" column; \%c matches the byte column and not display
+			" column.
+			let target_char_len = strlen(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
+			let target_key_len = strlen(target_key)
+
+
+			" Solve multibyte issues by matching the byte column
+			" number instead of the visual column
+			let col_num -= lines[line_num]['mb_compensation']
+			if a:fixed_column 
+				let firstS = match(lines[line_num]['marker'], '\S') 
+				if firstS >= 4
+					let leftText = strpart(lines[line_num]['marker'], 0, firstS - 3)
+				else
+					let leftText = ''
 				endif
 
-				" Compensate for byte difference between marker
-				" character and target character
-				"
-				" This has to be done in order to match the correct
-				" column; \%c matches the byte column and not display
-				" column.
-				let target_char_len = strlen(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
-				let target_key_len = strlen(target_key)
-
-				" Solve multibyte issues by matching the byte column
-				" number instead of the visual column
-				let col_num -= lines[line_num]['mb_compensation']
-
-				if strlen(lines[line_num]['marker']) > 0
-					" Substitute marker character if line length > 0
-					let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . col_num . 'c.', target_key, '')
+				if firstS >= 1
+					let rightText = strpart(lines[line_num]['marker'], firstS - 1)
+				elseif firstS == 0
+					let rightText = ' ' . lines[line_num]['marker']
 				else
-					" Set the line to the marker character if the line is empty
+					let rightText = ''
+				endif
+
+				if target_key_len < 2
+					let text = ' ' . target_key
+					call add(hl_coords, '\%' . line_num . 'l\%2c')
+				else
+					let text = target_key
+					call add(hl2_first_coords, '\%' . line_num . 'l\%1c')
+					call add(hl2_second_coords, '\%' . line_num . 'l\%2c')
+				endif 
+				let lines[line_num]['marker'] = text . ' ' . lines[line_num]['marker'] 
+
+				"if target_key_len < 2
+					"let text = target_key . ' '
+					"call add(hl_coords, '\%' . line_num . 'l\%' . (strlen(lines[line_num]['marker']) + 1) . 'c')
+				"else
+					"let text = target_key
+					"call add(hl2_first_coords, '\%' . line_num . 'l\%' . (strlen(lines[line_num]['marker']) + 1) . 'c')
+					"call add(hl2_second_coords, '\%' . line_num . 'l\%' . (strlen(lines[line_num]['marker']) + 2) . 'c')
+				"endif 
+				"let lines[line_num]['marker'] = lines[line_num]['marker'] . text
+			else
+				if strlen(lines[line_num]['marker']) > 0
+				" Substitute marker character if line length > 0
+
+					let c = 0
+					while c < target_key_len && c < 2
+						if strlen(lines[line_num]['marker']) >= col_num + c
+							let lines[line_num]['marker'] = substitute(lines[line_num]['marker'], '\%' . (col_num + c) . 'c.', strpart(target_key, c, 1), '')
+						else
+							let lines[line_num]['marker'] = lines[line_num]['marker'] . strpart(target_key, c, 1)
+						endif
+						let c += 1
+					endwhile
+				else
+				" Set the line to the marker character if the line is empty
 					let lines[line_num]['marker'] = target_key
 				endif
+			endif
 
-				" Add highlighting coordinates
-				call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+			" Add highlighting coordinates
 
-				" Add marker/target lenght difference for multibyte
-				" compensation
-				let lines[line_num]['mb_compensation'] += (target_char_len - target_key_len)
-			endfor
 
-			let lines_items = items(lines)
+			if !a:fixed_column
+				if target_key_len == 1
+					call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+				else
+					call add(hl2_first_coords, '\%' . line_num . 'l\%' . (col_num) . 'c')
+					call add(hl2_second_coords, '\%' . line_num . 'l\%' . (col_num + 1) . 'c')
+				endif
+			endif
+
+			" Add marker/target lenght difference for multibyte
+			" compensation
+			"let lines[line_num]['mb_compensation'] += (target_char_len - target_key_len)
+			let lines[line_num]['mb_compensation'] += (target_char_len - 1)
+		endfor
+
+		let lines_items = items(lines)
 		" }}}
 		" Highlight targets {{{
-			let target_hl_id = matchadd(g:EasyMotion_hl_group_target, join(hl_coords, '\|'), 1)
-		" }}}
+			if len(hl_coords) > 0 
+				let target_hl_id = matchadd(g:EasyMotion_hl_group_target, join(hl_coords, '\|'), 1)
+			endif
+			if len(hl2_second_coords) > 0
+				let target_hl2_second_id = matchadd(g:EasyMotion_hl2_second_group_target, join(hl2_second_coords, '\|'), 1)
+			endif
+			if len(hl2_first_coords) > 0
+				let target_hl2_first_id = matchadd(g:EasyMotion_hl2_first_group_target, join(hl2_first_coords, '\|'), 1)
+			endif
 
+		" }}}
 		try
 			" Set lines with markers
 			call s:SetLines(lines_items, 'marker')
@@ -429,8 +633,14 @@
 			call s:SetLines(lines_items, 'orig')
 
 			" Un-highlight targets {{{
-				if exists('target_hl_id')
+				if exists('target_hl_id') 
 					call matchdelete(target_hl_id)
+				endif
+				if exists('target_hl2_first_id')
+					call matchdelete(target_hl2_first_id)
+				endif
+				if exists('target_hl2_second_id')
+					call matchdelete(target_hl2_second_id)
 				endif
 			" }}}
 
@@ -443,22 +653,38 @@
 			endif
 		" }}}
 		" Check if the input char is valid {{{
+		if a:allows_repeat && char == '.'
+			return g:old_target
+		else
 			if ! has_key(a:groups, char)
 				throw 'Invalid target'
 			endif
 		" }}}
 
-		let target = a:groups[char]
+			let target = a:groups[char]
 
-		if type(target) == 3
-			" Return target coordinates
-			return target
-		else
-			" Prompt for new target character
-			return s:PromptUser(target)
+			if type(target) == 3
+				" Return target coordinates
+				return target
+			else
+				" Prompt for new target character
+				return s:PromptUser(target, a:allows_repeat, a:fixed_column)
+			endif
 		endif
 	endfunction "}}}
-	function! s:EasyMotion(regexp, direction, visualmode, mode) " {{{
+
+	function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
+		" For SelectLines(), to highlight previous selected line
+		let hlcurrent = a:0 >= 1 ? a:1 : 0 
+		" For SelectLines(), to allows '.' to repeat the previously pressed 
+		" character 
+		let allows_repeat = a:0 >= 2 ? a:2 : 0
+		" For SelectLines(), a flag to display character only at the beginning
+		" of the line
+		let fixed_column = a:0 >= 3 ? a:3 : 0
+
+		let hlchar = a:0 >= 4 ? a:4 : 0
+
 		let orig_pos = [line('.'), col('.')]
 		let targets = []
 
@@ -470,13 +696,16 @@
 				call s:VarReset('&readonly', 0)
 				call s:VarReset('&spell', 0)
 				call s:VarReset('&virtualedit', '')
+                call s:VarReset('&foldmethod', 'manual')
 			" }}}
 			" Find motion targets {{{
-				let search_direction = (a:direction == 1 ? 'b' : '')
-				let search_stopline = line(a:direction == 1 ? 'w0' : 'w$')
+				let search_direction = (a:direction >= 1 ? 'b' : '')
+				let search_stopline = line(a:direction >= 1 ? 'w0' : 'w$')
 
+				let search_at_cursor = fixed_column ? 'c' : ''
 				while 1
-					let pos = searchpos(a:regexp, search_direction, search_stopline)
+					let pos = searchpos(a:regexp, search_direction . search_at_cursor, search_stopline)
+					let search_at_cursor = ''
 
 					" Reached end of search range
 					if pos == [0, 0]
@@ -490,6 +719,38 @@
 
 					call add(targets, pos)
 				endwhile
+
+				if a:direction == 2
+					keepjumps call cursor(orig_pos[0], orig_pos[1])
+					let targets2 = []
+					while 1
+						let pos = searchpos(a:regexp, '', line('w$'))
+						if pos == [0, 0]
+							break
+						endif
+
+						if foldclosed(pos[0]) != -1
+							continue
+						endif
+
+						call add(targets2, pos)
+					endwhile
+					let t1 = 0
+					let t2 = 0
+					let targets3 = []
+					while t1 < len(targets) || t2 < len(targets2)
+						if t1 < len(targets)
+							call add(targets3, targets[t1])
+							let t1 += 1
+						endif
+						if t2 < len(targets2)
+							call add(targets3, targets2[t2])
+							let t2 += 1
+						endif
+					endwhile
+					let targets = targets3
+
+				endif
 
 				let targets_len = len(targets)
 				if targets_len == 0
@@ -507,17 +768,28 @@
 					if a:direction == 1
 						" Backward
 						let shade_hl_re = '\%'. line('w0') .'l\_.*' . shade_hl_pos
-					else
+					elseif a:direction == 0
 						" Forward
 						let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
+					elseif a:direction == 2
+						" Both directions"
+						let shade_hl_re = '\%'. line('w0') .'l\_.*\%'. line('w$') .'l'
 					endif
-
-					let shade_hl_id = matchadd(g:EasyMotion_hl_group_shade, shade_hl_re, 0)
+					if !fixed_column
+						let shade_hl_id = matchadd(g:EasyMotion_hl_group_shade, shade_hl_re, 0)
+					endif
+				endif
+				if hlcurrent != 0 
+					let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. hlcurrent .'l.*', 1)
+				endif
+				if !empty(hlchar)
+					let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. hlchar[0] .'l\%' . hlchar[1] .'c' , 2)
 				endif
 			" }}}
 
 			" Prompt user for target group/character
-			let coords = s:PromptUser(groups)
+			let coords = s:PromptUser(groups, allows_repeat, fixed_column)
+			let g:old_target = coords
 
 			" Update selection {{{
 				if ! empty(a:visualmode)
@@ -543,6 +815,7 @@
 			call cursor(coords[0], coords[1])
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
+			let g:EasyMotion_cancelled = 0
 		catch
 			redraw
 
@@ -556,6 +829,7 @@
 					keepjumps call cursor(orig_pos[0], orig_pos[1])
 				endif
 			" }}}
+			let g:EasyMotion_cancelled = 1
 		finally
 			" Restore properties {{{
 				call s:VarReset('&scrolloff')
@@ -564,10 +838,14 @@
 				call s:VarReset('&readonly')
 				call s:VarReset('&spell')
 				call s:VarReset('&virtualedit')
+                call s:VarReset('&foldmethod')
 			" }}}
 			" Remove shading {{{
-				if g:EasyMotion_do_shade && exists('shade_hl_id')
+				if g:EasyMotion_do_shade && exists('shade_hl_id') && (!fixed_column)
 					call matchdelete(shade_hl_id)
+				endif
+				if (hlcurrent || !empty(hlchar)) && exists('shade_hl_line_id')
+					call matchdelete(shade_hl_line_id)
 				endif
 			" }}}
 		endtry
