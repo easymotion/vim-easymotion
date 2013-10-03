@@ -100,8 +100,8 @@
 		\ })
 	" }}}
 	" Special mapping for other functions {{{
-		call EasyMotion#SelectLinesMappings('l')
-		call EasyMotion#SelectPhraseMappings('p')
+		call EasyMotion#SelectLinesMappings(g:EasyMotion_leader_key.'l')
+		call EasyMotion#SelectPhraseMappings(g:EasyMotion_leader_key.'p')
 	" }}}
 " }}}
 
