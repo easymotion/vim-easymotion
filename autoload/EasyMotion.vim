@@ -224,19 +224,17 @@
 			let s:var_reset = {}
 		endif
 
-		let buf = bufname("")
-
 		if a:0 == 0 && has_key(s:var_reset, a:var)
 			" Reset var to original value
-			call setbufvar(buf, a:var, s:var_reset[a:var])
+			call setbufvar("", a:var, s:var_reset[a:var])
 		elseif a:0 == 1
 			let new_value = a:0 == 1 ? a:1 : ''
 
 			" Store original value
-			let s:var_reset[a:var] = getbufvar(buf, a:var)
+			let s:var_reset[a:var] = getbufvar("", a:var)
 
 			" Set new var value
-			call setbufvar(buf, a:var, new_value)
+			call setbufvar("", a:var, new_value)
 		endif
 	endfunction " }}}
 	function! s:SetLines(lines, key) " {{{
