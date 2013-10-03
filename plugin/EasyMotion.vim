@@ -82,6 +82,7 @@
 		\   'f' : { 'name': 'F'  , 'dir': 0 }
 		\ , 'F' : { 'name': 'F'  , 'dir': 1 }
 		\ , 's' : { 'name': 'S'  , 'dir': 2 }
+		\ , 'S' : { 'name': 'WB' , 'dir': 2 }
 		\ , 't' : { 'name': 'T'  , 'dir': 0 }
 		\ , 'T' : { 'name': 'T'  , 'dir': 1 }
 		\ , 'w' : { 'name': 'WB' , 'dir': 0 }
