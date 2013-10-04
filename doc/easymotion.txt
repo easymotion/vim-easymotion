@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 1.3.  Last change: 2011 Nov 7
+*easymotion.txt*	Version 1.3.  Last change: 2013 Oct 5
 
 
             ______                  __  ___       __  _
@@ -23,13 +23,15 @@ CONTENTS                                                 *easymotion-contents*
        4.3 EasyMotion_do_mapping .......... |EasyMotion_do_mapping|
        4.4 EasyMotion_grouping ............ |EasyMotion_grouping|
        4.5 EasyMotion_startofline ......... |EasyMotion_startofline|
-       4.6 Custom highlighting ............ |easymotion-custom-hl|
-       4.7 Custom mappings ................ |easymotion-custom-mappings|
-           4.7.1 Leader key ............... |easymotion-leader-key|
-           4.7.2 Custom keys .............. |easymotion-custom-keys|
-       4.8 Easymotion other functions ..... |easymotion-other-mappings|
-           4.8.1 Select Line .............. |easymotion-select-line|
-           4.8.2 Select Phrase ............ |easymotion-select-phrase|
+       4.6 EasyMotion_smartcase ........... |EasyMotion_smartcase|
+       4.7 Custom highlighting ............ |easymotion-custom-hl|
+       4.8 Custom mappings ................ |easymotion-custom-mappings|
+           4.8.1 Leader key ............... |easymotion-leader-key|
+           4.8.2 Custom keys .............. |easymotion-custom-keys|
+           4.8.3 Special Custom keys ...... |easymotion-special-custom-keys|
+       4.9 Easymotion special functions ... |easymotion-special-mappings|
+           4.9.1 Select Line .............. |easymotion-select-line|
+           4.9.2 Select Phrase ............ |easymotion-select-phrase|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -83,26 +85,30 @@ And that's it!
 The default configuration defines the following mappings in normal,
 visual and operator-pending mode:
 
-    Mapping           | Details
-    ------------------|----------------------------------------------
-    <Leader>f{char}   | Find {char} to the right. See |f|.
-    <Leader>F{char}   | Find {char} to the left. See |F|.
-    <Leader>t{char}   | Till before the {char} to the right. See |t|.
-    <Leader>T{char}   | Till after the {char} to the left. See |T|.
-    <Leader>w         | Beginning of word forward. See |w|.
-    <Leader>W         | Beginning of WORD forward. See |W|.
-    <Leader>b         | Beginning of word backward. See |b|.
-    <Leader>B         | Beginning of WORD backward. See |B|.
-    <Leader>e         | End of word forward. See |e|.
-    <Leader>E         | End of WORD forward. See |E|.
-    <Leader>ge        | End of word backward. See |ge|.
-    <Leader>gE        | End of WORD backward. See |gE|.
-    <Leader>j         | Line downward. See |j|.
-    <Leader>k         | Line upward. See |k|.
-    <Leader>n         | Jump to latest "/" or "?" forward. See |n|.
-    <Leader>N         | Jump to latest "/" or "?" backward. See |N|.
-    <Leader>s         | Find(Search) {char} forward and backward. See |f| and |F|.
-    <Leader>S         | Beginning of word forward and backward. See |w| and |b|.
+    Mapping              | Details
+    ---------------------|----------------------------------------------
+    <Leader>f{char}      | Find {char} to the right. See |f|.
+    <Leader>F{char}      | Find {char} to the left. See |F|.
+    <Leader>t{char}      | Till before the {char} to the right. See |t|.
+    <Leader>T{char}      | Till after the {char} to the left. See |T|.
+    <Leader>w            | Beginning of word forward. See |w|.
+    <Leader>W            | Beginning of WORD forward. See |W|.
+    <Leader>b            | Beginning of word backward. See |b|.
+    <Leader>B            | Beginning of WORD backward. See |B|.
+    <Leader>e            | End of word forward. See |e|.
+    <Leader>E            | End of WORD forward. See |E|.
+    <Leader>ge           | End of word backward. See |ge|.
+    <Leader>gE           | End of WORD backward. See |gE|.
+    <Leader>j            | Line downward. See |j|.
+    <Leader>k            | Line upward. See |k|.
+    <Leader>n            | Jump to latest "/" or "?" forward. See |n|.
+    <Leader>N            | Jump to latest "/" or "?" backward. See |N|.
+    <Leader>s            | Find(Search) {char} forward and backward. See |f| and |F|.
+    <Leader>S            | Beginning of word forward and backward. See |w| and |b|.
+                         |
+                         |
+    {operator}<Leader>l  | Select, yank, paste, delete, or other operation of lines. See |easymotion-special-function|.
+    {operator}<Leader>p  | Select, yank, paste, delete, or other operation of phrase. See |easymotion-special-function|.
 
 See |easymotion-leader-key| and |mapleader| for details about the leader key.
 See |easymotion-custom-mappings| for customizing the default mappings.
@@ -211,7 +217,16 @@ current column (by setting this option to 0) or to move along the first column
 Default: 1
 
 ------------------------------------------------------------------------------
-4.6 Custom highlighting                                 *easymotion-custom-hl*
+4.6 Start of Line                                     *EasyMotion_startofline*
+
+When using the |j| or |k| motion, the cursor can be configured to stay in the
+current column (by setting this option to 0) or to move along the first column
+(by setting this option to 1).
+
+Default: 1
+
+------------------------------------------------------------------------------
+4.7 Custom highlighting                                 *easymotion-custom-hl*
 
 The default EasyMotion configuration uses two highlighting groups that link
 to groups with default values. The highlighting groups are:
@@ -262,14 +277,14 @@ There are two ways to override the default colors:
           hi link EasyMotionTarget2Second MatchParen
 <
 ------------------------------------------------------------------------------
-4.7 Custom mappings                               *easymotion-custom-mappings*
+4.8 Custom mappings                               *easymotion-custom-mappings*
 
 EasyMotion allows you to customize all default mappings to avoid conflicts
 with existing mappings. It is possible to change the default leader key
 of all mappings to another key or sequence. It is also possible to fine
 tune the plugin to your need by changing every single sequence.
 
-4.7.1 Leader key               *EasyMotion_leader_key* *easymotion-leader-key*
+4.8.1 Leader key               *EasyMotion_leader_key* *easymotion-leader-key*
 
 The default leader key can be changed with the configuration option
 |EasyMotion_leader_key|.
@@ -285,7 +300,7 @@ leader by setting this option in your vimrc: >
 <
 Default: '<Leader><Leader>'
 
-4.7.2 Custom Keys                                     *easymotion-custom-keys*
+4.8.2 Custom Keys                                     *easymotion-custom-keys*
 
 All custom mappings follow the same variable format: >
 
@@ -303,10 +318,28 @@ Note: The leader key defined by |EasyMotion_leader_key| is not prepended to
 your customized mappings! You have to provide full key sequences when setting
 these options.
 
-------------------------------------------------------------------------------
-4.8  Easymotion other functions                           *easymotion-other-mappings*
+4.8.3 Custom Keys for Special Function                *easymotion-special-custom-keys*
 
-4.8.1 Select Line                                 *easymotion-select-line*
+All special custom mappings follow the same variable format: >
+
+    EasyMotion_special_mapping_{motion} = {mapping}
+<
+Example: >
+
+    let g:EasyMotion_special_mapping_l = 'L'
+    let g:EasyMotion_special_mapping_p = 'p'
+<
+See |easymotion-default-mappings| for a table of motions that can be mapped
+and their default values.
+
+Note: The leader key defined by |EasyMotion_leader_key| is not prepended to
+your customized mappings! You have to provide full key sequences when setting
+these options.
+
+------------------------------------------------------------------------------
+4.9  Easymotion special functions                           *easymotion-special-function*
+
+4.9.1 Select Line                                 *easymotion-select-line*
 
 Default: Disabled
 
@@ -330,7 +363,7 @@ Example: >
 
 Default: 0
 
-4.8.2 Select Phrase                             *easymotion-select-phrase*
+4.9.2 Select Phrase                             *easymotion-select-phrase*
 
 (Experimental) SelectPhrase function which allows you to make selection
 between any two characters.
@@ -384,6 +417,18 @@ EasyMotion is based on Bartlomiej Podolak's great PreciseJump script, which
 can be downloaded here:
 
 http://www.vim.org/scripts/script.php?script_id=3437
+
+------------------------------------------------------------------------------
+Forked and modified by haya14busa
+
+Author: haya14busa <hayabusa1419@gmail.com>
+Source repository: https://github.com/haya14busa/vim-easymotion
+
+Ref:
+- supasorn : two key combos and special function
+- mtth     : startofline(keep column)
+- bootleq  : fixed bufname bug
+
 
 ==============================================================================
 vim:tw=78:sw=4:ts=8:ft=help:norl:

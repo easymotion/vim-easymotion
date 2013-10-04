@@ -3,6 +3,8 @@
 2. Added forward-backward search (bidirectional) search. You can jump forward or backward at the same time. `<Leader>s`. One useful  trick is to map `nmap <SPACE> <leader>s` and `vmap <SPACE> <leader>s` to use space bar instead and save one keystroke!
 3. Added SelectLines function which allows you to select any range of lines using two consecutive easymotion calls. Default mappings are `c<Leader>l, d<Leader>l, v<Leader>l, y<Leader>l`. To yank a single line you can either type the same character(s) twice, or use '.' character. E.g. `vlb.` will select the line with character 'b'. Note: to promote good Vim habits, you should learn standard movement commands like `}}, vi(, va(, %, ][, ]], [(, etc.` before resorting to this function.
 4. (Experimental) Added SelectPhrase function which allows you to make selection between any two characters. Default mapping are `c<Leader>p, d<Leader>p, v<Leader>p, y<Leader>p`. Example usage: type `v<Leader>p` then press two input characters. Now the two input characters will be highlight on the same screen, and you can then type two combos to make selection.
+5. Added matching target keys by smartcase option.
+6. Added keep cursor column option when JK motion.
 
 ## Animated demonstration
 
@@ -12,9 +14,15 @@ Two-key combo
 
 Select lines using `v<Leader>l`
 
+    let g:EasyMotion_special_select_line = 1         " Default:0
+    let g:EasyMotion_special_mapping_l = '{anykeys}' " Customize keymap
+
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion2.gif)
 
 Yank lines using `y<Leader>l`. You can copy lines without moving cursor back and forth between line you want to yank and line you want to paste.
+
+    let g:EasyMotion_special_select_phrase = 1       " Default:0
+    let g:EasyMotion_special_mapping_p = '{anykeys}' " Customize keymap
 
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion3.gif)
 
@@ -71,3 +79,31 @@ about EasyMotion.
 ## Animated demonstration
 
 ![Animated demonstration](http://oi54.tinypic.com/2yysefm.jpg)
+
+## Vim-Lazymotion!
+
+Matching target keys by smartcase. You can type targets more lazily.
+
+Type `<Leader><Leader>sv`, and all "v" and "V" characters are highlighted:
+
+	<cursor>V{a}im v{b}im V{c}IM.
+
+Press `b` to jump to the second "v":
+
+	Vim <cursor>vim VIM.
+
+Type `<Leader><Leader>sV`, and all "V" characters are highlighted, not "v":
+
+	<cursor>V{a}im vim V{b}IM.
+
+Press `b` to jump to the second "V":
+
+	Vim vim <cursor>VIM.
+
+
+Add following description in your vimrc:
+
+	let g:EasyMotion_smartcase = 1
+
+Default:0
+
