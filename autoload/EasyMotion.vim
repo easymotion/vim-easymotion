@@ -99,14 +99,14 @@
 		let orig_pos = [line('.'), col('.')]
 
 		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', 0, 0, 1)
-		if g:EasyMotion_cancelled 
+		if g:EasyMotion_cancelled
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
 			return ''
 		else
 			let pos1 = [line('.'), col('.')]
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
 			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', pos1[0], 1, 1)
-			if g:EasyMotion_cancelled 
+			if g:EasyMotion_cancelled
 				keepjumps call cursor(orig_pos[0], orig_pos[1])
 				return ''
 			else
@@ -124,16 +124,16 @@
 
 		let orig_pos = [line('.'), col('.')]
 
-		let re = '\C' . escape(chars[0], '.$^~') . '\|\C' . escape(chars[1], '.$^~')  
+		let re = '\C' . escape(chars[0], '.$^~') . '\|\C' . escape(chars[1], '.$^~')
 		call s:EasyMotion(re, 2, '', '', 0, 0, 0, 0)
-		if g:EasyMotion_cancelled 
+		if g:EasyMotion_cancelled
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
 			return ''
 		else
 			let pos1 = [line('.'), col('.')]
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
 			call s:EasyMotion(re, 2, '', '', 0, 0, 0, pos1)
-			if g:EasyMotion_cancelled 
+			if g:EasyMotion_cancelled
 				keepjumps call cursor(orig_pos[0], orig_pos[1])
 				return ''
 			else
@@ -265,7 +265,7 @@
 
 	function! s:GetSearchChar2(visualmode) " {{{
 
-		let chars = [] 
+		let chars = []
 		for i in [1, 2]
 			redraw
 
@@ -523,8 +523,8 @@
 			" Solve multibyte issues by matching the byte column
 			" number instead of the visual column
 			let col_num -= lines[line_num]['mb_compensation']
-			if a:fixed_column 
-				let firstS = match(lines[line_num]['marker'], '\S') 
+			if a:fixed_column
+				let firstS = match(lines[line_num]['marker'], '\S')
 				if firstS >= 4
 					let leftText = strpart(lines[line_num]['marker'], 0, firstS - 3)
 				else
@@ -546,8 +546,8 @@
 					let text = target_key
 					call add(hl2_first_coords, '\%' . line_num . 'l\%1c')
 					call add(hl2_second_coords, '\%' . line_num . 'l\%2c')
-				endif 
-				let lines[line_num]['marker'] = text . ' ' . lines[line_num]['marker'] 
+				endif
+				let lines[line_num]['marker'] = text . ' ' . lines[line_num]['marker']
 
 				"if target_key_len < 2
 					"let text = target_key . ' '
@@ -556,7 +556,7 @@
 					"let text = target_key
 					"call add(hl2_first_coords, '\%' . line_num . 'l\%' . (strlen(lines[line_num]['marker']) + 1) . 'c')
 					"call add(hl2_second_coords, '\%' . line_num . 'l\%' . (strlen(lines[line_num]['marker']) + 2) . 'c')
-				"endif 
+				"endif
 				"let lines[line_num]['marker'] = lines[line_num]['marker'] . text
 			else
 				if strlen(lines[line_num]['marker']) > 0
@@ -598,7 +598,7 @@
 		let lines_items = items(lines)
 		" }}}
 		" Highlight targets {{{
-			if len(hl_coords) > 0 
+			if len(hl_coords) > 0
 				let target_hl_id = matchadd(g:EasyMotion_hl_group_target, join(hl_coords, '\|'), 1)
 			endif
 			if len(hl2_second_coords) > 0
@@ -625,7 +625,7 @@
 			call s:SetLines(lines_items, 'orig')
 
 			" Un-highlight targets {{{
-				if exists('target_hl_id') 
+				if exists('target_hl_id')
 					call matchdelete(target_hl_id)
 				endif
 				if exists('target_hl2_first_id')
@@ -667,9 +667,9 @@
 
 	function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 		" For SelectLines(), to highlight previous selected line
-		let hlcurrent = a:0 >= 1 ? a:1 : 0 
-		" For SelectLines(), to allows '.' to repeat the previously pressed 
-		" character 
+		let hlcurrent = a:0 >= 1 ? a:1 : 0
+		" For SelectLines(), to allows '.' to repeat the previously pressed
+		" character
 		let allows_repeat = a:0 >= 2 ? a:2 : 0
 		" For SelectLines(), a flag to display character only at the beginning
 		" of the line
@@ -771,7 +771,7 @@
 						let shade_hl_id = matchadd(g:EasyMotion_hl_group_shade, shade_hl_re, 0)
 					endif
 				endif
-				if hlcurrent != 0 
+				if hlcurrent != 0
 					let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. hlcurrent .'l.*', 1)
 				endif
 				if !empty(hlchar)

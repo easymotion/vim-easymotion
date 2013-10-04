@@ -1,7 +1,7 @@
 # Modifications to Lokaltog's EasyMotion
 1. Use one - two character key jump. Display two keys if one-character key is not enough, so you can see what two keys to type without waiting after pressing the first key.
 2. Added forward-backward search (bidirectional) search. You can jump forward or backward at the same time. `<Leader>s`. One useful  trick is to map `nmap <SPACE> <leader>s` and `vmap <SPACE> <leader>s` to use space bar instead and save one keystroke!
-3. Added SelectLines function which allows you to select any range of lines using two consecutive easymotion calls. Default mappings are `c<Leader>l, d<Leader>l, v<Leader>l, y<Leader>l`. To yank a single line you can either type the same character(s) twice, or use '.' character. E.g. `vlb.` will select the line with character 'b'. Note: to promote good Vim habits, you should learn standard movement commands like `}}, vi(, va(, %, ][, ]], [(, etc.` before resorting to this function. 
+3. Added SelectLines function which allows you to select any range of lines using two consecutive easymotion calls. Default mappings are `c<Leader>l, d<Leader>l, v<Leader>l, y<Leader>l`. To yank a single line you can either type the same character(s) twice, or use '.' character. E.g. `vlb.` will select the line with character 'b'. Note: to promote good Vim habits, you should learn standard movement commands like `}}, vi(, va(, %, ][, ]], [(, etc.` before resorting to this function.
 4. (Experimental) Added SelectPhrase function which allows you to make selection between any two characters. Default mapping are `c<Leader>p, d<Leader>p, v<Leader>p, y<Leader>p`. Example usage: type `v<Leader>p` then press two input characters. Now the two input characters will be highlight on the same screen, and you can then type two combos to make selection.
 
 ## Animated demonstration
@@ -34,8 +34,8 @@ EasyMotion is triggered by one of the provided mappings.
 
 # Important notes about the default bindings
 
-**The default leader has been changed to `<Leader><Leader>` to avoid 
-conflicts with other plugins you may have installed.** This can easily be 
+**The default leader has been changed to `<Leader><Leader>` to avoid
+conflicts with other plugins you may have installed.** This can easily be
 changed back to pre-1.3 behavior by rebinding the leader in your vimrc:
 
 	let g:EasyMotion_leader_key = '<Leader>'

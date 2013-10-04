@@ -45,7 +45,7 @@
 		\   'gui'     : ['NONE', '#b98300' , 'bold']
 		\ , 'cterm256': ['NONE', '3'       , 'bold']
 		\ , 'cterm'   : ['NONE', '3'       , 'bold']
-		\ }  
+		\ }
 
 		let s:shade_hl_defaults = {
 		\   'gui'     : ['NONE', '#777777' , 'NONE']

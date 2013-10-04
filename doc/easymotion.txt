@@ -267,8 +267,8 @@ The default leader key can be changed with the configuration option
 Set this option to the key sequence to use as the prefix of the mappings
 described in |easymotion-default-mappings|.
 
-Note: The default leader key has been changed to '<Leader><Leader>' to 
-avoid conflicts with other plugins. You can revert to the original 
+Note: The default leader key has been changed to '<Leader><Leader>' to
+avoid conflicts with other plugins. You can revert to the original
 leader by setting this option in your vimrc: >
 
     let g:EasyMotion_leader_key = '<Leader>'
