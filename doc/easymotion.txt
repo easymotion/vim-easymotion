@@ -97,6 +97,8 @@ visual and operator-pending mode:
     <Leader>k         | Line upward. See |k|.
     <Leader>n         | Jump to latest "/" or "?" forward. See |n|.
     <Leader>N         | Jump to latest "/" or "?" backward. See |N|.
+    <Leader>s         | Find(Search) {char} forward and backward. See |f| and |F|.
+    <Leader>S         | Beginning of word forward and backward. See |w| and |b|.
 
 See |easymotion-leader-key| and |mapleader| for details about the leader key.
 See |easymotion-custom-mappings| for customizing the default mappings.
@@ -205,6 +207,11 @@ to groups with default values. The highlighting groups are:
 
       Highlights motion targets, the default value is bold red
 
+    * EasyMotionTarget2First
+    * EasyMotionTarget2Second
+
+      Highlights motion targets, when target is two keys
+
     * EasyMotionShade
 
       Highlights shaded text, the default value is dark gray
@@ -221,6 +228,9 @@ There are two ways to override the default colors:
 
           hi EasyMotionTarget ctermbg=none ctermfg=green
           hi EasyMotionShade  ctermbg=none ctermfg=blue
+
+          hi EasyMotionTarget2First ctermbg=none ctermfg=red
+          hi EasyMotionTarget2Second ctermbg=none ctermfg=lightred
 <
    2) Set the highlighting in your vimrc
 
@@ -234,6 +244,9 @@ There are two ways to override the default colors:
 
           hi link EasyMotionTarget ErrorMsg
           hi link EasyMotionShade  Comment
+
+          hi link EasyMotionTarget2First MatchParen
+          hi link EasyMotionTarget2Second MatchParen
 <
 ------------------------------------------------------------------------------
 4.6 Custom mappings                               *easymotion-custom-mappings*
