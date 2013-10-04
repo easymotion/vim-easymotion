@@ -19,12 +19,13 @@
 		\ , 'do_mapping'      : 1
 		\ , 'grouping'        : 1
 		\ , 'startofline'     : 1
+		\ , 'smartcase'       : 0
 		\
 		\ , 'hl_group_target'         : 'EasyMotionTarget'
 		\ , 'hl2_first_group_target'  : 'EasyMotionTarget2First'
 		\ , 'hl2_second_group_target' : 'EasyMotionTarget2Second'
 		\ , 'hl_group_shade'          : 'EasyMotionShade'
-		\ , 'hl_line_group_shade'          : 'EasyMotionShadeLine'
+		\ , 'hl_line_group_shade'     : 'EasyMotionShadeLine'
 		\ })
 	" }}}
 	" Default highlighting {{{

@@ -124,7 +124,19 @@
 
 		let orig_pos = [line('.'), col('.')]
 
-		let re = '\C' . escape(chars[0], '.$^~') . '\|\C' . escape(chars[1], '.$^~')
+		if g:EasyMotion_smartcase && chars[0] =~# '\v\U'
+			let re0 = '\c'
+		else
+			let re0 = '\C'
+		endif
+
+		if g:EasyMotion_smartcase && chars[1] =~# '\v\U'
+			let re1 = '\c'
+		else
+			let re1 = '\C'
+		endif
+
+		let re = re0 . escape(chars[0], '.$^~') . '\|' . re1 . escape(chars[1], '.$^~')
 		call s:EasyMotion(re, 2, '', '', 0, 0, 0, 0)
 		if g:EasyMotion_cancelled
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
@@ -159,7 +171,13 @@
 			return
 		endif
 
-		let re = '\C' . escape(char, '.$^~')
+		if g:EasyMotion_smartcase && char =~# '\v\U'
+			let re = '\c'
+		else
+			let re = '\C'
+		endif
+
+		let re = re . escape(char, '.$^~')
 
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
@@ -171,7 +189,13 @@
 			return
 		endif
 
-		let re = '\C' . escape(char, '.$^~')
+		if g:EasyMotion_smartcase && char =~# '\v\U'
+			let re = '\c'
+		else
+			let re = '\C'
+		endif
+
+		let re = re . escape(char, '.$^~')
 
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
@@ -183,10 +207,16 @@
 			return
 		endif
 
-		if a:direction == 1
-			let re = '\C' . escape(char, '.$^~') . '\zs.'
+		if g:EasyMotion_smartcase && char =~# '\v\U'
+			let re = '\c'
 		else
-			let re = '\C.' . escape(char, '.$^~')
+			let re = '\C'
+		endif
+
+		if a:direction == 1
+			let re = re . escape(char, '.$^~') . '\zs.'
+		else
+			let re = re . '.' . escape(char, '.$^~')
 		endif
 
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
