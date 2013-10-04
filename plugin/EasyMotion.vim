@@ -103,8 +103,8 @@
 	" }}}
 	" Special mapping for other functions {{{
 		call EasyMotion#InitSpecialMappings({
-		\   'l' : { 'name': 'SelectLines' , 'condition': 'select_line' }
-		\ , 'p' : { 'name': 'SelectPhrase' , 'condition': 'select_phrase' }
+		\   'l' : { 'name': 'SelectLines' , 'flag': 'select_line' }
+		\ , 'p' : { 'name': 'SelectPhrase' , 'flag': 'select_phrase' }
 		\ })
 	" }}}
 " }}}
