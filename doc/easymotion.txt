@@ -26,6 +26,9 @@ CONTENTS                                                 *easymotion-contents*
        4.6 Custom mappings ................ |easymotion-custom-mappings|
            4.6.1 Leader key ............... |easymotion-leader-key|
            4.6.2 Custom keys .............. |easymotion-custom-keys|
+       4.7 Easymotion other functions ..... |easymotion-other-mappings|
+           4.7.1 Select Line .............. |easymotion-select-line|
+           4.7.2 Select Phrase ............ |easymotion-select-phrase|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -289,6 +292,50 @@ and their default values.
 Note: The leader key defined by |EasyMotion_leader_key| is not prepended to
 your customized mappings! You have to provide full key sequences when setting
 these options.
+
+------------------------------------------------------------------------------
+4.7  Easymotion other functions                           *easymotion-other-mappings*
+
+4.7.1 Select Line                                 *easymotion-select-line*
+
+Default: Disabled
+
+SelectLines function which allows you to select any range of lines using two
+consecutive easymotion calls.
+
+Default mappings are `c<Leader>l, d<Leader>l, v<Leader>l, y<Leader>l`.
+
+To yank a single line you can either type the same character(s) twice, or use
+'.' character.
+
+E.g. `v<Leader>lb.` will select the line with character 'b'.
+
+Note: to promote good Vim habits, you should learn standard movement commands like `}}, vi(, va(, %, ][, ]], [(, etc.` before resorting to this function.
+
+Set this option to 1 if you want to enable this functions.
+
+Example: >
+
+    let g:EasyMotion_special_select_line = 1
+
+Default: 0
+
+4.7.2 Select Phrase                             *easymotion-select-phrase*
+
+(Experimental) SelectPhrase function which allows you to make selection
+between any two characters.
+Default mapping are `c<Leader>p, d<Leader>p, v<Leader>p, y<Leader>p`.
+
+Example usage: type `v<Leader>p` then press two input characters.
+Now the two input characters will be highlight on the same screen, and you can then type two combos to make selection.
+
+Set this option to 1 if you want to enable this functions.
+
+Example: >
+
+    let g:EasyMotion_special_select_phrase = 1
+
+Default: 0
 
 ==============================================================================
 5. License                                                *easymotion-license*
