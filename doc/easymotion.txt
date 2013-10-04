@@ -22,13 +22,14 @@ CONTENTS                                                 *easymotion-contents*
        4.2 EasyMotion_do_shade ............ |EasyMotion_do_shade|
        4.3 EasyMotion_do_mapping .......... |EasyMotion_do_mapping|
        4.4 EasyMotion_grouping ............ |EasyMotion_grouping|
-       4.5 Custom highlighting ............ |easymotion-custom-hl|
-       4.6 Custom mappings ................ |easymotion-custom-mappings|
-           4.6.1 Leader key ............... |easymotion-leader-key|
-           4.6.2 Custom keys .............. |easymotion-custom-keys|
-       4.7 Easymotion other functions ..... |easymotion-other-mappings|
-           4.7.1 Select Line .............. |easymotion-select-line|
-           4.7.2 Select Phrase ............ |easymotion-select-phrase|
+       4.5 EasyMotion_startofline ......... |EasyMotion_startofline|
+       4.6 Custom highlighting ............ |easymotion-custom-hl|
+       4.7 Custom mappings ................ |easymotion-custom-mappings|
+           4.7.1 Leader key ............... |easymotion-leader-key|
+           4.7.2 Custom keys .............. |easymotion-custom-keys|
+       4.8 Easymotion other functions ..... |easymotion-other-mappings|
+           4.8.1 Select Line .............. |easymotion-select-line|
+           4.8.2 Select Phrase ............ |easymotion-select-phrase|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -201,7 +202,16 @@ you want to use. There are two grouping algorithms available:
 Default: 1
 
 ------------------------------------------------------------------------------
-4.5 Custom highlighting                                 *easymotion-custom-hl*
+4.5 Start of Line                                     *EasyMotion_startofline*
+
+When using the |j| or |k| motion, the cursor can be configured to stay in the
+current column (by setting this option to 0) or to move along the first column
+(by setting this option to 1).
+
+Default: 1
+
+------------------------------------------------------------------------------
+4.6 Custom highlighting                                 *easymotion-custom-hl*
 
 The default EasyMotion configuration uses two highlighting groups that link
 to groups with default values. The highlighting groups are:
@@ -252,14 +262,14 @@ There are two ways to override the default colors:
           hi link EasyMotionTarget2Second MatchParen
 <
 ------------------------------------------------------------------------------
-4.6 Custom mappings                               *easymotion-custom-mappings*
+4.7 Custom mappings                               *easymotion-custom-mappings*
 
 EasyMotion allows you to customize all default mappings to avoid conflicts
 with existing mappings. It is possible to change the default leader key
 of all mappings to another key or sequence. It is also possible to fine
 tune the plugin to your need by changing every single sequence.
 
-4.6.1 Leader key               *EasyMotion_leader_key* *easymotion-leader-key*
+4.7.1 Leader key               *EasyMotion_leader_key* *easymotion-leader-key*
 
 The default leader key can be changed with the configuration option
 |EasyMotion_leader_key|.
@@ -275,7 +285,7 @@ leader by setting this option in your vimrc: >
 <
 Default: '<Leader><Leader>'
 
-4.6.2 Custom Keys                                     *easymotion-custom-keys*
+4.7.2 Custom Keys                                     *easymotion-custom-keys*
 
 All custom mappings follow the same variable format: >
 
@@ -294,9 +304,9 @@ your customized mappings! You have to provide full key sequences when setting
 these options.
 
 ------------------------------------------------------------------------------
-4.7  Easymotion other functions                           *easymotion-other-mappings*
+4.8  Easymotion other functions                           *easymotion-other-mappings*
 
-4.7.1 Select Line                                 *easymotion-select-line*
+4.8.1 Select Line                                 *easymotion-select-line*
 
 Default: Disabled
 
@@ -320,7 +330,7 @@ Example: >
 
 Default: 0
 
-4.7.2 Select Phrase                             *easymotion-select-phrase*
+4.8.2 Select Phrase                             *easymotion-select-phrase*
 
 (Experimental) SelectPhrase function which allows you to make selection
 between any two characters.

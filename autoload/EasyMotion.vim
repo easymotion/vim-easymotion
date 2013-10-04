@@ -204,7 +204,12 @@
 		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
 	function! EasyMotion#JK(visualmode, direction) " {{{
-		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		if g:EasyMotion_startofline
+			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		else
+			let prev_column = getpos('.')[2] - 1
+			call s:EasyMotion('^.\{,' . prev_column . '}\zs\(.\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		endif
 	endfunction " }}}
 	function! EasyMotion#Search(visualmode, direction) " {{{
 		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
@@ -803,8 +808,10 @@
 
 			" Update cursor position
 			call cursor(orig_pos[0], orig_pos[1])
-			mark '
-			call cursor(coords[0], coords[1])
+			let mark_save = getpos("'e")
+			call setpos("'e", [bufnr('%'), coords[0], coords[1], 0])
+			execute 'normal! `e'
+			call setpos("'e", mark_save)
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 			let g:EasyMotion_cancelled = 0
