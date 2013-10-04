@@ -102,8 +102,10 @@
 		\ })
 	" }}}
 	" Special mapping for other functions {{{
-		call EasyMotion#SelectLinesMappings(g:EasyMotion_leader_key.'l')
-		call EasyMotion#SelectPhraseMappings(g:EasyMotion_leader_key.'p')
+		call EasyMotion#InitSpecialMappings({
+		\   'l' : { 'name': 'SelectLines' , 'condition': 'select_line' }
+		\ , 'p' : { 'name': 'SelectPhrase' , 'condition': 'select_phrase' }
+		\ })
 	" }}}
 " }}}
 

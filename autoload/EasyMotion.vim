@@ -58,22 +58,26 @@
 		endif
 	endfunction "}}}
 
-	function! EasyMotion#SelectLinesMappings(motion) "{{{
+	function! EasyMotion#InitSpecialMappings(motions) "{{{
+		for motion in keys(a:motions)
+			call EasyMotion#InitOptions({ 'special_mapping_' . motion : g:EasyMotion_leader_key . motion })
+		endfor
 
-		if g:EasyMotion_special_select_line
-			silent exec 'onoremap <silent> ' . a:motion . ' :call EasyMotion#SelectLines()<CR>'
-			silent exec 'nnoremap <silent> v' . a:motion . ' :call EasyMotion#SelectLines()<CR>'
-			silent exec 'nnoremap <silent> y' . a:motion . ' :call EasyMotion#SelectLinesYank()<CR>'
+		if g:EasyMotion_do_mapping
+			for [motion, fn] in items(a:motions)
+				if empty(g:EasyMotion_special_mapping_{motion})
+					continue
+				endif
+
+				if g:EasyMotion_special_{fn.condition}
+					silent exec 'onoremap <silent> ' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . '()<CR>'
+					silent exec 'nnoremap <silent> v' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . '()<CR>'
+					silent exec 'nnoremap <silent> y' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . 'Yank()<CR>'
+				endif
+			endfor
 		endif
 	endfunction "}}}
 
-	function! EasyMotion#SelectPhraseMappings(motion) "{{{
-		if g:EasyMotion_special_select_phrase
-			silent exec 'onoremap <silent> ' . a:motion . ' :call EasyMotion#SelectPhrase()<CR>'
-			silent exec 'nnoremap <silent> v' . a:motion . ' :call EasyMotion#SelectPhrase()<CR>'
-			silent exec 'nnoremap <silent> y' . a:motion . ' :call EasyMotion#SelectPhraseYank()<CR>'
-		endif
-	endfunction "}}}
 " }}}
 " Motion functions {{{
 
