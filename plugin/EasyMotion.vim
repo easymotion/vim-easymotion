@@ -13,13 +13,15 @@
 " Default configuration {{{
 	" Default options {{{
 		call EasyMotion#InitOptions({
-		\   'leader_key'      : '<Leader><Leader>'
-		\ , 'keys'            : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-		\ , 'do_shade'        : 1
-		\ , 'do_mapping'      : 1
-		\ , 'grouping'        : 1
-		\ , 'startofline'     : 1
-		\ , 'smartcase'       : 0
+		\   'leader_key'            : '<Leader><Leader>'
+		\ , 'keys'                  : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+		\ , 'do_shade'              : 1
+		\ , 'do_mapping'            : 1
+		\ , 'special_select_line'   : 0
+		\ , 'special_select_phrase' : 0
+		\ , 'grouping'              : 1
+		\ , 'startofline'           : 1
+		\ , 'smartcase'             : 0
 		\
 		\ , 'hl_group_target'         : 'EasyMotionTarget'
 		\ , 'hl2_first_group_target'  : 'EasyMotionTarget2First'
