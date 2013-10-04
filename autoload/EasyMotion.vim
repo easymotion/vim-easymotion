@@ -124,19 +124,13 @@
 
 		let orig_pos = [line('.'), col('.')]
 
-		if g:EasyMotion_smartcase && chars[0] =~# '\v\U'
-			let re0 = '\c'
+		if g:EasyMotion_smartcase && chars[0] =~# '\v\U' || chars[1] =~# '\v\U'
+			let re = '\c'
 		else
-			let re0 = '\C'
+			let re = '\C'
 		endif
 
-		if g:EasyMotion_smartcase && chars[1] =~# '\v\U'
-			let re1 = '\c'
-		else
-			let re1 = '\C'
-		endif
-
-		let re = re0 . escape(chars[0], '.$^~') . '\|' . re1 . escape(chars[1], '.$^~')
+		let re = re . escape(chars[0], '.$^~') . '\|' . escape(chars[1], '.$^~')
 		call s:EasyMotion(re, 2, '', '', 0, 0, 0, 0)
 		if g:EasyMotion_cancelled
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
