@@ -22,6 +22,7 @@
 		\ , 'grouping'              : 1
 		\ , 'startofline'           : 1
 		\ , 'smartcase'             : 0
+		\ , 'skipfoldedline'        : 1
 		\
 		\ , 'hl_group_target'         : 'EasyMotionTarget'
 		\ , 'hl2_first_group_target'  : 'EasyMotionTarget2First'

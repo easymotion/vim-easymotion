@@ -745,7 +745,7 @@
 					endif
 
 					" Skip folded lines
-					if foldclosed(pos[0]) != -1
+					if foldclosed(pos[0]) != -1 && g:EasyMotion_skipfoldedline == 1 || pos[0] != foldclosed(pos[0])
 						continue
 					endif
 
@@ -761,7 +761,7 @@
 							break
 						endif
 
-						if foldclosed(pos[0]) != -1
+						if foldclosed(pos[0]) != -1 && g:EasyMotion_skipfoldedline == 1 || pos[0] != foldclosed(pos[0])
 							continue
 						endif
 
