@@ -106,7 +106,8 @@ visual and operator-pending mode:
     <Leader>s            | Find(Search) {char} forward and backward. See |f| and |F|.
     <Leader>S            | Beginning of word forward and backward. See |w| and |b|.
                          |
-                         |
+    Special Mapping      | Details
+    ---------------------|----------------------------------------------
     {operator}<Leader>l  | Select, yank, paste, delete, or other operation of lines. See |easymotion-special-function|.
     {operator}<Leader>p  | Select, yank, paste, delete, or other operation of phrase. See |easymotion-special-function|.
 
@@ -212,18 +213,22 @@ Default: 1
 
 When using the |j| or |k| motion, the cursor can be configured to stay in the
 current column (by setting this option to 0) or to move along the first column
-(by setting this option to 1).
+(by setting this option to 1): >
+
+    let g:EasyMotion_startofline = 0
 
 Default: 1
 
 ------------------------------------------------------------------------------
-4.6 Start of Line                                     *EasyMotion_startofline*
+4.6 Smartcase                                       *EasyMotion_smartcase*
 
-When using the |j| or |k| motion, the cursor can be configured to stay in the
-current column (by setting this option to 0) or to move along the first column
-(by setting this option to 1).
+Matching target keys by smartcase. You can type targets more lazily.
 
-Default: 1
+Add following description in your vimrc: >
+
+    let g:EasyMotion_smartcase = 1
+
+Default:0
 
 ------------------------------------------------------------------------------
 4.7 Custom highlighting                                 *easymotion-custom-hl*
