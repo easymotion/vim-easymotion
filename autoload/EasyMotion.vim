@@ -10,6 +10,8 @@
 				exec 'let g:EasyMotion_' . key . ' = ' . string(value)
 			endif
 		endfor
+		" Reset Migemo Dictionary
+		let s:migemo_dicts = {}
 	endfunction " }}}
 	function! EasyMotion#InitHL(group, colors) " {{{
 		let group_default = a:group . 'Default'
@@ -194,13 +196,22 @@
 			return
 		endif
 
-		if g:EasyMotion_smartcase && char =~# '\v\U'
-			let re = '\c'
-		else
-			let re = '\C'
+		let re = escape(char, '.$^~')
+
+		if g:EasyMotion_use_migemo
+			if ! has_key(s:migemo_dicts, &l:encoding)
+				let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
+			endif
+			if re =~# '^\a$'
+				let re = s:migemo_dicts[&l:encoding][re]
+			endif
 		endif
 
-		let re = re . escape(char, '.$^~')
+		if g:EasyMotion_smartcase && char =~# '\v\U'
+			let re = '\c' . re
+		else
+			let re = '\C' . re
+		endif
 
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
@@ -326,8 +337,6 @@
 
 		return chars
 	endfunction " }}}
-
-
 	function! s:GetSearchChar(visualmode) " {{{
 		call s:Prompt('Search for character')
 
@@ -345,6 +354,20 @@
 
 		return char
 	endfunction " }}}
+
+function! s:load_migemo_dict() "{{{
+    let enc = &l:encoding
+    if enc ==# 'utf-8'
+        return EasyMotion#migemo#utf8#load_dict()
+    elseif enc ==# 'cp932'
+        return EasyMotion#migemo#cp932#load_dict()
+    elseif enc ==# 'euc-jp'
+        return EasyMotion#migemo#eucjp#load_dict()
+    else
+        let g:EasyMotion_use_migemo = 0
+        throw "Error: ".enc." is not supported. Migemo is made disabled."
+    endif
+endfunction "}}}
 " }}}
 " Grouping algorithms {{{
 	let s:grouping_algorithms = {
