@@ -83,6 +83,100 @@
 
 " }}}
 " Motion functions {{{
+	function! EasyMotion#F(visualmode, direction) " {{{
+		let char = s:GetSearchChar(a:visualmode)
+
+		let re = escape(char, '.$^~')
+
+		if empty(char)
+			return
+		endif
+
+		if g:EasyMotion_smartcase && char =~# '\v\U'
+			let re = '\c' . re
+		else
+			let re = '\C' . re
+		endif
+
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
+	function! EasyMotion#S(visualmode, direction) " {{{
+		let char = s:GetSearchChar(a:visualmode)
+
+		if empty(char)
+			return
+		endif
+
+		let re = escape(char, '.$^~')
+
+		if g:EasyMotion_use_migemo
+			if ! has_key(s:migemo_dicts, &l:encoding)
+				let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
+			endif
+			if re =~# '^\a$'
+				let re = s:migemo_dicts[&l:encoding][re]
+			endif
+		endif
+
+		if g:EasyMotion_smartcase && char =~# '\v\U'
+			let re = '\c' . re
+		else
+			let re = '\C' . re
+		endif
+
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
+	function! EasyMotion#T(visualmode, direction) " {{{
+		let char = s:GetSearchChar(a:visualmode)
+
+		if empty(char)
+			return
+		endif
+
+		let re = escape(char, '.$^~')
+
+		if a:direction == 1
+			" backward
+			let re = re . '\zs.'
+		else
+			" forward
+			let re = '.\ze' . re
+		endif
+
+		if g:EasyMotion_smartcase && char =~# '\v\U'
+			let re = '\c' . re
+		else
+			let re = '\C' . re
+		endif
+
+
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
+
+	function! EasyMotion#WB(visualmode, direction) " {{{
+		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
+	function! EasyMotion#WBW(visualmode, direction) " {{{
+		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
+	function! EasyMotion#E(visualmode, direction) " {{{
+		call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
+	function! EasyMotion#EW(visualmode, direction) " {{{
+		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
+
+	function! EasyMotion#JK(visualmode, direction) " {{{
+		if g:EasyMotion_startofline
+			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		else
+			let prev_column = getpos('.')[2] - 1
+			call s:EasyMotion('^.\{,' . prev_column . '}\zs\(.\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		endif
+	endfunction " }}}
+	function! EasyMotion#Search(visualmode, direction) " {{{
+		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
 
 	function! EasyMotion#SelectLines() "{{{
 		let orig_pos = [line('.'), col('.')]
@@ -170,96 +264,6 @@
 		endif
 	endfunction "}}}
 
-
-	function! EasyMotion#F(visualmode, direction) " {{{
-		let char = s:GetSearchChar(a:visualmode)
-
-		if empty(char)
-			return
-		endif
-
-		if g:EasyMotion_smartcase && char =~# '\v\U'
-			let re = '\c'
-		else
-			let re = '\C'
-		endif
-
-		let re = re . escape(char, '.$^~')
-
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
-	endfunction " }}}
-
-	function! EasyMotion#S(visualmode, direction) " {{{
-		let char = s:GetSearchChar(a:visualmode)
-
-		if empty(char)
-			return
-		endif
-
-		let re = escape(char, '.$^~')
-
-		if g:EasyMotion_use_migemo
-			if ! has_key(s:migemo_dicts, &l:encoding)
-				let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
-			endif
-			if re =~# '^\a$'
-				let re = s:migemo_dicts[&l:encoding][re]
-			endif
-		endif
-
-		if g:EasyMotion_smartcase && char =~# '\v\U'
-			let re = '\c' . re
-		else
-			let re = '\C' . re
-		endif
-
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
-	endfunction " }}}
-
-	function! EasyMotion#T(visualmode, direction) " {{{
-		let char = s:GetSearchChar(a:visualmode)
-
-		if empty(char)
-			return
-		endif
-
-		if g:EasyMotion_smartcase && char =~# '\v\U'
-			let re = '\c'
-		else
-			let re = '\C'
-		endif
-
-		if a:direction == 1
-			let re = re . escape(char, '.$^~') . '\zs.'
-		else
-			let re = re . '.' . escape(char, '.$^~')
-		endif
-
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
-	endfunction " }}}
-	function! EasyMotion#WB(visualmode, direction) " {{{
-		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
-	endfunction " }}}
-	function! EasyMotion#WBW(visualmode, direction) " {{{
-		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
-	endfunction " }}}
-	function! EasyMotion#E(visualmode, direction) " {{{
-		call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
-	endfunction " }}}
-	function! EasyMotion#EW(visualmode, direction) " {{{
-		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
-	endfunction " }}}
-	function! EasyMotion#JK(visualmode, direction) " {{{
-		if g:EasyMotion_startofline
-			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
-		else
-			let prev_column = getpos('.')[2] - 1
-			call s:EasyMotion('^.\{,' . prev_column . '}\zs\(.\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
-		endif
-	endfunction " }}}
-	function! EasyMotion#Search(visualmode, direction) " {{{
-		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
-	endfunction " }}}
 " }}}
 " Helper functions {{{
 	function! s:Message(message) " {{{
@@ -620,16 +624,6 @@ endfunction "}}}
 					call add(hl2_second_coords, '\%' . line_num . 'l\%2c')
 				endif
 				let lines[line_num]['marker'] = text . ' ' . lines[line_num]['marker']
-
-				"if target_key_len < 2
-					"let text = target_key . ' '
-					"call add(hl_coords, '\%' . line_num . 'l\%' . (strlen(lines[line_num]['marker']) + 1) . 'c')
-				"else
-					"let text = target_key
-					"call add(hl2_first_coords, '\%' . line_num . 'l\%' . (strlen(lines[line_num]['marker']) + 1) . 'c')
-					"call add(hl2_second_coords, '\%' . line_num . 'l\%' . (strlen(lines[line_num]['marker']) + 2) . 'c')
-				"endif
-				"let lines[line_num]['marker'] = lines[line_num]['marker'] . text
 			else
 				if strlen(lines[line_num]['marker']) > 0
 				" Substitute marker character if line length > 0
@@ -675,10 +669,6 @@ endfunction "}}}
 
 			" Add marker/target lenght difference for multibyte
 			" compensation
-			"let lines[line_num]['mb_compensation'] += (target_char_len - target_key_len)
-			"let lines[line_num]['mb_compensation'] += (4 - target_key_len)
-			"let lines[line_num]['mb_compensation'] += -1
-			"let lines[line_num]['mb_compensation'] += (target_char_len - 1)
 			let lines[line_num]['mb_compensation'] += (target_line_byte_len - strlen(lines[line_num]['marker']) )
 		endfor
 
