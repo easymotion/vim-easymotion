@@ -573,6 +573,14 @@ endfunction "}}}
 
 			endif
 
+			" Solve multibyte issues by matching the byte column
+			" number instead of the visual column
+			"echom lines[line_num]['mb_compensation']
+			let col_num -= lines[line_num]['mb_compensation']
+			"if col_num < 0
+			"	let col_num = 0
+			"endif
+
 			" Compensate for byte difference between marker
 			" character and target character
 			"
@@ -582,11 +590,11 @@ endfunction "}}}
 			let target_char_len = strdisplaywidth(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
 			let target_key_len = strdisplaywidth(target_key)
 
+
+			let target_line_byte_len = strlen(lines[line_num]['marker'])
+
 			let target_char_byte_len = strlen(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
 
-			" Solve multibyte issues by matching the byte column
-			" number instead of the visual column
-			"let col_num -= lines[line_num]['mb_compensation']
 			if a:fixed_column
 				let firstS = match(lines[line_num]['marker'], '\S')
 				if firstS >= 4
@@ -628,14 +636,22 @@ endfunction "}}}
 
 					let c = 0
 					while c < target_key_len && c < 2
-						if strlen(lines[line_num]['marker']) >= col_num + c
+						if strdisplaywidth(lines[line_num]['marker']) >= col_num + c
 							" Substitute marker character if line length > 0
-							"
-							let lines[line_num]['marker'] = substitute(
-								\ lines[line_num]['marker'],
-								\ '\%' . (col_num + c) . 'c.',
-								\ strpart(target_key, c, 1) . repeat(' ', target_char_len - target_key_len),
-								\ '')
+							"if c == 1 && c != target_key_len
+							if c == 0
+								let lines[line_num]['marker'] = substitute(
+									\ lines[line_num]['marker'],
+									\ '\%' . (col_num + c) . 'c.',
+									\ strpart(target_key, c, 1) . repeat(' ', target_char_len - 1),
+									\ '')
+							else
+								let lines[line_num]['marker'] = substitute(
+									\ lines[line_num]['marker'],
+									\ '\%' . (col_num + c) . 'c.',
+									\ strpart(target_key, c, 1),
+									\ '')
+							endif
 						else
 							let lines[line_num]['marker'] = lines[line_num]['marker'] . strpart(target_key, c, 1)
 						endif
@@ -664,6 +680,7 @@ endfunction "}}}
 			"let lines[line_num]['mb_compensation'] += (4 - target_key_len)
 			"let lines[line_num]['mb_compensation'] += -1
 			"let lines[line_num]['mb_compensation'] += (target_char_len - 1)
+			let lines[line_num]['mb_compensation'] += (target_line_byte_len - strlen(lines[line_num]['marker']) )
 		endfor
 
 		let lines_items = items(lines)
