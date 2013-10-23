@@ -636,9 +636,8 @@ endfunction "}}}
 
 					let c = 0
 					while c < target_key_len && c < 2
-						if strdisplaywidth(lines[line_num]['marker']) >= col_num + c
+						if strlen(lines[line_num]['marker']) >= col_num + c
 							" Substitute marker character if line length > 0
-							"if c == 1 && c != target_key_len
 							if c == 0
 								let lines[line_num]['marker'] = substitute(
 									\ lines[line_num]['marker'],
