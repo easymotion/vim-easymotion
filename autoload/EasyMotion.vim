@@ -88,6 +88,15 @@
 
 		let re = escape(char, '.$^~')
 
+		if g:EasyMotion_use_migemo
+			if ! has_key(s:migemo_dicts, &l:encoding)
+				let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
+			endif
+			if re =~# '^\a$'
+				let re = s:migemo_dicts[&l:encoding][re]
+			endif
+		endif
+
 		if empty(char)
 			return
 		endif
@@ -134,6 +143,15 @@
 		endif
 
 		let re = escape(char, '.$^~')
+
+		if g:EasyMotion_use_migemo
+			if ! has_key(s:migemo_dicts, &l:encoding)
+				let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
+			endif
+			if re =~# '^\a$'
+				let re = s:migemo_dicts[&l:encoding][re]
+			endif
+		endif
 
 		if a:direction == 1
 			" backward
