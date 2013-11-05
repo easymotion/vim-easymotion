@@ -51,15 +51,15 @@
 					continue
 				endif
 
-				silent exec 'nnoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
-				silent exec 'onoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
-				silent exec 'vnoremap <silent> ' . g:EasyMotion_mapping_{motion} . ' :<C-U>call EasyMotion#' . fn.name . '(1, ' . fn.dir . ')<CR>'
+				silent exec 'nnoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ', ' . fn.inclusive . ')<CR>'
+				silent exec 'onoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ', ' . fn.inclusive . ')<CR>'
+				silent exec 'vnoremap <silent> ' . g:EasyMotion_mapping_{motion} . ' :<C-U>call EasyMotion#' . fn.name . '(1, ' . fn.dir . ', ' . fn.inclusive . ')<CR>'
 			endfor
 		endif
 	endfunction "}}}
 " }}}
 " Motion functions {{{
-	function! EasyMotion#F(visualmode, direction) " {{{
+	function! EasyMotion#F(visualmode, direction, inclusive) " {{{
 		let char = s:GetSearchChar(a:visualmode)
 
 		if empty(char)
@@ -68,9 +68,9 @@
 
 		let re = '\C' . escape(char, '.$^~')
 
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1), a:inclusive)
 	endfunction " }}}
-	function! EasyMotion#T(visualmode, direction) " {{{
+	function! EasyMotion#T(visualmode, direction, inclusive) " {{{
 		let char = s:GetSearchChar(a:visualmode)
 
 		if empty(char)
@@ -83,25 +83,25 @@
 			let re = '\C.' . escape(char, '.$^~')
 		endif
 
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1), a:inclusive)
 	endfunction " }}}
-	function! EasyMotion#WB(visualmode, direction) " {{{
-		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+	function! EasyMotion#WB(visualmode, direction, inclusive) " {{{
+		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '', a:inclusive, 0)
 	endfunction " }}}
-	function! EasyMotion#WBW(visualmode, direction) " {{{
-		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+	function! EasyMotion#WBW(visualmode, direction, inclusive) " {{{
+		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '', a:inclusive, 0)
 	endfunction " }}}
-	function! EasyMotion#E(visualmode, direction) " {{{
-		call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+	function! EasyMotion#E(visualmode, direction, inclusive) " {{{
+		call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1), a:inclusive, 0)
 	endfunction " }}}
-	function! EasyMotion#EW(visualmode, direction) " {{{
-		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+	function! EasyMotion#EW(visualmode, direction, inclusive) " {{{
+		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1), a:inclusive, 0)
 	endfunction " }}}
-	function! EasyMotion#JK(visualmode, direction) " {{{
-		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+	function! EasyMotion#JK(visualmode, direction, inclusive) " {{{
+		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '', a:inclusive)
 	endfunction " }}}
-	function! EasyMotion#Search(visualmode, direction) " {{{
-		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
+	function! EasyMotion#Search(visualmode, direction, inclusive) " {{{
+		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '', a:inclusive)
 	endfunction " }}}
 " }}}
 " Helper functions {{{
@@ -349,7 +349,9 @@
 		" If only one possible match, jump directly to it {{{
 			let group_values = values(a:groups)
 
-			if len(group_values) == 1
+			if len(group_values) == 1 
+				\ || ( len(group_values) == 2 && group_values[1] == g:eof_pos )
+				\ || ( len(group_values) == 2 && group_values[1] == g:sof_pos )
 				redraw
 
 				return group_values[0]
@@ -454,9 +456,16 @@
 			return s:PromptUser(target)
 		endif
 	endfunction "}}}
-	function! s:EasyMotion(regexp, direction, visualmode, mode) " {{{
+	function! s:EasyMotion(regexp, direction, visualmode, mode, inclusive, ...) " {{{
 		let orig_pos = [line('.'), col('.')]
 		let targets = []
+		let g:eof_pos = [line('$'), len(getline(line('$')))+1]
+		let g:sof_pos = [1,1]
+
+		let stopatlast = 1
+		if a:0 == 1
+			let stopatlast = a:1
+		endif
 
 		try
 			" Reset properties {{{
@@ -465,7 +474,8 @@
 				call s:VarReset('&modifiable', 1)
 				call s:VarReset('&readonly', 0)
 				call s:VarReset('&spell', 0)
-				call s:VarReset('&virtualedit', '')
+				"call s:VarReset('&virtualedit', '')
+				call s:VarReset('&virtualedit', 'onemore')
 			" }}}
 			" Find motion targets {{{
 				let search_direction = (a:direction == 1 ? 'b' : '')
@@ -476,6 +486,14 @@
 
 					" Reached end of search range
 					if pos == [0, 0]
+						if search_direction == ''
+							let lastpos = g:eof_pos
+						elseif search_direction == 'b'
+							let lastpos = g:sof_pos
+						endif
+						if stopatlast != 1 && exists('lastpos')
+							call add(targets, lastpos)
+						endif
 						break
 					endif
 
@@ -528,7 +546,7 @@
 					" character to the right if we're using
 					" a forward motion
 					if a:direction != 1
-						let coords[1] += 1
+						"let coords[1] += 1
 					endif
 				endif
 			" }}}
@@ -536,6 +554,9 @@
 			" Update cursor position
 			call cursor(orig_pos[0], orig_pos[1])
 			mark '
+			if a:inclusive == 1 && a:mode == 'no' && mode(1) != 'v'
+				normal! v
+			endif
 			call cursor(coords[0], coords[1])
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')

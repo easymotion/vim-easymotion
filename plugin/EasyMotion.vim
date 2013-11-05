@@ -50,22 +50,22 @@
 	" }}}
 	" Default key mapping {{{
 		call EasyMotion#InitMappings({
-		\   'f' : { 'name': 'F'  , 'dir': 0 }
-		\ , 'F' : { 'name': 'F'  , 'dir': 1 }
-		\ , 't' : { 'name': 'T'  , 'dir': 0 }
-		\ , 'T' : { 'name': 'T'  , 'dir': 1 }
-		\ , 'w' : { 'name': 'WB' , 'dir': 0 }
-		\ , 'W' : { 'name': 'WBW', 'dir': 0 }
-		\ , 'b' : { 'name': 'WB' , 'dir': 1 }
-		\ , 'B' : { 'name': 'WBW', 'dir': 1 }
-		\ , 'e' : { 'name': 'E'  , 'dir': 0 }
-		\ , 'E' : { 'name': 'EW' , 'dir': 0 }
-		\ , 'ge': { 'name': 'E'  , 'dir': 1 }
-		\ , 'gE': { 'name': 'EW' , 'dir': 1 }
-		\ , 'j' : { 'name': 'JK' , 'dir': 0 }
-		\ , 'k' : { 'name': 'JK' , 'dir': 1 }
-		\ , 'n' : { 'name': 'Search' , 'dir': 0 }
-		\ , 'N' : { 'name': 'Search' , 'dir': 1 }
+		\   'f' : { 'name': 'F'  , 'dir': 0 , 'inclusive': 1}
+		\ , 'F' : { 'name': 'F'  , 'dir': 1 , 'inclusive': 0}
+		\ , 't' : { 'name': 'T'  , 'dir': 0 , 'inclusive': 1}
+		\ , 'T' : { 'name': 'T'  , 'dir': 1 , 'inclusive': 0}
+		\ , 'w' : { 'name': 'WB' , 'dir': 0 , 'inclusive': 0}
+		\ , 'W' : { 'name': 'WBW', 'dir': 0 , 'inclusive': 0}
+		\ , 'b' : { 'name': 'WB' , 'dir': 1 , 'inclusive': 0}
+		\ , 'B' : { 'name': 'WBW', 'dir': 1 , 'inclusive': 0}
+		\ , 'e' : { 'name': 'E'  , 'dir': 0 , 'inclusive': 1}
+		\ , 'E' : { 'name': 'EW' , 'dir': 0 , 'inclusive': 1}
+		\ , 'ge': { 'name': 'E'  , 'dir': 1 , 'inclusive': 1}
+		\ , 'gE': { 'name': 'EW' , 'dir': 1 , 'inclusive': 1}
+		\ , 'j' : { 'name': 'JK' , 'dir': 0 , 'inclusive': 0}
+		\ , 'k' : { 'name': 'JK' , 'dir': 1 , 'inclusive': 0}
+		\ , 'n' : { 'name': 'Search' , 'dir': 0 , 'inclusive': 0}
+		\ , 'N' : { 'name': 'Search' , 'dir': 1 , 'inclusive': 0}
 		\ })
 	" }}}
 " }}}
