@@ -540,21 +540,21 @@
 					exec 'normal! ' . a:visualmode
 				endif
 			" }}}
-			" Handle operator-pending mode {{{
-				if a:mode == 'no'
-					" This mode requires that we eat one more
-					" character to the right if we're using
-					" a forward motion
-					if a:direction != 1
+			"" Handle operator-pending mode {{{
+				"if a:mode == 'no'
+					"" This mode requires that we eat one more
+					"" character to the right if we're using
+					"" a forward motion
+					"if a:direction != 1
 						"let coords[1] += 1
-					endif
-				endif
-			" }}}
+					"endif
+				"endif
+			"" }}}
 
 			" Update cursor position
 			call cursor(orig_pos[0], orig_pos[1])
 			mark '
-			if a:inclusive == 1 && a:mode == 'no' && mode(1) != 'v'
+			if mode(1) == 'no' && a:inclusive == 1
 				normal! v
 			endif
 			call cursor(coords[0], coords[1])
