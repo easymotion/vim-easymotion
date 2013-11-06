@@ -361,9 +361,7 @@
 		" If only one possible match, jump directly to it {{{
 			let group_values = values(a:groups)
 
-			if len(group_values) == 1 
-				\ || ( len(group_values) == 2 && group_values[1] == g:eof_pos )
-				\ || ( len(group_values) == 2 && group_values[1] == g:sof_pos )
+			if len(group_values) == 1
 				redraw
 
 				return group_values[0]
@@ -473,8 +471,8 @@
 		let orig_mark_backtick = getpos("'`")
 		normal! m`
 		let targets = []
-		let g:eof_pos = [line('$'), len(getline(line('$')))+1]
-		let g:sof_pos = [1,1]
+		let eof_pos = [line('$'), len(getline(line('$')))+1]
+		let sof_pos = [1,1]
 
 		let inclusive = 0
 		if a:0 >= 1
@@ -511,9 +509,9 @@
 					" Reached end of search range
 					if pos == [0, 0]
 						if search_direction == ''
-							let lastpos = g:eof_pos
+							let lastpos = eof_pos
 						elseif search_direction == 'b'
-							let lastpos = g:sof_pos
+							let lastpos = sof_pos
 						endif
 						if stopatlast != 1 && exists('lastpos')
 							call add(targets, lastpos)
