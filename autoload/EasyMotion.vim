@@ -51,6 +51,7 @@
 					continue
 				endif
 
+				" TODO: make g:EasyMotion_mapping_{motion} support list
 				silent exec 'nnoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
 				silent exec 'onoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
 				silent exec 'vnoremap <silent> ' . g:EasyMotion_mapping_{motion} . ' :<C-U>call EasyMotion#' . fn.name . '(1, ' . fn.dir . ')<CR>'
@@ -562,6 +563,8 @@
 					exec 'normal! ' . a:visualmode
 				endif
 			" }}}
+			" XXX: seems not long necessary. Now a:mode is not need. I'll 
+			"
 			"" Handle operator-pending mode {{{
 				"if a:mode == 'no'
 					"" This mode requires that we eat one more
