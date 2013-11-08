@@ -85,9 +85,9 @@
 		endif
 
 		if a:direction == 1
-			let re = '\C' . escape(char, '.$^~') . '\zs.'
+			let re = '\C\(' . escape(char, '.$^~') . '\)\@<=.'
 		else
-			let re = '\C.' . escape(char, '.$^~')
+			let re = '\C.\(' . escape(char, '.$^~') . '\)\@='
 		endif
 
 		if a:direction == 0
