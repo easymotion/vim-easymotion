@@ -472,8 +472,8 @@
 		let orig_mark_backtick = getpos("'`")
 		normal! m`
 		let targets = []
-		let eof_pos = [line('$'), len(getline(line('$')))+1]
-		let sof_pos = [1,1]
+		let nomatch = 0
+		let endofmatch = []
 
 		let inclusive = 0
 		if a:0 >= 1
@@ -497,26 +497,55 @@
 				call s:VarReset('&modifiable', 1)
 				call s:VarReset('&readonly', 0)
 				call s:VarReset('&spell', 0)
-				"call s:VarReset('&virtualedit', '')
-				call s:VarReset('&virtualedit', 'onemore')
+				call s:VarReset('&virtualedit', '')
+				"call s:VarReset('&virtualedit', 'onemore')
 			" }}}
 			" Find motion targets {{{
 				let search_direction = (a:direction == 1 ? 'b' : '')
 				let search_stopline = line(a:direction == 1 ? 'w0' : 'w$')
+
+				if ! empty(a:visualmode)
+					"exec "normal! g".a:visualmode
+					normal! gv
+					let c_pos   = [line("."),col(".")]
+					let v_start = [line("'<"),col("'<")]
+					let v_end   = [line("'>"),col("'>")]
+
+					let vmode = mode(1)
+					if match('Vv',vmode) < 0
+						throw 'Unkown visual mode'
+					elseif vmode ==# 'V'
+						if v_start[0] == v_end[0]
+							if search_direction == ''
+								let v_pos = v_start
+							elseif search_direction == 'b'
+								let v_pos = v_end
+							else
+								throw 'Unkown search_direction'
+							endif
+						else
+							if c_pos[0] == v_start[0]
+								let v_pos = v_end
+							elseif c_pos[0] == v_end[0]
+								let v_pos = v_start
+							endif
+						endif
+					else
+						if c_pos == v_start
+							let v_pos = v_end
+						elseif c_pos == v_end
+							let v_pos = v_start
+						else
+							throw 'Unkown c_pos'
+						endif
+					endif
+				endif
 
 				while 1
 					let pos = searchpos(a:regexp, search_direction, search_stopline)
 
 					" Reached end of search range
 					if pos == [0, 0]
-						if search_direction == ''
-							let lastpos = eof_pos
-						elseif search_direction == 'b'
-							let lastpos = sof_pos
-						endif
-						if stopatlast != 1 && exists('lastpos')
-							call add(targets, lastpos)
-						endif
 						break
 					endif
 
@@ -528,8 +557,22 @@
 					call add(targets, pos)
 				endwhile
 
+				if ! empty(a:visualmode)
+					keepjumps call cursor(v_pos)
+					exec "normal! ".a:visualmode
+					keepjumps call cursor(c_pos)
+				endif
+
 				let targets_len = len(targets)
 				if targets_len == 0
+					let nomatch = 1
+					if search_direction == ''
+						let endofmatch = [line('$'), len(getline(line('$')))]
+					elseif search_direction == 'b'
+						let endofmatch = [1,1]
+					endif
+				endif
+				if nomatch && stopatlast
 					throw 'No matches'
 				endif
 			" }}}
@@ -554,17 +597,19 @@
 			" }}}
 
 			" Prompt user for target group/character
-			let coords = s:PromptUser(groups)
+			if !nomatch
+				let coords = s:PromptUser(groups)
+			else
+				let coords = endofmatch
+			endif
 
 			" Update selection {{{
-				if ! empty(a:visualmode)
-					keepjumps call cursor(orig_pos[0], orig_pos[1])
-
-					exec 'normal! ' . a:visualmode
-				endif
+				"if ! empty(a:visualmode)
+					"keepjumps call cursor(v_pos)
+					"exec 'normal! ' . a:visualmode
+				"endif
 			" }}}
 			" XXX: seems not long necessary. Now a:mode is not need. I'll 
-			"
 			"" Handle operator-pending mode {{{
 				"if a:mode == 'no'
 					"" This mode requires that we eat one more
@@ -577,16 +622,29 @@
 			"" }}}
 
 			" Update cursor position
-			call cursor(orig_pos[0], orig_pos[1])
-			mark '
-			if mode(1) == 'no'
-				if inclusive == 1
-					normal! v
-				elseif linewise == 1
-					normal! V
-				endif
+			"normal! v
+			if ! empty(a:visualmode)
+				let orig_pos = v_pos
 			endif
-			call cursor(coords[0], coords[1])
+
+			call cursor(orig_pos)
+
+			mark '
+
+			if mode(1) == 'no'
+				if nomatch && !linewise
+					let inclusive = 1
+				endif
+				if linewise
+					normal! V
+				elseif inclusive
+					normal! v
+				endif
+			elseif ! empty(a:visualmode)
+				exec "normal! ".a:visualmode
+			endif
+
+			call cursor(coords)
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		catch
@@ -601,7 +659,7 @@
 				if ! empty(a:visualmode)
 					silent exec 'normal! gv'
 				else
-					keepjumps call cursor(orig_pos[0], orig_pos[1])
+					keepjumps call cursor(orig_pos)
 				endif
 			" }}}
 		finally
