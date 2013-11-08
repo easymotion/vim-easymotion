@@ -51,6 +51,7 @@
 					continue
 				endif
 
+				" TODO: make g:EasyMotion_mapping_{motion} support list
 				silent exec 'nnoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
 				silent exec 'onoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
 				silent exec 'vnoremap <silent> ' . g:EasyMotion_mapping_{motion} . ' :<C-U>call EasyMotion#' . fn.name . '(1, ' . fn.dir . ')<CR>'
@@ -68,7 +69,13 @@
 
 		let re = '\C' . escape(char, '.$^~')
 
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+		if a:direction == 0
+			let inclusive = 1
+		else
+			let inclusive = 0
+		endif
+
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1), inclusive, 0, 1)
 	endfunction " }}}
 	function! EasyMotion#T(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
@@ -78,30 +85,36 @@
 		endif
 
 		if a:direction == 1
-			let re = '\C' . escape(char, '.$^~') . '\zs.'
+			let re = '\C\(' . escape(char, '.$^~') . '\)\@<=.'
 		else
-			let re = '\C.' . escape(char, '.$^~')
+			let re = '\C.\(' . escape(char, '.$^~') . '\)\@='
 		endif
 
-		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+		if a:direction == 0
+			let inclusive = 1
+		else
+			let inclusive = 0
+		endif
+
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1), inclusive, 0, 1)
 	endfunction " }}}
 	function! EasyMotion#WB(visualmode, direction) " {{{
-		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('\(\(^\|\<\|\>\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '', 0, 0, 0)
 	endfunction " }}}
 	function! EasyMotion#WBW(visualmode, direction) " {{{
-		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '', 0, 0, 0)
 	endfunction " }}}
 	function! EasyMotion#E(visualmode, direction) " {{{
-		call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion('\(\S\($\|\>\|\<\|\s\)\@=\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1), 1, 0, 0)
 	endfunction " }}}
 	function! EasyMotion#EW(visualmode, direction) " {{{
-		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1), 1, 0, 0)
 	endfunction " }}}
 	function! EasyMotion#JK(visualmode, direction) " {{{
-		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '', 0, 1, 1)
 	endfunction " }}}
 	function! EasyMotion#Search(visualmode, direction) " {{{
-		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '', 0, 0, 1)
 	endfunction " }}}
 " }}}
 " Helper functions {{{
@@ -454,11 +467,30 @@
 			return s:PromptUser(target)
 		endif
 	endfunction "}}}
-	function! s:EasyMotion(regexp, direction, visualmode, mode) " {{{
+	function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 		let orig_pos = [line('.'), col('.')]
 		let orig_mark_backtick = getpos("'`")
 		normal! m`
 		let targets = []
+		let nomatch = 0
+		let endofmatch = []
+
+		" Configure inclusive, lineswise, and stopatlast match flag {{{
+		let inclusive = 0
+		if a:0 >= 1
+			let inclusive = a:1
+		endif
+
+		let linewise = 0
+		if a:0 >= 2
+			let linewise = a:2
+		endif
+
+		let stopatlast = 1
+		if a:0 >= 3
+			let stopatlast = a:3
+		endif
+		"}}}"
 
 		try
 			" Reset properties {{{
@@ -468,11 +500,63 @@
 				call s:VarReset('&readonly', 0)
 				call s:VarReset('&spell', 0)
 				call s:VarReset('&virtualedit', '')
+				"call s:VarReset('&virtualedit', 'onemore')
 			" }}}
 			" Find motion targets {{{
+				" Setup searchpos args {{{
 				let search_direction = (a:direction == 1 ? 'b' : '')
 				let search_stopline = line(a:direction == 1 ? 'w0' : 'w$')
+				"}}}
 
+				" Handle visual mode {{{
+				if ! empty(a:visualmode) 
+					" Decide at where visual mode start {{{
+					normal! gv
+					let c_pos   = [line("."),col(".")]
+					let v_start = [line("'<"),col("'<")]
+					let v_end   = [line("'>"),col("'>")]
+
+					let vmode = mode(1)
+					if match('Vv',vmode) < 0
+						throw 'Unkown visual mode:'.vmode
+					elseif vmode ==# 'V'
+						if v_start[0] == v_end[0]
+							if search_direction == ''
+								let v_pos = v_start
+							elseif search_direction == 'b'
+								let v_pos = v_end
+							else
+								throw 'Unkown search_direction'
+							endif
+						else
+							if c_pos[0] == v_start[0]
+								let v_pos = v_end
+							elseif c_pos[0] == v_end[0]
+								let v_pos = v_start
+							endif
+						endif
+					else
+						if c_pos == v_start
+							let v_pos = v_end
+						elseif c_pos == v_end
+							let v_pos = v_start
+						else
+							throw 'Unkown c_pos'
+						endif
+					endif
+					"}}}
+					" Reselect visual text {{{
+					keepjumps call cursor(v_pos)
+					exec "normal! ".a:visualmode
+					keepjumps call cursor(c_pos)
+					"}}}
+					" Update orig_pos {{{
+					let orig_pos = v_pos
+					" }}}
+				endif
+				" }}}
+
+				" Construct match dict {{{
 				while 1
 					let pos = searchpos(a:regexp, search_direction, search_stopline)
 
@@ -488,11 +572,23 @@
 
 					call add(targets, pos)
 				endwhile
+				"}}}
 
+				" Handle no match. {{{
 				let targets_len = len(targets)
 				if targets_len == 0
+					let nomatch = 1
+					if search_direction == ''
+						let endofmatch = [line('$'), len(getline(line('$')))]
+					elseif search_direction == 'b'
+						let endofmatch = [1,1]
+					endif
+				endif
+
+				if nomatch && stopatlast
 					throw 'No matches'
 				endif
+				"}}}
 			" }}}
 
 			let GroupingFn = function('s:GroupingAlgorithm' . s:grouping_algorithms[g:EasyMotion_grouping])
@@ -515,30 +611,54 @@
 			" }}}
 
 			" Prompt user for target group/character
-			let coords = s:PromptUser(groups)
+			if !nomatch
+				let coords = s:PromptUser(groups)
+			else
+				let coords = endofmatch
+			endif
 
 			" Update selection {{{
-				if ! empty(a:visualmode)
-					keepjumps call cursor(orig_pos[0], orig_pos[1])
-
-					exec 'normal! ' . a:visualmode
-				endif
-			" }}}
-			" Handle operator-pending mode {{{
-				if a:mode == 'no'
-					" This mode requires that we eat one more
-					" character to the right if we're using
-					" a forward motion
-					if a:direction != 1
-						let coords[1] += 1
-					endif
-				endif
-			" }}}
+				"if ! empty(a:visualmode)
+					"keepjumps call cursor(v_pos)
+					"exec 'normal! ' . a:visualmode
+					"keepjumps call cursor(c_pos)
+				"endif
+			 "}}}
+			" XXX: seems not long necessary. Now a:mode is not need
+			"" Handle operator-pending mode {{{
+				"if a:mode == 'no'
+					"" This mode requires that we eat one more
+					"" character to the right if we're using
+					"" a forward motion
+					"if a:direction != 1
+						"let coords[1] += 1
+					"endif
+				"endif
+			"" }}}
 
 			" Update cursor position
-			call cursor(orig_pos[0], orig_pos[1])
+			"if ! empty(a:visualmode)
+				"let orig_pos = v_pos
+			"endif
+
+			call cursor(orig_pos)
+
 			mark '
-			call cursor(coords[0], coords[1])
+
+			if a:mode == 'no'
+				if nomatch
+					let inclusive = 1
+				endif
+				if linewise
+					normal! V
+				elseif inclusive
+					normal! v
+				endif
+			elseif ! empty(a:visualmode)
+				exec "normal! ".a:visualmode
+			endif
+
+			call cursor(coords)
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		catch
@@ -553,7 +673,7 @@
 				if ! empty(a:visualmode)
 					silent exec 'normal! gv'
 				else
-					keepjumps call cursor(orig_pos[0], orig_pos[1])
+					keepjumps call cursor(orig_pos)
 				endif
 			" }}}
 		finally
