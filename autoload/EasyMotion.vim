@@ -99,13 +99,13 @@
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1), inclusive, 0, 1)
 	endfunction " }}}
 	function! EasyMotion#WB(visualmode, direction) " {{{
-		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '', 0, 0, 0)
+		call s:EasyMotion('\(\(\<\|\>\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '', 0, 0, 0)
 	endfunction " }}}
 	function! EasyMotion#WBW(visualmode, direction) " {{{
 		call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '', 0, 0, 0)
 	endfunction " }}}
 	function! EasyMotion#E(visualmode, direction) " {{{
-		call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1), 1, 0, 0)
+		call s:EasyMotion('\(\S\(\>\|\<\|\s\)\@=\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1), 1, 0, 0)
 	endfunction " }}}
 	function! EasyMotion#EW(visualmode, direction) " {{{
 		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1), 1, 0, 0)
