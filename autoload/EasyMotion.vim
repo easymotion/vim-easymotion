@@ -988,6 +988,7 @@ endfunction "}}}
 			" Restore original cursor position/selection {{{
 				if ! empty(a:visualmode)
 					silent exec 'normal! gv'
+					keepjumps call cursor(c_pos[0], c_pos[1])
 				else
 					keepjumps call cursor(orig_pos[0], orig_pos[1])
 				endif
