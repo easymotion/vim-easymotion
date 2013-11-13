@@ -847,6 +847,9 @@ endfunction "}}}
 
 				" Construct match dict {{{
 				while 1
+					" Note: searchpos() has side effect which call jump cursor position.
+					"		You can disable this side effect by add 'n' flags,
+					"		but in this case, it's better to allows jump side effect.
 					let pos = searchpos(a:regexp, search_direction . search_at_cursor, search_stopline)
 					let search_at_cursor = ''
 
@@ -868,7 +871,7 @@ endfunction "}}}
 				" Reconstruct match dict
 				if a:direction == 2
 					if ! empty(a:visualmode)
-						keepjumps call cursor(v_start[0], v_start[1])
+						keepjumps call cursor(c_pos[0], c_pos[1])
 					else
 						keepjumps call cursor(orig_pos[0], orig_pos[1])
 					endif
