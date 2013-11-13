@@ -455,6 +455,7 @@ Ref:
 - mtth     : startofline(keep column)
 - bootleq  : fixed bufname bug
 - mattn    : fix multibyte handling
+- yuex     : fix visual mode selection bug (o command)
 
 Migemo:
 
