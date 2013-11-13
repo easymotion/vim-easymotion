@@ -792,6 +792,59 @@ endfunction "}}}
 				let search_at_cursor = fixed_column ? 'c' : ''
 				"}}}
 
+				" Handle visual mode {{{
+				if ! empty(a:visualmode)
+					" Decide at where visual mode start {{{
+					normal! gv
+					let c_pos   = [line("."),col(".")]
+					let v_start = [line("'<"),col("'<")]
+					let v_end   = [line("'>"),col("'>")]
+
+					let vmode = mode(1)
+					if match('Vv',vmode) < 0
+						throw 'Unkown visual mode:'.vmode
+					elseif vmode ==# 'V' "line-wise Visual
+						" Line-wise Visual {{{
+						if v_start[0] == v_end[0]
+							if search_direction == ''
+								let v_pos = v_start
+							elseif search_direction == 'b'
+								let v_pos = v_end
+							else
+								throw 'Unkown search_direction'
+							endif
+						else
+							if c_pos[0] == v_start[0]
+								let v_pos = v_end
+
+							elseif c_pos[0] == v_end[0]
+								let v_pos = v_start
+							endif
+						endif
+						"}}}
+					else
+						" Character-wise or Block-wise Visual"{{{
+						if c_pos == v_start
+							let v_pos = v_end
+						elseif c_pos == v_end
+							let v_pos = v_start
+						else
+							throw 'Unkown c_pos'
+						endif
+						"}}}
+					endif
+					"}}}
+					" Reselect visual text {{{
+					keepjumps call cursor(v_pos)
+					exec "normal! " . a:visualmode
+					keepjumps call cursor(c_pos)
+					"}}}
+					" Update orig_pos {{{
+					let orig_pos = v_pos
+					" }}}
+				endif
+				" }}}
+
 				" Construct match dict {{{
 				while 1
 					let pos = searchpos(a:regexp, search_direction . search_at_cursor, search_stopline)
@@ -812,8 +865,13 @@ endfunction "}}}
 				"}}}
 
 				" Handle direction == 2"{{{
+				" Reconstruct match dict
 				if a:direction == 2
-					keepjumps call cursor(orig_pos[0], orig_pos[1])
+					if ! empty(a:visualmode)
+						keepjumps call cursor(v_start[0], v_start[1])
+					else
+						keepjumps call cursor(orig_pos[0], orig_pos[1])
+					endif
 					let targets2 = []
 					while 1
 						let pos = searchpos(a:regexp, '', line('w$'))
@@ -821,7 +879,7 @@ endfunction "}}}
 							break
 						endif
 
-						" Handle folded line"{{{
+						" Skip folded lines {{{
 						if foldclosed(pos[0]) != -1 && (g:EasyMotion_skipfoldedline == 1 || pos[0] != foldclosed(pos[0]))
 							continue
 						endif
@@ -829,6 +887,7 @@ endfunction "}}}
 
 						call add(targets2, pos)
 					endwhile
+					" Merge match target dict"{{{
 					let t1 = 0
 					let t2 = 0
 					let targets3 = []
@@ -843,6 +902,7 @@ endfunction "}}}
 						endif
 					endwhile
 					let targets = targets3
+					"}}}
 				endif
 				"}}}
 
