@@ -786,10 +786,13 @@ endfunction "}}}
                 call s:VarReset('&foldmethod', 'manual')
 			" }}}
 			" Find motion targets {{{
+				" Setup searchpos args {{{
 				let search_direction = (a:direction >= 1 ? 'b' : '')
 				let search_stopline = line(a:direction >= 1 ? 'w0' : 'w$')
-
 				let search_at_cursor = fixed_column ? 'c' : ''
+				"}}}
+
+				" Construct match dict {{{
 				while 1
 					let pos = searchpos(a:regexp, search_direction . search_at_cursor, search_stopline)
 					let search_at_cursor = ''
@@ -806,7 +809,9 @@ endfunction "}}}
 
 					call add(targets, pos)
 				endwhile
+				"}}}
 
+				" Handle direction == 2"{{{
 				if a:direction == 2
 					keepjumps call cursor(orig_pos[0], orig_pos[1])
 					let targets2 = []
@@ -816,9 +821,11 @@ endfunction "}}}
 							break
 						endif
 
+						" Handle folded line"{{{
 						if foldclosed(pos[0]) != -1 && (g:EasyMotion_skipfoldedline == 1 || pos[0] != foldclosed(pos[0]))
 							continue
 						endif
+						"}}}
 
 						call add(targets2, pos)
 					endwhile
@@ -836,13 +843,15 @@ endfunction "}}}
 						endif
 					endwhile
 					let targets = targets3
-
 				endif
+				"}}}
 
+				" Handle no match"{{{
 				let targets_len = len(targets)
 				if targets_len == 0
 					throw 'No matches'
 				endif
+				"}}}
 			" }}}
 
 			let GroupingFn = function('s:GroupingAlgorithm' . s:grouping_algorithms[g:EasyMotion_grouping])
@@ -874,9 +883,10 @@ endfunction "}}}
 				endif
 			" }}}
 
-			" Prompt user for target group/character
+			" Prompt user for target group/character"{{{
 			let coords = s:PromptUser(groups, allows_repeat, fixed_column)
 			let g:old_target = coords
+			"}}}
 
 			" Update selection {{{
 				if ! empty(a:visualmode)
@@ -896,7 +906,7 @@ endfunction "}}}
 				endif
 			" }}}
 
-			" Update cursor position
+			" Update cursor position"{{{
 			call cursor(orig_pos[0], orig_pos[1])
 			let mark_save = getpos("'e")
 			call setpos("'e", [bufnr('%'), coords[0], coords[1], 0])
@@ -905,6 +915,7 @@ endfunction "}}}
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 			let g:EasyMotion_cancelled = 0
+			"}}}
 		catch
 			redraw
 
