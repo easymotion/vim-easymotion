@@ -76,6 +76,9 @@
 					silent exec 'nnoremap <silent> v' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . '()<CR>'
 					silent exec 'nnoremap <silent> y' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . 'Yank()<CR>'
 				endif
+				if fn.flag ==# 'select_line'
+					silent exec 'nnoremap <silent> d' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#SelectLinesDelete()<CR>'
+				endif
 			endfor
 		endif
 	endfunction "}}}
@@ -218,9 +221,14 @@
 	function! EasyMotion#SelectLinesYank() "{{{
 		let orig_pos = [line('.'), col('.')]
 		call EasyMotion#SelectLines()
-		normal y
+		normal! y
 		keepjumps call cursor(orig_pos[0], orig_pos[1])
-		"normal p
+	endfunction "}}}
+	function! EasyMotion#SelectLinesDelete() "{{{
+		let orig_pos = [line('.'), col('.')]
+		call EasyMotion#SelectLines()
+		normal! d
+		keepjumps call cursor(orig_pos[0], orig_pos[1])
 	endfunction "}}}
 
 	function! EasyMotion#SelectPhrase() "{{{
@@ -259,9 +267,10 @@
 		let orig_pos = [line('.'), col('.')]
 
 		call EasyMotion#SelectPhrase()
-		normal y
+		normal! y
 		keepjumps call cursor(orig_pos[0], orig_pos[1])
 	endfunction "}}}
+
 
 " }}}
 " Helper functions {{{
