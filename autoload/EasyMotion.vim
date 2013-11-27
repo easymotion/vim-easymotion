@@ -74,7 +74,6 @@
 				if g:EasyMotion_special_{fn.flag}
 					silent exec 'onoremap <silent> ' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . '()<CR>'
 					silent exec 'nnoremap <silent> v' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . '()<CR>'
-					silent exec 'nnoremap <silent> p' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . 'Paste()<CR>'
 					silent exec 'nnoremap <silent> y' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . 'Yank()<CR>'
 				endif
 			endfor
@@ -223,15 +222,6 @@
 		keepjumps call cursor(orig_pos[0], orig_pos[1])
 		"normal p
 	endfunction "}}}
-	function! EasyMotion#SelectLinesPaste() "{{{
-		let orig_pos = [line('.'), col('.')]
-		call EasyMotion#SelectLines()
-		normal y
-		keepjumps call cursor(orig_pos[0], orig_pos[1])
-		if !g:EasyMotion_cancelled
-			normal p
-		endif
-	endfunction "}}}
 
 	function! EasyMotion#SelectPhrase() "{{{
 		let chars = s:GetSearchChar2(0)
@@ -271,15 +261,6 @@
 		call EasyMotion#SelectPhrase()
 		normal y
 		keepjumps call cursor(orig_pos[0], orig_pos[1])
-	endfunction "}}}
-	function! EasyMotion#SelectPhrasePaste() "{{{
-		let orig_pos = [line('.'), col('.')]
-		call EasyMotion#SelectPhrase()
-		normal y
-		keepjumps call cursor(orig_pos[0], orig_pos[1])
-		if !g:EasyMotion_cancelled
-			normal p
-		endif
 	endfunction "}}}
 
 " }}}
