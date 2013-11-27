@@ -714,6 +714,9 @@ endfunction "}}}
 			" Restore original lines
 			call s:SetLines(lines_items, 'orig')
 
+			" Break undo history
+			silent exec 'normal!' "i\<C-g>u\<ESC>"
+
 			" Un-highlight targets {{{
 				if exists('target_hl_id')
 					call matchdelete(target_hl_id)
