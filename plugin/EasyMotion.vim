@@ -109,6 +109,13 @@
 		\ , 'p' : { 'name': 'SelectPhrase' , 'flag': 'select_phrase' }
 		\ })
 	" }}}
+	"
+	" Prepare keymaps {{{
+	" S "{{{
+	nnoremap <silent><Plug>(easymotion-s) :call EasyMotion#S(0,2)<CR>
+	onoremap <silent><Plug>(easymotion-s) :call EasyMotion#S(0,2)<CR>
+	vnoremap <silent><Plug>(easymotion-s) :<C-u>call EasyMotion#S(1,2)<CR>
+	"}}}
 " }}}
 
 " vim: fdm=marker:noet:ts=4:sw=4:sts=4
