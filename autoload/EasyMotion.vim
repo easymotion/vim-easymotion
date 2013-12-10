@@ -345,6 +345,8 @@
 		for [line_num, line] in a:lines
 			call setline(line_num, line[a:key])
 		endfor
+		" Break undo history
+		let &undolevels = &undolevels
 	endfunction " }}}
 	function! s:GetChar() " {{{
 		let char = getchar()
@@ -743,9 +745,6 @@ endfunction "}}}
 		finally
 			" Restore original lines
 			call s:SetLines(lines_items, 'orig')
-
-			" Break undo history
-			silent exec 'normal!' "i\<C-g>u\<ESC>"
 
 			" Un-highlight targets {{{
 				if exists('target_hl_id')
