@@ -16,10 +16,10 @@
     - Hint: migemo辞書改変?
 - [ ] Feature & Fix: 折りたたみをスキップさせない時の挙動を安定させる
 - [ ] ドキュメントをもっとしっかり書く(英語含む)
-- [ ] Blogかく
 - [ ] ユーザー側から簡単にEasyMotionコマンドを定義できるようにする。
     - Hint: s:EasyMotion(regexp, direction, visualmode, mode, ...)
     - 現状: nnoremap ;l :call EasyMotion#JK(0,2)<CR>
     - のようにvisual modeとdirectionしかいじれない
     - vim-easymotion-user
     - Mappingの上書き防止にもつながりそう
+- [] autoload/,plugin/の使い分けなどちゃんとする
