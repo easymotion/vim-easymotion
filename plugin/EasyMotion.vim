@@ -10,6 +10,10 @@
 
 	let g:EasyMotion_loaded = 1
 " }}}
+" Saving 'cpoptions' {{{
+let s:save_cpo = &cpo
+set cpo&vim
+" }}}
 " Default configuration {{{
 	" Default options {{{
 		call EasyMotion#InitOptions({
@@ -109,13 +113,17 @@
 		\ , 'p' : { 'name': 'SelectPhrase' , 'flag': 'select_phrase' }
 		\ })
 	" }}}
-	"
 	" Prepare keymaps {{{
 	" S "{{{
 	nnoremap <silent><Plug>(easymotion-s) :call EasyMotion#S(0,2)<CR>
 	onoremap <silent><Plug>(easymotion-s) :call EasyMotion#S(0,2)<CR>
 	vnoremap <silent><Plug>(easymotion-s) :<C-u>call EasyMotion#S(1,2)<CR>
 	"}}}
+	"}}}
+" }}}
+" Restore 'cpoptions' {{{
+let &cpo = s:save_cpo
+unlet s:save_cpo
 " }}}
 
 " vim: fdm=marker:noet:ts=4:sw=4:sts=4
