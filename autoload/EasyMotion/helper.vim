@@ -1,3 +1,7 @@
+" Saving 'cpoptions' {{{
+let s:save_cpo = &cpo
+set cpo&vim
+" }}}
 function! s:has_vimproc()
     if !exists('s:exists_vimproc')
         try
@@ -27,3 +31,7 @@ endif
 function! EasyMotion#helper#include_multibyte_char(str)
     return strlen(a:str) != EasyMotion#helper#strchars(a:str)
 endfunction
+" Restore 'cpoptions' {{{
+let &cpo = s:save_cpo
+unlet s:save_cpo
+" }}}

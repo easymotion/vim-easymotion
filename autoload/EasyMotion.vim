@@ -3,6 +3,10 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 " Source repository: https://github.com/Lokaltog/vim-easymotion
 
+" Saving 'cpoptions' {{{
+let s:save_cpo = &cpo
+set cpo&vim
+" }}}
 " Default configuration functions {{{
 	function! EasyMotion#InitOptions(options) " {{{
 		for [key, value] in items(a:options)
@@ -1042,5 +1046,8 @@ endfunction "}}}
 		endtry
 	endfunction " }}}
 " }}}
-
+" Restore 'cpoptions' {{{
+let &cpo = s:save_cpo
+unlet s:save_cpo
+" }}}
 " vim: fdm=marker:noet:ts=4:sw=4:sts=4
