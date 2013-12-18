@@ -42,42 +42,34 @@ function! EasyMotion#init#InitHL(group, colors) " {{{
 endfunction " }}}
 
 function! EasyMotion#init#InitMappings(motions) "{{{
-	for motion in keys(a:motions)
-		call EasyMotion#init#InitOptions({ 'mapping_' . motion : g:EasyMotion_leader_key . motion })
+	for [motion, fn] in items(a:motions)
+		silent exec 'nnoremap <silent>
+			\ <Plug>(easymotion-' . motion . ')
+			\ :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
+		silent exec 'onoremap <silent>
+			\ <Plug>(easymotion-' . motion . ')
+			\ :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
+		silent exec 'vnoremap <silent>
+			\ <Plug>(easymotion-' . motion . ')
+			\ :<C-u>call EasyMotion#' . fn.name . '(1, ' . fn.dir . ')<CR>'
+		if g:EasyMotion_do_mapping && !hasmapto('<Plug>(easymotion-' . motion . ')')
+			silent exec 'map <silent> ' .
+				\ g:EasyMotion_leader_key . motion . ' <Plug>(easymotion-' . motion . ')'
+		endif
 	endfor
-
-	if g:EasyMotion_do_mapping
-		for [motion, fn] in items(a:motions)
-			if empty(g:EasyMotion_mapping_{motion})
-				continue
-			endif
-
-			silent exec 'nnoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
-			silent exec 'onoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
-			silent exec 'vnoremap <silent> ' . g:EasyMotion_mapping_{motion} . ' :<C-U>call EasyMotion#' . fn.name . '(1, ' . fn.dir . ')<CR>'
-		endfor
-	endif
 endfunction "}}}
 
 function! EasyMotion#init#InitSpecialMappings(motions) "{{{
-	for motion in keys(a:motions)
-		call EasyMotion#init#InitOptions({ 'special_mapping_' . motion : g:EasyMotion_leader_key . motion })
+	for [motion, fn] in items(a:motions)
+		silent exec 'onoremap <silent>
+			\ <Plug>(easymotion-special-' . motion . ') :call EasyMotion#' . fn.name . '()<CR>'
+		silent exec 'vnoremap <silent>
+			\ <Plug>(easymotion-special-' . motion . ') :<C-u>call EasyMotion#' . fn.name . '()<CR>'
+		silent exec 'nnoremap <silent>
+			\ y<Plug>(easymotion-special-' . motion . ') :call EasyMotion#' . fn.name . 'Yank()<CR>'
+		silent exec 'nnoremap <silent>
+			\ d<Plug>(easymotion-special-' . motion . ') :call EasyMotion#' . fn.name . 'Delete()<CR>'
 	endfor
-
-	if g:EasyMotion_do_mapping
-		for [motion, fn] in items(a:motions)
-			if empty(g:EasyMotion_special_mapping_{motion})
-				continue
-			endif
-
-			if g:EasyMotion_special_{fn.flag}
-				silent exec 'onoremap <silent> ' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . '()<CR>'
-				silent exec 'nnoremap <silent> v' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . '()<CR>'
-				silent exec 'nnoremap <silent> y' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . 'Yank()<CR>'
-				silent exec 'nnoremap <silent> d' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . 'Delete()<CR>'
-			endif
-		endfor
-	endif
 endfunction "}}}
 
 " Restore 'cpoptions' {{{

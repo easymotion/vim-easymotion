@@ -21,8 +21,6 @@ set cpo&vim
 		\ , 'keys'                  : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 		\ , 'do_shade'              : 1
 		\ , 'do_mapping'            : 1
-		\ , 'special_select_line'   : 0
-		\ , 'special_select_phrase' : 0
 		\ , 'grouping'              : 1
 		\ , 'startofline'           : 1
 		\ , 'smartcase'             : 0
@@ -109,17 +107,10 @@ set cpo&vim
 	" }}}
 	" Special mapping for other functions {{{
 		call EasyMotion#init#InitSpecialMappings({
-		\   'l' : { 'name': 'SelectLines' , 'flag': 'select_line' }
-		\ , 'p' : { 'name': 'SelectPhrase' , 'flag': 'select_phrase' }
+		\   'l' : { 'name': 'SelectLines'}
+		\ , 'p' : { 'name': 'SelectPhrase'}
 		\ })
 	" }}}
-	" Prepare keymaps {{{
-	" S "{{{
-	nnoremap <silent><Plug>(easymotion-s) :call EasyMotion#S(0,2)<CR>
-	onoremap <silent><Plug>(easymotion-s) :call EasyMotion#S(0,2)<CR>
-	vnoremap <silent><Plug>(easymotion-s) :<C-u>call EasyMotion#S(1,2)<CR>
-	"}}}
-	"}}}
 " }}}
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
