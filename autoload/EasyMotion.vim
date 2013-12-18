@@ -7,6 +7,12 @@
 let s:save_cpo = &cpo
 set cpo&vim
 " }}}
+" Reset {{{
+function! EasyMotion#reset()
+	" Reset Migemo Dictionary
+	let s:migemo_dicts = {}
+    return ""
+endfunction "}}}
 " Default configuration functions {{{
 	function! EasyMotion#InitOptions(options) " {{{
 		for [key, value] in items(a:options)
@@ -14,8 +20,6 @@ set cpo&vim
 				exec 'let g:EasyMotion_' . key . ' = ' . string(value)
 			endif
 		endfor
-		" Reset Migemo Dictionary
-		let s:migemo_dicts = {}
 	endfunction " }}}
 	function! EasyMotion#InitHL(group, colors) " {{{
 		let group_default = a:group . 'Default'
@@ -1046,6 +1050,9 @@ endfunction "}}}
 		endtry
 	endfunction " }}}
 " }}}
+" Call Reset {{{
+call EasyMotion#reset()
+"}}}
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
 unlet s:save_cpo
