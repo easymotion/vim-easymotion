@@ -111,6 +111,12 @@ set cpo&vim
 		\ , 'p' : { 'name': 'SelectPhrase'}
 		\ })
 	" }}}
+	" More functions {{{
+	noremap <Plug>(easymotion-bd-w) :<C-u>call EasyMotion#WB(0,2)<CR>
+	noremap <Plug>(easymotion-bd-e) :<C-u>call EasyMotion#E(0,2)<CR>
+	noremap <Plug>(easymotion-bd-n) :<C-u>call EasyMotion#Search(0,2)<CR>
+	noremap <Plug>(easymotion-bd-jk) :<C-u>call EasyMotion#JK(0,2)<CR>
+	" }}}
 " }}}
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
