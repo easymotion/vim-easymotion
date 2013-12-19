@@ -237,7 +237,16 @@ endfunction "}}}
 		endif
 	endfunction "}}}
 
+	function! EasyMotion#User(pattern, visualmode, direction) " {{{
+		let re = escape(a:pattern, '|')
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
 
+	function! EasyMotion#UserMapping(re, mapping, direction) " {{{
+		silent exec "nnoremap ".a:mapping." :call EasyMotion#User('".a:re."', 0, ".a:direction.")<CR>"
+		silent exec "onoremap ".a:mapping." :call EasyMotion#User('".a:re."', 0, ".a:direction.")<CR>"
+		silent exec "vnoremap ".a:mapping." :<C-u>call EasyMotion#User('".a:re."', 0,".a:direction.")<CR>"
+	endfunction " }}}
 " }}}
 " Helper functions {{{
 	function! s:Message(message) " {{{
