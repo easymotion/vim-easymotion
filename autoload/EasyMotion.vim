@@ -699,6 +699,9 @@ endfunction "}}}
 				call s:Prompt('Target key')
 
 				let char = s:GetChar()
+				if g:EasyMotion_use_upper == 1 && match(g:EasyMotion_keys, '\l') == -1
+					let char = toupper(char)
+				endif
 			" }}}
 		finally
 			" Restore original lines
