@@ -204,14 +204,14 @@ set cpo&vim
 		let orig_pos = [line('.'), col('.')]
 
 		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', 0, 0, 1)
-		if g:EasyMotion_cancelled
+		if s:EasyMotion_cancelled
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
 			return ''
 		else
 			let pos1 = [line('.'), col('.')]
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
 			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', pos1[0], 1, 1)
-			if g:EasyMotion_cancelled
+			if s:EasyMotion_cancelled
 				keepjumps call cursor(orig_pos[0], orig_pos[1])
 				return ''
 			else
@@ -264,14 +264,14 @@ set cpo&vim
 
 		let re = re . escape(chars[0], '.$^~') . '\|' . escape(chars[1], '.$^~')
 		call s:EasyMotion(re, 2, '', '', 0, 0, 0, 0)
-		if g:EasyMotion_cancelled
+		if s:EasyMotion_cancelled
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
 			return ''
 		else
 			let pos1 = [line('.'), col('.')]
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
 			call s:EasyMotion(re, 2, '', '', 0, 0, 0, pos1)
-			if g:EasyMotion_cancelled
+			if s:EasyMotion_cancelled
 				keepjumps call cursor(orig_pos[0], orig_pos[1])
 				return ''
 			else
@@ -772,7 +772,7 @@ endfunction "}}}
 		" }}}
 		" Check if the input char is valid {{{
 		if a:allows_repeat && char == '.'
-			return g:old_target
+			return g:EasyMotion_old_target
 		else
 			if ! has_key(a:groups, char)
 				throw 'Invalid target'
@@ -979,7 +979,7 @@ endfunction "}}}
 
 			" Prompt user for target group/character"{{{
 			let coords = s:PromptUser(groups, allows_repeat, fixed_column)
-			let g:old_target = coords
+			let g:EasyMotion_old_target = coords
 			"}}}
 
 			" Update selection {{{
@@ -1008,7 +1008,7 @@ endfunction "}}}
 			call setpos("'e", mark_save)
 
 			call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
-			let g:EasyMotion_cancelled = 0
+			let s:EasyMotion_cancelled = 0
 			"}}}
 		catch
 			redraw
@@ -1024,7 +1024,7 @@ endfunction "}}}
 					keepjumps call cursor(orig_pos[0], orig_pos[1])
 				endif
 			" }}}
-			let g:EasyMotion_cancelled = 1
+			let s:EasyMotion_cancelled = 1
 		finally
 			" Restore properties {{{
 				call s:VarReset('&scrolloff')
