@@ -127,6 +127,24 @@ endfunction "}}}
 		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 
+	function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
+		let re = '\v' .
+			\	 '(<.|^$)' . '|' .
+			\	 '(.>|^$)' . '|' .
+			\	 '(\l)\zs(\u)' . '|' .
+			\	 '(_\zs.)' . '|' .
+			\	 '(#\zs.)'
+		" Anywhere regular expression: {{{
+		" 1. word
+		" 2. end of word
+		" 3. CamelCase
+		" 4. after '_' hoge_foo
+		" 5. after '#' hoge#foo
+		" }}}
+		let g:EasyMotion_re_anywhere = get(g:, 'EasyMotion_re_anywhere', re)
+		call s:EasyMotion( g:EasyMotion_re_anywhere, a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
+
 	function! EasyMotion#SelectLines() "{{{
 		let orig_pos = [line('.'), col('.')]
 

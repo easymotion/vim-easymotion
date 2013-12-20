@@ -117,6 +117,7 @@ set cpo&vim
 		\ , 'bd-e' : { 'name': 'E'  , 'dir': 2 }
 		\ , 'bd-n' : { 'name': 'Search'  , 'dir': 2 }
 		\ , 'bd-jk' : { 'name': 'JK'  , 'dir': 2 }
+		\ , 'jumptoanywhere' : { 'name': 'JumpToAnywhere'  , 'dir': 2 }
 		\ }, 0) " Prepare <Plug> but don't map by default.
 	" }}}
 " }}}
