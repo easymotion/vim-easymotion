@@ -143,6 +143,8 @@
 		for [line_num, line] in a:lines
 			call setline(line_num, line[a:key])
 		endfor
+		" Break undo history
+		let &undolevels = &undolevels
 	endfunction " }}}
 	function! s:GetChar() " {{{
 		let char = getchar()
