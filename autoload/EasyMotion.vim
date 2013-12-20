@@ -560,10 +560,10 @@ endfunction "}}}
 			let group_key = a:0 == 1 ? a:1 : ''
 
 			for [key, item] in items(a:groups)
-				let key = group_key . key "( ! empty(group_key) ? group_key : key)
+				let key = group_key . key
 				"let key = ( ! empty(group_key) ? group_key : key)
 
-				if type(item) == 3
+				if type(item) == 3 " List
 					" Destination coords
 
 					" The key needs to be zero-padded in order to
@@ -628,11 +628,7 @@ endfunction "}}}
 
 			" Solve multibyte issues by matching the byte column
 			" number instead of the visual column
-			"echom lines[line_num]['mb_compensation']
 			let col_num -= lines[line_num]['mb_compensation']
-			"if col_num < 0
-			"	let col_num = 0
-			"endif
 
 			" Compensate for byte difference between marker
 			" character and target character
@@ -716,7 +712,7 @@ endfunction "}}}
 				endif
 			endif
 
-			" Add marker/target lenght difference for multibyte
+			" Add marker/target length difference for multibyte
 			" compensation
 			let lines[line_num]['mb_compensation'] += (target_line_byte_len - strlen(lines[line_num]['marker']) )
 		endfor
@@ -997,6 +993,7 @@ endfunction "}}}
 					" This mode requires that we eat one more
 					" character to the right if we're using
 					" a forward motion
+					" TODO: support if a:direction == 2
 					if a:direction != 1
 						let coords[1] += 1
 					endif
