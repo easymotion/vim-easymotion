@@ -41,7 +41,7 @@ function! EasyMotion#init#InitHL(group, colors) " {{{
 	execute printf('hi default link %s %s', a:group, group_default)
 endfunction " }}}
 
-function! EasyMotion#init#InitMappings(motions) "{{{
+function! EasyMotion#init#InitMappings(motions, do_mapping) "{{{
 	for [motion, fn] in items(a:motions)
 		silent exec 'nnoremap <silent>
 			\ <Plug>(easymotion-' . motion . ')
@@ -52,7 +52,7 @@ function! EasyMotion#init#InitMappings(motions) "{{{
 		silent exec 'vnoremap <silent>
 			\ <Plug>(easymotion-' . motion . ')
 			\ :<C-u>call EasyMotion#' . fn.name . '(1, ' . fn.dir . ')<CR>'
-		if g:EasyMotion_do_mapping && !hasmapto('<Plug>(easymotion-' . motion . ')')
+		if a:do_mapping && !hasmapto('<Plug>(easymotion-' . motion . ')')
 			silent exec 'map <silent> ' .
 				\ g:EasyMotion_leader_key . motion . ' <Plug>(easymotion-' . motion . ')'
 		endif

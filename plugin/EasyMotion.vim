@@ -103,7 +103,7 @@ set cpo&vim
 		\ , 'k' : { 'name': 'JK' , 'dir': 1 }
 		\ , 'n' : { 'name': 'Search' , 'dir': 0 }
 		\ , 'N' : { 'name': 'Search' , 'dir': 1 }
-		\ })
+		\ }, g:EasyMotion_do_mapping)
 	" }}}
 	" Special mapping for other functions {{{
 		call EasyMotion#init#InitSpecialMappings({
@@ -111,11 +111,13 @@ set cpo&vim
 		\ , 'p' : { 'name': 'SelectPhrase'}
 		\ })
 	" }}}
-	" More functions {{{
-	noremap <Plug>(easymotion-bd-w) :<C-u>call EasyMotion#WB(0,2)<CR>
-	noremap <Plug>(easymotion-bd-e) :<C-u>call EasyMotion#E(0,2)<CR>
-	noremap <Plug>(easymotion-bd-n) :<C-u>call EasyMotion#Search(0,2)<CR>
-	noremap <Plug>(easymotion-bd-jk) :<C-u>call EasyMotion#JK(0,2)<CR>
+	" Prepare more key mapping {{{
+		call EasyMotion#init#InitMappings({
+		\   'bd-w' : { 'name': 'WB'  , 'dir': 2 }
+		\ , 'bd-e' : { 'name': 'E'  , 'dir': 2 }
+		\ , 'bd-n' : { 'name': 'Search'  , 'dir': 2 }
+		\ , 'bd-jk' : { 'name': 'JK'  , 'dir': 2 }
+		\ }, 0) " Prepare <Plug> but don't map by default.
 	" }}}
 " }}}
 " Restore 'cpoptions' {{{
