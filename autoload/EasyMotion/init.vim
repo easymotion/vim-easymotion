@@ -43,6 +43,7 @@ endfunction " }}}
 
 function! EasyMotion#init#InitMappings(motions, do_mapping) "{{{
 	for [motion, fn] in items(a:motions)
+		" Prepare <Plug> mapping {{{
 		silent exec 'nnoremap <silent>
 			\ <Plug>(easymotion-' . motion . ')
 			\ :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
@@ -52,10 +53,19 @@ function! EasyMotion#init#InitMappings(motions, do_mapping) "{{{
 		silent exec 'vnoremap <silent>
 			\ <Plug>(easymotion-' . motion . ')
 			\ :<C-u>call EasyMotion#' . fn.name . '(1, ' . fn.dir . ')<CR>'
+		"}}}
+
+		" Do mapping {{{
 		if a:do_mapping && !hasmapto('<Plug>(easymotion-' . motion . ')')
 			silent exec 'map <silent> ' .
 				\ g:EasyMotion_leader_key . motion . ' <Plug>(easymotion-' . motion . ')'
-		endif
+		endif "}}}
+
+		" Backward compatible mapping {{{
+		if exists('g:EasyMotion_mapping_' . motion)
+			silent exec 'map <silent> ' .
+				\ eval('g:EasyMotion_mapping_' . motion) . ' <Plug>(easymotion-' . motion . ')'
+		endif "}}}
 	endfor
 endfunction "}}}
 
