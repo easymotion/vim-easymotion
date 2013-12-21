@@ -110,7 +110,7 @@ set cpo&vim
 		call EasyMotion#init#InitSpecialMappings({
 		\   'l' : { 'name': 'SelectLines'}
 		\ , 'p' : { 'name': 'SelectPhrase'}
-		\ })
+		\ }, g:EasyMotion_do_mapping)
 	" }}}
 	" Prepare more key mapping {{{
 		call EasyMotion#init#InitMappings({

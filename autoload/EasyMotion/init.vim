@@ -69,7 +69,7 @@ function! EasyMotion#init#InitMappings(motions, do_mapping) "{{{
 	endfor
 endfunction "}}}
 
-function! EasyMotion#init#InitSpecialMappings(motions) "{{{
+function! EasyMotion#init#InitSpecialMappings(motions, do_mapping) "{{{
 	for [motion, fn] in items(a:motions)
 		silent exec 'onoremap <silent>
 			\ <Plug>(easymotion-special-' . motion . ') :call EasyMotion#' . fn.name . '()<CR>'
@@ -79,6 +79,18 @@ function! EasyMotion#init#InitSpecialMappings(motions) "{{{
 			\ y<Plug>(easymotion-special-' . motion . ') :call EasyMotion#' . fn.name . 'Yank()<CR>'
 		silent exec 'nnoremap <silent>
 			\ d<Plug>(easymotion-special-' . motion . ') :call EasyMotion#' . fn.name . 'Delete()<CR>'
+
+		" Do mapping {{{
+		if a:do_mapping && !hasmapto('<Plug>(easymotion-special-' . motion . ')')
+			silent exec 'omap <silent> ' .
+				\ g:EasyMotion_leader_key . motion . ' <Plug>(easymotion-special-' . motion . ')'
+			silent exec 'xmap <silent> ' .
+				\ g:EasyMotion_leader_key . motion . ' <Plug>(easymotion-special-' . motion . ')'
+			silent exec 'nmap <silent> ' .
+				\ 'd' . g:EasyMotion_leader_key . motion . ' d<Plug>(easymotion-special-' . motion . ')'
+			silent exec 'nmap <silent> ' .
+				\ 'y' . g:EasyMotion_leader_key . motion . ' y<Plug>(easymotion-special-' . motion . ')'
+		endif "}}}
 	endfor
 endfunction "}}}
 
