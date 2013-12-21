@@ -113,9 +113,12 @@ set cpo&vim
 		\ }, g:EasyMotion_do_mapping)
 	" }}}
 	" Prepare more key mapping {{{
+		" Note: bd is short for bidirectional
 		call EasyMotion#init#InitMappings({
 		\   'bd-w' : { 'name': 'WB'  , 'dir': 2 }
+		\ , 'bd-W' : { 'name': 'WBW'  , 'dir': 2 }
 		\ , 'bd-e' : { 'name': 'E'  , 'dir': 2 }
+		\ , 'bd-E' : { 'name': 'EW'  , 'dir': 2 }
 		\ , 'bd-n' : { 'name': 'Search'  , 'dir': 2 }
 		\ , 'bd-jk' : { 'name': 'JK'  , 'dir': 2 }
 		\ , 'jumptoanywhere' : { 'name': 'JumpToAnywhere'  , 'dir': 2 }
