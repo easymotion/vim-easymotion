@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:21 Dec 2013.
+*easymotion.txt*	Version 2.0  Last change:22 Dec 2013.
 
 
             ______                  __  ___       __  _
@@ -228,7 +228,6 @@ or you can map them by yourself
 
 
 See |easymotion-leader-key| and |mapleader| for details about the leader key.
-TODO: improvement
 
 ==============================================================================
 3. Requirements                                      *easymotion-requirements*
