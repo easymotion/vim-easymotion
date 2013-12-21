@@ -21,6 +21,7 @@ set cpo&vim
 		\ , 'keys'                  : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 		\ , 'do_shade'              : 1
 		\ , 'do_mapping'            : 1
+		\ , 'do_special_mapping'    : 0
 		\ , 'grouping'              : 1
 		\ , 'startofline'           : 1
 		\ , 'smartcase'             : 0
@@ -110,7 +111,7 @@ set cpo&vim
 		call EasyMotion#init#InitSpecialMappings({
 		\   'l' : { 'name': 'SelectLines'}
 		\ , 'p' : { 'name': 'SelectPhrase'}
-		\ }, g:EasyMotion_do_mapping)
+		\ }, g:EasyMotion_do_special_mapping)
 	" }}}
 	" Prepare more key mapping {{{
 		" Note: bd is short for bidirectional
