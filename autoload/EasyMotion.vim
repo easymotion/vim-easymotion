@@ -7,85 +7,12 @@
 let s:save_cpo = &cpo
 set cpo&vim
 " }}}
-" Default configuration functions {{{
-	function! EasyMotion#InitOptions(options) " {{{
-		for [key, value] in items(a:options)
-			if ! exists('g:EasyMotion_' . key)
-				exec 'let g:EasyMotion_' . key . ' = ' . string(value)
-			endif
-		endfor
-		" Reset Migemo Dictionary
-		let s:migemo_dicts = {}
-	endfunction " }}}
-	function! EasyMotion#InitHL(group, colors) " {{{
-		let group_default = a:group . 'Default'
-
-		" Prepare highlighting variables
-		let guihl = printf('guibg=%s guifg=%s gui=%s', a:colors.gui[0], a:colors.gui[1], a:colors.gui[2])
-		if !exists('g:CSApprox_loaded')
-			let ctermhl = &t_Co == 256
-				\ ? printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm256[0], a:colors.cterm256[1], a:colors.cterm256[2])
-				\ : printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm[0], a:colors.cterm[1], a:colors.cterm[2])
-		else
-			let ctermhl = ''
-		endif
-
-		" Create default highlighting group
-		execute printf('hi default %s %s %s', group_default, guihl, ctermhl)
-
-		" Check if the hl group exists
-		if hlexists(a:group)
-			redir => hlstatus | exec 'silent hi ' . a:group | redir END
-
-			" Return if the group isn't cleared
-			if hlstatus !~ 'cleared'
-				return
-			endif
-		endif
-
-		" No colors are defined for this group, link to defaults
-		execute printf('hi default link %s %s', a:group, group_default)
-	endfunction " }}}
-	function! EasyMotion#InitMappings(motions) "{{{
-		for motion in keys(a:motions)
-			call EasyMotion#InitOptions({ 'mapping_' . motion : g:EasyMotion_leader_key . motion })
-		endfor
-
-		if g:EasyMotion_do_mapping
-			for [motion, fn] in items(a:motions)
-				if empty(g:EasyMotion_mapping_{motion})
-					continue
-				endif
-
-				silent exec 'nnoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
-				silent exec 'onoremap <silent> ' . g:EasyMotion_mapping_{motion} . '      :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
-				silent exec 'vnoremap <silent> ' . g:EasyMotion_mapping_{motion} . ' :<C-U>call EasyMotion#' . fn.name . '(1, ' . fn.dir . ')<CR>'
-			endfor
-		endif
-	endfunction "}}}
-
-	function! EasyMotion#InitSpecialMappings(motions) "{{{
-		for motion in keys(a:motions)
-			call EasyMotion#InitOptions({ 'special_mapping_' . motion : g:EasyMotion_leader_key . motion })
-		endfor
-
-		if g:EasyMotion_do_mapping
-			for [motion, fn] in items(a:motions)
-				if empty(g:EasyMotion_special_mapping_{motion})
-					continue
-				endif
-
-				if g:EasyMotion_special_{fn.flag}
-					silent exec 'onoremap <silent> ' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . '()<CR>'
-					silent exec 'nnoremap <silent> v' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . '()<CR>'
-					silent exec 'nnoremap <silent> y' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . 'Yank()<CR>'
-					silent exec 'nnoremap <silent> d' . g:EasyMotion_special_mapping_{motion} . ' :call EasyMotion#' . fn.name . 'Delete()<CR>'
-				endif
-			endfor
-		endif
-	endfunction "}}}
-
-" }}}
+" Reset {{{
+function! EasyMotion#reset()
+	" Reset Migemo Dictionary
+	let s:migemo_dicts = {}
+    return ""
+endfunction "}}}
 " Motion functions {{{
 	function! EasyMotion#F(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
@@ -200,6 +127,24 @@ set cpo&vim
 		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
 
+	function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
+		let re = '\v' .
+			\	 '(<.|^$)' . '|' .
+			\	 '(.>|^$)' . '|' .
+			\	 '(\l)\zs(\u)' . '|' .
+			\	 '(_\zs.)' . '|' .
+			\	 '(#\zs.)'
+		" Anywhere regular expression: {{{
+		" 1. word
+		" 2. end of word
+		" 3. CamelCase
+		" 4. after '_' hoge_foo
+		" 5. after '#' hoge#foo
+		" }}}
+		let g:EasyMotion_re_anywhere = get(g:, 'EasyMotion_re_anywhere', re)
+		call s:EasyMotion( g:EasyMotion_re_anywhere, a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
+
 	function! EasyMotion#SelectLines() "{{{
 		let orig_pos = [line('.'), col('.')]
 
@@ -310,7 +255,16 @@ set cpo&vim
 		endif
 	endfunction "}}}
 
+	function! EasyMotion#User(pattern, visualmode, direction) " {{{
+		let re = escape(a:pattern, '|')
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
 
+	function! EasyMotion#UserMapping(re, mapping, direction) " {{{
+		silent exec "nnoremap ".a:mapping." :call EasyMotion#User('".a:re."', 0, ".a:direction.")<CR>"
+		silent exec "onoremap ".a:mapping." :call EasyMotion#User('".a:re."', 0, ".a:direction.")<CR>"
+		silent exec "vnoremap ".a:mapping." :<C-u>call EasyMotion#User('".a:re."', 0,".a:direction.")<CR>"
+	endfunction " }}}
 " }}}
 " Helper functions {{{
 	function! s:Message(message) " {{{
@@ -1046,6 +1000,9 @@ endfunction "}}}
 		endtry
 	endfunction " }}}
 " }}}
+" Call Reset {{{
+call EasyMotion#reset()
+"}}}
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
 unlet s:save_cpo

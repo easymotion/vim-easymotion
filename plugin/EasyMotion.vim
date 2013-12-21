@@ -16,13 +16,12 @@ set cpo&vim
 " }}}
 " Default configuration {{{
 	" Default options {{{
-		call EasyMotion#InitOptions({
+		call EasyMotion#init#InitOptions({
 		\   'leader_key'            : '<Leader><Leader>'
 		\ , 'keys'                  : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 		\ , 'do_shade'              : 1
 		\ , 'do_mapping'            : 1
-		\ , 'special_select_line'   : 0
-		\ , 'special_select_phrase' : 0
+		\ , 'do_special_mapping'    : 0
 		\ , 'grouping'              : 1
 		\ , 'startofline'           : 1
 		\ , 'smartcase'             : 0
@@ -68,26 +67,26 @@ set cpo&vim
 		\ , 'cterm'   : ['red' , 'grey'    , 'NONE']
 		\ }
 
-		call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
-		call EasyMotion#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
-		call EasyMotion#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
-		call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
-		call EasyMotion#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
+		call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
+		call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
+		call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
+		call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
+		call EasyMotion#init#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
 
 		" Reset highlighting after loading a new color scheme {{{
 			augroup EasyMotionInitHL
 				autocmd!
 
-				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
-				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
-				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
-				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
-				autocmd ColorScheme * call EasyMotion#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
+				autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
+				autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
+				autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
+				autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
+				autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
 			augroup end
 		" }}}
 	" }}}
 	" Default key mapping {{{
-		call EasyMotion#InitMappings({
+		call EasyMotion#init#InitMappings({
 		\   'f' : { 'name': 'F'  , 'dir': 0 }
 		\ , 'F' : { 'name': 'F'  , 'dir': 1 }
 		\ , 's' : { 'name': 'S'  , 'dir': 2 }
@@ -106,21 +105,26 @@ set cpo&vim
 		\ , 'k' : { 'name': 'JK' , 'dir': 1 }
 		\ , 'n' : { 'name': 'Search' , 'dir': 0 }
 		\ , 'N' : { 'name': 'Search' , 'dir': 1 }
-		\ })
+		\ }, g:EasyMotion_do_mapping)
 	" }}}
 	" Special mapping for other functions {{{
-		call EasyMotion#InitSpecialMappings({
-		\   'l' : { 'name': 'SelectLines' , 'flag': 'select_line' }
-		\ , 'p' : { 'name': 'SelectPhrase' , 'flag': 'select_phrase' }
-		\ })
+		call EasyMotion#init#InitSpecialMappings({
+		\   'l' : { 'name': 'SelectLines'}
+		\ , 'p' : { 'name': 'SelectPhrase'}
+		\ }, g:EasyMotion_do_special_mapping)
 	" }}}
-	" Prepare keymaps {{{
-	" S "{{{
-	nnoremap <silent><Plug>(easymotion-s) :call EasyMotion#S(0,2)<CR>
-	onoremap <silent><Plug>(easymotion-s) :call EasyMotion#S(0,2)<CR>
-	vnoremap <silent><Plug>(easymotion-s) :<C-u>call EasyMotion#S(1,2)<CR>
-	"}}}
-	"}}}
+	" Prepare more key mapping {{{
+		" Note: bd is short for bidirectional
+		call EasyMotion#init#InitMappings({
+		\   'bd-w' : { 'name': 'WB'  , 'dir': 2 }
+		\ , 'bd-W' : { 'name': 'WBW'  , 'dir': 2 }
+		\ , 'bd-e' : { 'name': 'E'  , 'dir': 2 }
+		\ , 'bd-E' : { 'name': 'EW'  , 'dir': 2 }
+		\ , 'bd-n' : { 'name': 'Search'  , 'dir': 2 }
+		\ , 'bd-jk' : { 'name': 'JK'  , 'dir': 2 }
+		\ , 'jumptoanywhere' : { 'name': 'JumpToAnywhere'  , 'dir': 2 }
+		\ }, 0) " Prepare <Plug> but don't map by default.
+	" }}}
 " }}}
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
