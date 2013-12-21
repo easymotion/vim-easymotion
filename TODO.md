@@ -1,0 +1,25 @@
+- [ ] Fix: "vimの"など、ターゲットキーが"m"でmの次に同様に"m"でマッチするマルチバイト文字("の")が連続していた場合、表示がずれてしまう
+    - Hint: todeskingさんがForkしてるvim-easymotionのコードが参考になるかも
+        - Attention: todeskingさんの実装はターゲットを押し出してずれてしまうバグがあるっぽいので注意
+    - [ ] Refactoring: 関連して置換・ハイライトする部分のロジックはもうちょっと綺麗に出来るかも
+- [ ] Fix: migemoなどで日本語をターゲットにした場合、右画面端の文字がうまく置換・ハイライトされてない
+- [ ] Fix: Visualモードでスクロールしたあと始点が画面描画内から外れた場合にvim-easymotionを呼び出すと強制的に始点に戻ってしまうBug
+- [ ] Fix: nostartofline=1かつJK motionをした時に、マルチバイト文字がLineに含まれていると直感的にcolumnがずれているように見える
+    - Hint: strdisplaywidth()などでcol_numを変換
+- [ ] Feature: `<Plug>(vim-easymotion-example)`のように衝突が起こらないようによしなに取り計らう
+- [ ] Feature: テストをかいてみる
+    - Hint: Travisとか? clever-fとかが参考になりそう。
+- [ ] Feature: 記号などでも擬似smartcaseのようにターゲットが';'のときに';'と':'が両方マッチするようにしたい
+    - Attention: 記号全部マッチするMotion(clever-f参照)は一度試したが、マッチし過ぎて重い&ウザい印象
+    - Hint: 辞書を用意
+- [ ] Fix: migemoを使っていると大文字小文字を無視したり、ターゲットが'i'なのに'y'にもマッチしたりしてしまう
+    - Hint: migemo辞書改変?
+- [ ] Feature & Fix: 折りたたみをスキップさせない時の挙動を安定させる
+- [ ] ドキュメントをもっとしっかり書く(英語含む)
+- [ ] ユーザー側から簡単にEasyMotionコマンドを定義できるようにする。
+    - Hint: s:EasyMotion(regexp, direction, visualmode, mode, ...)
+    - 現状: nnoremap ;l :call EasyMotion#JK(0,2)<CR>
+    - のようにvisual modeとdirectionしかいじれない
+    - vim-easymotion-user
+    - Mappingの上書き防止にもつながりそう
+- [] autoload/,plugin/の使い分けなどちゃんとする
