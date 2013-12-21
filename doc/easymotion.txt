@@ -25,15 +25,14 @@ CONTENTS                                                 *easymotion-contents*
        4.5 EasyMotion_startofline ......... |EasyMotion_startofline|
        4.6 EasyMotion_smartcase ........... |EasyMotion_smartcase|
        4.7 EasyMotion_use_migemo .......... |EasyMotion_use_migemo|
-       4.8 EasyMotion_use_upper  .......... |EasyMotion_use_upper|
-       4.9 Custom highlighting ............ |easymotion-custom-hl|
-       4.10 Custom mappings ................ |easymotion-custom-mappings|
-           4.10.1 Leader key ............... |easymotion-leader-key|
-           4.10.2 Custom keys .............. |easymotion-custom-keys|
-           4.10.3 Special Custom keys ...... |easymotion-special-custom-keys|
-       4.11 Easymotion special functions ... |easymotion-special-mappings|
-           4.11.1 Select Line .............. |easymotion-select-line|
-           4.11.2 Select Phrase ............ |easymotion-select-phrase|
+       4.8 Custom highlighting ............ |easymotion-custom-hl|
+       4.9 Custom mappings ................ |easymotion-custom-mappings|
+           4.9.1 Leader key ............... |easymotion-leader-key|
+           4.9.2 Custom keys .............. |easymotion-custom-keys|
+           4.9.3 Special Custom keys ...... |easymotion-special-custom-keys|
+       4.10 Easymotion special functions ... |easymotion-special-mappings|
+           4.10.1 Select Line .............. |easymotion-select-line|
+           4.10.2 Select Phrase ............ |easymotion-select-phrase|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -253,40 +252,7 @@ which can be downloaded here:
 https://github.com/rhysd/clever-f.vim
 
 ------------------------------------------------------------------------------
-4.8 Show target key by upper letter                     *EasyMotion_use_upper*
-
-|Easymotion| show target label by uppercase letter, but you can type it as
-lowercase and Easymotion automatically convert it uppercase.
-
-This feature improve targets readability.
-
-Example: >
-
-    <cursor>Lorem ipsum dolor sit amet.
-
-Type <Leader><Leader>w and the text is updated: >
-
-    <cursor>Lorem {A}psum {B}olor {C}it {D}met.
-
-Press "c" (<- lowercase!) to jump to the beginning of the word "sit": >
-
-    Lorem ipsum dolor <cursor>sit amet.
-
-Add following description in your vimrc: >
-
-    let g:EasyMotion_use_upper = 1
-    let g:EasyMotion_keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ;'
-
-Default:0
-
-Note: Make sure g:EasyMotion_keys doesn't include lowercase
-
-This feature is inspired by t9md's vim-smalls, which can be downloaded here:
-
-https://github.com/t9md/vim-smalls
-
-------------------------------------------------------------------------------
-4.9 Custom highlighting                                 *easymotion-custom-hl*
+4.8 Custom highlighting                                 *easymotion-custom-hl*
 
 The default EasyMotion configuration uses two highlighting groups that link
 to groups with default values. The highlighting groups are:
@@ -337,14 +303,14 @@ There are two ways to override the default colors:
           hi link EasyMotionTarget2Second MatchParen
 <
 ------------------------------------------------------------------------------
-4.10 Custom mappings                               *easymotion-custom-mappings*
+4.9 Custom mappings                               *easymotion-custom-mappings*
 
 EasyMotion allows you to customize all default mappings to avoid conflicts
 with existing mappings. It is possible to change the default leader key
 of all mappings to another key or sequence. It is also possible to fine
 tune the plugin to your need by changing every single sequence.
 
-4.10.1 Leader key               *EasyMotion_leader_key* *easymotion-leader-key*
+4.9.1 Leader key               *EasyMotion_leader_key* *easymotion-leader-key*
 
 The default leader key can be changed with the configuration option
 |EasyMotion_leader_key|.
@@ -360,7 +326,7 @@ leader by setting this option in your vimrc: >
 <
 Default: '<Leader><Leader>'
 
-4.10.2 Custom Keys                                     *easymotion-custom-keys*
+4.9.2 Custom Keys                                     *easymotion-custom-keys*
 
 All custom mappings follow the same variable format: >
 
@@ -378,7 +344,7 @@ Note: The leader key defined by |EasyMotion_leader_key| is not prepended to
 your customized mappings! You have to provide full key sequences when setting
 these options.
 
-4.10.3 Custom Keys for Special Function                *easymotion-special-custom-keys*
+4.9.3 Custom Keys for Special Function                *easymotion-special-custom-keys*
 
 All special custom mappings follow the same variable format: >
 
@@ -397,9 +363,9 @@ your customized mappings! You have to provide full key sequences when setting
 these options.
 
 ------------------------------------------------------------------------------
-4.11  Easymotion special functions                           *easymotion-special-function*
+4.10  Easymotion special functions                           *easymotion-special-function*
 
-4.11.1 Select Line                                 *easymotion-select-line*
+4.10.1 Select Line                                 *easymotion-select-line*
 
 Default: Disabled
 
@@ -423,7 +389,7 @@ Example: >
 
 Default: 0
 
-4.11.2 Select Phrase                             *easymotion-select-phrase*
+4.10.2 Select Phrase                             *easymotion-select-phrase*
 
 (Experimental) SelectPhrase function which allows you to make selection
 between any two characters.
