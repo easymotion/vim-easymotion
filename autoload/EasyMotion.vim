@@ -162,6 +162,7 @@ endfunction "}}}
 			else
 				normal! V
 				keepjumps call cursor(pos1[0], pos1[1])
+				normal! o
 				return 1
 			endif
 		endif
@@ -222,6 +223,7 @@ endfunction "}}}
 			else
 				normal! v
 				keepjumps call cursor(pos1[0], pos1[1])
+				normal! o
 				return 1
 			endif
 		endif
