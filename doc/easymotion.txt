@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:22 Dec 2013.
+*easymotion.txt*	Version 2.0  Last change:23 Dec 2013.
 
 
             ______                  __  ___       __  _
@@ -150,7 +150,20 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-bd-jk)          | See |<Plug>(easymotion-bd-jk)|
     <Plug>(easymotion-bd-n)           | See |<Plug>(easymotion-bd-n)|
     <Plug>(easymotion-jumptoanywhere) | See |<Plug>(easymotion-jumptoanywhere)|
-    Special                           |
+    Within Line Motion                |
+    ----------------------------------|---------------------------------
+    <Plug>(easymotion-sl)             | See |<Plug>(easymotion-sl)|
+    <Plug>(easymotion-wl)             | See |<Plug>(easymotion-wl)|
+    <Plug>(easymotion-bl)             | See |<Plug>(easymotion-bl)|
+    <Plug>(easymotion-bd-wl)          | See |<Plug>(easymotion-bd-wl)|
+    <Plug>(easymotion-el)             | See |<Plug>(easymotion-el)|
+    <Plug>(easymotion-gel)            | See |<Plug>(easymotion-gel)|
+    <Plug>(easymotion-bd-el)          | See |<Plug>(easymotion-bd-el)|
+    <Plug>(easymotion-lineforward)    | See |<Plug>(easymotion-lineforward)|
+    <Plug>(easymotion-linebackward)   | See |<Plug>(easymotion-linebackward)|
+    <Plug>(easymotion-lineanywhere)   | See |<Plug>(easymotion-lineanywhere)|
+                                      |
+    Special                           | See |easymotion-special-mappings|
     ----------------------------------|---------------------------------
     <Plug>(easymotion-special-l)      | See |<Plug>(easymotion-special-l)|
     <Plug>(easymotion-special-p)      | See |<Plug>(easymotion-special-p)|
@@ -202,6 +215,69 @@ These mappings are not mapped by Default.
         \       '(<.|.$)' . '|' .
         \       '(\l)\zs(\u)' . '|' .
 <
+Within line motion                                    *easymotion-within-line*
+
+<Plug>(easymotion-sl)                                   *<Plug>(easymotion-sl)*
+                This function is same as |<Plug>(easymoion-s)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-wl)                                   *<Plug>(easymotion-wl)*
+                This function is same as |<Plug>(easymoion-w)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-bl)                                   *<Plug>(easymotion-bl)*
+                This function is same as |<Plug>(easymoion-b)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-bd-wl)                             *<Plug>(easymotion-bd-wl)*
+                This function is same as |<Plug>(easymoion-bd-w)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-el)                                   *<Plug>(easymotion-el)*
+                This function is same as |<Plug>(easymoion-e)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-gel)                                 *<Plug>(easymotion-gel)*
+                This function is same as |<Plug>(easymoion-ge)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-bd-el)                             *<Plug>(easymotion-bd-el)*
+                This function is same as |<Plug>(easymoion-bd-e)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-lineforward)                 *<Plug>(easymotion-lineforward)*
+                This function is a little same as
+                |<Plug>(easymotion-jumptoanywhere)|, except range is within
+                current cursor line and direction is forward.
+
+<Plug>(easymotion-linebackward)               *<Plug>(easymotion-linebackward)*
+                This function is a little same as
+                |<Plug>(easymotion-jumptoanywhere)|, except range is within
+                current cursor line and direction is backward.
+
+<Plug>(easymotion-lineanywhere)               *<Plug>(easymotion-lineanywhere)*
+                This function is same as |<Plug>(easymotion-jumptoanywhere)|,
+                except range is within current cursor line.(bidirectional)
+
+                You can customize the behavior of this function by vimrc.
+
+    |g:EasyMotion_re_line_anywhere|:             *g:EasyMotion_re_line_anywhere*
+
+    Default:
+>
+    let g:EasyMotion_re_line_anywhere = '\v' .
+        \       '(<.|^$)' . '|' .
+        \       '(.>|^$)' . '|' .
+        \       '(\l)\zs(\u)' . '|' .
+        \       '(_\zs.)' . '|' .
+        \       '(#\zs.)'
+<
+    Modified example:
+>
+    let g:EasyMotion_re_line_anywhere = '\v' .
+        \       '(<.|^)' . '|' .
+        \       '(>.|.$)' . '|' .
+        \       '(\l)\zs(\u)' . '|' .
 
 ------------------------------------------------------------------------------
 2.3 Special mappings                              *easymotion-special-mappings*
