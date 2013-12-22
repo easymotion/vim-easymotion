@@ -55,17 +55,20 @@ function! EasyMotion#init#InitMappings(motions, do_mapping) "{{{
 			\ :<C-u>call EasyMotion#' . fn.name . '(1, ' . fn.dir . ')<CR>'
 		"}}}
 
-		" Do mapping {{{
-		if a:do_mapping && !hasmapto('<Plug>(easymotion-' . motion . ')')
+		" Mapping {{{
+		if exists('g:EasyMotion_mapping_' . motion)
+			" Backward compatible mapping [deprecated]
+			silent exec 'map <silent> ' .
+				\ eval('g:EasyMotion_mapping_' . motion) . ' <Plug>(easymotion-' . motion . ')'
+		elseif a:do_mapping
+				\ && !hasmapto('<Plug>(easymotion-' . motion . ')')
+				\ && empty(maparg(g:EasyMotion_leader_key . motion, 'nov'))
+
+			" Do mapping
 			silent exec 'map <silent> ' .
 				\ g:EasyMotion_leader_key . motion . ' <Plug>(easymotion-' . motion . ')'
 		endif "}}}
 
-		" Backward compatible mapping {{{
-		if exists('g:EasyMotion_mapping_' . motion)
-			silent exec 'map <silent> ' .
-				\ eval('g:EasyMotion_mapping_' . motion) . ' <Plug>(easymotion-' . motion . ')'
-		endif "}}}
 	endfor
 endfunction "}}}
 
@@ -81,7 +84,12 @@ function! EasyMotion#init#InitSpecialMappings(motions, do_mapping) "{{{
 			\ d<Plug>(easymotion-special-' . motion . ') :call EasyMotion#' . fn.name . 'Delete()<CR>'
 
 		" Do mapping {{{
-		if a:do_mapping && !hasmapto('<Plug>(easymotion-special-' . motion . ')')
+		if a:do_mapping
+				\ && !hasmapto('<Plug>(easymotion-special-' . motion . ')')
+				\ && empty(maparg(g:EasyMotion_leader_key . motion, 'ov'))
+				\ && empty(maparg('d' . g:EasyMotion_leader_key . motion, 'n'))
+				\ && empty(maparg('y' . g:EasyMotion_leader_key . motion, 'n'))
+
 			silent exec 'omap <silent> ' .
 				\ g:EasyMotion_leader_key . motion . ' <Plug>(easymotion-special-' . motion . ')'
 			silent exec 'xmap <silent> ' .
