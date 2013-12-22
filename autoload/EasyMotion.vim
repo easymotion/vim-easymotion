@@ -14,29 +14,15 @@ function! EasyMotion#reset()
     return ""
 endfunction "}}}
 " Motion functions {{{
+	" == Find Motion =========================
 	function! EasyMotion#F(visualmode, direction) " {{{
 		let char = s:GetSearchChar(a:visualmode)
-
-		let re = escape(char, '.$^~')
-
-		if g:EasyMotion_use_migemo
-			if ! has_key(s:migemo_dicts, &l:encoding)
-				let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
-			endif
-			if re =~# '^\a$'
-				let re = s:migemo_dicts[&l:encoding][re]
-			endif
-		endif
 
 		if empty(char)
 			return
 		endif
 
-		if g:EasyMotion_smartcase && char =~# '\v\U'
-			let re = '\c' . re
-		else
-			let re = '\C' . re
-		endif
+		let re = s:findMotion(char)
 
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
@@ -47,22 +33,7 @@ endfunction "}}}
 			return
 		endif
 
-		let re = escape(char, '.$^~')
-
-		if g:EasyMotion_use_migemo
-			if ! has_key(s:migemo_dicts, &l:encoding)
-				let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
-			endif
-			if re =~# '^\a$'
-				let re = s:migemo_dicts[&l:encoding][re]
-			endif
-		endif
-
-		if g:EasyMotion_smartcase && char =~# '\v\U'
-			let re = '\c' . re
-		else
-			let re = '\C' . re
-		endif
+		let re = s:findMotion(char)
 
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
@@ -73,16 +44,7 @@ endfunction "}}}
 			return
 		endif
 
-		let re = escape(char, '.$^~')
-
-		if g:EasyMotion_use_migemo
-			if ! has_key(s:migemo_dicts, &l:encoding)
-				let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
-			endif
-			if re =~# '^\a$'
-				let re = s:migemo_dicts[&l:encoding][re]
-			endif
-		endif
+		let re = s:findMotion(char)
 
 		if a:direction == 1
 			" backward
@@ -92,16 +54,9 @@ endfunction "}}}
 			let re = '.\ze' . re
 		endif
 
-		if g:EasyMotion_smartcase && char =~# '\v\U'
-			let re = '\c' . re
-		else
-			let re = '\C' . re
-		endif
-
-
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
-
+	" == Word Motion =========================
 	function! EasyMotion#WB(visualmode, direction) " {{{
 		call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
@@ -114,7 +69,7 @@ endfunction "}}}
 	function! EasyMotion#EW(visualmode, direction) " {{{
 		call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
-
+	" == JK Motion ===========================
 	function! EasyMotion#JK(visualmode, direction) " {{{
 		if g:EasyMotion_startofline
 			call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
@@ -123,10 +78,11 @@ endfunction "}}}
 			call s:EasyMotion('^.\{,' . prev_column . '}\zs\(.\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
 		endif
 	endfunction " }}}
+	" == Search Motion =======================
 	function! EasyMotion#Search(visualmode, direction) " {{{
 		call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
-
+	" == JumpToAnywhere Motion ===============
 	function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
 		let re = '\v' .
 			\	 '(<.|^$)' . '|' .
@@ -256,17 +212,17 @@ endfunction "}}}
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
 		endif
 	endfunction "}}}
-
+	" == User Motion =========================
 	function! EasyMotion#User(pattern, visualmode, direction) " {{{
 		let re = escape(a:pattern, '|')
 		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 	endfunction " }}}
-
 	function! EasyMotion#UserMapping(re, mapping, direction) " {{{
 		silent exec "nnoremap ".a:mapping." :call EasyMotion#User('".a:re."', 0, ".a:direction.")<CR>"
 		silent exec "onoremap ".a:mapping." :call EasyMotion#User('".a:re."', 0, ".a:direction.")<CR>"
 		silent exec "vnoremap ".a:mapping." :<C-u>call EasyMotion#User('".a:re."', 0,".a:direction.")<CR>"
 	endfunction " }}}
+
 " }}}
 " Helper functions {{{
 	function! s:Message(message) " {{{
@@ -377,6 +333,40 @@ function! s:load_migemo_dict() "{{{
         throw "Error: ".enc." is not supported. Migemo is made disabled."
     endif
 endfunction "}}}
+
+	function! s:findMotion(char) "{{{
+		" Find Motion: S,F,T
+		let re = escape(a:char, '.$^~')
+
+		if g:EasyMotion_use_migemo
+			let re = s:convertMigemo(re)
+		endif
+
+		if g:EasyMotion_smartcase
+			let re = s:convertSmartcase(re, a:char)
+		endif
+
+		return re
+	endfunction "}}}
+	function! s:convertMigemo(re) "{{{
+		let re = a:re
+		if ! has_key(s:migemo_dicts, &l:encoding)
+			let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
+		endif
+		if re =~# '^\a$'
+			let re = s:migemo_dicts[&l:encoding][re]
+		endif
+		return re
+	endfunction "}}}
+	function! s:convertSmartcase(re, char) "{{{
+		if a:char =~# '\v\U'
+			let re = '\c' . a:re
+		else
+			let re = '\C' . a:re
+		endif
+		return re
+	endfunction "}}}
+
 " }}}
 " Grouping algorithms {{{
 	let s:grouping_algorithms = {
