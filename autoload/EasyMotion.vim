@@ -341,7 +341,7 @@ endfunction "}}}
 		" Find Motion: S,F,T
 		let re = escape(a:char, '.$^~\')
 
-		if g:EasyMotion_use_migemo
+		if g:EasyMotion_use_migemo && a:char =~# '\a'
 			let re = s:convertMigemo(re)
 		endif
 
