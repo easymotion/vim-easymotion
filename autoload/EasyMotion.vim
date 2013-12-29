@@ -339,9 +339,9 @@ endfunction "}}}
 
 	function! s:findMotion(char) "{{{
 		" Find Motion: S,F,T
-		let re = escape(a:char, '.$^~')
+		let re = escape(a:char, '.$^~\')
 
-		if g:EasyMotion_use_migemo
+		if g:EasyMotion_use_migemo && a:char =~# '\a'
 			let re = s:convertMigemo(re)
 		endif
 
@@ -362,12 +362,43 @@ endfunction "}}}
 		return re
 	endfunction "}}}
 	function! s:convertSmartcase(re, char) "{{{
-		if a:char =~# '\v\U'
-			let re = '\c' . a:re
-		else
-			let re = '\C' . a:re
+		let re = a:re
+		if a:char =~# '\U' "nonuppercase
+			if s:useSmartsign()
+				let re = s:convertSmartsign(a:re, a:char)
+			endif
+
+			return '\c' . re
+		else "uppercase
+			return '\C' . re
 		endif
-		return re
+	endfunction "}}}
+	function! s:convertSmartsign(re, char) "{{{
+		let smart_dict = s:load_smart_dict()
+		let upper_sign = escape(get(smart_dict, a:char, ''), '.$^~')
+		if upper_sign ==# ''
+			return a:re
+		else
+			let re = a:re . '\|' . upper_sign
+			return re
+		endif
+	endfunction "}}}
+	function! s:useSmartsign() "{{{
+		if exists('g:EasyMotion_use_smartsign_us') ||
+		\  exists('g:EasyMotion_use_smartsign_jp')
+			return 1
+		else
+			return 0
+		endif
+	endfunction "}}}
+	function! s:load_smart_dict() "{{{
+		if exists('g:EasyMotion_use_smartsign_us')
+			return g:EasyMotion#sticky_table#us
+		elseif exists('g:EasyMotion_use_smartsign_jp')
+			return g:EasyMotion#sticky_table#jp
+		else
+			return ''
+		endif
 	endfunction "}}}
 
 " }}}
