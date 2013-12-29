@@ -26,15 +26,16 @@ CONTENTS                                                 *easymotion-contents*
        4.4 EasyMotion_grouping ............ |EasyMotion_grouping|
        4.5 EasyMotion_startofline ......... |EasyMotion_startofline|
        4.6 EasyMotion_smartcase ........... |EasyMotion_smartcase|
-       4.7 EasyMotion_use_migemo .......... |EasyMotion_use_migemo|
-       4.8 EasyMotion_use_upper  .......... |EasyMotion_use_upper|
-       4.9 Custom highlighting ............ |easymotion-custom-hl|
-       4.10 Custom mappings ................ |easymotion-custom-mappings|
-           4.10.1 Leader key ............... |easymotion-leader-key|
-           4.10.2 Custom keys .............. |easymotion-custom-keys|
-       4.11 Easymotion special functions ... |easymotion-special-mappings|
-           4.11.1 Select Line .............. |easymotion-select-line|
-           4.11.2 Select Phrase ............ |easymotion-select-phrase|
+       4.7 EasyMotion_smartsign ........... |EasyMotion_smartsign|
+       4.8 EasyMotion_use_migemo .......... |EasyMotion_use_migemo|
+       4.9 EasyMotion_use_upper  .......... |EasyMotion_use_upper|
+       4.10 Custom highlighting ............ |easymotion-custom-hl|
+       4.11 Custom mappings ................ |easymotion-custom-mappings|
+           4.11.1 Leader key ............... |easymotion-leader-key|
+           4.11.2 Custom keys .............. |easymotion-custom-keys|
+       4.12 Easymotion special functions ... |easymotion-special-mappings|
+           4.12.1 Select Line .............. |easymotion-select-line|
+           4.12.2 Select Phrase ............ |easymotion-select-phrase|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -356,7 +357,32 @@ Add following description in your vimrc: >
 Default:0
 
 ------------------------------------------------------------------------------
-4.7 Migemo                                             *EasyMotion_use_migemo*
+4.7 Smartsign                                           *EasyMotion_smartsign*
+                                               *g:EasyMotion_use_smartsign_us*
+                                               *g:EasyMotion_use_smartsign_ja*
+
+Matching signs target keys by smartcase like. E.g. type '1' and it matches
+both '1' and '!' in Find motion.
+
+This feature is depend on keyboard layout, so you must choose which keyboard
+layout you use.
+
+How to discriminate:
+    Shift-2 = @ -> US layout
+    Shift-2 = " -> JP layout
+
+>
+    let g:EasyMotion_use_smartsign_us = 1
+<
+    or
+>
+    let g:EasyMotion_use_smartsign_jp = 1
+<
+
+Default: 0
+
+------------------------------------------------------------------------------
+4.8 Migemo                                             *EasyMotion_use_migemo*
                                                      *g:EasyMotion_use_migemo*
 
 |Easymotion| can match multibyte Japanese character with a alphabet input.
@@ -378,7 +404,7 @@ which can be downloaded here:
 https://github.com/rhysd/clever-f.vim
 
 ------------------------------------------------------------------------------
-4.8 Show target key by upper letter                     *EasyMotion_use_upper*
+4.9 Show target key by upper letter                     *EasyMotion_use_upper*
                                                       *g:EasyMotion_use_upper*
 
 |Easymotion| shows target labels by uppercase letter, but you can type it as
@@ -412,7 +438,7 @@ This feature is inspired by t9md's vim-smalls, which can be downloaded here:
 https://github.com/t9md/vim-smalls
 
 ------------------------------------------------------------------------------
-4.9 Custom highlighting                                 *easymotion-custom-hl*
+4.10 Custom highlighting                                 *easymotion-custom-hl*
 
 The default EasyMotion configuration uses two highlighting groups that link
 to groups with default values. The highlighting groups are:
@@ -464,14 +490,14 @@ There are two ways to override the default colors:
 <
 
 ------------------------------------------------------------------------------
-4.10 Custom mappings                               *easymotion-custom-mappings*
+4.11 Custom mappings                               *easymotion-custom-mappings*
 
 EasyMotion allows you to customize all default mappings to avoid conflicts
 with existing mappings. It is possible to change the default leader key
 of all mappings to another key or sequence. It is also possible to fine
 tune the plugin to your need by changing every single sequence.
 
-4.10.1 Leader key               *EasyMotion_leader_key* *easymotion-leader-key*
+4.11.1 Leader key               *EasyMotion_leader_key* *easymotion-leader-key*
                                                     *g:EasyMotion_leader_key*
 
 The default leader key can be changed with the configuration option
@@ -488,7 +514,7 @@ leader by setting this option in your vimrc: >
 <
 Default: '<Leader><Leader>'
 
-4.10.2 Custom Keys                                     *easymotion-custom-keys*
+4.11.2 Custom Keys                                     *easymotion-custom-keys*
 
 All custom mappings follow the same format: >
 
@@ -503,9 +529,9 @@ See |easymotion-plug-table| for a table of motions that can be mapped
 and their default values.
 
 ------------------------------------------------------------------------------
-4.11  Easymotion special functions                *easymotion-special-function*
+4.12  Easymotion special functions                *easymotion-special-function*
 
-4.11.1 Select Line                                    *easymotion-select-line*
+4.12.1 Select Line                                    *easymotion-select-line*
                                                 *<Plug>(easymotion-special-l)*
 
 SelectLine function which allows you to select any range of lines using two
@@ -539,7 +565,7 @@ or map it by yourself(Recommend)
 Note: special line function when d & y is a little bit different. So you
 should map them individually, don't define omap only.
 
-4.11.2 Select Phrase                             *easymotion-select-phrase*
+4.12.2 Select Phrase                             *easymotion-select-phrase*
                                                 *<Plug>(easymotion-special-p)*
 
 (Experimental) SelectPhrase function which allows you to make selection
