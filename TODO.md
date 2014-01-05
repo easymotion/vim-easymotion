@@ -18,3 +18,6 @@
     - のようにvisual modeとdirectionしかいじれない
     - vim-easymotion-user
     - Mappingの上書き防止にもつながりそう
+- [] Fix?: concealを使用する
+    - 現状、バッファ書き換えでundotreeが壊れてしまうのを直せるかも
+    - Hint: vim-sneakで実装されている
