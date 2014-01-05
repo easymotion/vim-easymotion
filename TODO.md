@@ -6,12 +6,8 @@
 - [ ] Fix: Visualモードでスクロールしたあと始点が画面描画内から外れた場合にvim-easymotionを呼び出すと強制的に始点に戻ってしまうBug
 - [ ] Fix: nostartofline=1かつJK motionをした時に、マルチバイト文字がLineに含まれていると直感的にcolumnがずれているように見える
     - Hint: strdisplaywidth()などでcol_numを変換
-- [ ] Feature: `<Plug>(vim-easymotion-example)`のように衝突が起こらないようによしなに取り計らう
 - [ ] Feature: テストをかいてみる
     - Hint: Travisとか? clever-fとかが参考になりそう。
-- [ ] Feature: 記号などでも擬似smartcaseのようにターゲットが';'のときに';'と':'が両方マッチするようにしたい
-    - Attention: 記号全部マッチするMotion(clever-f参照)は一度試したが、マッチし過ぎて重い&ウザい印象
-    - Hint: 辞書を用意
 - [ ] Fix: migemoを使っていると大文字小文字を無視したり、ターゲットが'i'なのに'y'にもマッチしたりしてしまう
     - Hint: migemo辞書改変?
 - [ ] Feature & Fix: 折りたたみをスキップさせない時の挙動を安定させる
@@ -22,4 +18,3 @@
     - のようにvisual modeとdirectionしかいじれない
     - vim-easymotion-user
     - Mappingの上書き防止にもつながりそう
-- [] autoload/,plugin/の使い分けなどちゃんとする
