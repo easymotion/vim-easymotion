@@ -14,10 +14,12 @@
 - [ ] ドキュメントをもっとしっかり書く(英語含む)
 - [ ] ユーザー側から簡単にEasyMotionコマンドを定義できるようにする。
     - Hint: s:EasyMotion(regexp, direction, visualmode, mode, ...)
-    - 現状: nnoremap ;l :call EasyMotion#JK(0,2)<CR>
     - のようにvisual modeとdirectionしかいじれない
-    - vim-easymotion-user
     - Mappingの上書き防止にもつながりそう
-- [] Fix?: concealを使用する
+    - #EasyMotion#User()
+- [x] Fix?: concealを使用する
     - 現状、バッファ書き換えでundotreeが壊れてしまうのを直せるかも
     - Hint: vim-sneakで実装されている
+    - :wundo, :rundoで解決したほうが良さそう
+    - (パフォーマンスなど場合によってはconcealのほうがいいという可能性も)
+- [] Find Motion時にEnterで最初のマッチに飛ぶ
