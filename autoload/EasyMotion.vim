@@ -255,17 +255,9 @@ endfunction "}}}
 		endif
 	endfunction " }}}
 	function! s:SetLines(lines, key) " {{{
-		try
-			" Try to join changes with previous undo block
-			undojoin
-		catch
-		endtry
-
 		for [line_num, line] in a:lines
 			call setline(line_num, line[a:key])
 		endfor
-		" Break undo history
-		let &undolevels = &undolevels
 	endfunction " }}}
 	function! s:GetChar() " {{{
 		let char = getchar()
@@ -712,6 +704,10 @@ endfunction "}}}
 
 		" }}}
 		try
+			" Save undo tree
+			let s:undo_file = tempname()
+			execute "wundo" s:undo_file
+
 			" Set lines with markers
 			call s:SetLines(lines_items, 'marker')
 
@@ -728,6 +724,12 @@ endfunction "}}}
 		finally
 			" Restore original lines
 			call s:SetLines(lines_items, 'orig')
+
+			" Restore undo tree
+			if exists("s:undo_file")
+				silent execute "rundo" s:undo_file
+				unlet s:undo_file
+			endif
 
 			" Un-highlight targets {{{
 				if exists('target_hl_id')
