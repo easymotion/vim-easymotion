@@ -1024,7 +1024,7 @@ endfunction "}}}
 				call s:VarReset('&readonly')
 				call s:VarReset('&spell')
 				call s:VarReset('&virtualedit')
-                call s:VarReset('&foldmethod')
+				call s:VarReset('&foldmethod')
 			" }}}
 			" Remove shading {{{
 				if g:EasyMotion_do_shade && exists('shade_hl_id') && (!fixed_column)
