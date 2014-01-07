@@ -275,6 +275,7 @@ endfunction "}}}
 
 " }}}
 " Helper functions {{{
+" Message {{{
 	function! s:Message(message) " {{{
 		echo 'EasyMotion: ' . a:message
 	endfunction " }}}
@@ -283,6 +284,9 @@ endfunction "}}}
 		echo a:message . ': '
 		echohl None
 	endfunction " }}}
+"}}}
+
+" Save & Restore values {{{
 	function! s:VarReset(var, ...) " {{{
 		if ! exists('s:var_reset')
 			let s:var_reset = {}
@@ -290,8 +294,11 @@ endfunction "}}}
 
 		if a:0 == 0 && has_key(s:var_reset, a:var)
 			" Reset var to original value
+			" setbufbar( or bufname): '' or '%' can be used for the current buffer
 			call setbufvar("", a:var, s:var_reset[a:var])
 		elseif a:0 == 1
+			" Save original value and set new var value
+
 			let new_value = a:0 == 1 ? a:1 : ''
 
 			" Store original value
@@ -301,6 +308,27 @@ endfunction "}}}
 			call setbufvar("", a:var, new_value)
 		endif
 	endfunction " }}}
+	function! s:SaveValue() "{{{
+		call s:VarReset('&scrolloff', 0)
+		call s:VarReset('&modified', 0)
+		call s:VarReset('&modifiable', 1)
+		call s:VarReset('&readonly', 0)
+		call s:VarReset('&spell', 0)
+		call s:VarReset('&virtualedit', '')
+		call s:VarReset('&foldmethod', 'manual')
+	endfunction "}}}
+	function! s:RestoreValue() "{{{
+		call s:VarReset('&scrolloff')
+		call s:VarReset('&modified')
+		call s:VarReset('&modifiable')
+		call s:VarReset('&readonly')
+		call s:VarReset('&spell')
+		call s:VarReset('&virtualedit')
+		call s:VarReset('&foldmethod')
+	endfunction "}}}
+"}}}
+
+" Draw {{{
 	function! s:SetLines(lines, key) " {{{
 		if ! filereadable(s:undo_file)
 			" Try to join changes with previous undo block once
@@ -310,6 +338,9 @@ endfunction "}}}
 			call setline(line_num, line[a:key])
 		endfor
 	endfunction " }}}
+"}}}
+
+" Get characters from user input {{{
 	function! s:GetChar() " {{{
 		let char = getchar()
 
@@ -324,7 +355,6 @@ endfunction "}}}
 
 		return nr2char(char)
 	endfunction " }}}
-
 	function! s:GetSearchChar2(visualmode) " {{{
 
 		let chars = []
@@ -365,21 +395,9 @@ endfunction "}}}
 
 		return char
 	endfunction " }}}
+"}}}
 
-function! s:load_migemo_dict() "{{{
-    let enc = &l:encoding
-    if enc ==# 'utf-8'
-        return EasyMotion#migemo#utf8#load_dict()
-    elseif enc ==# 'cp932'
-        return EasyMotion#migemo#cp932#load_dict()
-    elseif enc ==# 'euc-jp'
-        return EasyMotion#migemo#eucjp#load_dict()
-    else
-        let g:EasyMotion_use_migemo = 0
-        throw "Error: ".enc." is not supported. Migemo is made disabled."
-    endif
-endfunction "}}}
-
+"Find Motion Helper {{{
 	function! s:findMotion(char) "{{{
 		" Find Motion: S,F,T
 		let re = escape(a:char, '.$^~\')
@@ -443,6 +461,69 @@ endfunction "}}}
 			return ''
 		endif
 	endfunction "}}}
+	function! s:load_migemo_dict() "{{{
+		let enc = &l:encoding
+		if enc ==# 'utf-8'
+			return EasyMotion#migemo#utf8#load_dict()
+		elseif enc ==# 'cp932'
+			return EasyMotion#migemo#cp932#load_dict()
+		elseif enc ==# 'euc-jp'
+			return EasyMotion#migemo#eucjp#load_dict()
+		else
+			let g:EasyMotion_use_migemo = 0
+			throw "Error: ".enc." is not supported. Migemo is made disabled."
+		endif
+	endfunction "}}}
+"}}}
+
+" Handle Visual Mode {{{
+	function! s:GetVisualStartPosition(c_pos, v_start, v_end, direction) "{{{
+		let vmode = mode(1)
+		if match('Vv',vmode) < 0
+			throw 'Unkown visual mode:'.vmode
+		elseif vmode ==# 'V' "line-wise Visual
+			" Line-wise Visual {{{
+			if a:v_start[0] == a:v_end[0]
+				if search_direction == ''
+					let v_pos = a:v_start
+				elseif search_direction == 'b'
+					let v_pos = a:v_end
+				else
+					throw 'Unkown search_direction'
+				endif
+			else
+				if a:c_pos[0] == a:v_start[0]
+					let v_pos = a:v_end
+
+				elseif a:c_pos[0] == a:v_end[0]
+					let v_pos = a:v_start
+				endif
+			endif
+			"}}}
+		else
+			" Character-wise or Block-wise Visual"{{{
+			if a:c_pos == a:v_start
+				let v_pos = a:v_end
+			elseif a:c_pos == a:v_end
+				let v_pos = a:v_start
+			else
+				throw 'Unkown a:c_pos'
+			endif
+			"}}}
+		endif
+		"}}}
+		return v_pos
+	endfunction "}}}
+
+	function! s:is_folded(line) "{{{
+		" Return false if g:EasyMotion_skipfoldedline == 1
+		" and line is start of folded lines
+		return foldclosed(a:line) != -1 &&
+			\ (g:EasyMotion_skipfoldedline == 1 ||
+			\  a:line != foldclosed(a:line))
+	endfunction "}}}
+
+" }}}
 
 " }}}
 " Grouping algorithms {{{
@@ -845,13 +926,8 @@ endfunction "}}}
 
 		try
 			" Reset properties {{{
-				call s:VarReset('&scrolloff', 0)
-				call s:VarReset('&modified', 0)
-				call s:VarReset('&modifiable', 1)
-				call s:VarReset('&readonly', 0)
-				call s:VarReset('&spell', 0)
-				call s:VarReset('&virtualedit', '')
-                call s:VarReset('&foldmethod', 'manual')
+				" Save original value and set new value
+				call s:SaveValue()
 			" }}}
 			" Find motion targets {{{
 				" Setup searchpos args {{{
@@ -864,51 +940,19 @@ endfunction "}}}
 				if ! empty(a:visualmode)
 					" Decide at where visual mode start {{{
 					normal! gv
-					let c_pos   = [line("."),col(".")]
-					let v_start = [line("'<"),col("'<")]
-					let v_end   = [line("'>"),col("'>")]
+					let c_pos   = [line("."),col(".")] " current_position
+					let v_start = [line("'<"),col("'<")] " visual_start_position
+					let v_end   = [line("'>"),col("'>")] " visual_end_position
 
-					let vmode = mode(1)
-					if match('Vv',vmode) < 0
-						throw 'Unkown visual mode:'.vmode
-					elseif vmode ==# 'V' "line-wise Visual
-						" Line-wise Visual {{{
-						if v_start[0] == v_end[0]
-							if search_direction == ''
-								let v_pos = v_start
-							elseif search_direction == 'b'
-								let v_pos = v_end
-							else
-								throw 'Unkown search_direction'
-							endif
-						else
-							if c_pos[0] == v_start[0]
-								let v_pos = v_end
+					let v_original_pos = s:GetVisualStartPosition(c_pos, v_start, v_end, a:direction)
 
-							elseif c_pos[0] == v_end[0]
-								let v_pos = v_start
-							endif
-						endif
-						"}}}
-					else
-						" Character-wise or Block-wise Visual"{{{
-						if c_pos == v_start
-							let v_pos = v_end
-						elseif c_pos == v_end
-							let v_pos = v_start
-						else
-							throw 'Unkown c_pos'
-						endif
-						"}}}
-					endif
-					"}}}
 					" Reselect visual text {{{
-					keepjumps call cursor(v_pos)
+					keepjumps call cursor(v_original_pos)
 					exec "normal! " . a:visualmode
 					keepjumps call cursor(c_pos)
 					"}}}
 					" Update orig_pos {{{
-					let orig_pos = v_pos
+					let orig_pos = v_original_pos
 					" }}}
 				endif
 				" }}}
@@ -927,7 +971,7 @@ endfunction "}}}
 					endif
 
 					" Skip folded lines
-					if foldclosed(pos[0]) != -1 && (g:EasyMotion_skipfoldedline == 1 || pos[0] != foldclosed(pos[0]))
+					if s:is_folded(pos[0])
 						continue
 					endif
 
@@ -946,12 +990,13 @@ endfunction "}}}
 					let targets2 = []
 					while 1
 						let pos = searchpos(a:regexp, '', line('w$'))
+						" Reached end of search range
 						if pos == [0, 0]
 							break
 						endif
 
 						" Skip folded lines {{{
-						if foldclosed(pos[0]) != -1 && (g:EasyMotion_skipfoldedline == 1 || pos[0] != foldclosed(pos[0]))
+						if s:is_folded(pos[0])
 							continue
 						endif
 						"}}}
@@ -1065,13 +1110,7 @@ endfunction "}}}
 			let s:EasyMotion_cancelled = 1
 		finally
 			" Restore properties {{{
-				call s:VarReset('&scrolloff')
-				call s:VarReset('&modified')
-				call s:VarReset('&modifiable')
-				call s:VarReset('&readonly')
-				call s:VarReset('&spell')
-				call s:VarReset('&virtualedit')
-				call s:VarReset('&foldmethod')
+				call s:RestoreValue()
 			" }}}
 			" Remove shading {{{
 				if g:EasyMotion_do_shade && exists('shade_hl_id') && (!fixed_column)
