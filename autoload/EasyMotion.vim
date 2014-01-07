@@ -148,6 +148,10 @@ function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
 		endif
 		let s:re_line_after = 'l' . bracket_before . re_lineanywhere . bracket_after
 	endif "}}}
+	" Get cursor position correctly {{{
+	exe "normal! \<Esc>"
+	exe "normal! gv"
+	"}}}
 	let re = s:re_line_flag . line('.') . s:re_line_after
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', '')
 endfunction " }}}
