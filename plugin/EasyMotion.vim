@@ -115,6 +115,7 @@ set cpo&vim
 	" }}}
 	" Prepare more key mapping {{{
 		" Note: bd is short for bidirectional
+		"       l is short for (within) line
 		call EasyMotion#init#InitMappings({
 		\   'bd-w' : { 'name': 'WB'  , 'dir': 2 }
 		\ , 'bd-W' : { 'name': 'WBW'  , 'dir': 2 }
@@ -122,7 +123,19 @@ set cpo&vim
 		\ , 'bd-E' : { 'name': 'EW'  , 'dir': 2 }
 		\ , 'bd-n' : { 'name': 'Search'  , 'dir': 2 }
 		\ , 'bd-jk' : { 'name': 'JK'  , 'dir': 2 }
+		\
 		\ , 'jumptoanywhere' : { 'name': 'JumpToAnywhere'  , 'dir': 2 }
+		\ , 'lineforward' : { 'name': 'LineAnywhere'  , 'dir': 0 }
+		\ , 'linebackward' : { 'name': 'LineAnywhere'  , 'dir': 1 }
+		\ , 'lineanywhere' : { 'name': 'LineAnywhere'  , 'dir': 2 }
+		\
+		\ , 'sl' : { 'name': 'SL'  , 'dir': 2 }
+		\ , 'wl' : { 'name': 'WBL'  , 'dir': 0 }
+		\ , 'bl' : { 'name': 'WBL'  , 'dir': 1 }
+		\ , 'bd-wl' : { 'name': 'WBL'  , 'dir': 2 }
+		\ , 'el' : { 'name': 'EL'  , 'dir': 0 }
+		\ , 'gel' : { 'name': 'EL'  , 'dir': 1 }
+		\ , 'bd-el' : { 'name': 'EL'  , 'dir': 2 }
 		\ }, 0) " Prepare <Plug> but don't map by default.
 	" }}}
 " }}}

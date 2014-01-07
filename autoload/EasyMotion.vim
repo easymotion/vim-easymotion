@@ -103,7 +103,54 @@ endfunction "}}}
 		"
 		call s:EasyMotion( g:EasyMotion_re_anywhere, a:direction, a:visualmode ? visualmode() : '', '')
 	endfunction " }}}
+	" == Line Motion =========================
+	function! EasyMotion#SL(visualmode, direction) " {{{
+		let char = s:GetSearchChar(a:visualmode)
 
+		if empty(char)
+			return
+		endif
+
+		let re = s:findMotion(char)
+		let re = '\%' . line('.') . 'l' . re
+
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
+	function! EasyMotion#WBL(visualmode, direction) " {{{
+		call s:EasyMotion('\%'.line('.').'l'.'\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
+	function! EasyMotion#EL(visualmode, direction) " {{{
+		call s:EasyMotion('\%'.line('.').'l'.'\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+	endfunction " }}}
+	function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
+
+		if ! exists('s:re_line_flag') "{{{
+			" Load once!
+			" Anywhere regular expression:
+			let re = '\v' .
+				\	 '(<.|^$)' . '|' .
+				\	 '(.>|^$)' . '|' .
+				\	 '(\l)\zs(\u)' . '|' .
+				\	 '(_\zs.)' . '|' .
+				\	 '(#\zs.)'
+			let re_lineanywhere = get(g:, 'EasyMotion_re_line_anywhere', re)
+
+			if match(re_lineanywhere, '\\v') < 0
+				let s:re_line_flag = '\%'
+				let bracket_before = '\('
+				let bracket_after  = '\)'
+			else
+				let re_lineanywhere = substitute(re_lineanywhere,'\\v','','')
+				let s:re_line_flag = '\v%'
+				let bracket_before = '('
+				let bracket_after  = ')'
+			endif
+			let s:re_line_after = 'l' . bracket_before . re_lineanywhere . bracket_after
+		endif "}}}
+		let re = s:re_line_flag . line('.') . s:re_line_after
+		call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', '')
+	endfunction " }}}
+	" == Special Motion ======================
 	function! EasyMotion#SelectLines() "{{{
 		let orig_pos = [line('.'), col('.')]
 
