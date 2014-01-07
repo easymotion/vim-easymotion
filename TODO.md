@@ -5,9 +5,11 @@
 - [ ] Fix: migemoなどで日本語をターゲットにした場合、右画面端の文字がうまく置換・ハイライトされてない
 - [ ] Fix: Visualモードでスクロールしたあと始点が画面描画内から外れた場合にvim-easymotionを呼び出すと強制的に始点に戻ってしまうBug
 - [ ] Fix: nostartofline=1かつJK motionをした時に、マルチバイト文字がLineに含まれていると直感的にcolumnがずれているように見える
+    - というかずれてるっぽい
     - Hint: strdisplaywidth()などでcol_numを変換
 - [ ] Feature: テストをかいてみる
     - Hint: Travisとか? clever-fとかが参考になりそう。
+    - 内部のごちゃごちゃのテストは置いといて、提供している機能のテストぐらいならnear futureにできそう
 - [ ] Fix: migemoを使っていると大文字小文字を無視したり、ターゲットが'i'なのに'y'にもマッチしたりしてしまう
     - Hint: migemo辞書改変?
 - [ ] Feature & Fix: 折りたたみをスキップさせない時の挙動を安定させる
@@ -22,4 +24,13 @@
     - Hint: vim-sneakで実装されている
     - :wundo, :rundoで解決したほうが良さそう
     - (パフォーマンスなど場合によってはconcealのほうがいいという可能性も)
+    - wundo & rundo で解決。初回時だけundolistがないせいでundoの通し番号が進んでしまう。
 - [] Find Motion時にEnterで最初のマッチに飛ぶ
+- [] Feature: 1行だけのwithin line モーションを拡張して、指定の行数分を範囲に取れるようにする。
+    - ユーザーがvimrcによって何行分指定するかを前後別々に決めれるようにする。
+    - ラベルが少なくなるので打ちやすい。上下移動してから使う人などに便利そう。
+    - もし、モーションのタイプによって決めたいとなると面倒くさい感じ
+- [] Feature: sticky table,migemoの機能のような、キーによって複数マッチさせれる仕組みをユーザーが作れるようにすると便利そう
+    - アルファベット以外の文字やリガチャなどへの対応もできるかも。それぞれもれなくアルファベットと対応していればよさげ
+- [] Feature: operator-pending motionとして使った際、dot repeatを対応させる。
+- [] Fix: prefix keyも<Plug>(easymotion-prefix)として提供する。
