@@ -331,10 +331,6 @@ function! s:RestoreValue() "{{{
 endfunction "}}}
 " -- Draw --------------------------------
 function! s:SetLines(lines, key) " {{{
-	if ! filereadable(s:undo_file)
-		" Try to join changes with previous undo block once
-		undojoin
-	endif
 	for [line_num, line] in a:lines
 		call setline(line_num, line[a:key])
 	endfor
@@ -517,6 +513,15 @@ function! s:is_folded(line) "{{{
 		\ (g:EasyMotion_skipfoldedline == 1 ||
 		\  a:line != foldclosed(a:line))
 endfunction "}}}
+function! s:is_cmdwin() "{{{
+  return bufname('%') ==# '[Command Line]'
+endfunction "}}}
+function! s:use_wundo() "{{{
+	" wundu cannot use in command-line window and
+	" unless undolist is not empty
+	return ! s:is_cmdwin() && undotree().seq_last != 0
+endfunction "}}}
+
 " }}}
 " == Grouping algorithms {{{
 let s:grouping_algorithms = {
@@ -829,7 +834,9 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
 	" -- Put labels on targets & Get User Input & Restore all {{{
 	" Save undo tree {{{
 	let s:undo_file = tempname()
-	execute "wundo" s:undo_file
+	if s:use_wundo()
+		execute "wundo" s:undo_file
+	endif
 	"}}}
 	try
 		" Set lines with markers
@@ -860,12 +867,18 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
 		" }}}
 
 		" Restore undo tree {{{
-		if filereadable(s:undo_file)
+		if s:use_wundo() && filereadable(s:undo_file)
 			silent execute "rundo" s:undo_file
 			unlet s:undo_file
 		else
 			" Break undo history (undobreak)
-			let &undolevels = &undolevels
+			let old_undolevels = &undolevels
+			set undolevels=-1
+			call setline('.', getline('.'))
+			let &undolevels = old_undolevels
+			unlet old_undolevels
+			" FIXME: Error occur by GundoToggle for undo number 2 is empty
+			call setline('.', getline('.'))
 		endif "}}}
 
 		redraw
