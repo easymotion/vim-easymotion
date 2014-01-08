@@ -469,16 +469,16 @@ function! s:load_migemo_dict() "{{{
 endfunction "}}}
 " -- Others ------------------------------
 " Handle Visual Mode {{{
-function! s:GetVisualStartPosition(c_pos, v_start, v_end, direction) "{{{
+function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
 	let vmode = mode(1)
 	if match('Vv',vmode) < 0
 		throw 'Unkown visual mode:'.vmode
 	elseif vmode ==# 'V' "line-wise Visual
 		" Line-wise Visual {{{
 		if a:v_start[0] == a:v_end[0]
-			if search_direction == ''
+			if a:search_direction == ''
 				let v_pos = a:v_start
-			elseif search_direction == 'b'
+			elseif a:search_direction == 'b'
 				let v_pos = a:v_end
 			else
 				throw 'Unkown search_direction'
@@ -944,7 +944,7 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 			let v_start = [line("'<"),col("'<")] " visual_start_position
 			let v_end   = [line("'>"),col("'>")] " visual_end_position
 
-			let v_original_pos = s:GetVisualStartPosition(c_pos, v_start, v_end, a:direction)
+			let v_original_pos = s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction)
 			"}}}
 
 			" Reselect visual text {{{
