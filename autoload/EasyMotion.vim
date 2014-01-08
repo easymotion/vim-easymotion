@@ -75,6 +75,9 @@ function! EasyMotion#JK(visualmode, direction) " {{{
 	if g:EasyMotion_startofline
 		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	else
+		if a:visualmode
+			call s:before_visual()
+		endif
 		let prev_column = getpos('.')[2] - 1
 		call s:EasyMotion('^.\{,' . prev_column . '}\zs\(.\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endif
@@ -113,14 +116,23 @@ function! EasyMotion#SL(visualmode, direction) " {{{
 	endif
 
 	let re = s:findMotion(char)
+	if a:visualmode
+		call s:before_visual()
+	endif
 	let re = '\%' . line('.') . 'l' . re
 
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
 function! EasyMotion#WBL(visualmode, direction) " {{{
+	if a:visualmode
+		call s:before_visual()
+	endif
 	call s:EasyMotion('\%'.line('.').'l'.'\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
 endfunction " }}}
 function! EasyMotion#EL(visualmode, direction) " {{{
+	if a:visualmode
+		call s:before_visual()
+	endif
 	call s:EasyMotion('\%'.line('.').'l'.'\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
 function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
@@ -148,10 +160,11 @@ function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
 		endif
 		let s:re_line_after = 'l' . bracket_before . re_lineanywhere . bracket_after
 	endif "}}}
-	" Get cursor position correctly {{{
-	exe "normal! \<Esc>"
-	exe "normal! gv"
-	"}}}
+
+	if a:visualmode
+		call s:before_visual()
+	endif
+
 	let re = s:re_line_flag . line('.') . s:re_line_after
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', '')
 endfunction " }}}
@@ -467,8 +480,7 @@ function! s:load_migemo_dict() "{{{
 		throw "Error: ".enc." is not supported. Migemo is made disabled."
 	endif
 endfunction "}}}
-" -- Others ------------------------------
-" Handle Visual Mode {{{
+" -- Handle Visual Mode ------------------
 function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
 	let vmode = mode(1)
 	if match('Vv',vmode) < 0
@@ -503,9 +515,14 @@ function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
 		endif
 		"}}}
 	endif
-	"}}}
 	return v_pos
 endfunction "}}}
+function! s:before_visual() "{{{
+	" To get cursor position correctly
+	exe "normal! \<Esc>"
+	exe "normal! gv"
+endfunction "}}}
+" -- Others ------------------------------
 function! s:is_folded(line) "{{{
 	" Return false if g:EasyMotion_skipfoldedline == 1
 	" and line is start of folded lines
@@ -521,8 +538,7 @@ function! s:use_wundo() "{{{
 	" unless undolist is not empty
 	return ! s:is_cmdwin() && undotree().seq_last != 0
 endfunction "}}}
-
-" }}}
+"}}}
 " == Grouping algorithms {{{
 let s:grouping_algorithms = {
 \   1: 'SCTree'
