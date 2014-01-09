@@ -130,6 +130,10 @@ set cpo&vim
 		\ , 'lineanywhere' : { 'name': 'LineAnywhere'  , 'dir': 2 }
 		\
 		\ , 'sl' : { 'name': 'SL'  , 'dir': 2 }
+		\ , 'fl' : { 'name': 'SL'  , 'dir': 0 }
+		\ , 'Fl' : { 'name': 'SL'  , 'dir': 1 }
+		\ , 'tl' : { 'name': 'TL'  , 'dir': 0 }
+		\ , 'Tl' : { 'name': 'TL'  , 'dir': 1 }
 		\ , 'wl' : { 'name': 'WBL'  , 'dir': 0 }
 		\ , 'bl' : { 'name': 'WBL'  , 'dir': 1 }
 		\ , 'bd-wl' : { 'name': 'WBL'  , 'dir': 2 }
