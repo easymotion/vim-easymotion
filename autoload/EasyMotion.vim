@@ -890,6 +890,9 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
 		if g:EasyMotion_use_upper == 1 && match(g:EasyMotion_keys, '\l') == -1
 			let char = toupper(char)
 		endif
+		if char ==# '' && g:EasyMotion_enter_jump_first == 1
+			let char = g:EasyMotion_keys[0]
+		endif
 		" }}}
 	finally
 		" Restore original lines

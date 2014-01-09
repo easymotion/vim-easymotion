@@ -28,6 +28,7 @@ set cpo&vim
 		\ , 'skipfoldedline'        : 1
 		\ , 'use_migemo'            : 0
 		\ , 'use_upper'             : 0
+		\ , 'enter_jump_first'      : 0
 		\
 		\ , 'hl_group_target'         : 'EasyMotionTarget'
 		\ , 'hl2_first_group_target'  : 'EasyMotionTarget2First'
