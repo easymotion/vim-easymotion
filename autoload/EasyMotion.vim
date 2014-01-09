@@ -906,8 +906,11 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
 	endif
 	" }}}
 	" -- Repeat EasyMotion ------------------- {{{
-	if a:allows_repeat && char == '.'
-		return g:EasyMotion_old_target
+	if a:allows_repeat &&
+	 \ char == '.' &&
+	 \ exists('s:old_target_coord')
+		" For SelectLines
+		return s:old_target_coord
 	endif "}}}
 	" -- Check if the input char is valid ---- {{{
 	if ! has_key(a:groups, char)
@@ -1078,7 +1081,7 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 
 		" -- Prompt user for target group/character {{{
 		let coords = s:PromptUser(groups, allows_repeat, fixed_column)
-		let g:EasyMotion_old_target = coords
+		let s:old_target_coord = coords
 		"}}}
 
 		" -- Update selection -------------------- {{{
