@@ -302,6 +302,19 @@ function! EasyMotion#UserMapping(re, mapping, direction) " {{{
 	silent exec "onoremap ".a:mapping." :call EasyMotion#User('".a:re."', 0, ".a:direction.")<CR>"
 	silent exec "vnoremap ".a:mapping." :<C-u>call EasyMotion#User('".a:re."', 0,".a:direction.")<CR>"
 endfunction " }}}
+" -- Repeat Motion -----------------------
+function! EasyMotion#Repeat(visualmode, direction) " {{{
+	" Repeat previous motion with previous targets
+	if ! exists('s:old')
+		call s:Message("Previous targets doesn't exist")
+		return
+	endif
+	let re = s:old.regexp
+	let direction = s:old.direction
+	let s:line_flag = s:old.line_flag
+
+	call s:EasyMotion(re, direction, a:visualmode ? visualmode() : '', mode(1))
+endfunction " }}}
 
 " }}}
 " == Helper functions {{{
@@ -954,6 +967,18 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 
 	let orig_pos = [line('.'), col('.')]
 	let targets = []
+
+	" Store Regular Expression
+	let s:old = {
+		\ 'regexp': a:regexp,
+		\ 'direction': a:direction,
+		\ }
+	if s:line_flag == 1
+		let s:old['line_flag'] = 1
+	else
+		let s:old['line_flag'] = 0
+	endif
+
 
 	try
 		" -- Reset properties -------------------- {{{

@@ -140,6 +140,8 @@ set cpo&vim
 		\ , 'el' : { 'name': 'EL'  , 'dir': 0 }
 		\ , 'gel' : { 'name': 'EL'  , 'dir': 1 }
 		\ , 'bd-el' : { 'name': 'EL'  , 'dir': 2 }
+		\
+		\ , 'repeat' : { 'name': 'Repeat'  , 'dir': 0 }
 		\ }, 0) " Prepare <Plug> but don't map by default.
 	" }}}
 " }}}
