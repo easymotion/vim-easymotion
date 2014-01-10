@@ -1101,10 +1101,15 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 				break
 			endif
 
-			" Skip folded lines
+			" Skip folded lines {{{
 			if s:is_folded(pos[0])
+				if search_direction ==# 'b'
+					keepjumps call cursor(foldclosed(pos[0]-1), 0)
+				else
+					keepjumps call cursor(foldclosedend(pos[0]+1), 0)
+				endif
 				continue
-			endif
+			endif "}}}
 
 			call add(targets, pos)
 		endwhile
@@ -1113,6 +1118,7 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 		" Handle bidirection "{{{
 		" Reconstruct match dict
 		if a:direction == 2
+			" Forward
 			if ! empty(a:visualmode)
 				keepjumps call cursor(c_pos[0], c_pos[1])
 			else
@@ -1133,6 +1139,8 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 
 				" Skip folded lines {{{
 				if s:is_folded(pos[0])
+					" Always forward
+					keepjumps call cursor(foldclosedend(pos[0]+1), 0)
 					continue
 				endif
 				"}}}
