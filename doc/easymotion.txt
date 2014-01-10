@@ -150,6 +150,8 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-bd-jk)          | See |<Plug>(easymotion-bd-jk)|
     <Plug>(easymotion-bd-n)           | See |<Plug>(easymotion-bd-n)|
     <Plug>(easymotion-jumptoanywhere) | See |<Plug>(easymotion-jumptoanywhere)|
+    <Plug>(easymotion-repeat)         | See |<Plug>(easymotion-repeat)|
+                                      |
     Within Line Motion                |
     ----------------------------------|---------------------------------
     <Plug>(easymotion-sl)             | See |<Plug>(easymotion-sl)|
@@ -178,6 +180,8 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
 
 These mappings are not mapped by Default.
 
+Bidirection ~
+
 <Plug>(easymotion-bd-w)                               *<Plug>(easymotion-bd-w)*
                 Beginning of word forward and backward. See |w| & |b|.
                 Note: bd is short for bidirectional
@@ -196,6 +200,8 @@ These mappings are not mapped by Default.
 
 <Plug>(easymotion-bd-n)                               *<Plug>(easymotion-bd-n)*
                 Jump to latest "/" or "?" forward. See |n| & |N|.
+
+Jump To Anywhere ~
 
 <Plug>(easymotion-jumptoanywhere)           *<Plug>(easymotion-jumptoanywhere)*
                 JumpToAnywhere motion!
@@ -219,7 +225,17 @@ These mappings are not mapped by Default.
         \       '(<.|.$)' . '|' .
         \       '(\l)\zs(\u)' . '|' .
 <
-Within line motion                                    *easymotion-within-line*
+Repeat ~
+
+<Plug>(easymotion-repeat)                           *<Plug>(easymotion-repeat)*
+                Repeat last motion!
+
+                Repeat last motion type including input target character.
+                Nothing will happen when previous motion doesn't exist.
+
+
+Within line motion ~
+                                                        *easymotion-within-line*
 
 <Plug>(easymotion-sl)                                   *<Plug>(easymotion-sl)*
                 This function is same as |<Plug>(easymoion-s)|, except range
