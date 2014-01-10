@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:23 Dec 2013.
+*easymotion.txt*	Version 2.0  Last change:10 Jan 2014.
 
 
             ______                  __  ___       __  _
@@ -29,13 +29,14 @@ CONTENTS                                                 *easymotion-contents*
        4.7 EasyMotion_smartsign ........... |EasyMotion_smartsign|
        4.8 EasyMotion_use_migemo .......... |EasyMotion_use_migemo|
        4.9 EasyMotion_use_upper  .......... |EasyMotion_use_upper|
-       4.10 Custom highlighting ............ |easymotion-custom-hl|
-       4.11 Custom mappings ................ |easymotion-custom-mappings|
-           4.11.1 Leader key ............... |easymotion-leader-key|
-           4.11.2 Custom keys .............. |easymotion-custom-keys|
-       4.12 Easymotion special functions ... |easymotion-special-mappings|
-           4.12.1 Select Line .............. |easymotion-select-line|
-           4.12.2 Select Phrase ............ |easymotion-select-phrase|
+       4.10 Custom highlighting ........... |easymotion-custom-hl|
+       4.11 Custom mappings ............... |easymotion-custom-mappings|
+           4.11.1 Leader key .............. |easymotion-leader-key|
+           4.11.2 Custom keys ............. |easymotion-custom-keys|
+       4.12 Easymotion special functions .. |easymotion-special-mappings|
+           4.12.1 Select Line ............. |easymotion-select-line|
+           4.12.2 Select Phrase ........... |easymotion-select-phrase|
+       4.13 EasyMotion_enter_jump_first ... |EasyMotion_enter_jump_first|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -712,6 +713,21 @@ or map it by yourself(Recommend)
 <
 Note: special phrase function when d & y is a little bit different. So you
 should map them individually, don't define omap only.
+
+------------------------------------------------------------------------------
+4.13  Jump to first match by Enter                *EasyMotion_enter_jump_first*
+                                                *g:EasyMotion_enter_jump_first*
+
+Type Enter key and jump to first match (first letter of |g:EasyMotion_keys| ).
+
+Set this option to 1 if you want to enable this feature.
+
+Example:
+>
+    let g:EasyMotion_enter_jump_first = 1
+<
+Default: 0
+
 
 ==============================================================================
 5. License                                                *easymotion-license*
