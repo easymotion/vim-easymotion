@@ -529,9 +529,15 @@ function! s:should_use_migemo(char) "{{{
 	endif
 
 	" TODO: use direction and support within line
-	let visible_text = getline('w0','w$')
-	for line in visible_text
-		if s:include_multibyte_char(line) == 1
+	let first_line = line('w0')
+	let end_line = line('w$')
+
+	for line in range(first_line, end_line)
+		if s:is_folded(line)
+			continue
+		endif
+
+		if s:include_multibyte_char(getline(line)) == 1
 			return 1
 		endif
 	endfor
