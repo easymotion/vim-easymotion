@@ -70,6 +70,22 @@ function! EasyMotion#S(visualmode, direction) " {{{
 
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
+function! EasyMotion#S2(visualmode, direction) " {{{
+	let input = s:GetInput(2)
+
+	" Check that we have an input char
+	if empty(input)
+		" Restore selection
+		if ! empty(a:visualmode)
+			silent exec 'normal! gv'
+		endif
+		return
+	endif
+
+	let re = s:findMotion(input)
+
+	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+endfunction " }}}
 function! EasyMotion#T(visualmode, direction) " {{{
 	let char = s:GetSearchChar(a:visualmode)
 
@@ -415,6 +431,37 @@ function! s:GetChar() " {{{
 
 	return nr2char(char)
 endfunction " }}}
+function! s:InputPrompt(message, input) "{{{
+	redraw
+	echohl Question
+	echo a:message ': ' . a:input
+	echohl None
+endfunction "}}}
+function! s:GetInput(num_strokes) "{{{
+	let input = ''
+	" repeat a:num_strokes times
+	while s:strchars(input) < a:num_strokes
+		call s:InputPrompt('Input', input)
+		let c = getchar()
+		let char = type(c) == type(0) ? nr2char(c) : c
+		if char ==# "\<Esc>" || char2nr(char) == 128
+			" cancel if escape or special character is input
+			" Escape key pressed
+			redraw
+			call s:Message('Cancelled')
+			return ''
+		elseif char ==# "\<C-h>"
+			let input = substitute(input, '.$', '', '')
+			continue
+		elseif char ==# "\<CR>"
+			" Return input charcters
+			" Enter key pressed
+			return input
+		endif
+		let input .= char
+	endwhile
+	return input
+endfunction "}}}
 function! s:GetSearchChar2(visualmode) " {{{
 
 	let chars = []

@@ -163,6 +163,8 @@ call EasyMotion#init#InitMappings({
 	\ , 'bd-el' : { 'name' : 'EL'  , 'dir'  : 2 }
 	\
 	\ , 'repeat' : { 'name': 'Repeat'  , 'dir': 0 }
+	\
+	\ , 's2' : { 'name': 'S2' , 'dir': 2 }
 	\ }, 0) " Prepare <Plug> but don't map by default.
 " }}}
 
