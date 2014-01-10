@@ -1,7 +1,9 @@
 " EasyMotion - Vim motions on speed!
 "
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
-" Source repository: https://github.com/Lokaltog/vim-easymotion
+" Maintainer: haya14busa <hayabusa1419@gmail.com>
+" Source: https://github.com/haya14busa/vim-easymotion
+" Original: https://github.com/Lokaltog/vim-easymotion
 
 " == Script initialization {{{
 if exists('g:EasyMotion_loaded') || &compatible || version < 702
