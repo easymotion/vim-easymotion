@@ -34,3 +34,4 @@
     - アルファベット以外の文字やリガチャなどへの対応もできるかも。それぞれもれなくアルファベットと対応していればよさげ
 - [] Feature: operator-pending motionとして使った際、dot repeatを対応させる。
 - [] Fix: prefix keyも<Plug>(easymotion-prefix)として提供する。
+- [] Fix: highlightのバグ https://github.com/Lokaltog/vim-easymotion/issues/78
