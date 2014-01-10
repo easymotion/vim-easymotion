@@ -236,33 +236,58 @@ function! EasyMotion#SelectPhrase() "{{{
 		return
 	endif
 
+	" Generate regexp {{{
+	if chars[0] ==# chars[1]
+		let re = s:findMotion(chars[0])
+	else
+		" Convert chars {{{
+		" let g:EasyMotion_smartcase to 0 temporarily
+		let save_smart = g:EasyMotion_smartcase
+		let g:EasyMotion_smartcase = 0
+
+		let re1 = s:findMotion(chars[0])
+		let re2 = s:findMotion(chars[1])
+
+		let g:EasyMotion_smartcase = save_smart
+		unlet save_smart
+		"}}}
+
+		let re = re1 . '\|' . re2
+
+		if g:EasyMotion_smartcase && chars[0] =~# '\U' || chars[1] =~# '\U'
+			let re = '\c' . re
+		else
+			let re = '\C' . re
+		endif
+	endif
+	"}}}
+
+	" Store original pos
 	let orig_pos = [line('.'), col('.')]
 
-	if g:EasyMotion_smartcase && chars[0] =~# '\v\U' || chars[1] =~# '\v\U'
-		let re = '\c'
-	else
-		let re = '\C'
-	endif
-
-	let re = re . escape(chars[0], '.$^~') . '\|' . escape(chars[1], '.$^~')
+	" First
 	call s:EasyMotion(re, 2, '', '', 0, 0, 0, 0)
 	if s:EasyMotion_cancelled
 		keepjumps call cursor(orig_pos[0], orig_pos[1])
 		return ''
-	else
-		let pos1 = [line('.'), col('.')]
-		keepjumps call cursor(orig_pos[0], orig_pos[1])
-		call s:EasyMotion(re, 2, '', '', 0, 0, 0, pos1)
-		if s:EasyMotion_cancelled
-			keepjumps call cursor(orig_pos[0], orig_pos[1])
-			return ''
-		else
-			normal! v
-			keepjumps call cursor(pos1[0], pos1[1])
-			normal! o
-			return 1
-		endif
 	endif
+
+	" Store first pos
+	let pos1 = [line('.'), col('.')]
+	keepjumps call cursor(orig_pos[0], orig_pos[1])
+
+	" Second
+	call s:EasyMotion(re, 2, '', '', 0, 0, 0, pos1)
+	if s:EasyMotion_cancelled
+		keepjumps call cursor(orig_pos[0], orig_pos[1])
+		return ''
+	endif
+
+	" Success
+	normal! v
+	keepjumps call cursor(pos1[0], pos1[1])
+	normal! o
+	return 1
 endfunction "}}}
 function! EasyMotion#SelectPhraseYank() "{{{
 	let orig_pos = [line('.'), col('.')]
@@ -431,10 +456,14 @@ endfunction " }}}
 " -- Find Motion Helper ------------------
 function! s:findMotion(char) "{{{
 	" Find Motion: S,F,T
-	let re = escape(a:char, '.$^~\')
+	let re = escape(a:char, '.$^~\[]')
 
 	if g:EasyMotion_use_migemo && a:char =~# '\a'
 		let re = s:convertMigemo(re)
+	endif
+
+	if s:useSmartsign(a:char)
+		let re = s:convertSmartsign(re, a:char)
 	endif
 
 	if g:EasyMotion_smartcase
@@ -456,10 +485,6 @@ endfunction "}}}
 function! s:convertSmartcase(re, char) "{{{
 	let re = a:re
 	if a:char =~# '\U' "nonuppercase
-		if s:useSmartsign()
-			let re = s:convertSmartsign(a:re, a:char)
-		endif
-
 		return '\c' . re
 	else "uppercase
 		return '\C' . re
@@ -475,9 +500,10 @@ function! s:convertSmartsign(re, char) "{{{
 		return re
 	endif
 endfunction "}}}
-function! s:useSmartsign() "{{{
-	if exists('g:EasyMotion_use_smartsign_us') ||
-	\  exists('g:EasyMotion_use_smartsign_jp')
+function! s:useSmartsign(char) "{{{
+	if (exists('g:EasyMotion_use_smartsign_us')  ||
+	\   exists('g:EasyMotion_use_smartsign_jp')) &&
+	\  a:char =~# '\A'
 		return 1
 	else
 		return 0
