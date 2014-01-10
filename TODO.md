@@ -12,20 +12,21 @@
     - 内部のごちゃごちゃのテストは置いといて、提供している機能のテストぐらいならnear futureにできそう
 - [ ] Fix: migemoを使っていると大文字小文字を無視したり、ターゲットが'i'なのに'y'にもマッチしたりしてしまう
     - Hint: migemo辞書改変?
-- [ ] Feature & Fix: 折りたたみをスキップさせない時の挙動を安定させる
+- [x] Feature & Fix: 折りたたみをスキップさせない時の挙動を安定させる
+    - 改善した。が、highlightなどまだ改善の余地はある。
 - [ ] ドキュメントをもっとしっかり書く(英語含む)
+    - むしろ壊して再構築する勢いでやる
 - [ ] ユーザー側から簡単にEasyMotionコマンドを定義できるようにする。
     - Hint: s:EasyMotion(regexp, direction, visualmode, mode, ...)
     - のようにvisual modeとdirectionしかいじれない
     - Mappingの上書き防止にもつながりそう
-    - #EasyMotion#User()
+    - EasyMotion#User()
 - [x] Fix?: concealを使用する
     - 現状、バッファ書き換えでundotreeが壊れてしまうのを直せるかも
     - Hint: vim-sneakで実装されている
     - :wundo, :rundoで解決したほうが良さそう
     - (パフォーマンスなど場合によってはconcealのほうがいいという可能性も)
     - wundo & rundo で解決。初回時だけundolistがないせいでundoの通し番号が進んでしまう。
-- [] Find Motion時にEnterで最初のマッチに飛ぶ
 - [] Feature: 1行だけのwithin line モーションを拡張して、指定の行数分を範囲に取れるようにする。
     - ユーザーがvimrcによって何行分指定するかを前後別々に決めれるようにする。
     - ラベルが少なくなるので打ちやすい。上下移動してから使う人などに便利そう。
