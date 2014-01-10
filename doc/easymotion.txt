@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:23 Dec 2013.
+*easymotion.txt*	Version 2.0  Last change:10 Jan 2014.
 
 
             ______                  __  ___       __  _
@@ -29,13 +29,14 @@ CONTENTS                                                 *easymotion-contents*
        4.7 EasyMotion_smartsign ........... |EasyMotion_smartsign|
        4.8 EasyMotion_use_migemo .......... |EasyMotion_use_migemo|
        4.9 EasyMotion_use_upper  .......... |EasyMotion_use_upper|
-       4.10 Custom highlighting ............ |easymotion-custom-hl|
-       4.11 Custom mappings ................ |easymotion-custom-mappings|
-           4.11.1 Leader key ............... |easymotion-leader-key|
-           4.11.2 Custom keys .............. |easymotion-custom-keys|
-       4.12 Easymotion special functions ... |easymotion-special-mappings|
-           4.12.1 Select Line .............. |easymotion-select-line|
-           4.12.2 Select Phrase ............ |easymotion-select-phrase|
+       4.10 Custom highlighting ........... |easymotion-custom-hl|
+       4.11 Custom mappings ............... |easymotion-custom-mappings|
+           4.11.1 Leader key .............. |easymotion-leader-key|
+           4.11.2 Custom keys ............. |easymotion-custom-keys|
+       4.12 Easymotion special functions .. |easymotion-special-mappings|
+           4.12.1 Select Line ............. |easymotion-select-line|
+           4.12.2 Select Phrase ........... |easymotion-select-phrase|
+       4.13 EasyMotion_enter_jump_first ... |EasyMotion_enter_jump_first|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -150,9 +151,15 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-bd-jk)          | See |<Plug>(easymotion-bd-jk)|
     <Plug>(easymotion-bd-n)           | See |<Plug>(easymotion-bd-n)|
     <Plug>(easymotion-jumptoanywhere) | See |<Plug>(easymotion-jumptoanywhere)|
+    <Plug>(easymotion-repeat)         | See |<Plug>(easymotion-repeat)|
+                                      |
     Within Line Motion                |
     ----------------------------------|---------------------------------
     <Plug>(easymotion-sl)             | See |<Plug>(easymotion-sl)|
+    <Plug>(easymotion-fl)             | See |<Plug>(easymotion-fl)|
+    <Plug>(easymotion-Fl)             | See |<Plug>(easymotion-Fl)|
+    <Plug>(easymotion-tl)             | See |<Plug>(easymotion-tl)|
+    <Plug>(easymotion-Tl)             | See |<Plug>(easymotion-Tl)|
     <Plug>(easymotion-wl)             | See |<Plug>(easymotion-wl)|
     <Plug>(easymotion-bl)             | See |<Plug>(easymotion-bl)|
     <Plug>(easymotion-bd-wl)          | See |<Plug>(easymotion-bd-wl)|
@@ -174,6 +181,8 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
 
 These mappings are not mapped by Default.
 
+Bidirection ~
+
 <Plug>(easymotion-bd-w)                               *<Plug>(easymotion-bd-w)*
                 Beginning of word forward and backward. See |w| & |b|.
                 Note: bd is short for bidirectional
@@ -192,6 +201,8 @@ These mappings are not mapped by Default.
 
 <Plug>(easymotion-bd-n)                               *<Plug>(easymotion-bd-n)*
                 Jump to latest "/" or "?" forward. See |n| & |N|.
+
+Jump To Anywhere ~
 
 <Plug>(easymotion-jumptoanywhere)           *<Plug>(easymotion-jumptoanywhere)*
                 JumpToAnywhere motion!
@@ -215,10 +226,36 @@ These mappings are not mapped by Default.
         \       '(<.|.$)' . '|' .
         \       '(\l)\zs(\u)' . '|' .
 <
-Within line motion                                    *easymotion-within-line*
+Repeat ~
+
+<Plug>(easymotion-repeat)                           *<Plug>(easymotion-repeat)*
+                Repeat last motion!
+
+                Repeat last motion type including input target character.
+                Nothing will happen when previous motion doesn't exist.
+
+
+Within line motion ~
+                                                        *easymotion-within-line*
 
 <Plug>(easymotion-sl)                                   *<Plug>(easymotion-sl)*
                 This function is same as |<Plug>(easymoion-s)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-fl)                                   *<Plug>(easymotion-fl)*
+                This function is same as |<Plug>(easymoion-f)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-Fl)                                   *<Plug>(easymotion-Fl)*
+                This function is same as |<Plug>(easymoion-F)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-tl)                                   *<Plug>(easymotion-tl)*
+                This function is same as |<Plug>(easymoion-t)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-Tl)                                   *<Plug>(easymotion-Tl)*
+                This function is same as |<Plug>(easymoion-T)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-wl)                                   *<Plug>(easymotion-wl)*
@@ -676,6 +713,21 @@ or map it by yourself(Recommend)
 <
 Note: special phrase function when d & y is a little bit different. So you
 should map them individually, don't define omap only.
+
+------------------------------------------------------------------------------
+4.13  Jump to first match by Enter                *EasyMotion_enter_jump_first*
+                                                *g:EasyMotion_enter_jump_first*
+
+Type Enter key and jump to first match (first letter of |g:EasyMotion_keys| ).
+
+Set this option to 1 if you want to enable this feature.
+
+Example:
+>
+    let g:EasyMotion_enter_jump_first = 1
+<
+Default: 0
+
 
 ==============================================================================
 5. License                                                *easymotion-license*
