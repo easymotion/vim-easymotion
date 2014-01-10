@@ -62,11 +62,11 @@ function! EasyMotion#init#InitMappings(motions, do_mapping) "{{{
 				\ eval('g:EasyMotion_mapping_' . motion) . ' <Plug>(easymotion-' . motion . ')'
 		elseif a:do_mapping
 				\ && !hasmapto('<Plug>(easymotion-' . motion . ')')
-				\ && empty(maparg(g:EasyMotion_leader_key . motion, 'nov'))
+				\ && empty(maparg('<Plug>(easymotion-prefix)' . motion, 'nov'))
 
 			" Do mapping
 			silent exec 'map <silent> ' .
-				\ g:EasyMotion_leader_key . motion . ' <Plug>(easymotion-' . motion . ')'
+				\'<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-' . motion . ')'
 		endif "}}}
 
 	endfor
@@ -86,18 +86,18 @@ function! EasyMotion#init#InitSpecialMappings(motions, do_mapping) "{{{
 		" Do mapping {{{
 		if a:do_mapping
 				\ && !hasmapto('<Plug>(easymotion-special-' . motion . ')')
-				\ && empty(maparg(g:EasyMotion_leader_key . motion, 'ov'))
-				\ && empty(maparg('d' . g:EasyMotion_leader_key . motion, 'n'))
-				\ && empty(maparg('y' . g:EasyMotion_leader_key . motion, 'n'))
+				\ && empty(maparg('<Plug>(easymotion-prefix)' . motion, 'ov'))
+				\ && empty(maparg('d<Plug>(easymotion-prefix)'. motion, 'n'))
+				\ && empty(maparg('y<Plug>(easymotion-prefix)'. motion, 'n'))
 
 			silent exec 'omap <silent> ' .
-				\ g:EasyMotion_leader_key . motion . ' <Plug>(easymotion-special-' . motion . ')'
+				\ '<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . ')'
 			silent exec 'xmap <silent> ' .
-				\ g:EasyMotion_leader_key . motion . ' <Plug>(easymotion-special-' . motion . ')'
+				\ '<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . ')'
 			silent exec 'nmap <silent> ' .
-				\ 'd' . g:EasyMotion_leader_key . motion . ' d<Plug>(easymotion-special-' . motion . ')'
+				\ 'd<Plug>(easymotion-prefix)' . motion . ' d<Plug>(easymotion-special-' . motion . ')'
 			silent exec 'nmap <silent> ' .
-				\ 'y' . g:EasyMotion_leader_key . motion . ' y<Plug>(easymotion-special-' . motion . ')'
+				\ 'y<Plug>(easymotion-prefix)' . motion . ' y<Plug>(easymotion-special-' . motion . ')'
 		endif "}}}
 	endfor
 endfunction "}}}
