@@ -153,6 +153,10 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     Within Line Motion                |
     ----------------------------------|---------------------------------
     <Plug>(easymotion-sl)             | See |<Plug>(easymotion-sl)|
+    <Plug>(easymotion-fl)             | See |<Plug>(easymotion-fl)|
+    <Plug>(easymotion-Fl)             | See |<Plug>(easymotion-Fl)|
+    <Plug>(easymotion-tl)             | See |<Plug>(easymotion-tl)|
+    <Plug>(easymotion-Tl)             | See |<Plug>(easymotion-Tl)|
     <Plug>(easymotion-wl)             | See |<Plug>(easymotion-wl)|
     <Plug>(easymotion-bl)             | See |<Plug>(easymotion-bl)|
     <Plug>(easymotion-bd-wl)          | See |<Plug>(easymotion-bd-wl)|
@@ -219,6 +223,22 @@ Within line motion                                    *easymotion-within-line*
 
 <Plug>(easymotion-sl)                                   *<Plug>(easymotion-sl)*
                 This function is same as |<Plug>(easymoion-s)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-fl)                                   *<Plug>(easymotion-fl)*
+                This function is same as |<Plug>(easymoion-f)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-Fl)                                   *<Plug>(easymotion-Fl)*
+                This function is same as |<Plug>(easymoion-F)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-tl)                                   *<Plug>(easymotion-tl)*
+                This function is same as |<Plug>(easymoion-t)|, except range
+                is within current cursor line.
+
+<Plug>(easymotion-Tl)                                   *<Plug>(easymotion-Tl)*
+                This function is same as |<Plug>(easymoion-T)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-wl)                                   *<Plug>(easymotion-wl)*
