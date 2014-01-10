@@ -460,7 +460,8 @@ function! s:findMotion(char) "{{{
 	" Find Motion: S,F,T
 	let re = escape(a:char, '.$^~\[]')
 
-	if g:EasyMotion_use_migemo && a:char =~# '\a'
+	let should_use_migemo = s:should_use_migemo(a:char)
+	if should_use_migemo
 		let re = s:convertMigemo(re)
 	endif
 
@@ -520,6 +521,23 @@ function! s:load_smart_dict() "{{{
 		return ''
 	endif
 endfunction "}}}
+
+" Migemo {{{
+function! s:should_use_migemo(char) "{{{
+	if ! g:EasyMotion_use_migemo || a:char !~# '^\a$'
+		return 0
+	endif
+
+	" TODO: use direction and support within line
+	let visible_text = getline('w0','w$')
+	for line in visible_text
+		if s:include_multibyte_char(line) == 1
+			return 1
+		endif
+	endfor
+
+	return 0
+endfunction "}}}
 function! s:load_migemo_dict() "{{{
 	let enc = &l:encoding
 	if enc ==# 'utf-8'
@@ -533,6 +551,21 @@ function! s:load_migemo_dict() "{{{
 		throw "Error: ".enc." is not supported. Migemo is made disabled."
 	endif
 endfunction "}}}
+" s:strchars() {{{
+if exists('*strchars')
+	function! s:strchars(str)
+		return strchars(a:str)
+	endfunction
+else
+	function! s:strchars(str)
+		return strlen(substitute(str, ".", "x", "g"))
+	endfunction
+endif "}}}
+function! s:include_multibyte_char(str) "{{{
+    return strlen(a:str) != s:strchars(a:str)
+endfunction "}}}
+"}}}
+
 " -- Handle Visual Mode ------------------
 function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
 	let vmode = mode(1)
