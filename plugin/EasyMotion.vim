@@ -16,11 +16,19 @@ set cpo&vim
 " }}}
 " Default configuration {{{
 	" Default options {{{
+		let g:EasyMotion_do_mapping = get(g:, 'EasyMotion_do_mapping', 1)
+		if g:EasyMotion_do_mapping == 1
+			if exists('g:EasyMotion_leader_key')
+				exec 'map ' . g:EasyMotion_leader_key . ' <Plug>(easymotion-prefix)'
+			else
+				if !hasmapto('<Plug>(easymotion-prefix)')
+					map <Leader><Leader> <Plug>(easymotion-prefix)
+				endif
+			endif
+		endif
 		call EasyMotion#init#InitOptions({
-		\   'leader_key'            : '<Leader><Leader>'
-		\ , 'keys'                  : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+		\   'keys'                  : 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 		\ , 'do_shade'              : 1
-		\ , 'do_mapping'            : 1
 		\ , 'do_special_mapping'    : 0
 		\ , 'grouping'              : 1
 		\ , 'startofline'           : 1

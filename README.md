@@ -28,7 +28,7 @@ EasyMotion is triggered by one of the provided mappings.
 conflicts with other plugins you may have installed.** This can easily be
 changed back to pre-1.3 behavior by rebinding the leader in your vimrc:
 
-	let g:EasyMotion_leader_key = '<Leader>'
+	map <Leader> <Plug>(easymotion-prefix)
 
 All motions are now triggered with `<Leader><Leader>` by default, e.g.
 `<Leader><Leader>t`, `<Leader><Leader>gE`.

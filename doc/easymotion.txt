@@ -610,20 +610,19 @@ with existing mappings. It is possible to change the default leader key
 of all mappings to another key or sequence. It is also possible to fine
 tune the plugin to your need by changing every single sequence.
 
-4.11.1 Leader key               *EasyMotion_leader_key* *easymotion-leader-key*
-                                                    *g:EasyMotion_leader_key*
+4.11.1 Leader key                 *EasyMotion_leader_key* *easymotion-leader-key*
+                                                    *<Plug>(easymotion-prefix)*
 
-The default leader key can be changed with the configuration option
-|EasyMotion_leader_key|.
+The default leader key can be changed with the |<Plug>(easymoion-prefix)|
 
-Set this option to the key sequence to use as the prefix of the mappings
+Set this keymapping to the key sequence to use as the prefix of the mappings
 described in |easymotion-default-mappings|.
 
 Note: The default leader key has been changed to '<Leader><Leader>' to
 avoid conflicts with other plugins. You can revert to the original
-leader by setting this option in your vimrc: >
+leader by setting this keymapping in your vimrc: >
 
-    let g:EasyMotion_leader_key = '<Leader>'
+    map <Leader> <Plug>(easymoion-prefix)
 <
 Default: '<Leader><Leader>'
 
