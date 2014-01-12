@@ -1261,22 +1261,18 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 			exec 'normal! ' . a:visualmode
 		endif
 		" }}}
-		" -- Handle operator-pending mode -------- {{{
-		if a:mode == 'no'
-			" This mode requires that we eat one more
-			" character to the right if we're using
-			" a forward motion
-			" TODO: support if a:direction == 2
-			if a:direction != 1
-				let coords[1] += 1
-			endif
-		endif
-		" }}}
-
 		" -- Update cursor position -------------- {{{
 		call cursor(orig_pos[0], orig_pos[1])
 		let mark_save = getpos("'e")
 		call setpos("'e", [bufnr('%'), coords[0], coords[1], 0])
+		" Handle operator-pending mode {{{
+		if a:mode == 'no'
+			" This mode requires that we eat one more
+			" character to the right if we're using
+			" a forward motion
+			normal! v
+		endif
+		" }}}
 		execute 'normal! `e'
 		call setpos("'e", mark_save)
 
