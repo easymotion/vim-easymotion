@@ -106,10 +106,7 @@ if g:EasyMotion_do_mapping == 1
 endif "}}}
 
 call EasyMotion#init#InitMappings({
-	\   'f' : { 'name': 'F'      , 'dir': 0 }
-	\ , 'F' : { 'name': 'F'      , 'dir': 1 }
-	\ , 's' : { 'name': 'S'      , 'dir': 2 }
-	\ , 'S' : { 'name': 'WB'     , 'dir': 2 }
+	\   'S' : { 'name': 'WB'     , 'dir': 2 }
 	\ , 't' : { 'name': 'T'      , 'dir': 0 }
 	\ , 'T' : { 'name': 'T'      , 'dir': 1 }
 	\ , 'w' : { 'name': 'WB'     , 'dir': 0 }
@@ -163,10 +160,23 @@ call EasyMotion#init#InitMappings({
 	\ , 'bd-el' : { 'name' : 'EL'  , 'dir'  : 2 }
 	\
 	\ , 'repeat' : { 'name': 'Repeat'  , 'dir': 0 }
-	\
-	\ , 's2' : { 'name': 'S2' , 'dir': 2 }
 	\ }, 0) " Prepare <Plug> but don't map by default.
 " }}}
+
+noremap <silent><expr><Plug>(easymotion-s)
+	\ ':<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,2)<CR>'
+noremap <silent><expr><Plug>(easymotion-s2)
+	\ ':<C-u>call EasyMotion#S(3, "' . EasyMotion#helper#mode(1) . '" ,2)<CR>'
+
+noremap <silent><expr><Plug>(easymotion-f)
+	\ ':<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,0)<CR>'
+noremap <silent><expr><Plug>(easymotion-F)
+	\ ':<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,1)<CR>'
+
+noremap <silent><expr><Plug>(easymotion-t)
+	\ ':<C-u>call EasyMotion#T(1, "' . EasyMotion#helper#mode(1) . '" ,0)<CR>'
+noremap <silent><expr><Plug>(easymotion-T)
+	\ ':<C-u>call EasyMotion#T(1, "' . EasyMotion#helper#mode(1) . '" ,1)<CR>'
 
 " }}}
 " == Restore 'cpoptions' {{{

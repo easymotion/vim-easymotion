@@ -48,35 +48,15 @@ function! EasyMotion#reset()
 endfunction "}}}
 " == Motion functions {{{
 " -- Find Motion -------------------------
-function! EasyMotion#F(visualmode, direction) " {{{
-	let char = s:GetSearchChar(a:visualmode)
+function! EasyMotion#S(num_strokes, mode, direction) " {{{
+	let visualmode =  match('\v([Vv])|(C-v)', a:mode) > 0 ? visualmode() : ''
 
-	if empty(char)
-		return
-	endif
-
-	let re = s:findMotion(char)
-
-	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
-endfunction " }}}
-function! EasyMotion#S(visualmode, direction) " {{{
-	let char = s:GetSearchChar(a:visualmode)
-
-	if empty(char)
-		return
-	endif
-
-	let re = s:findMotion(char)
-
-	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
-endfunction " }}}
-function! EasyMotion#S2(visualmode, direction) " {{{
-	let input = s:GetInput(2)
+	let input = s:GetInput(a:num_strokes)
 
 	" Check that we have an input char
 	if empty(input)
 		" Restore selection
-		if ! empty(a:visualmode)
+		if ! empty(visualmode)
 			silent exec 'normal! gv'
 		endif
 		return
@@ -84,16 +64,22 @@ function! EasyMotion#S2(visualmode, direction) " {{{
 
 	let re = s:findMotion(input)
 
-	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	call s:EasyMotion(re, a:direction, visualmode, a:mode)
 endfunction " }}}
-function! EasyMotion#T(visualmode, direction) " {{{
-	let char = s:GetSearchChar(a:visualmode)
+function! EasyMotion#T(num_strokes, mode, direction) " {{{
+	let visualmode =  match('\v([Vv])|(C-v)', a:mode) > 0 ? visualmode() : ''
+	let input = s:GetInput(a:num_strokes)
 
-	if empty(char)
+	" Check that we have an input char
+	if empty(input)
+		" Restore selection
+		if ! empty(visualmode)
+			silent exec 'normal! gv'
+		endif
 		return
 	endif
 
-	let re = s:findMotion(char)
+	let re = s:findMotion(input)
 
 	if a:direction == 1
 		" backward
@@ -103,7 +89,7 @@ function! EasyMotion#T(visualmode, direction) " {{{
 		let re = '.\ze' . re
 	endif
 
-	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	call s:EasyMotion(re, a:direction, visualmode, a:mode)
 endfunction " }}}
 " -- Word Motion -------------------------
 function! EasyMotion#WB(visualmode, direction) " {{{
