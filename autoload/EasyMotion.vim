@@ -1224,7 +1224,7 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 		let groups = GroupingFn(targets, split(g:EasyMotion_keys, '\zs'))
 
 		" -- Shade inactive source --------------- {{{
-			if g:EasyMotion_do_shade
+			if g:EasyMotion_do_shade && targets_len != 1
 				let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
 
 				if a:direction == 1
