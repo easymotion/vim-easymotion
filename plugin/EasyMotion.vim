@@ -53,13 +53,13 @@ let s:target_hl_defaults = {
 let s:target_hl2_first_defaults = {
 	\   'gui'     : ['NONE', '#ffb400' , 'bold']
 	\ , 'cterm256': ['NONE', '11'      , 'bold']
-	\ , 'cterm'   : ['NONE', '11'      , 'bold']
+	\ , 'cterm'   : ['NONE', 'yellow'  , 'bold']
 	\ }
 
 let s:target_hl2_second_defaults = {
 	\   'gui'     : ['NONE', '#b98300' , 'bold']
 	\ , 'cterm256': ['NONE', '3'       , 'bold']
-	\ , 'cterm'   : ['NONE', '3'       , 'bold']
+	\ , 'cterm'   : ['NONE', 'yellow'  , 'bold']
 	\ }
 
 let s:shade_hl_defaults = {
@@ -137,6 +137,10 @@ call EasyMotion#init#InitSpecialMappings({
 " -- Prepare more key mapping ------------ {{{
 " Note: bd is short for bidirectional
 "       l is short for (within) line
+"       dir is short for directory
+"        1 -> forward
+"        2 -> backward
+"        3 -> bidirection
 call EasyMotion#init#InitMappings({
 	\   'bd-w'  : { 'name' : 'WB'     , 'dir' : 2 }
 	\ , 'bd-W'  : { 'name' : 'WBW'    , 'dir' : 2 }
