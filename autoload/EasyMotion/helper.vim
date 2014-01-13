@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: autoload/EasyMotion/helper.vim
 " AUTHOR: haya14busa
-" Last Change: 12 Jan 2014.
+" Last Change: 13 Jan 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -31,6 +31,28 @@ set cpo&vim
 
 function! EasyMotion#helper#mode(flag) "{{{
 	return mode(a:flag) == "\<C-v>" ? "C-v" : mode(a:flag)
+endfunction "}}}
+
+function! EasyMotion#helper#is_greater_coords(coords1, coords2) "{{{
+	" [line_num, col_num] < [line_num, col_num]
+	"
+	" coords1 < coords2  : return 1
+	" coords1 > coords2  : return -1
+	" coords1 == coords2 : return 0
+	if a:coords1 == a:coords2 | return 0 | endif
+
+	if a:coords1[0] < a:coords2[0]
+		return 1
+	elseif a:coords1[0] > a:coords2[0]
+		return -1
+	endif
+
+	" Same line
+	if a:coords1[1] < a:coords2[1]
+		return 1
+	elseif a:coords1[1] > a:coords2[1]
+		return -1
+	endif
 endfunction "}}}
 
 " Restore 'cpoptions' {{{
