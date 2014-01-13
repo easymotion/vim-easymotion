@@ -153,7 +153,7 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-jumptoanywhere) | See |<Plug>(easymotion-jumptoanywhere)|
     <Plug>(easymotion-repeat)         | See |<Plug>(easymotion-repeat)|
                                       |
-    Within Line Motion                |
+    Within Line Motion                | See |easymotion-within-line|
     ----------------------------------|---------------------------------
     <Plug>(easymotion-sl)             | See |<Plug>(easymotion-sl)|
     <Plug>(easymotion-fl)             | See |<Plug>(easymotion-fl)|
@@ -169,6 +169,20 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-lineforward)    | See |<Plug>(easymotion-lineforward)|
     <Plug>(easymotion-linebackward)   | See |<Plug>(easymotion-linebackward)|
     <Plug>(easymotion-lineanywhere)   | See |<Plug>(easymotion-lineanywhere)|
+                                      |
+    Multi Input Find Motion           | See |easymotion-multi-input|
+    ----------------------------------|---------------------------------
+    <Plug>(easymotion-sn)             | See |<Plug>(easymotion-sn)|
+    <Plug>(easymotion-fn)             | See |<Plug>(easymotion-fn)|
+    <Plug>(easymotion-Fn)             | See |<Plug>(easymotion-Fn)|
+    <Plug>(easymotion-tn)             | See |<Plug>(easymotion-tn)|
+    <Plug>(easymotion-Tn)             | See |<Plug>(easymotion-Tn)|
+                                      |
+    <Plug>(easymotion-sln)            | See |<Plug>(easymotion-sln)|
+    <Plug>(easymotion-fln)            | See |<Plug>(easymotion-fln)|
+    <Plug>(easymotion-Fln)            | See |<Plug>(easymotion-Fln)|
+    <Plug>(easymotion-tln)            | See |<Plug>(easymotion-tln)|
+    <Plug>(easymotion-Tln)            | See |<Plug>(easymotion-Tln)|
                                       |
     Special                           | See |easymotion-special-mappings|
     ----------------------------------|---------------------------------
@@ -315,6 +329,51 @@ Within line motion ~
         \       '(<.|^)' . '|' .
         \       '(>.|.$)' . '|' .
         \       '(\l)\zs(\u)' . '|' .
+
+Multi Input Find Motion!~
+                                                       *easymotion-multi-input*
+                                                           *easymotion-{find}n*
+                                                   *<Plug>(easymotion-{find}n)*
+                                                   *<Plug>(easymotion-{find}2)*
+
+EasyMotion provide another find motion by multi input target.
+
+Example:
+>
+    nmap s         <Plug>(easymoion-s2)
+    xmap s         <Plug>(easymoion-s2)
+    omap z         <Plug>(easymoion-s2)
+    nmap <Leader>s <Plug>(easymoion-sn)
+    xmap <Leader>s <Plug>(easymoion-sn)
+    omap <Leader>z <Plug>(easymoion-sn)
+<
+If you like typing two or above characters as target similar to vim-smalls or
+vim-sneak, |EasyMotion| also provide this feature. With above keymapping,
+
+    Invoke EasyMotion by two character:
+
+    s{char}{char} (Type s{char}<CR> to use just one {char} is also allowed)
+
+    And you can use as much target char as you like:
+
+    <Leader>s{char}{char}{char}...<CR>
+
+    You can use <C-h> to delete while typing.
+
+All Find motion (s,f,F,t,T,sl,fl,Fl,tl,Tl) support this feature!
+(|l| means within line motion)
+
+    *<Plug>(easymotion-sn)* *<Plug>(easymotion-fn)* *<Plug>(easymotion-Fn)*
+    *<Plug>(easymotion-tn)* *<Plug>(easymotion-Tn)* *<Plug>(easymotion-sln)*
+    *<Plug>(easymotion-fln)* *<Plug>(easymotion-Fln)* *<Plug>(easymotion-tln)*
+    *<Plug>(easymotion-Tln)*
+
+    *<Plug>(easymotion-s2)* *<Plug>(easymotion-f2)* *<Plug>(easymotion-F2)*
+    *<Plug>(easymotion-t2)* *<Plug>(easymotion-T2)* *<Plug>(easymotion-sl2)*
+    *<Plug>(easymotion-fl2)* *<Plug>(easymotion-Fl2)* *<Plug>(easymotion-tl2)*
+    *<Plug>(easymotion-Tl2)*
+
+But |EasyMotion| is good at simple and fast motion with one or two character.
 
 ------------------------------------------------------------------------------
 2.3 Special mappings                              *easymotion-special-mappings*
