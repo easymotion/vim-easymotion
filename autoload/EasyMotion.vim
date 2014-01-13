@@ -49,7 +49,7 @@ endfunction "}}}
 " == Motion functions {{{
 " -- Find Motion -------------------------
 function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
-	let input = s:GetInput(a:num_strokes)
+	let input = EasyMotion#command_line#GetInput(a:num_strokes)
 
 	" Check that we have an input char
 	if empty(input)
@@ -65,7 +65,7 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
-	let input = s:GetInput(a:num_strokes)
+	let input = EasyMotion#command_line#GetInput(a:num_strokes)
 
 	" Check that we have an input char
 	if empty(input)
@@ -120,7 +120,7 @@ function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
 endfunction " }}}
 " -- Line Motion -------------------------
 function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
-	let input = s:GetInput(a:num_strokes)
+	let input = EasyMotion#command_line#GetInput(a:num_strokes)
 
 	" Check that we have an input char
 	if empty(input)
@@ -137,7 +137,7 @@ function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
 function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
-	let input = s:GetInput(a:num_strokes)
+	let input = EasyMotion#command_line#GetInput(a:num_strokes)
 
 	" Check that we have an input char
 	if empty(input)
@@ -409,39 +409,6 @@ function! s:GetChar() " {{{
 
 	return nr2char(char)
 endfunction " }}}
-function! s:InputPrompt(message, input) "{{{
-	redraw
-	echohl Question | echon a:message | echohl None
-	echon a:input
-endfunction "}}}
-function! s:GetInput(num_strokes) "{{{
-	let input = ''
-	" repeat a:num_strokes times
-	while s:strchars(input) < a:num_strokes
-		" if a:num_strokes > 1 && g:EasyMotion_show_prompt
-		if g:EasyMotion_show_prompt
-			call s:InputPrompt(g:EasyMotion_prompt, input)
-		endif
-		let c = getchar()
-		let char = type(c) == type(0) ? nr2char(c) : c
-		if char ==# "\<Esc>" || char2nr(char) == 128
-			" cancel if escape or special character is input
-			" Escape key pressed
-			redraw
-			call s:Message('Cancelled')
-			return ''
-		elseif char ==# "\<C-h>"
-			let input = substitute(input, '.$', '', '')
-			continue
-		elseif char ==# "\<CR>"
-			" Return input charcters
-			" Enter key pressed
-			return input
-		endif
-		let input .= char
-	endwhile
-	return input
-endfunction "}}}
 function! s:GetSearchChar2(visualmode) " {{{
 
 	let chars = []
@@ -505,7 +472,7 @@ endfunction "}}}
 function! s:convertMigemo(re) "{{{
 	let re = a:re
 	if ! has_key(s:migemo_dicts, &l:encoding)
-		let s:migemo_dicts[&l:encoding] = s:load_migemo_dict()
+		let s:migemo_dicts[&l:encoding] = EasyMotion#helper#load_migemo_dict()
 	endif
 	if re =~# '^\a$'
 		let re = s:migemo_dicts[&l:encoding][re]
@@ -549,55 +516,6 @@ function! s:load_smart_dict() "{{{
 	endif
 endfunction "}}}
 
-" Migemo {{{
-function! s:should_use_migemo(char) "{{{
-	if ! g:EasyMotion_use_migemo || a:char !~# '^\a$'
-		return 0
-	endif
-
-	" TODO: use direction and support within line
-	let first_line = line('w0')
-	let end_line = line('w$')
-
-	for line in range(first_line, end_line)
-		if s:is_folded(line)
-			continue
-		endif
-
-		if s:include_multibyte_char(getline(line)) == 1
-			return 1
-		endif
-	endfor
-
-	return 0
-endfunction "}}}
-function! s:load_migemo_dict() "{{{
-	let enc = &l:encoding
-	if enc ==# 'utf-8'
-		return EasyMotion#migemo#utf8#load_dict()
-	elseif enc ==# 'cp932'
-		return EasyMotion#migemo#cp932#load_dict()
-	elseif enc ==# 'euc-jp'
-		return EasyMotion#migemo#eucjp#load_dict()
-	else
-		let g:EasyMotion_use_migemo = 0
-		throw "Error: ".enc." is not supported. Migemo is made disabled."
-	endif
-endfunction "}}}
-" s:strchars() {{{
-if exists('*strchars')
-	function! s:strchars(str)
-		return strchars(a:str)
-	endfunction
-else
-	function! s:strchars(str)
-		return strlen(substitute(str, ".", "x", "g"))
-	endfunction
-endif "}}}
-function! s:include_multibyte_char(str) "{{{
-    return strlen(a:str) != s:strchars(a:str)
-endfunction "}}}
-"}}}
 
 " -- Handle Visual Mode ------------------
 function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
@@ -644,6 +562,27 @@ function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
 	endif
 endfunction "}}}
 " -- Others ------------------------------
+function! s:should_use_migemo(char) "{{{
+	if ! g:EasyMotion_use_migemo || a:char !~# '^\a$'
+		return 0
+	endif
+
+	" TODO: use direction and support within line
+	let first_line = line('w0')
+	let end_line = line('w$')
+
+	for line in range(first_line, end_line)
+		if s:is_folded(line)
+			continue
+		endif
+
+		if EasyMotion#helper#include_multibyte_char(getline(line)) == 1
+			return 1
+		endif
+	endfor
+
+	return 0
+endfunction "}}}
 function! s:is_folded(line) "{{{
 	" Return false if g:EasyMotion_skipfoldedline == 1
 	" and line is start of folded lines

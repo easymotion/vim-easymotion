@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: autoload/EasyMotion/helper.vim
 " AUTHOR: haya14busa
-" Last Change: 13 Jan 2014.
+" Last Change: 14 Jan 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -54,6 +54,36 @@ function! EasyMotion#helper#is_greater_coords(coords1, coords2) "{{{
 		return -1
 	endif
 endfunction "}}}
+
+" Migemo {{{
+function! EasyMotion#helper#load_migemo_dict() "{{{
+	let enc = &l:encoding
+	if enc ==# 'utf-8'
+		return EasyMotion#migemo#utf8#load_dict()
+	elseif enc ==# 'cp932'
+		return EasyMotion#migemo#cp932#load_dict()
+	elseif enc ==# 'euc-jp'
+		return EasyMotion#migemo#eucjp#load_dict()
+	else
+		let g:EasyMotion_use_migemo = 0
+		throw "Error: ".enc." is not supported. Migemo is made disabled."
+	endif
+endfunction "}}}
+
+" EasyMotion#helper#strchars() {{{
+if exists('*strchars')
+	function! EasyMotion#helper#strchars(str)
+		return strchars(a:str)
+	endfunction
+else
+	function! EasyMotion#helper#strchars(str)
+		return strlen(substitute(str, ".", "x", "g"))
+	endfunction
+endif "}}}
+function! EasyMotion#helper#include_multibyte_char(str) "{{{
+    return strlen(a:str) != EasyMotion#helper#strchars(a:str)
+endfunction "}}}
+"}}}
 
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
