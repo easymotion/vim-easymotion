@@ -411,15 +411,17 @@ function! s:GetChar() " {{{
 endfunction " }}}
 function! s:InputPrompt(message, input) "{{{
 	redraw
-	echohl Question
-	echo a:message ': ' . a:input
-	echohl None
+	echohl Question | echon a:message | echohl None
+	echon a:input
 endfunction "}}}
 function! s:GetInput(num_strokes) "{{{
 	let input = ''
 	" repeat a:num_strokes times
 	while s:strchars(input) < a:num_strokes
-		call s:InputPrompt('Input', input)
+		" if a:num_strokes > 1 && g:EasyMotion_show_prompt
+		if g:EasyMotion_show_prompt
+			call s:InputPrompt(g:EasyMotion_prompt, input)
+		endif
 		let c = getchar()
 		let char = type(c) == type(0) ? nr2char(c) : c
 		if char ==# "\<Esc>" || char2nr(char) == 128

@@ -31,6 +31,8 @@ let g:EasyMotion_skipfoldedline     = get(g: , 'EasyMotion_skipfoldedline'     ,
 let g:EasyMotion_use_migemo         = get(g: , 'EasyMotion_use_migemo'         , 0)
 let g:EasyMotion_use_upper          = get(g: , 'EasyMotion_use_upper'          , 0)
 let g:EasyMotion_enter_jump_first   = get(g: , 'EasyMotion_enter_jump_first'   , 0)
+let g:EasyMotion_show_prompt        = get(g: , 'EasyMotion_show_prompt'        , 1)
+let g:EasyMotion_prompt             = get(g: , 'EasyMotion_prompt' , '> ')
 "}}}
 
 " -- Default highlighting ---------------- {{{
