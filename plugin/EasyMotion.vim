@@ -101,36 +101,25 @@ augroup end
 
 " -- Find Motion {{{
 " F: {{{
-noremap <silent><expr><Plug>(easymotion-s)
-    \      ':<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,2)<CR>'
-xnoremap <silent><expr><Plug>(easymotion-s)
-    \ '<Esc>:<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,2)<CR>'
-noremap <silent><expr><Plug>(easymotion-f)
-    \      ':<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,0)<CR>'
-xnoremap <silent><expr><Plug>(easymotion-f)
-    \ '<Esc>:<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,0)<CR>'
-noremap <silent><expr><Plug>(easymotion-F)
-    \      ':<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,1)<CR>'
-xnoremap <silent><expr><Plug>(easymotion-F)
-    \ '<Esc>:<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,1)<CR>'
+" (cound, visual, direction)
+noremap  <silent><Plug>(easymotion-f)      :<C-u>call EasyMotion#S(1,0,0)<CR>
+xnoremap <silent><Plug>(easymotion-f) <ESC>:<C-u>call EasyMotion#S(1,1,0)<CR>
+noremap  <silent><Plug>(easymotion-F)      :<C-u>call EasyMotion#S(1,0,1)<CR>
+xnoremap <silent><Plug>(easymotion-F) <ESC>:<C-u>call EasyMotion#S(1,1,1)<CR>
+noremap  <silent><Plug>(easymotion-s)      :<C-u>call EasyMotion#S(1,0,2)<CR>
+xnoremap <silent><Plug>(easymotion-s) <ESC>:<C-u>call EasyMotion#S(1,1,2)<CR>
 "}}}
 
 " T: {{{
-noremap <silent><expr><Plug>(easymotion-t)
-    \      ':<C-u>call EasyMotion#T(1, "' . EasyMotion#helper#mode(1) . '" ,0)<CR>'
-xnoremap <silent><expr><Plug>(easymotion-t)
-    \ '<Esc>:<C-u>call EasyMotion#T(1, "' . EasyMotion#helper#mode(1) . '" ,0)<CR>'
-noremap <silent><expr><Plug>(easymotion-T)
-    \      ':<C-u>call EasyMotion#T(1, "' . EasyMotion#helper#mode(1) . '" ,1)<CR>'
-xnoremap <silent><expr><Plug>(easymotion-T)
-    \ '<Esc>:<C-u>call EasyMotion#T(1, "' . EasyMotion#helper#mode(1) . '" ,1)<CR>'
+noremap  <silent><Plug>(easymotion-t)      :<C-u>call EasyMotion#T(1,0,0)<CR>
+xnoremap <silent><Plug>(easymotion-t) <ESC>:<C-u>call EasyMotion#T(1,1,0)<CR>
+noremap  <silent><Plug>(easymotion-T)      :<C-u>call EasyMotion#T(1,0,1)<CR>
+xnoremap <silent><Plug>(easymotion-T) <ESC>:<C-u>call EasyMotion#T(1,1,1)<CR>
 "}}}
 
 " Multi: {{{
-noremap <silent><expr><Plug>(easymotion-s2)
-    \      ':<C-u>call EasyMotion#S(2, "' . EasyMotion#helper#mode(1) . '" ,2)<CR>'
-xnoremap <silent><expr><Plug>(easymotion-s)
-    \ '<Esc>:<C-u>call EasyMotion#S(2, "' . EasyMotion#helper#mode(1) . '" ,2)<CR>'
+noremap  <silent><Plug>(easymotion-s2)      :<C-u>call EasyMotion#S(2,0,2)<CR>
+xnoremap <silent><Plug>(easymotion-s2) <Esc>:<C-u>call EasyMotion#S(2,1,2)<CR>
 "}}}
 "}}}
 
@@ -213,7 +202,6 @@ xnoremap <silent><Plug>(easymotion-repeat)
 
 " -- Line Motion {{{
 " F Line: {{{
-" (cound, visual, direction)
 noremap  <silent><Plug>(easymotion-fl)      :<C-u>call EasyMotion#SL(1,0,0)<CR>
 xnoremap <silent><Plug>(easymotion-fl) <Esc>:<C-u>call EasyMotion#SL(1,1,0)<CR>
 noremap  <silent><Plug>(easymotion-Fl)      :<C-u>call EasyMotion#SL(1,0,1)<CR>
@@ -223,7 +211,6 @@ xnoremap <silent><Plug>(easymotion-sl) <Esc>:<C-u>call EasyMotion#SL(1,1,2)<CR>
 "}}}
 
 " T Line: {{{
-" (cound, visual, direction)
 noremap  <silent><Plug>(easymotion-tl)      :<C-u>call EasyMotion#TL(1,0,0)<CR>
 xnoremap <silent><Plug>(easymotion-tl) <Esc>:<C-u>call EasyMotion#TL(1,1,0)<CR>
 noremap  <silent><Plug>(easymotion-Tl)      :<C-u>call EasyMotion#TL(1,0,1)<CR>

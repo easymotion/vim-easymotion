@@ -313,9 +313,10 @@ function! EasyMotion#SelectPhraseDelete() "{{{
 	endif
 endfunction "}}}
 " -- User Motion -------------------------
-function! EasyMotion#User(pattern, visualmode, direction) " {{{
+function! EasyMotion#User(pattern, mode, direction) " {{{
+	let visualmode =  match('\v([Vv])|(C-v)', a:mode) > 0 ? visualmode() : ''
 	let re = escape(a:pattern, '|')
-	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	call s:EasyMotion(re, a:direction, visualmode, a:mode)
 endfunction " }}}
 function! EasyMotion#UserMapping(re, mapping, direction) " {{{
 	silent exec "nnoremap ".a:mapping." :call EasyMotion#User('".a:re."', 0, ".a:direction.")<CR>"
