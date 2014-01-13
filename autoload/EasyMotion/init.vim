@@ -35,18 +35,6 @@ endfunction " }}}
 
 function! EasyMotion#init#InitMappings(motions, do_mapping) "{{{
 	for [motion, fn] in items(a:motions)
-		" Prepare <Plug> mapping {{{
-		silent exec 'nnoremap <silent>' .
-			\ '<Plug>(easymotion-' . motion . ')
-			\ :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
-		silent exec 'onoremap <silent>' .
-			\ '<Plug>(easymotion-' . motion . ')
-			\ :call EasyMotion#' . fn.name . '(0, ' . fn.dir . ')<CR>'
-		silent exec 'vnoremap <silent>' .
-			\ '<Plug>(easymotion-' . motion . ')
-			\ :<C-u>call EasyMotion#' . fn.name . '(1, ' . fn.dir . ')<CR>'
-		"}}}
-
 		" Mapping {{{
 		if exists('g:EasyMotion_mapping_' . motion)
 			" Backward compatible mapping [deprecated]
@@ -66,30 +54,20 @@ endfunction "}}}
 
 function! EasyMotion#init#InitSpecialMappings(motions, do_mapping) "{{{
 	for [motion, fn] in items(a:motions)
-		silent exec 'onoremap <silent>' .
-			\ '<Plug>(easymotion-special-' . motion . ') :call EasyMotion#' . fn.name . '()<CR>'
-		silent exec 'vnoremap <silent>' .
-			\ '<Plug>(easymotion-special-' . motion . ') :<C-u>call EasyMotion#' . fn.name . '()<CR>'
-		silent exec 'nnoremap <silent>' .
-			\ 'y<Plug>(easymotion-special-' . motion . ') :call EasyMotion#' . fn.name . 'Yank()<CR>'
-		silent exec 'nnoremap <silent>' .
-			\ 'd<Plug>(easymotion-special-' . motion . ') :call EasyMotion#' . fn.name . 'Delete()<CR>'
-
 		" Do mapping {{{
 		if a:do_mapping
 				\ && !hasmapto('<Plug>(easymotion-special-' . motion . ')')
 				\ && empty(maparg('<Plug>(easymotion-prefix)' . motion, 'ov'))
 				\ && empty(maparg('d<Plug>(easymotion-prefix)'. motion, 'n'))
 				\ && empty(maparg('y<Plug>(easymotion-prefix)'. motion, 'n'))
-
 			silent exec 'omap <silent> ' .
 				\ '<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . ')'
 			silent exec 'xmap <silent> ' .
 				\ '<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . ')'
 			silent exec 'nmap <silent> ' .
-				\ 'd<Plug>(easymotion-prefix)' . motion . ' d<Plug>(easymotion-special-' . motion . ')'
+				\ 'd<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . 'd)'
 			silent exec 'nmap <silent> ' .
-				\ 'y<Plug>(easymotion-prefix)' . motion . ' y<Plug>(easymotion-special-' . motion . ')'
+				\ 'y<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . 'y)'
 		endif "}}}
 	endfor
 endfunction "}}}
