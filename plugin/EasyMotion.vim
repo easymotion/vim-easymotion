@@ -99,28 +99,52 @@ augroup end
 " Note: bd is short for bidirectional
 "       l is short for (within) line
 
-" -- Find Motion {{{
-" F: {{{
-" (cound, visual, direction)
-noremap  <silent><Plug>(easymotion-f)      :<C-u>call EasyMotion#S(1,0,0)<CR>
-xnoremap <silent><Plug>(easymotion-f) <ESC>:<C-u>call EasyMotion#S(1,1,0)<CR>
-noremap  <silent><Plug>(easymotion-F)      :<C-u>call EasyMotion#S(1,0,1)<CR>
-xnoremap <silent><Plug>(easymotion-F) <ESC>:<C-u>call EasyMotion#S(1,1,1)<CR>
-noremap  <silent><Plug>(easymotion-s)      :<C-u>call EasyMotion#S(1,0,2)<CR>
-xnoremap <silent><Plug>(easymotion-s) <ESC>:<C-u>call EasyMotion#S(1,1,2)<CR>
-"}}}
-
-" T: {{{
-noremap  <silent><Plug>(easymotion-t)      :<C-u>call EasyMotion#T(1,0,0)<CR>
-xnoremap <silent><Plug>(easymotion-t) <ESC>:<C-u>call EasyMotion#T(1,1,0)<CR>
-noremap  <silent><Plug>(easymotion-T)      :<C-u>call EasyMotion#T(1,0,1)<CR>
-xnoremap <silent><Plug>(easymotion-T) <ESC>:<C-u>call EasyMotion#T(1,1,1)<CR>
-"}}}
-
-" Multi: {{{
-noremap  <silent><Plug>(easymotion-s2)      :<C-u>call EasyMotion#S(2,0,2)<CR>
-xnoremap <silent><Plug>(easymotion-s2) <Esc>:<C-u>call EasyMotion#S(2,1,2)<CR>
-"}}}
+function! s:find_motion_map_helper(motions) "{{{
+	for [name, dict] in items(a:motions)
+        silent exec 'noremap  <silent><Plug>(easymotion-'.name.')' .
+            \ '      :<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',0,'. dict.direction .')<CR>'
+        silent exec 'xnoremap <silent><Plug>(easymotion-'.name.')' .
+            \ ' <Esc>:<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',1,'. dict.direction .')<CR>'
+    " Example:
+    " noremap  <silent><Plug>(easymotion-f2) <Esc>:<C-u>call EasyMotion#S(2,1,0)<CR>
+    " xnoremap <silent><Plug>(easymotion-f2) <Esc>:<C-u>call EasyMotion#S(2,1,0)<CR>
+    endfor
+endfunction "}}}
+" Find Motion: {{{
+call s:find_motion_map_helper({
+    \ 'f'   : {'fnc': 'S' , 'cnt': 1, 'direction': 0},
+    \ 'F'   : {'fnc': 'S' , 'cnt': 1, 'direction': 1},
+    \ 's'   : {'fnc': 'S' , 'cnt': 1, 'direction': 2},
+    \ 't'   : {'fnc': 'T' , 'cnt': 1, 'direction': 0},
+    \ 'T'   : {'fnc': 'T' , 'cnt': 1, 'direction': 1},
+    \ 'fl'  : {'fnc': 'SL', 'cnt': 1, 'direction': 0},
+    \ 'Fl'  : {'fnc': 'SL', 'cnt': 1, 'direction': 1},
+    \ 'sl'  : {'fnc': 'SL', 'cnt': 1, 'direction': 2},
+    \ 'tl'  : {'fnc': 'TL', 'cnt': 1, 'direction': 0},
+    \ 'Tl'  : {'fnc': 'TL', 'cnt': 1, 'direction': 1},
+    \
+    \ 'f2'  : {'fnc': 'S' , 'cnt': 2, 'direction': 0},
+    \ 'F2'  : {'fnc': 'S' , 'cnt': 2, 'direction': 1},
+    \ 's2'  : {'fnc': 'S' , 'cnt': 2, 'direction': 2},
+    \ 't2'  : {'fnc': 'T' , 'cnt': 2, 'direction': 0},
+    \ 'T2'  : {'fnc': 'T' , 'cnt': 2, 'direction': 1},
+    \ 'fl2' : {'fnc': 'SL', 'cnt': 2, 'direction': 0},
+    \ 'Fl2' : {'fnc': 'SL', 'cnt': 2, 'direction': 1},
+    \ 'sl2' : {'fnc': 'SL', 'cnt': 2, 'direction': 2},
+    \ 'tl2' : {'fnc': 'TL', 'cnt': 2, 'direction': 0},
+    \ 'Tl2' : {'fnc': 'TL', 'cnt': 2, 'direction': 1},
+    \
+    \ 'fn'  : {'fnc': 'S' , 'cnt': 50, 'direction': 0},
+    \ 'Fn'  : {'fnc': 'S' , 'cnt': 50, 'direction': 1},
+    \ 'sn'  : {'fnc': 'S' , 'cnt': 50, 'direction': 2},
+    \ 'tn'  : {'fnc': 'T' , 'cnt': 50, 'direction': 0},
+    \ 'Tn'  : {'fnc': 'T' , 'cnt': 50, 'direction': 1},
+    \ 'fln' : {'fnc': 'SL', 'cnt': 50, 'direction': 0},
+    \ 'Fln' : {'fnc': 'SL', 'cnt': 50, 'direction': 1},
+    \ 'sln' : {'fnc': 'SL', 'cnt': 50, 'direction': 2},
+    \ 'tln' : {'fnc': 'TL', 'cnt': 50, 'direction': 0},
+    \ 'Tln' : {'fnc': 'TL', 'cnt': 50, 'direction': 1},
+    \ })
 "}}}
 
 " -- Word Motion {{{
@@ -138,41 +162,38 @@ xnoremap <silent><Plug>(easymotion-bd-w) <Esc>:<C-u>call EasyMotion#WB(1,2)<CR>
 "}}}
 
 " WORD: {{{
-noremap  <silent><Plug>(easymotion-w)      :<C-u>call EasyMotion#WBW(0,0)<CR>
-xnoremap <silent><Plug>(easymotion-w) <Esc>:<C-u>call EasyMotion#WBW(1,0)<CR>
-noremap  <silent><Plug>(easymotion-B)      :<C-u>call EasyMotion#WBW(0,1)<CR>
-xnoremap <silent><Plug>(easymotion-B) <Esc>:<C-u>call EasyMotion#WBW(1,1)<CR>
-
+noremap  <silent><Plug>(easymotion-w)         :<C-u>call EasyMotion#WBW(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-w)    <Esc>:<C-u>call EasyMotion#WBW(1,0)<CR>
+noremap  <silent><Plug>(easymotion-B)         :<C-u>call EasyMotion#WBW(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-B)    <Esc>:<C-u>call EasyMotion#WBW(1,1)<CR>
 noremap  <silent><Plug>(easymotion-bd-W)      :<C-u>call EasyMotion#WBW(0,2)<CR>
 xnoremap <silent><Plug>(easymotion-bd-W) <Esc>:<C-u>call EasyMotion#WBW(1,2)<CR>
 "}}}
 
 " End Word: {{{
-noremap  <silent><Plug>(easymotion-e)       :<C-u>call EasyMotion#E(0,0)<CR>
-xnoremap <silent><Plug>(easymotion-e)  <Esc>:<C-u>call EasyMotion#E(1,0)<CR>
-noremap  <silent><Plug>(easymotion-ge)      :<C-u>call EasyMotion#E(0,1)<CR>
-xnoremap <silent><Plug>(easymotion-ge) <Esc>:<C-u>call EasyMotion#E(1,1)<CR>
-
+noremap  <silent><Plug>(easymotion-e)         :<C-u>call EasyMotion#E(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-e)    <Esc>:<C-u>call EasyMotion#E(1,0)<CR>
+noremap  <silent><Plug>(easymotion-ge)        :<C-u>call EasyMotion#E(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-ge)   <Esc>:<C-u>call EasyMotion#E(1,1)<CR>
 noremap  <silent><Plug>(easymotion-bd-e)      :<C-u>call EasyMotion#E(0,2)<CR>
 xnoremap <silent><Plug>(easymotion-bd-e) <Esc>:<C-u>call EasyMotion#E(1,2)<CR>
 "}}}
 
 " END WORD: {{{
-noremap  <silent><Plug>(easymotion-E)       :<C-u>call EasyMotion#E(0,0)<CR>
-xnoremap <silent><Plug>(easymotion-E)  <Esc>:<C-u>call EasyMotion#E(1,0)<CR>
-noremap  <silent><Plug>(easymotion-gE)      :<C-u>call EasyMotion#E(0,1)<CR>
-xnoremap <silent><Plug>(easymotion-gE) <Esc>:<C-u>call EasyMotion#E(1,1)<CR>
-
+noremap  <silent><Plug>(easymotion-E)         :<C-u>call EasyMotion#EW(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-E)    <Esc>:<C-u>call EasyMotion#EW(1,0)<CR>
+noremap  <silent><Plug>(easymotion-gE)        :<C-u>call EasyMotion#EW(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-gE)   <Esc>:<C-u>call EasyMotion#EW(1,1)<CR>
 noremap  <silent><Plug>(easymotion-bd-E)      :<C-u>call EasyMotion#EW(0,2)<CR>
 xnoremap <silent><Plug>(easymotion-bd-E) <Esc>:<C-u>call EasyMotion#EW(1,2)<CR>
 "}}}
 "}}}
 
 " -- JK Motion {{{
-noremap  <silent><Plug>(easymotion-j)         :<C-u>call EasyMotion#JK(0,0)<CR>
-xnoremap <silent><Plug>(easymotion-j)    <Esc>:<C-u>call EasyMotion#JK(1,0)<CR>
-noremap  <silent><Plug>(easymotion-k)         :<C-u>call EasyMotion#JK(0,1)<CR>
-xnoremap <silent><Plug>(easymotion-k)    <Esc>:<C-u>call EasyMotion#JK(1,1)<CR>
+noremap  <silent><Plug>(easymotion-j)          :<C-u>call EasyMotion#JK(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-j)     <Esc>:<C-u>call EasyMotion#JK(1,0)<CR>
+noremap  <silent><Plug>(easymotion-k)          :<C-u>call EasyMotion#JK(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-k)     <Esc>:<C-u>call EasyMotion#JK(1,1)<CR>
 noremap  <silent><Plug>(easymotion-bd-jk)      :<C-u>call EasyMotion#JK(0,2)<CR>
 xnoremap <silent><Plug>(easymotion-bd-jk) <Esc>:<C-u>call EasyMotion#JK(1,2)<CR>
 "}}}
@@ -201,37 +222,20 @@ xnoremap <silent><Plug>(easymotion-repeat)
 "}}}
 
 " -- Line Motion {{{
-" F Line: {{{
-noremap  <silent><Plug>(easymotion-fl)      :<C-u>call EasyMotion#SL(1,0,0)<CR>
-xnoremap <silent><Plug>(easymotion-fl) <Esc>:<C-u>call EasyMotion#SL(1,1,0)<CR>
-noremap  <silent><Plug>(easymotion-Fl)      :<C-u>call EasyMotion#SL(1,0,1)<CR>
-xnoremap <silent><Plug>(easymotion-Fl) <Esc>:<C-u>call EasyMotion#SL(1,1,1)<CR>
-noremap  <silent><Plug>(easymotion-sl)      :<C-u>call EasyMotion#SL(1,0,2)<CR>
-xnoremap <silent><Plug>(easymotion-sl) <Esc>:<C-u>call EasyMotion#SL(1,1,2)<CR>
-"}}}
-
-" T Line: {{{
-noremap  <silent><Plug>(easymotion-tl)      :<C-u>call EasyMotion#TL(1,0,0)<CR>
-xnoremap <silent><Plug>(easymotion-tl) <Esc>:<C-u>call EasyMotion#TL(1,1,0)<CR>
-noremap  <silent><Plug>(easymotion-Tl)      :<C-u>call EasyMotion#TL(1,0,1)<CR>
-xnoremap <silent><Plug>(easymotion-Tl) <Esc>:<C-u>call EasyMotion#TL(1,1,1)<CR>
-"}}}
-
 " Word Line: {{{
-noremap  <silent><Plug>(easymotion-wl)      :<C-u>call EasyMotion#WBL(0,0)<CR>
-xnoremap <silent><Plug>(easymotion-wl) <Esc>:<C-u>call EasyMotion#WBL(1,0)<CR>
-noremap  <silent><Plug>(easymotion-bl)      :<C-u>call EasyMotion#WBL(0,1)<CR>
-xnoremap <silent><Plug>(easymotion-bl) <Esc>:<C-u>call EasyMotion#WBL(1,1)<CR>
+noremap  <silent><Plug>(easymotion-wl)         :<C-u>call EasyMotion#WBL(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-wl)    <Esc>:<C-u>call EasyMotion#WBL(1,0)<CR>
+noremap  <silent><Plug>(easymotion-bl)         :<C-u>call EasyMotion#WBL(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-bl)    <Esc>:<C-u>call EasyMotion#WBL(1,1)<CR>
 noremap  <silent><Plug>(easymotion-bd-wl)      :<C-u>call EasyMotion#WBL(0,2)<CR>
 xnoremap <silent><Plug>(easymotion-bd-wl) <Esc>:<C-u>call EasyMotion#WBL(1,2)<CR>
 "}}}
 
 " End Word Line: {{{
-noremap  <silent><Plug>(easymotion-el)       :<C-u>call EasyMotion#EL(0,0)<CR>
-xnoremap <silent><Plug>(easymotion-el)  <Esc>:<C-u>call EasyMotion#EL(1,0)<CR>
-noremap  <silent><Plug>(easymotion-gel)      :<C-u>call EasyMotion#EL(0,1)<CR>
-xnoremap <silent><Plug>(easymotion-gel) <Esc>:<C-u>call EasyMotion#EL(1,1)<CR>
-
+noremap  <silent><Plug>(easymotion-el)         :<C-u>call EasyMotion#EL(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-el)    <Esc>:<C-u>call EasyMotion#EL(1,0)<CR>
+noremap  <silent><Plug>(easymotion-gel)        :<C-u>call EasyMotion#EL(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-gel)   <Esc>:<C-u>call EasyMotion#EL(1,1)<CR>
 noremap  <silent><Plug>(easymotion-bd-el)      :<C-u>call EasyMotion#EL(0,2)<CR>
 xnoremap <silent><Plug>(easymotion-bd-el) <Esc>:<C-u>call EasyMotion#EL(1,2)<CR>
 "}}}
