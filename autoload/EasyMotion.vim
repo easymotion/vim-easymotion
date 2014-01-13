@@ -602,37 +602,44 @@ function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
 	let vmode = mode(1)
 	if match('Vv',vmode) < 0
 		throw 'Unkown visual mode:'.vmode
-	elseif vmode ==# 'V' "line-wise Visual
+	endif
+
+	if vmode ==# 'V' "line-wise Visual
 		" Line-wise Visual {{{
 		if a:v_start[0] == a:v_end[0]
 			if a:search_direction == ''
-				let v_pos = a:v_start
+				return a:v_start
 			elseif a:search_direction == 'b'
-				let v_pos = a:v_end
+				return a:v_end
 			else
 				throw 'Unkown search_direction'
 			endif
 		else
 			if a:c_pos[0] == a:v_start[0]
-				let v_pos = a:v_end
-
+				return a:v_end
 			elseif a:c_pos[0] == a:v_end[0]
-				let v_pos = a:v_start
+				return a:v_start
 			endif
 		endif
 		"}}}
 	else
 		" Character-wise or Block-wise Visual"{{{
 		if a:c_pos == a:v_start
-			let v_pos = a:v_end
+			return a:v_end
 		elseif a:c_pos == a:v_end
-			let v_pos = a:v_start
+			return a:v_start
+		endif
+
+		" virtualedit
+		if a:c_pos[0] == a:v_start[0]
+			return a:v_end
+		elseif a:c_pos[0] == a:v_end[0]
+			return a:v_start
 		else
 			throw 'Unkown a:c_pos'
 		endif
 		"}}}
 	endif
-	return v_pos
 endfunction "}}}
 " -- Others ------------------------------
 function! s:is_folded(line) "{{{
