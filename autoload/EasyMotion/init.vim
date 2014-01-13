@@ -65,9 +65,9 @@ function! EasyMotion#init#InitSpecialMappings(motions, do_mapping) "{{{
 			silent exec 'xmap <silent> ' .
 				\ '<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . ')'
 			silent exec 'nmap <silent> ' .
-				\ 'd<Plug>(easymotion-prefix)' . motion . ' d<Plug>(easymotion-special-' . motion . ')'
+				\ 'd<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . 'd)'
 			silent exec 'nmap <silent> ' .
-				\ 'y<Plug>(easymotion-prefix)' . motion . ' y<Plug>(easymotion-special-' . motion . ')'
+				\ 'y<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . 'y)'
 		endif "}}}
 	endfor
 endfunction "}}}

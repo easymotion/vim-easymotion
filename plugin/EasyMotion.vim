@@ -258,13 +258,14 @@ xnoremap <silent><Plug>(easymotion-lineanywhere)
 " -- Special Motion {{{
 onoremap <silent> <Plug>(easymotion-special-l)       :<C-u>call EasyMotion#SelectLines()<CR>
 xnoremap <silent> <Plug>(easymotion-special-l)  <Esc>:<C-u>call EasyMotion#SelectLines()<CR>
-nnoremap <silent> y<Plug>(easymotion-special-l)      :<C-u>call EasyMotion#SelectLinesYank()<CR>
-nnoremap <silent> d<Plug>(easymotion-special-l)      :<C-u>call EasyMotion#SelectLinesDelete()<CR>
 
 onoremap <silent> <Plug>(easymotion-special-p)       :<C-u>call EasyMotion#SelectPhrase()<CR>
 xnoremap <silent> <Plug>(easymotion-special-p)  <Esc>:<C-u>call EasyMotion#SelectPhrase()<CR>
-nnoremap <silent> y<Plug>(easymotion-special-p)      :<C-u>call EasyMotion#SelectPhraseYank()<CR>
-nnoremap <silent> d<Plug>(easymotion-special-p)      :<C-u>call EasyMotion#SelectPhraseDelete()<CR>
+
+nnoremap <silent> <Plug>(easymotion-special-ly)      :<C-u>call EasyMotion#SelectLinesYank()<CR>
+nnoremap <silent> <Plug>(easymotion-special-ld)      :<C-u>call EasyMotion#SelectLinesDelete()<CR>
+nnoremap <silent> <Plug>(easymotion-special-py)      :<C-u>call EasyMotion#SelectPhraseYank()<CR>
+nnoremap <silent> <Plug>(easymotion-special-pd)      :<C-u>call EasyMotion#SelectPhraseDelete()<CR>
 "}}}
 
 " }}}
@@ -309,7 +310,6 @@ if g:EasyMotion_do_mapping == 1 || g:EasyMotion_do_special_mapping == 1
         \ , 'p' : { 'name': 'SelectPhrase'}
         \ }, g:EasyMotion_do_special_mapping)
     " }}}
-
 endif "}}}
 
 " == Restore 'cpoptions' {{{

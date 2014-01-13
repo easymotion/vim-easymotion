@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:10 Jan 2014.
+*easymotion.txt*	Version 2.0  Last change:14 Jan 2014.
 
 
             ______                  __  ___       __  _
@@ -634,6 +634,7 @@ All custom mappings follow the same format: >
 <
 Example: >
 
+    map s <Plug>(easymotion-s)
     map _f <Plug>(easymotion-f)
     map <C-T> <Plug>(easymotion-T)
 <
@@ -669,10 +670,10 @@ Default: 0
 
 or map it by yourself(Recommend)
 >
-    omap L <Plug>(easymotion-special-l)
-    xmap L <Plug>(easymotion-special-l)
-    nmap dL d<Plug>(easymotion-special-l)
-    nmap yL y<Plug>(easymotion-special-l)
+    omap <Leader>L  <Plug>(easymotion-special-l)
+    xmap <Leader>L  <Plug>(easymotion-special-l)
+    nmap d<Leader>L <Plug>(easymotion-special-ld)
+    nmap p<Leader>L <Plug>(easymotion-special-ly)
 <
 Note: special line function when d & y is a little bit different. So you
 should map them individually, don't define omap only.
@@ -687,14 +688,6 @@ Default mapping are `c<Leader>p, d<Leader>p, v<Leader>p, y<Leader>p`.
 Example usage: type `v<Leader>p` then press two input characters.
 Now the two input characters will be highlight on the same screen, and you can then type two combos to make selection.
 
-Set this option to 1 if you want to enable this functions.
-
-Example: >
-
-    let g:EasyMotion_special_select_phrase = 1
-
-Default: 0
-
 Set this option to 1 if you want to automatically map this function
 
 Example: >
@@ -705,10 +698,11 @@ Default: 0
 
 or map it by yourself(Recommend)
 >
-    omap P <Plug>(easymotion-special-p)
-    xmap P <Plug>(easymotion-special-p)
-    nmap dP d<Plug>(easymotion-special-p)
-    nmap yP y<Plug>(easymotion-special-p)
+    omap <Leader>P  <Plug>(easymotion-special-p)
+    xmap <Leader>P  <Plug>(easymotion-special-p)
+    nmap d<Leader>P <Plug>(easymotion-special-pd)
+    nmap y<Leader>P <Plug>(easymotion-special-py)
+
 <
 Note: special phrase function when d & y is a little bit different. So you
 should map them individually, don't define omap only.
