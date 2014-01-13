@@ -7,7 +7,7 @@
 
 " == Script initialization {{{
 if exists('g:EasyMotion_loaded') || &compatible || version < 702
-	finish
+    finish
 endif
 
 let g:EasyMotion_loaded = 1
@@ -16,10 +16,11 @@ let g:EasyMotion_loaded = 1
 let s:save_cpo = &cpo
 set cpo&vim
 " }}}
+
 " == Default configuration {{{
 " -- Option ------------------------------ {{{
 let g:EasyMotion_keys               = get(g:,
-	\ 'EasyMotion_keys', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    \ 'EasyMotion_keys', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 let g:EasyMotion_do_mapping         = get(g: , 'EasyMotion_do_mapping'         , 1)
 let g:EasyMotion_do_special_mapping = get(g: , 'EasyMotion_do_special_mapping' , 0)
 let g:EasyMotion_do_shade           = get(g: , 'EasyMotion_do_shade'           , 1)
@@ -34,45 +35,45 @@ let g:EasyMotion_enter_jump_first   = get(g: , 'EasyMotion_enter_jump_first'   ,
 
 " -- Default highlighting ---------------- {{{
 let g:EasyMotion_hl_group_target         = get(g:,
-	\ 'EasyMotion_hl_group_target', 'EasyMotionTarget')
+    \ 'EasyMotion_hl_group_target', 'EasyMotionTarget')
 let g:EasyMotion_hl2_first_group_target  = get(g:,
-	\ 'EasyMotion_hl2_first_group_target', 'EasyMotionTarget2First')
+    \ 'EasyMotion_hl2_first_group_target', 'EasyMotionTarget2First')
 let g:EasyMotion_hl2_second_group_target = get(g:,
-	\ 'EasyMotion_hl2_second_group_target', 'EasyMotionTarget2Second')
+    \ 'EasyMotion_hl2_second_group_target', 'EasyMotionTarget2Second')
 let g:EasyMotion_hl_group_shade          = get(g:,
-	\ 'EasyMotion_hl_group_shade', 'EasyMotionShade')
+    \ 'EasyMotion_hl_group_shade', 'EasyMotionShade')
 let g:EasyMotion_hl_line_group_shade     = get(g:,
-	\ 'EasyMotion_hl_line_group_shade', 'EasyMotionShadeLine')
+    \ 'EasyMotion_hl_line_group_shade', 'EasyMotionShadeLine')
 
 let s:target_hl_defaults = {
-	\   'gui'     : ['NONE', '#ff0000' , 'bold']
-	\ , 'cterm256': ['NONE', '196'     , 'bold']
-	\ , 'cterm'   : ['NONE', 'red'     , 'bold']
-	\ }
+    \   'gui'     : ['NONE', '#ff0000' , 'bold']
+    \ , 'cterm256': ['NONE', '196'     , 'bold']
+    \ , 'cterm'   : ['NONE', 'red'     , 'bold']
+    \ }
 
 let s:target_hl2_first_defaults = {
-	\   'gui'     : ['NONE', '#ffb400' , 'bold']
-	\ , 'cterm256': ['NONE', '11'      , 'bold']
-	\ , 'cterm'   : ['NONE', '11'      , 'bold']
-	\ }
+    \   'gui'     : ['NONE', '#ffb400' , 'bold']
+    \ , 'cterm256': ['NONE', '11'      , 'bold']
+    \ , 'cterm'   : ['NONE', '11'      , 'bold']
+    \ }
 
 let s:target_hl2_second_defaults = {
-	\   'gui'     : ['NONE', '#b98300' , 'bold']
-	\ , 'cterm256': ['NONE', '3'       , 'bold']
-	\ , 'cterm'   : ['NONE', '3'       , 'bold']
-	\ }
+    \   'gui'     : ['NONE', '#b98300' , 'bold']
+    \ , 'cterm256': ['NONE', '3'       , 'bold']
+    \ , 'cterm'   : ['NONE', '3'       , 'bold']
+    \ }
 
 let s:shade_hl_defaults = {
-	\   'gui'     : ['NONE', '#777777' , 'NONE']
-	\ , 'cterm256': ['NONE', '242'     , 'NONE']
-	\ , 'cterm'   : ['NONE', 'grey'    , 'NONE']
-	\ }
+    \   'gui'     : ['NONE', '#777777' , 'NONE']
+    \ , 'cterm256': ['NONE', '242'     , 'NONE']
+    \ , 'cterm'   : ['NONE', 'grey'    , 'NONE']
+    \ }
 
 let s:shade_hl_line_defaults = {
-	\   'gui'     : ['red' , '#FFFFFF' , 'NONE']
-	\ , 'cterm256': ['red' , '242'     , 'NONE']
-	\ , 'cterm'   : ['red' , 'grey'    , 'NONE']
-	\ }
+    \   'gui'     : ['red' , '#FFFFFF' , 'NONE']
+    \ , 'cterm256': ['red' , '242'     , 'NONE']
+    \ , 'cterm'   : ['red' , 'grey'    , 'NONE']
+    \ }
 
 call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
 call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
@@ -82,106 +83,250 @@ call EasyMotion#init#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_d
 
 " Reset highlighting after loading a new color scheme {{{
 augroup EasyMotionInitHL
-	autocmd!
+    autocmd!
 
-	autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
-	autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
-	autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
-	autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
-	autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
+    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
+    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
+    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
+    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
+    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
 augroup end
 " }}}
 " }}}
-
-" -- Default key mapping ----------------- {{{
-" Prepare prefix {{{
-if g:EasyMotion_do_mapping == 1
-	if exists('g:EasyMotion_leader_key')
-		exec 'map ' . g:EasyMotion_leader_key . ' <Plug>(easymotion-prefix)'
-	else
-		if !hasmapto('<Plug>(easymotion-prefix)')
-			map <Leader><Leader> <Plug>(easymotion-prefix)
-		endif
-	endif
-endif "}}}
-
-call EasyMotion#init#InitMappings({
-	\   'S' : { 'name': 'WB'     , 'dir': 2 }
-	\ , 't' : { 'name': 'T'      , 'dir': 0 }
-	\ , 'T' : { 'name': 'T'      , 'dir': 1 }
-	\ , 'w' : { 'name': 'WB'     , 'dir': 0 }
-	\ , 'W' : { 'name': 'WBW'    , 'dir': 0 }
-	\ , 'b' : { 'name': 'WB'     , 'dir': 1 }
-	\ , 'B' : { 'name': 'WBW'    , 'dir': 1 }
-	\ , 'e' : { 'name': 'E'      , 'dir': 0 }
-	\ , 'E' : { 'name': 'EW'     , 'dir': 0 }
-	\ , 'ge': { 'name': 'E'      , 'dir': 1 }
-	\ , 'gE': { 'name': 'EW'     , 'dir': 1 }
-	\ , 'j' : { 'name': 'JK'     , 'dir': 0 }
-	\ , 'k' : { 'name': 'JK'     , 'dir': 1 }
-	\ , 'n' : { 'name': 'Search' , 'dir': 0 }
-	\ , 'N' : { 'name': 'Search' , 'dir': 1 }
-	\ }, g:EasyMotion_do_mapping)
 " }}}
 
-" -- Special mapping for other functions - {{{
-call EasyMotion#init#InitSpecialMappings({
-	\   'l' : { 'name': 'SelectLines'}
-	\ , 'p' : { 'name': 'SelectPhrase'}
-	\ }, g:EasyMotion_do_special_mapping)
-" }}}
-
-" -- Prepare more key mapping ------------ {{{
+" == <Plug> Mapping {{{
 " Note: bd is short for bidirectional
 "       l is short for (within) line
-call EasyMotion#init#InitMappings({
-	\   'bd-w'  : { 'name' : 'WB'     , 'dir' : 2 }
-	\ , 'bd-W'  : { 'name' : 'WBW'    , 'dir' : 2 }
-	\ , 'bd-e'  : { 'name' : 'E'      , 'dir' : 2 }
-	\ , 'bd-E'  : { 'name' : 'EW'     , 'dir' : 2 }
-	\ , 'bd-n'  : { 'name' : 'Search' , 'dir' : 2 }
-	\ , 'bd-jk' : { 'name' : 'JK'     , 'dir' : 2 }
-	\
-	\ , 'jumptoanywhere' : { 'name' : 'JumpToAnywhere' , 'dir' : 2 }
-	\ , 'lineforward'    : { 'name' : 'LineAnywhere'   , 'dir' : 0 }
-	\ , 'linebackward'   : { 'name' : 'LineAnywhere'   , 'dir' : 1 }
-	\ , 'lineanywhere'   : { 'name' : 'LineAnywhere'   , 'dir' : 2 }
-	\
-	\ , 'sl'    : { 'name' : 'SL'  , 'dir'  : 2 }
-	\ , 'fl'    : { 'name' : 'SL'  , 'dir'  : 0 }
-	\ , 'Fl'    : { 'name' : 'SL'  , 'dir'  : 1 }
-	\ , 'tl'    : { 'name' : 'TL'  , 'dir'  : 0 }
-	\ , 'Tl'    : { 'name' : 'TL'  , 'dir'  : 1 }
-	\ , 'wl'    : { 'name' : 'WBL' , 'dir'  : 0 }
-	\ , 'bl'    : { 'name' : 'WBL' , 'dir'  : 1 }
-	\ , 'bd-wl' : { 'name' : 'WBL' , 'dir'  : 2 }
-	\ , 'el'    : { 'name' : 'EL'  , 'dir'  : 0 }
-	\ , 'gel'   : { 'name' : 'EL'  , 'dir'  : 1 }
-	\ , 'bd-el' : { 'name' : 'EL'  , 'dir'  : 2 }
-	\
-	\ , 'repeat' : { 'name': 'Repeat'  , 'dir': 0 }
-	\ }, 0) " Prepare <Plug> but don't map by default.
-" }}}
 
+" -- Find Motion {{{
+" F: {{{
 noremap <silent><expr><Plug>(easymotion-s)
-	\ ':<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,2)<CR>'
-noremap <silent><expr><Plug>(easymotion-s2)
-	\ ':<C-u>call EasyMotion#S(3, "' . EasyMotion#helper#mode(1) . '" ,2)<CR>'
-
+    \      ':<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,2)<CR>'
+xnoremap <silent><expr><Plug>(easymotion-s)
+    \ '<Esc>:<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,2)<CR>'
 noremap <silent><expr><Plug>(easymotion-f)
-	\ ':<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,0)<CR>'
+    \      ':<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,0)<CR>'
+xnoremap <silent><expr><Plug>(easymotion-f)
+    \ '<Esc>:<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,0)<CR>'
 noremap <silent><expr><Plug>(easymotion-F)
-	\ ':<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,1)<CR>'
+    \      ':<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,1)<CR>'
+xnoremap <silent><expr><Plug>(easymotion-F)
+    \ '<Esc>:<C-u>call EasyMotion#S(1, "' . EasyMotion#helper#mode(1) . '" ,1)<CR>'
+"}}}
 
+" T: {{{
 noremap <silent><expr><Plug>(easymotion-t)
-	\ ':<C-u>call EasyMotion#T(1, "' . EasyMotion#helper#mode(1) . '" ,0)<CR>'
+    \      ':<C-u>call EasyMotion#T(1, "' . EasyMotion#helper#mode(1) . '" ,0)<CR>'
+xnoremap <silent><expr><Plug>(easymotion-t)
+    \ '<Esc>:<C-u>call EasyMotion#T(1, "' . EasyMotion#helper#mode(1) . '" ,0)<CR>'
 noremap <silent><expr><Plug>(easymotion-T)
-	\ ':<C-u>call EasyMotion#T(1, "' . EasyMotion#helper#mode(1) . '" ,1)<CR>'
+    \      ':<C-u>call EasyMotion#T(1, "' . EasyMotion#helper#mode(1) . '" ,1)<CR>'
+xnoremap <silent><expr><Plug>(easymotion-T)
+    \ '<Esc>:<C-u>call EasyMotion#T(1, "' . EasyMotion#helper#mode(1) . '" ,1)<CR>'
+"}}}
+
+" Multi: {{{
+noremap <silent><expr><Plug>(easymotion-s2)
+    \      ':<C-u>call EasyMotion#S(2, "' . EasyMotion#helper#mode(1) . '" ,2)<CR>'
+xnoremap <silent><expr><Plug>(easymotion-s)
+    \ '<Esc>:<C-u>call EasyMotion#S(2, "' . EasyMotion#helper#mode(1) . '" ,2)<CR>'
+"}}}
+"}}}
+
+" -- Word Motion {{{
+" Word: {{{
+noremap  <silent><Plug>(easymotion-w)      :<C-u>call EasyMotion#WB(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-w) <Esc>:<C-u>call EasyMotion#WB(1,0)<CR>
+noremap  <silent><Plug>(easymotion-b)      :<C-u>call EasyMotion#WB(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-b) <Esc>:<C-u>call EasyMotion#WB(1,1)<CR>
+
+" backward compatibility
+noremap  <silent><Plug>(easymotion-S)         :<C-u>call EasyMotion#WB(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-S)    <Esc>:<C-u>call EasyMotion#WB(1,2)<CR>
+noremap  <silent><Plug>(easymotion-bd-w)      :<C-u>call EasyMotion#WB(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-bd-w) <Esc>:<C-u>call EasyMotion#WB(1,2)<CR>
+"}}}
+
+" WORD: {{{
+noremap  <silent><Plug>(easymotion-w)      :<C-u>call EasyMotion#WBW(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-w) <Esc>:<C-u>call EasyMotion#WBW(1,0)<CR>
+noremap  <silent><Plug>(easymotion-B)      :<C-u>call EasyMotion#WBW(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-B) <Esc>:<C-u>call EasyMotion#WBW(1,1)<CR>
+
+noremap  <silent><Plug>(easymotion-bd-W)      :<C-u>call EasyMotion#WBW(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-bd-W) <Esc>:<C-u>call EasyMotion#WBW(1,2)<CR>
+"}}}
+
+" End Word: {{{
+noremap  <silent><Plug>(easymotion-e)       :<C-u>call EasyMotion#E(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-e)  <Esc>:<C-u>call EasyMotion#E(1,0)<CR>
+noremap  <silent><Plug>(easymotion-ge)      :<C-u>call EasyMotion#E(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-ge) <Esc>:<C-u>call EasyMotion#E(1,1)<CR>
+
+noremap  <silent><Plug>(easymotion-bd-e)      :<C-u>call EasyMotion#E(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-bd-e) <Esc>:<C-u>call EasyMotion#E(1,2)<CR>
+"}}}
+
+" END WORD: {{{
+noremap  <silent><Plug>(easymotion-E)       :<C-u>call EasyMotion#E(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-E)  <Esc>:<C-u>call EasyMotion#E(1,0)<CR>
+noremap  <silent><Plug>(easymotion-gE)      :<C-u>call EasyMotion#E(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-gE) <Esc>:<C-u>call EasyMotion#E(1,1)<CR>
+
+noremap  <silent><Plug>(easymotion-bd-E)      :<C-u>call EasyMotion#EW(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-bd-E) <Esc>:<C-u>call EasyMotion#EW(1,2)<CR>
+"}}}
+"}}}
+
+" -- JK Motion {{{
+noremap  <silent><Plug>(easymotion-j)         :<C-u>call EasyMotion#JK(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-j)    <Esc>:<C-u>call EasyMotion#JK(1,0)<CR>
+noremap  <silent><Plug>(easymotion-k)         :<C-u>call EasyMotion#JK(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-k)    <Esc>:<C-u>call EasyMotion#JK(1,1)<CR>
+noremap  <silent><Plug>(easymotion-bd-jk)      :<C-u>call EasyMotion#JK(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-bd-jk) <Esc>:<C-u>call EasyMotion#JK(1,2)<CR>
+"}}}
+
+" -- Search Motion {{{
+noremap  <silent><Plug>(easymotion-n)         :<C-u>call EasyMotion#Search(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-n)    <Esc>:<C-u>call EasyMotion#Search(1,0)<CR>
+noremap  <silent><Plug>(easymotion-N)         :<C-u>call EasyMotion#Search(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-N)    <Esc>:<C-u>call EasyMotion#Search(1,1)<CR>
+noremap  <silent><Plug>(easymotion-bd-n)      :<C-u>call EasyMotion#Search(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-bd-n) <Esc>:<C-u>call EasyMotion#Search(1,2)<CR>
+"}}}
+
+" -- Jump To Anywhere Motion {{{
+noremap  <silent><Plug>(easymotion-jumptoanywhere)
+    \      :<C-u>call EasyMotion#JumpToAnywhere(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-jumptoanywhere)
+    \ <Esc>:<C-u>call EasyMotion#JumpToAnywhere(1,2)<CR>
+"}}}
+
+" -- Repeat Motion {{{
+noremap  <silent><Plug>(easymotion-repeat)
+    \      :<C-u>call EasyMotion#Repeat(0)<CR>
+xnoremap <silent><Plug>(easymotion-repeat)
+    \ <Esc>:<C-u>call EasyMotion#Repeat(1)<CR>
+"}}}
+
+" -- Line Motion {{{
+" F Line: {{{
+" (cound, visual, direction)
+noremap  <silent><Plug>(easymotion-fl)      :<C-u>call EasyMotion#SL(1,0,0)<CR>
+xnoremap <silent><Plug>(easymotion-fl) <Esc>:<C-u>call EasyMotion#SL(1,1,0)<CR>
+noremap  <silent><Plug>(easymotion-Fl)      :<C-u>call EasyMotion#SL(1,0,1)<CR>
+xnoremap <silent><Plug>(easymotion-Fl) <Esc>:<C-u>call EasyMotion#SL(1,1,1)<CR>
+noremap  <silent><Plug>(easymotion-sl)      :<C-u>call EasyMotion#SL(1,0,2)<CR>
+xnoremap <silent><Plug>(easymotion-sl) <Esc>:<C-u>call EasyMotion#SL(1,1,2)<CR>
+"}}}
+
+" T Line: {{{
+" (cound, visual, direction)
+noremap  <silent><Plug>(easymotion-tl)      :<C-u>call EasyMotion#TL(1,0,0)<CR>
+xnoremap <silent><Plug>(easymotion-tl) <Esc>:<C-u>call EasyMotion#TL(1,1,0)<CR>
+noremap  <silent><Plug>(easymotion-Tl)      :<C-u>call EasyMotion#TL(1,0,1)<CR>
+xnoremap <silent><Plug>(easymotion-Tl) <Esc>:<C-u>call EasyMotion#TL(1,1,1)<CR>
+"}}}
+
+" Word Line: {{{
+noremap  <silent><Plug>(easymotion-wl)      :<C-u>call EasyMotion#WBL(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-wl) <Esc>:<C-u>call EasyMotion#WBL(1,0)<CR>
+noremap  <silent><Plug>(easymotion-bl)      :<C-u>call EasyMotion#WBL(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-bl) <Esc>:<C-u>call EasyMotion#WBL(1,1)<CR>
+noremap  <silent><Plug>(easymotion-bd-wl)      :<C-u>call EasyMotion#WBL(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-bd-wl) <Esc>:<C-u>call EasyMotion#WBL(1,2)<CR>
+"}}}
+
+" End Word Line: {{{
+noremap  <silent><Plug>(easymotion-el)       :<C-u>call EasyMotion#EL(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-el)  <Esc>:<C-u>call EasyMotion#EL(1,0)<CR>
+noremap  <silent><Plug>(easymotion-gel)      :<C-u>call EasyMotion#EL(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-gel) <Esc>:<C-u>call EasyMotion#EL(1,1)<CR>
+
+noremap  <silent><Plug>(easymotion-bd-el)      :<C-u>call EasyMotion#EL(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-bd-el) <Esc>:<C-u>call EasyMotion#EL(1,2)<CR>
+"}}}
+
+" LineAnywhere Line: {{{
+noremap  <silent><Plug>(easymotion-lineforward)
+    \      :<C-u>call EasyMotion#LineAnywhere(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-lineforward)
+    \ <Esc>:<C-u>call EasyMotion#LineAnywhere(1,0)<CR>
+
+noremap  <silent><Plug>(easymotion-linebackward)
+    \      :<C-u>call EasyMotion#LineAnywhere(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-linebackward)
+    \ <Esc>:<C-u>call EasyMotion#LineAnywhere(1,1)<CR>
+
+noremap  <silent><Plug>(easymotion-lineanywhere)
+    \      :<C-u>call EasyMotion#LineAnywhere(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-lineanywhere)
+    \ <Esc>:<C-u>call EasyMotion#LineAnywhere(1,2)<CR>
+
+"}}}
+"}}}
+
+" -- Special Motion {{{
+onoremap <silent> <Plug>(easymotion-special-l)       :<C-u>call EasyMotion#SelectLines()<CR>
+xnoremap <silent> <Plug>(easymotion-special-l)  <Esc>:<C-u>call EasyMotion#SelectLines()<CR>
+nnoremap <silent> y<Plug>(easymotion-special-l)      :<C-u>call EasyMotion#SelectLinesYank()<CR>
+nnoremap <silent> d<Plug>(easymotion-special-l)      :<C-u>call EasyMotion#SelectLinesDelete()<CR>
+
+onoremap <silent> <Plug>(easymotion-special-p)       :<C-u>call EasyMotion#SelectPhrase()<CR>
+xnoremap <silent> <Plug>(easymotion-special-p)  <Esc>:<C-u>call EasyMotion#SelectPhrase()<CR>
+nnoremap <silent> y<Plug>(easymotion-special-p)      :<C-u>call EasyMotion#SelectPhraseYank()<CR>
+nnoremap <silent> d<Plug>(easymotion-special-p)      :<C-u>call EasyMotion#SelectPhraseDelete()<CR>
+"}}}
 
 " }}}
+
+" == Default key mapping {{{
+if g:EasyMotion_do_mapping == 1 || g:EasyMotion_do_special_mapping == 1
+    " Prepare Prefix: {{{
+    if exists('g:EasyMotion_leader_key')
+        exec 'map ' . g:EasyMotion_leader_key . ' <Plug>(easymotion-prefix)'
+    else
+        if !hasmapto('<Plug>(easymotion-prefix)')
+            map <Leader><Leader> <Plug>(easymotion-prefix)
+        endif
+    endif
+    "}}}
+
+    " Default Mapping:
+    call EasyMotion#init#InitMappings({
+        \   'f' : { 'name': 'S'      , 'dir': 0 }
+        \ , 'F' : { 'name': 'S'      , 'dir': 1 }
+        \ , 's' : { 'name': 'S'      , 'dir': 2 }
+        \ , 'S' : { 'name': 'WB'     , 'dir': 2 }
+        \ , 't' : { 'name': 'T'      , 'dir': 0 }
+        \ , 'T' : { 'name': 'T'      , 'dir': 1 }
+        \ , 'w' : { 'name': 'WB'     , 'dir': 0 }
+        \ , 'W' : { 'name': 'WBW'    , 'dir': 0 }
+        \ , 'b' : { 'name': 'WB'     , 'dir': 1 }
+        \ , 'B' : { 'name': 'WBW'    , 'dir': 1 }
+        \ , 'e' : { 'name': 'E'      , 'dir': 0 }
+        \ , 'E' : { 'name': 'EW'     , 'dir': 0 }
+        \ , 'ge': { 'name': 'E'      , 'dir': 1 }
+        \ , 'gE': { 'name': 'EW'     , 'dir': 1 }
+        \ , 'j' : { 'name': 'JK'     , 'dir': 0 }
+        \ , 'k' : { 'name': 'JK'     , 'dir': 1 }
+        \ , 'n' : { 'name': 'Search' , 'dir': 0 }
+        \ , 'N' : { 'name': 'Search' , 'dir': 1 }
+        \ }, g:EasyMotion_do_mapping)
+
+    " Special Mapping For Default: {{{
+    call EasyMotion#init#InitSpecialMappings({
+        \   'l' : { 'name': 'SelectLines'}
+        \ , 'p' : { 'name': 'SelectPhrase'}
+        \ }, g:EasyMotion_do_special_mapping)
+    " }}}
+
+endif "}}}
+
 " == Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
 unlet s:save_cpo
 " }}}
-
-" vim: fdm=marker:noet:ts=4:sw=4:sts=4
+" vim: fdm=marker:et:ts=4:sw=4:sts=4

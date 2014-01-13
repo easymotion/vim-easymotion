@@ -48,15 +48,13 @@ function! EasyMotion#reset()
 endfunction "}}}
 " == Motion functions {{{
 " -- Find Motion -------------------------
-function! EasyMotion#S(num_strokes, mode, direction) " {{{
-	let visualmode =  match('\v([Vv])|(C-v)', a:mode) > 0 ? visualmode() : ''
-
+function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
 	let input = s:GetInput(a:num_strokes)
 
 	" Check that we have an input char
 	if empty(input)
 		" Restore selection
-		if ! empty(visualmode)
+		if ! empty(a:visualmode)
 			silent exec 'normal! gv'
 		endif
 		return
@@ -64,16 +62,15 @@ function! EasyMotion#S(num_strokes, mode, direction) " {{{
 
 	let re = s:findMotion(input)
 
-	call s:EasyMotion(re, a:direction, visualmode, a:mode)
+	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
-function! EasyMotion#T(num_strokes, mode, direction) " {{{
-	let visualmode =  match('\v([Vv])|(C-v)', a:mode) > 0 ? visualmode() : ''
+function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
 	let input = s:GetInput(a:num_strokes)
 
 	" Check that we have an input char
 	if empty(input)
 		" Restore selection
-		if ! empty(visualmode)
+		if ! empty(a:visualmode)
 			silent exec 'normal! gv'
 		endif
 		return
@@ -89,7 +86,7 @@ function! EasyMotion#T(num_strokes, mode, direction) " {{{
 		let re = '.\ze' . re
 	endif
 
-	call s:EasyMotion(re, a:direction, visualmode, a:mode)
+	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
 " -- Word Motion -------------------------
 function! EasyMotion#WB(visualmode, direction) " {{{
@@ -109,9 +106,6 @@ function! EasyMotion#JK(visualmode, direction) " {{{
 	if g:EasyMotion_startofline
 		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	else
-		if a:visualmode
-			call s:before_visual()
-		endif
 		let prev_column = getpos('.')[2] - 1
 		call s:EasyMotion('^.\{,' . prev_column . '}\zs\(.\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endif
@@ -125,28 +119,36 @@ function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
 	call s:EasyMotion( g:EasyMotion_re_anywhere, a:direction, a:visualmode ? visualmode() : '', '')
 endfunction " }}}
 " -- Line Motion -------------------------
-function! EasyMotion#SL(visualmode, direction) " {{{
-	let char = s:GetSearchChar(a:visualmode)
+function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
+	let input = s:GetInput(a:num_strokes)
 
-	if empty(char)
+	" Check that we have an input char
+	if empty(input)
+		" Restore selection
+		if ! empty(a:visualmode)
+			silent exec 'normal! gv'
+		endif
 		return
 	endif
 
-	let re = s:findMotion(char)
-	if a:visualmode
-		call s:before_visual()
-	endif
+	let re = s:findMotion(input)
+
 	let s:line_flag = 1
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
-function! EasyMotion#TL(visualmode, direction) " {{{
-	let char = s:GetSearchChar(a:visualmode)
+function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
+	let input = s:GetInput(a:num_strokes)
 
-	if empty(char)
+	" Check that we have an input char
+	if empty(input)
+		" Restore selection
+		if ! empty(a:visualmode)
+			silent exec 'normal! gv'
+		endif
 		return
 	endif
 
-	let re = s:findMotion(char)
+	let re = s:findMotion(input)
 
 	if a:direction == 1
 		" backward
@@ -156,30 +158,19 @@ function! EasyMotion#TL(visualmode, direction) " {{{
 		let re = '.\ze' . re
 	endif
 
-	if a:visualmode
-		call s:before_visual()
-	endif
 	let s:line_flag = 1
 
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
 function! EasyMotion#WBL(visualmode, direction) " {{{
 	let s:line_flag = 1
-	" call s:EasyMotion('\%'.line('.').'l'.'\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
 endfunction " }}}
 function! EasyMotion#EL(visualmode, direction) " {{{
-	if a:visualmode
-		call s:before_visual()
-	endif
 	let s:line_flag = 1
 	call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
 function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
-	if a:visualmode
-		call s:before_visual()
-	endif
-
 	let s:line_flag = 1
 	let re = g:EasyMotion_re_line_anywhere
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', '')
@@ -332,7 +323,7 @@ function! EasyMotion#UserMapping(re, mapping, direction) " {{{
 	silent exec "vnoremap ".a:mapping." :<C-u>call EasyMotion#User('".a:re."', 0,".a:direction.")<CR>"
 endfunction " }}}
 " -- Repeat Motion -----------------------
-function! EasyMotion#Repeat(visualmode, direction) " {{{
+function! EasyMotion#Repeat(visualmode) " {{{
 	" Repeat previous motion with previous targets
 	if ! exists('s:old')
 		call s:Message("Previous targets doesn't exist")
@@ -641,11 +632,6 @@ function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
 		"}}}
 	endif
 	return v_pos
-endfunction "}}}
-function! s:before_visual() "{{{
-	" To get cursor position correctly
-	exe "normal! \<Esc>"
-	exe "normal! gv"
 endfunction "}}}
 " -- Others ------------------------------
 function! s:is_folded(line) "{{{
@@ -1057,6 +1043,7 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
 	endif
 endfunction "}}}
 function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
+	" For Special Function {{{
 	" For SelectLines(), to highlight previous selected line
 	let hlcurrent = a:0 >= 1 ? a:1 : 0
 	" For SelectLines(), to allows '.' to repeat the previously pressed
@@ -1066,9 +1053,14 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 	" of the line
 	let fixed_column = a:0 >= 3 ? a:3 : 0
 
+	" For SelectPhrase()
 	let hlchar = a:0 >= 4 ? a:4 : 0
+	"}}}
 
-	let orig_pos = [line('.'), col('.')]
+	let orig_pos       = [line('.'), col('.')]
+	let win_first_line = line('w0')
+	let win_last_line  = line('w$')
+
 	let targets = []
 
 	" Store Regular Expression
@@ -1076,12 +1068,7 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 		\ 'regexp': a:regexp,
 		\ 'direction': a:direction,
 		\ }
-	if s:line_flag == 1
-		let s:old['line_flag'] = 1
-	else
-		let s:old['line_flag'] = 0
-	endif
-
+	let s:old['line_flag'] = s:line_flag == 1 ? 1 : 0
 
 	try
 		" -- Reset properties -------------------- {{{
@@ -1091,11 +1078,11 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 		" -- Find motion targets ----------------- {{{
 		" Setup searchpos args {{{
 		let search_direction = (a:direction >= 1 ? 'b' : '')
-		let search_stopline = line(a:direction >= 1 ? 'w0' : 'w$')
+		let search_stopline = a:direction >= 1 ? win_first_line : win_last_line
 		let search_at_cursor = fixed_column ? 'c' : ''
 
 		if s:line_flag == 1
-			let search_stopline = line('.')
+			let search_stopline = orig_pos[0]
 		endif
 		"}}}
 
@@ -1103,7 +1090,7 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 		if ! empty(a:visualmode)
 			" Decide at where visual mode start {{{
 			normal! gv
-			let c_pos   = [line("."),col(".")] " current_position
+			let c_pos   = orig_pos " current_position
 			let v_start = [line("'<"),col("'<")] " visual_start_position
 			let v_end   = [line("'>"),col("'>")] " visual_end_position
 
@@ -1157,11 +1144,12 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 			else
 				keepjumps call cursor(orig_pos[0], orig_pos[1])
 			endif
+
 			let targets2 = []
 			if s:line_flag == 0
-				let search_stopline = line('w$')
+				let search_stopline = win_last_line
 			else
-				let search_stopline = line('.')
+				let search_stopline = !empty(a:visualmode) ? c_pos[0] : orig_pos[0]
 			endif
 			while 1
 				let pos = searchpos(a:regexp, '', search_stopline)
@@ -1210,18 +1198,22 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 		let groups = GroupingFn(targets, split(g:EasyMotion_keys, '\zs'))
 
 		" -- Shade inactive source --------------- {{{
-			if g:EasyMotion_do_shade
-				let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
+			if g:EasyMotion_do_shade && targets_len != 1
+				if !empty(a:visualmode)
+					let shade_hl_pos = '\%' . c_pos[0] . 'l\%'. c_pos[1] .'c'
+				else
+					let shade_hl_pos = '\%' . orig_pos[0] . 'l\%'. orig_pos[1] .'c'
+				endif
 
 				if a:direction == 1
 					" Backward
-					let shade_hl_re = '\%'. line('w0') .'l\_.*' . shade_hl_pos
+					let shade_hl_re = '\%'. win_first_line .'l\_.*' . shade_hl_pos
 				elseif a:direction == 0
 					" Forward
-					let shade_hl_re = shade_hl_pos . '\_.*\%'. line('w$') .'l'
+					let shade_hl_re = shade_hl_pos . '\_.*\%'. win_last_line .'l'
 				elseif a:direction == 2
 					" Both directions"
-					let shade_hl_re = '\%'. line('w0') .'l\_.*\%'. line('w$') .'l'
+					let shade_hl_re = '\%'. win_first_line .'l\_.*\%'. win_last_line .'l'
 				endif
 				if !fixed_column
 					let shade_hl_id = matchadd(g:EasyMotion_hl_group_shade, shade_hl_re, 0)
@@ -1235,6 +1227,14 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 			endif
 		" }}}
 
+		" Jump back before prompt{{{
+		" Because searchpos() change current cursor position and
+		" if you just use cursor([orig_num, orig_pos]) to jump back,
+		" current line will bebecome center of window
+		keepjumps call cursor(win_first_line,0)
+		normal! zt
+		"}}}
+
 		" -- Prompt user for target group/character {{{
 		let coords = s:PromptUser(groups, allows_repeat, fixed_column)
 		let s:old_target_coord = coords
@@ -1247,24 +1247,19 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 			exec 'normal! ' . a:visualmode
 		endif
 		" }}}
-		" -- Handle operator-pending mode -------- {{{
+		" -- Update cursor position -------------- {{{
+		call cursor(orig_pos[0], orig_pos[1])
+		" Handle operator-pending mode {{{
 		if a:mode == 'no'
 			" This mode requires that we eat one more
 			" character to the right if we're using
 			" a forward motion
-			" TODO: support if a:direction == 2
-			if a:direction != 1
-				let coords[1] += 1
-			endif
+			normal! v
 		endif
 		" }}}
-
-		" -- Update cursor position -------------- {{{
-		call cursor(orig_pos[0], orig_pos[1])
-		let mark_save = getpos("'e")
-		call setpos("'e", [bufnr('%'), coords[0], coords[1], 0])
-		execute 'normal! `e'
-		call setpos("'e", mark_save)
+		call cursor(win_first_line, 0)
+		normal! zt
+		keepjumps call cursor(coords[0], coords[1])
 
 		call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
 		let s:EasyMotion_cancelled = 0
