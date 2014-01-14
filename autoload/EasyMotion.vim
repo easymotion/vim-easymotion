@@ -12,6 +12,7 @@ set cpo&vim
 " == Init {{{
 function! EasyMotion#init()
 	" Init Migemo Dictionary
+	let s:old = {}
 	let s:migemo_dicts = {}
 	let s:line_flag = 0
 	" Anywhere regular expression: {{{
@@ -49,7 +50,9 @@ endfunction "}}}
 " == Motion functions {{{
 " -- Find Motion -------------------------
 function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
-	let input = EasyMotion#command_line#GetInput(a:num_strokes)
+	let s:old['input'] = get(s:old, 'input', '')
+	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:old.input)
+	let s:old['input'] = input
 
 	" Check that we have an input char
 	if empty(input)
@@ -57,6 +60,8 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
 		if ! empty(a:visualmode)
 			silent exec 'normal! gv'
 		endif
+		redraw
+		echo ''
 		return
 	endif
 
@@ -65,7 +70,9 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
-	let input = EasyMotion#command_line#GetInput(a:num_strokes)
+	let s:old['input'] = get(s:old, 'input', '')
+	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:old.input)
+	let s:old['input'] = input
 
 	" Check that we have an input char
 	if empty(input)
@@ -73,6 +80,8 @@ function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
 		if ! empty(a:visualmode)
 			silent exec 'normal! gv'
 		endif
+		redraw
+		echo ''
 		return
 	endif
 
@@ -120,7 +129,9 @@ function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
 endfunction " }}}
 " -- Line Motion -------------------------
 function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
-	let input = EasyMotion#command_line#GetInput(a:num_strokes)
+	let s:old['input'] = get(s:old, 'input', '')
+	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:old.input)
+	let s:old['input'] = input
 
 	" Check that we have an input char
 	if empty(input)
@@ -128,6 +139,8 @@ function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
 		if ! empty(a:visualmode)
 			silent exec 'normal! gv'
 		endif
+		redraw
+		echo ''
 		return
 	endif
 
@@ -137,7 +150,9 @@ function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
 function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
-	let input = EasyMotion#command_line#GetInput(a:num_strokes)
+	let s:old['input'] = get(s:old, 'input', '')
+	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:old.input)
+	let s:old['input'] = input
 
 	" Check that we have an input char
 	if empty(input)
@@ -145,6 +160,8 @@ function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
 		if ! empty(a:visualmode)
 			silent exec 'normal! gv'
 		endif
+		redraw
+		echo ''
 		return
 	endif
 
@@ -326,7 +343,7 @@ endfunction " }}}
 " -- Repeat Motion -----------------------
 function! EasyMotion#Repeat(visualmode) " {{{
 	" Repeat previous motion with previous targets
-	if ! exists('s:old')
+	if s:old ==# {}
 		call s:Message("Previous targets doesn't exist")
 		return
 	endif
@@ -1013,10 +1030,8 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 	let targets = []
 
 	" Store Regular Expression
-	let s:old = {
-		\ 'regexp': a:regexp,
-		\ 'direction': a:direction,
-		\ }
+	let s:old['regexp'] = a:regexp
+	let s:old['direction'] = a:direction
 	let s:old['line_flag'] = s:line_flag == 1 ? 1 : 0
 
 	try

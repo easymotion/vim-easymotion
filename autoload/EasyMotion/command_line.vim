@@ -40,7 +40,9 @@ function! s:Cancell() " {{{
     return ''
 endfunction " }}}
 
-function! EasyMotion#command_line#GetInput(num_strokes) "{{{
+function! EasyMotion#command_line#GetInput(num_strokes, ...) "{{{
+	let previous_input = a:0 == 1 ? a:1 : ''
+
 	let input = ''
 	" repeat a:num_strokes times
 	let prompt_num = a:num_strokes < 50 ? a:num_strokes : ''
@@ -72,7 +74,14 @@ function! EasyMotion#command_line#GetInput(num_strokes) "{{{
 		elseif EasyMotion#command_line#is_input("\<C-w>")
             " Delete word
 			let input = matchstr(input, '^\zs.\{-}\ze\(\(\w*\)\|\(.\)\)$')
+		elseif EasyMotion#command_line#is_input("\<C-p>")
+			let input = previous_input
+		elseif EasyMotion#command_line#is_input("\<C-n>")
+			let input = ''
 		elseif EasyMotion#command_line#is_input("\<CR>")
+			if len(input) == 0 
+				return previous_input
+			endif
 			" Return input charcters
 			return input
 		elseif EasyMotion#command_line#is_input("\<C-j>")
