@@ -3,7 +3,6 @@
         - Attention: todeskingさんの実装はターゲットを押し出してずれてしまうバグがあるっぽいので注意
     - [ ] Refactoring: 関連して置換・ハイライトする部分のロジックはもうちょっと綺麗に出来るかも
 - [ ] Fix: migemoなどで日本語をターゲットにした場合、右画面端の文字がうまく置換・ハイライトされてない
-- [ ] Fix: Visualモードでスクロールしたあと始点が画面描画内から外れた場合にvim-easymotionを呼び出すと強制的に始点に戻ってしまうBug
 - [ ] Fix: nostartofline=1かつJK motionをした時に、マルチバイト文字がLineに含まれていると直感的にcolumnがずれているように見える
     - というかずれてるっぽい
     - Hint: strdisplaywidth()などでcol_numを変換
