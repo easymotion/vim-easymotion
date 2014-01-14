@@ -112,7 +112,7 @@ function! EasyMotion#JK(visualmode, direction) " {{{
 endfunction " }}}
 " -- End of Line Motion ---------------------------
 function! EasyMotion#Eol(visualmode, direction) " {{{
-    call s:EasyMotion('\(.\)$', a:direction, a:visualmode ? visualmode() : '', '')
+    call s:EasyMotion('(\w\|\s*\zs\|.\|^)$', a:direction, a:visualmode ? visualmode() : '', '')
 endfunction " }}}
 " -- Search Motion -----------------------
 function! EasyMotion#Search(visualmode, direction) " {{{

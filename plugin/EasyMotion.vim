@@ -207,8 +207,8 @@ noremap  <silent><Plug>(easymotion-J)          :<C-u>call EasyMotion#Eol(0,0)<CR
 xnoremap <silent><Plug>(easymotion-J)     <Esc>:<C-u>call EasyMotion#Eol(1,0)<CR>
 noremap  <silent><Plug>(easymotion-K)          :<C-u>call EasyMotion#Eol(0,1)<CR>
 xnoremap <silent><Plug>(easymotion-K)     <Esc>:<C-u>call EasyMotion#Eol(1,1)<CR>
-noremap  <silent><Plug>(easymotion-bd-JK)      :<C-u>call EasyMotion#JK(0,2)<CR>
-xnoremap <silent><Plug>(easymotion-bd-JK) <Esc>:<C-u>call EasyMotion#JK(1,2)<CR>
+noremap  <silent><Plug>(easymotion-bd-JK)      :<C-u>call EasyMotion#Eol(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-bd-JK) <Esc>:<C-u>call EasyMotion#Eol(1,2)<CR>
 "}}}
 
 
@@ -316,8 +316,6 @@ if g:EasyMotion_do_mapping == 1 || g:EasyMotion_do_special_mapping == 1
         \ , 'E' : { 'name': 'EW'     , 'dir': 0 }
         \ , 'ge': { 'name': 'E'      , 'dir': 1 }
         \ , 'gE': { 'name': 'EW'     , 'dir': 1 }
-        \ , 'J' : { 'name': 'Eol'    , 'dir': 0 }
-        \ , 'K' : { 'name': 'Eol'    , 'dir': 1 }
         \ , 'j' : { 'name': 'JK'     , 'dir': 0 }
         \ , 'k' : { 'name': 'JK'     , 'dir': 1 }
         \ , 'n' : { 'name': 'Search' , 'dir': 0 }
