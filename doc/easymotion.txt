@@ -248,6 +248,13 @@ Repeat ~
                 Repeat last motion type including input target character.
                 Nothing will happen when previous motion doesn't exist.
 
+                Last Find Motion~
+                    In Find motion (e.g. |<Plug>(easymoion-s)| ), to type `<CR>`
+                    without input characters invoke last find motion. This
+                    does not repeat motion type (e.g. othrer word motion,
+                    <Plug>(easymotion-j) etc...) but only repeat input
+                    characters.
+
 
 Within line motion ~
                                                         *easymotion-within-line*
