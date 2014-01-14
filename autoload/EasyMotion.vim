@@ -144,9 +144,10 @@ function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
 		return
 	endif
 
+	let s:line_flag = 1
+
 	let re = s:findMotion(input)
 
-	let s:line_flag = 1
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
 function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
@@ -165,6 +166,8 @@ function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
 		return
 	endif
 
+	let s:line_flag = 1
+
 	let re = s:findMotion(input)
 
 	if a:direction == 1
@@ -174,8 +177,6 @@ function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
 		" forward
 		let re = '.\ze' . re
 	endif
-
-	let s:line_flag = 1
 
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
@@ -488,11 +489,18 @@ function! s:findMotion(char) "{{{
 endfunction "}}}
 function! s:convertMigemo(re) "{{{
 	let re = a:re
+
+	if len(re) > 1
+		" System cmigemo
+		return EasyMotion#cmigemo#getMigemoPattern(re)
+	endif
+
+	" EasyMoton migemo one key dict
 	if ! has_key(s:migemo_dicts, &l:encoding)
 		let s:migemo_dicts[&l:encoding] = EasyMotion#helper#load_migemo_dict()
 	endif
 	if re =~# '^\a$'
-		let re = s:migemo_dicts[&l:encoding][re]
+		let re = get(s:migemo_dicts[&l:encoding], re, a:re)
 	endif
 	return re
 endfunction "}}}
@@ -580,13 +588,19 @@ function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
 endfunction "}}}
 " -- Others ------------------------------
 function! s:should_use_migemo(char) "{{{
-	if ! g:EasyMotion_use_migemo || a:char !~# '^\a$'
+	if ! g:EasyMotion_use_migemo || match(a:char, '\A') != -1
 		return 0
 	endif
 
-	" TODO: use direction and support within line
-	let first_line = line('w0')
-	let end_line = line('w$')
+	" TODO: use direction
+	if s:line_flag == 1
+		let first_line = line('.')
+		let end_line = line('.')
+	else
+		let first_line = line('w0')
+		let end_line = line('w$')
+	endif
+
 
 	for line in range(first_line, end_line)
 		if s:is_folded(line)
