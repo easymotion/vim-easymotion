@@ -54,6 +54,9 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
 	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
 	let s:previous['input'] = input
 
+	let mode = mode(1)
+	let is_exclusive = mode ==# 'no' ? 1 : 0
+
 	" Check that we have an input char
 	if empty(input)
 		" Restore selection
@@ -67,12 +70,15 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
 
 	let re = s:findMotion(input)
 
-	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
 	let s:previous['input'] = get(s:previous, 'input', '')
 	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
 	let s:previous['input'] = input
+
+	let mode = mode(1)
+	let is_exclusive = mode ==# 'no' ? 1 : 0
 
 	" Check that we have an input char
 	if empty(input)
@@ -95,37 +101,40 @@ function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
 		let re = '.\ze' . re
 	endif
 
-	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 " -- Word Motion -------------------------
 function! EasyMotion#WB(visualmode, direction) " {{{
-	call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+	call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
 endfunction " }}}
 function! EasyMotion#WBW(visualmode, direction) " {{{
-	call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+	call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
 endfunction " }}}
 function! EasyMotion#E(visualmode, direction) " {{{
-	call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+	let is_exclusive = mode(1) ==# 'no' ? 1 : 0
+	call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 function! EasyMotion#EW(visualmode, direction) " {{{
-	call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+	let is_exclusive = mode(1) ==# 'no' ? 1 : 0
+	call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 " -- JK Motion ---------------------------
 function! EasyMotion#JK(visualmode, direction) " {{{
+	"FIXME: support exclusive
 	if g:EasyMotion_startofline
-		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', 0)
 	else
 		let prev_column = getpos('.')[2] - 1
-		call s:EasyMotion('^.\{,' . prev_column . '}\zs\(.\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+		call s:EasyMotion('^.\{,' . prev_column . '}\zs\(.\|$\)', a:direction, a:visualmode ? visualmode() : '', 0)
 	endif
 endfunction " }}}
 " -- Search Motion -----------------------
 function! EasyMotion#Search(visualmode, direction) " {{{
-	call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', '')
+	call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', 0)
 endfunction " }}}
 " -- JumpToAnywhere Motion ---------------
 function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
-	call s:EasyMotion( g:EasyMotion_re_anywhere, a:direction, a:visualmode ? visualmode() : '', '')
+	call s:EasyMotion( g:EasyMotion_re_anywhere, a:direction, a:visualmode ? visualmode() : '', 0)
 endfunction " }}}
 " -- Line Motion -------------------------
 function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
@@ -133,6 +142,9 @@ function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
 	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
 	let s:previous['input'] = input
 
+
+	let is_exclusive = mode(1) ==# 'no' ? 1 : 0
+
 	" Check that we have an input char
 	if empty(input)
 		" Restore selection
@@ -148,12 +160,14 @@ function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
 
 	let re = s:findMotion(input)
 
-	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
 	let s:previous['input'] = get(s:previous, 'input', '')
 	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
 	let s:previous['input'] = input
+
+	let is_exclusive = mode(1) ==# 'no' ? 1 : 0
 
 	" Check that we have an input char
 	if empty(input)
@@ -178,33 +192,34 @@ function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
 		let re = '.\ze' . re
 	endif
 
-	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
+	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 function! EasyMotion#WBL(visualmode, direction) " {{{
 	let s:line_flag = 1
-	call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', '')
+	call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
 endfunction " }}}
 function! EasyMotion#EL(visualmode, direction) " {{{
 	let s:line_flag = 1
-	call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', mode(1))
+	let is_exclusive = mode(1) ==# 'no' ? 1 : 0
+	call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
 	let s:line_flag = 1
 	let re = g:EasyMotion_re_line_anywhere
-	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', '')
+	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', 0)
 endfunction " }}}
 " -- Special Motion ----------------------
 function! EasyMotion#SelectLines() "{{{
 	let orig_pos = [line('.'), col('.')]
 
-	call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', 0, 0, 1)
+	call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', 0, 0, 0, 1)
 	if s:EasyMotion_cancelled
 		keepjumps call cursor(orig_pos[0], orig_pos[1])
 		return ''
 	else
 		let pos1 = [line('.'), col('.')]
 		keepjumps call cursor(orig_pos[0], orig_pos[1])
-		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', '', pos1[0], 1, 1)
+		call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', 0, pos1[0], 1, 1)
 		if s:EasyMotion_cancelled
 			keepjumps call cursor(orig_pos[0], orig_pos[1])
 			return ''
@@ -279,7 +294,7 @@ function! EasyMotion#SelectPhrase() "{{{
 	let orig_pos = [line('.'), col('.')]
 
 	" First
-	call s:EasyMotion(re, 2, '', '', 0, 0, 0, 0)
+	call s:EasyMotion(re, 2, '', 0, 0, 0, 0, 0)
 	if s:EasyMotion_cancelled
 		keepjumps call cursor(orig_pos[0], orig_pos[1])
 		return ''
@@ -290,7 +305,7 @@ function! EasyMotion#SelectPhrase() "{{{
 	keepjumps call cursor(orig_pos[0], orig_pos[1])
 
 	" Second
-	call s:EasyMotion(re, 2, '', '', 0, 0, 0, pos1)
+	call s:EasyMotion(re, 2, '', 0, 0, 0, 0, pos1)
 	if s:EasyMotion_cancelled
 		keepjumps call cursor(orig_pos[0], orig_pos[1])
 		return ''
@@ -334,7 +349,7 @@ endfunction "}}}
 function! EasyMotion#User(pattern, mode, direction) " {{{
 	let visualmode =  match('\v([Vv])|(C-v)', a:mode) > 0 ? visualmode() : ''
 	let re = escape(a:pattern, '|')
-	call s:EasyMotion(re, a:direction, visualmode, a:mode)
+	call s:EasyMotion(re, a:direction, visualmode, 0)
 endfunction " }}}
 function! EasyMotion#UserMapping(re, mapping, direction) " {{{
 	silent exec "nnoremap ".a:mapping." :call EasyMotion#User('".a:re."', 0, ".a:direction.")<CR>"
@@ -351,8 +366,9 @@ function! EasyMotion#Repeat(visualmode) " {{{
 	let re = s:previous.regexp
 	let direction = s:previous.direction
 	let s:line_flag = s:previous.line_flag
+	let is_exclusive = mode(1) ==# 'no' ? 1 : 0
 
-	call s:EasyMotion(re, direction, a:visualmode ? visualmode() : '', mode(1))
+	call s:EasyMotion(re, direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 
 " }}}
@@ -1022,7 +1038,7 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
 		return s:PromptUser(target, a:allows_repeat, a:fixed_column)
 	endif
 endfunction "}}}
-function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
+function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
 	" For Special Function {{{
 	" For SelectLines(), to highlight previous selected line
 	let hlcurrent = a:0 >= 1 ? a:1 : 0
@@ -1228,7 +1244,7 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 		" -- Update cursor position -------------- {{{
 		call cursor(orig_pos[0], orig_pos[1])
 		" Handle operator-pending mode {{{
-		if a:mode == 'no'
+		if a:is_exclusive == 1
 			" This mode requires that we eat one more
 			" character to the right if we're using
 			" a forward motion
