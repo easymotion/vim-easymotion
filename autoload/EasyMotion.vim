@@ -12,7 +12,7 @@ set cpo&vim
 " == Init {{{
 function! EasyMotion#init()
 	" Init Migemo Dictionary
-	let s:old = {}
+	let s:previous = {}
 	let s:migemo_dicts = {}
 	let s:line_flag = 0
 	" Anywhere regular expression: {{{
@@ -50,9 +50,9 @@ endfunction "}}}
 " == Motion functions {{{
 " -- Find Motion -------------------------
 function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
-	let s:old['input'] = get(s:old, 'input', '')
-	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:old.input)
-	let s:old['input'] = input
+	let s:previous['input'] = get(s:previous, 'input', '')
+	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
+	let s:previous['input'] = input
 
 	" Check that we have an input char
 	if empty(input)
@@ -70,9 +70,9 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
-	let s:old['input'] = get(s:old, 'input', '')
-	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:old.input)
-	let s:old['input'] = input
+	let s:previous['input'] = get(s:previous, 'input', '')
+	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
+	let s:previous['input'] = input
 
 	" Check that we have an input char
 	if empty(input)
@@ -129,9 +129,9 @@ function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
 endfunction " }}}
 " -- Line Motion -------------------------
 function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
-	let s:old['input'] = get(s:old, 'input', '')
-	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:old.input)
-	let s:old['input'] = input
+	let s:previous['input'] = get(s:previous, 'input', '')
+	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
+	let s:previous['input'] = input
 
 	" Check that we have an input char
 	if empty(input)
@@ -151,9 +151,9 @@ function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
 function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
-	let s:old['input'] = get(s:old, 'input', '')
-	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:old.input)
-	let s:old['input'] = input
+	let s:previous['input'] = get(s:previous, 'input', '')
+	let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
+	let s:previous['input'] = input
 
 	" Check that we have an input char
 	if empty(input)
@@ -344,13 +344,13 @@ endfunction " }}}
 " -- Repeat Motion -----------------------
 function! EasyMotion#Repeat(visualmode) " {{{
 	" Repeat previous motion with previous targets
-	if s:old ==# {}
+	if s:previous ==# {}
 		call s:Message("Previous targets doesn't exist")
 		return
 	endif
-	let re = s:old.regexp
-	let direction = s:old.direction
-	let s:line_flag = s:old.line_flag
+	let re = s:previous.regexp
+	let direction = s:previous.direction
+	let s:line_flag = s:previous.line_flag
 
 	call s:EasyMotion(re, direction, a:visualmode ? visualmode() : '', mode(1))
 endfunction " }}}
@@ -1002,9 +1002,9 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
 	" -- Repeat EasyMotion ------------------- {{{
 	if a:allows_repeat &&
 	 \ char == '.' &&
-	 \ exists('s:old_target_coord')
+	 \ exists('s:previous_target_coord')
 		" For SelectLines
-		return s:old_target_coord
+		return s:previous_target_coord
 	endif "}}}
 	" -- Check if the input char is valid ---- {{{
 	if ! has_key(a:groups, char)
@@ -1044,9 +1044,9 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 	let targets = []
 
 	" Store Regular Expression
-	let s:old['regexp'] = a:regexp
-	let s:old['direction'] = a:direction
-	let s:old['line_flag'] = s:line_flag == 1 ? 1 : 0
+	let s:previous['regexp'] = a:regexp
+	let s:previous['direction'] = a:direction
+	let s:previous['line_flag'] = s:line_flag == 1 ? 1 : 0
 
 	try
 		" -- Reset properties -------------------- {{{
@@ -1215,7 +1215,7 @@ function! s:EasyMotion(regexp, direction, visualmode, mode, ...) " {{{
 
 		" -- Prompt user for target group/character {{{
 		let coords = s:PromptUser(groups, allows_repeat, fixed_column)
-		let s:old_target_coord = coords
+		let s:previous_target_coord = coords
 		"}}}
 
 		" -- Update selection -------------------- {{{
