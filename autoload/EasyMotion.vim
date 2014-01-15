@@ -119,7 +119,9 @@ function! EasyMotion#JK(visualmode, direction) " {{{
 		call s:EasyMotion('^.\{,' . prev_column . '}\zs\(.\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
 	endif
 endfunction " }}}
-" -- End of Line Motion ---------------------------
+function! EasyMotion#Sol(visualmode, direction) " {{{
+	call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+endfunction " }}}
 function! EasyMotion#Eol(visualmode, direction) " {{{
     call s:EasyMotion('\(\w\|\s*\zs\|.\|^\)$', a:direction, a:visualmode ? visualmode() : '', '')
 endfunction " }}}

@@ -201,7 +201,14 @@ noremap  <silent><Plug>(easymotion-k)          :<C-u>call EasyMotion#JK(0,1)<CR>
 xnoremap <silent><Plug>(easymotion-k)     <Esc>:<C-u>call EasyMotion#JK(1,1)<CR>
 noremap  <silent><Plug>(easymotion-bd-jk)      :<C-u>call EasyMotion#JK(0,2)<CR>
 xnoremap <silent><Plug>(easymotion-bd-jk) <Esc>:<C-u>call EasyMotion#JK(1,2)<CR>
-"}}}
+
+" Start of Line JK {{{
+noremap  <silent><Plug>(easymotion-sol-j)          :<C-u>call EasyMotion#Sol(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-sol-j)     <Esc>:<C-u>call EasyMotion#Sol(1,0)<CR>
+noremap  <silent><Plug>(easymotion-sol-k)          :<C-u>call EasyMotion#Sol(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-sol-k)     <Esc>:<C-u>call EasyMotion#Sol(1,1)<CR>
+noremap  <silent><Plug>(easymotion-sol-bd-Jk)      :<C-u>call EasyMotion#Sol(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-sol-bd-Jk) <Esc>:<C-u>call EasyMotion#Sol(1,2)<CR>
 " End of Line JK {{{
 noremap  <silent><Plug>(easymotion-eol-j)          :<C-u>call EasyMotion#Eol(0,0)<CR>
 xnoremap <silent><Plug>(easymotion-eol-j)     <Esc>:<C-u>call EasyMotion#Eol(1,0)<CR>
