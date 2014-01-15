@@ -202,6 +202,15 @@ xnoremap <silent><Plug>(easymotion-k)     <Esc>:<C-u>call EasyMotion#JK(1,1)<CR>
 noremap  <silent><Plug>(easymotion-bd-jk)      :<C-u>call EasyMotion#JK(0,2)<CR>
 xnoremap <silent><Plug>(easymotion-bd-jk) <Esc>:<C-u>call EasyMotion#JK(1,2)<CR>
 "}}}
+" -- End of Line Motion {{{
+noremap  <silent><Plug>(easymotion-J)          :<C-u>call EasyMotion#Eol(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-J)     <Esc>:<C-u>call EasyMotion#Eol(1,0)<CR>
+noremap  <silent><Plug>(easymotion-K)          :<C-u>call EasyMotion#Eol(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-K)     <Esc>:<C-u>call EasyMotion#Eol(1,1)<CR>
+noremap  <silent><Plug>(easymotion-bd-JK)      :<C-u>call EasyMotion#Eol(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-bd-JK) <Esc>:<C-u>call EasyMotion#Eol(1,2)<CR>
+"}}}
+
 
 " -- Search Motion {{{
 noremap  <silent><Plug>(easymotion-n)         :<C-u>call EasyMotion#Search(0,0)<CR>
