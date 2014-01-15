@@ -354,11 +354,6 @@ function! EasyMotion#User(pattern, mode, direction) " {{{
 	let re = escape(a:pattern, '|')
 	call s:EasyMotion(re, a:direction, visualmode, 0)
 endfunction " }}}
-function! EasyMotion#UserMapping(re, mapping, direction) " {{{
-	silent exec "nnoremap ".a:mapping." :call EasyMotion#User('".a:re."', 0, ".a:direction.")<CR>"
-	silent exec "onoremap ".a:mapping." :call EasyMotion#User('".a:re."', 0, ".a:direction.")<CR>"
-	silent exec "vnoremap ".a:mapping." :<C-u>call EasyMotion#User('".a:re."', 0,".a:direction.")<CR>"
-endfunction " }}}
 " -- Repeat Motion -----------------------
 function! EasyMotion#Repeat(visualmode) " {{{
 	" Repeat previous motion with previous targets
