@@ -1221,12 +1221,14 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
 			endif
 		" }}}
 
-		" Jump back before prompt{{{
+		" -- Jump back before prompt for visual scroll {{{
 		" Because searchpos() change current cursor position and
 		" if you just use cursor([orig_num, orig_pos]) to jump back,
 		" current line will bebecome center of window
-		keepjumps call cursor(win_first_line,0)
-		normal! zt
+		if ! empty(a:visualmode)
+			keepjumps call cursor(win_first_line,0)
+			normal! zt
+		endif
 		"}}}
 
 		" -- Prompt user for target group/character {{{
@@ -1251,8 +1253,11 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
 			normal! v
 		endif
 		" }}}
-		call cursor(win_first_line, 0)
-		normal! zt
+		" Adjuast screen for visual scroll {{{
+		if ! empty(a:visualmode)
+			keepjumps call cursor(win_first_line, 0)
+			normal! zt
+		endif "}}}
 		keepjumps call cursor(coords[0], coords[1])
 
 		call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
