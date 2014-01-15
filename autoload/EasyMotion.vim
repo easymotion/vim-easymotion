@@ -13,8 +13,8 @@ set cpo&vim
 function! EasyMotion#init()
 	" Init Migemo Dictionary
 	let s:previous = {}
+	call EasyMotion#reset()
 	let s:migemo_dicts = {}
-	let s:line_flag = 0
 	" Anywhere regular expression: {{{
 	let re = '\v' .
 		\	 '(<.|^$)' . '|' .
@@ -44,7 +44,10 @@ function! EasyMotion#init()
 endfunction "}}}
 " == Reset {{{
 function! EasyMotion#reset()
-	let s:line_flag = 0
+	let s:flag = {
+		\ 'within_line' : 0,
+		\ 'dot_repeat' : 0,
+		\ }
 	return ""
 endfunction "}}}
 " == Motion functions {{{
@@ -156,7 +159,7 @@ function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
 		return
 	endif
 
-	let s:line_flag = 1
+	let s:flag.within_line = 1
 
 	let re = s:findMotion(input)
 
@@ -180,7 +183,7 @@ function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
 		return
 	endif
 
-	let s:line_flag = 1
+	let s:flag.within_line = 1
 
 	let re = s:findMotion(input)
 
@@ -195,16 +198,16 @@ function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 function! EasyMotion#WBL(visualmode, direction) " {{{
-	let s:line_flag = 1
+	let s:flag.within_line = 1
 	call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
 endfunction " }}}
 function! EasyMotion#EL(visualmode, direction) " {{{
-	let s:line_flag = 1
+	let s:flag.within_line = 1
 	let is_exclusive = mode(1) ==# 'no' ? 1 : 0
 	call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
-	let s:line_flag = 1
+	let s:flag.within_line = 1
 	let re = g:EasyMotion_re_line_anywhere
 	call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', 0)
 endfunction " }}}
@@ -365,7 +368,7 @@ function! EasyMotion#Repeat(visualmode) " {{{
 	endif
 	let re = s:previous.regexp
 	let direction = s:previous.direction
-	let s:line_flag = s:previous.line_flag
+	let s:flag.within_line = s:previous.line_flag
 	let is_exclusive = mode(1) ==# 'no' ? 1 : 0
 
 	call s:EasyMotion(re, direction, a:visualmode ? visualmode() : '', is_exclusive)
@@ -609,7 +612,7 @@ function! s:should_use_migemo(char) "{{{
 	endif
 
 	" TODO: use direction
-	if s:line_flag == 1
+	if s:flag.within_line == 1
 		let first_line = line('.')
 		let end_line = line('.')
 	else
@@ -1062,7 +1065,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
 	" Store Regular Expression
 	let s:previous['regexp'] = a:regexp
 	let s:previous['direction'] = a:direction
-	let s:previous['line_flag'] = s:line_flag == 1 ? 1 : 0
+	let s:previous['line_flag'] = s:flag.within_line == 1 ? 1 : 0
 
 	try
 		" -- Reset properties -------------------- {{{
@@ -1075,7 +1078,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
 		let search_stopline = a:direction >= 1 ? win_first_line : win_last_line
 		let search_at_cursor = fixed_column ? 'c' : ''
 
-		if s:line_flag == 1
+		if s:flag.within_line == 1
 			let search_stopline = orig_pos[0]
 		endif
 		"}}}
@@ -1140,7 +1143,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
 			endif
 
 			let targets2 = []
-			if s:line_flag == 0
+			if s:flag.within_line == 0
 				let search_stopline = win_last_line
 			else
 				let search_stopline = !empty(a:visualmode) ? c_pos[0] : orig_pos[0]
