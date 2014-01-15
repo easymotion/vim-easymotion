@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:14 Jan 2014.
+*easymotion.txt*	Version 2.0  Last change:15 Jan 2014.
 
 
             ______                  __  ___       __  _
@@ -24,19 +24,18 @@ CONTENTS                                                 *easymotion-contents*
        4.2 EasyMotion_do_shade ............ |EasyMotion_do_shade|
        4.3 EasyMotion_do_mapping .......... |EasyMotion_do_mapping|
        4.4 EasyMotion_grouping ............ |EasyMotion_grouping|
-       4.5 EasyMotion_startofline ......... |EasyMotion_startofline|
-       4.6 EasyMotion_smartcase ........... |EasyMotion_smartcase|
-       4.7 EasyMotion_smartsign ........... |EasyMotion_smartsign|
-       4.8 EasyMotion_use_migemo .......... |EasyMotion_use_migemo|
-       4.9 EasyMotion_use_upper  .......... |EasyMotion_use_upper|
-       4.10 Custom highlighting ........... |easymotion-custom-hl|
-       4.11 Custom mappings ............... |easymotion-custom-mappings|
-           4.11.1 Leader key .............. |easymotion-leader-key|
-           4.11.2 Custom keys ............. |easymotion-custom-keys|
-       4.12 Easymotion special functions .. |easymotion-special-mappings|
-           4.12.1 Select Line ............. |easymotion-select-line|
-           4.12.2 Select Phrase ........... |easymotion-select-phrase|
-       4.13 EasyMotion_enter_jump_first ... |EasyMotion_enter_jump_first|
+       4.5 EasyMotion_smartcase ........... |EasyMotion_smartcase|
+       4.6 EasyMotion_smartsign ........... |EasyMotion_smartsign|
+       4.7 EasyMotion_use_migemo .......... |EasyMotion_use_migemo|
+       4.8 EasyMotion_use_upper  .......... |EasyMotion_use_upper|
+       4.9 Custom highlighting ........... |easymotion-custom-hl|
+       4.10 Custom mappings ............... |easymotion-custom-mappings|
+           4.10.1 Leader key .............. |easymotion-leader-key|
+           4.10.2 Custom keys ............. |easymotion-custom-keys|
+       4.11 Easymotion special functions .. |easymotion-special-mappings|
+           4.11.1 Select Line ............. |easymotion-select-line|
+           4.11.2 Select Phrase ........... |easymotion-select-phrase|
+       4.12 EasyMotion_enter_jump_first ... |EasyMotion_enter_jump_first|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -152,6 +151,8 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-bd-n)           | See |<Plug>(easymotion-bd-n)|
     <Plug>(easymotion-jumptoanywhere) | See |<Plug>(easymotion-jumptoanywhere)|
     <Plug>(easymotion-repeat)         | See |<Plug>(easymotion-repeat)|
+    <Plug>(easymotion-sol-j)          | See |<Plug>(easymotion-sol-j)|
+    <Plug>(easymotion-eol-j)          | See |<Plug>(easymotion-eol-j)|
                                       |
     Within Line Motion                | See |easymotion-within-line|
     ----------------------------------|---------------------------------
@@ -254,10 +255,43 @@ Repeat ~
                     does not repeat motion type (e.g. othrer word motion,
                     <Plug>(easymotion-j) etc...) but only repeat input
                     characters.
+JK Motion ~
+                                                         *easymotion-jk-motion*
 
+JK motion option                    *<Plug>(easymotion-j)* *<Plug>(easymotion-k)*
+                                                    *g:EasyMotion_startofline*
+
+        When using the |j| or |k| motion, the cursor can be configured to stay in
+        the current column instead of start of line by setting this option to
+        0.  If you want to use both keep cursor colum JK motion and start of
+        line JK motion, set g:EasyMotion_startofline to 0 to keep cursor
+        colum JK motion and map |<Plug>(easymotion-sol-j)| &
+        |<Plug>(easymotion-sol-k)| to use start of line JK motion.
+>
+        let g:EasyMotion_startofline = 0 # keep cursor colum JK motion
+        map <Leader>J <Plug>(easymoion-sol-j)
+        map <Leader>K <Plug>(easymoion-sol-K)
+<
+Default: 1
+
+Start of Line JK motion     *<Plug>(easymotion-sol-j)* *<Plug>(easymotion-sol-k)*
+
+        Match start of line JK motion
+        Example:
+>
+        map <Leader>J <Plug>(easymoion-sol-j)
+        map <Leader>K <Plug>(easymoion-sol-K)
+<
+End of Line JK motion       *<Plug>(easymotion-eol-j)* *<Plug>(easymotion-eol-k)*
+
+        Match End of line JK motion
+        Example:
+>
+        map <Leader>J <Plug>(easymoion-eol-j)
+        map <Leader>K <Plug>(easymoion-eol-K)
 
 Within line motion ~
-                                                        *easymotion-within-line*
+                                                       *easymotion-within-line*
 
 <Plug>(easymotion-sl)                                   *<Plug>(easymotion-sl)*
                 This function is same as |<Plug>(easymoion-s)|, except range
@@ -512,19 +546,7 @@ you want to use. There are two grouping algorithms available:
 Default: 1
 
 ------------------------------------------------------------------------------
-4.5 Start of Line                                     *EasyMotion_startofline*
-                                                    *g:EasyMotion_startofline*
-
-When using the |j| or |k| motion, the cursor can be configured to stay in the
-current column (by setting this option to 0) or to move along the first column
-(by setting this option to 1): >
-
-    let g:EasyMotion_startofline = 0
-
-Default: 1
-
-------------------------------------------------------------------------------
-4.6 Smartcase                                           *EasyMotion_smartcase*
+4.5 Smartcase                                           *EasyMotion_smartcase*
                                                       *g:EasyMotion_smartcase*
 
 Matching target keys by smartcase. You can type target keys more lazily.
@@ -536,7 +558,7 @@ Add following description in your vimrc: >
 Default:0
 
 ------------------------------------------------------------------------------
-4.7 Smartsign                                           *EasyMotion_smartsign*
+4.6 Smartsign                                           *EasyMotion_smartsign*
                                                *g:EasyMotion_use_smartsign_us*
                                                *g:EasyMotion_use_smartsign_ja*
 
@@ -561,7 +583,7 @@ How to discriminate:
 Default: 0
 
 ------------------------------------------------------------------------------
-4.8 Migemo                                             *EasyMotion_use_migemo*
+4.7 Migemo                                             *EasyMotion_use_migemo*
                                                      *g:EasyMotion_use_migemo*
 
 |Easymotion| can match multibyte Japanese character with a alphabet input.
@@ -583,7 +605,7 @@ which can be downloaded here:
 https://github.com/rhysd/clever-f.vim
 
 ------------------------------------------------------------------------------
-4.9 Show target key by upper letter                     *EasyMotion_use_upper*
+4.8 Show target key by upper letter                     *EasyMotion_use_upper*
                                                       *g:EasyMotion_use_upper*
 
 |Easymotion| shows target labels by uppercase letter, but you can type it as
@@ -617,7 +639,7 @@ This feature is inspired by t9md's vim-smalls, which can be downloaded here:
 https://github.com/t9md/vim-smalls
 
 ------------------------------------------------------------------------------
-4.10 Custom highlighting                                 *easymotion-custom-hl*
+4.9 Custom highlighting                                 *easymotion-custom-hl*
 
 The default EasyMotion configuration uses two highlighting groups that link
 to groups with default values. The highlighting groups are:
@@ -669,14 +691,14 @@ There are two ways to override the default colors:
 <
 
 ------------------------------------------------------------------------------
-4.11 Custom mappings                               *easymotion-custom-mappings*
+4.10 Custom mappings                               *easymotion-custom-mappings*
 
 EasyMotion allows you to customize all default mappings to avoid conflicts
 with existing mappings. It is possible to change the default leader key
 of all mappings to another key or sequence. It is also possible to fine
 tune the plugin to your need by changing every single sequence.
 
-4.11.1 Leader key                 *EasyMotion_leader_key* *easymotion-leader-key*
+4.10.1 Leader key                 *EasyMotion_leader_key* *easymotion-leader-key*
                                                     *<Plug>(easymotion-prefix)*
 
 The default leader key can be changed with the |<Plug>(easymoion-prefix)|
@@ -692,7 +714,7 @@ leader by setting this keymapping in your vimrc: >
 <
 Default: '<Leader><Leader>'
 
-4.11.2 Custom Keys                                     *easymotion-custom-keys*
+4.10.2 Custom Keys                                     *easymotion-custom-keys*
 
 All custom mappings follow the same format: >
 
@@ -708,9 +730,9 @@ See |easymotion-plug-table| for a table of motions that can be mapped
 and their default values.
 
 ------------------------------------------------------------------------------
-4.12  Easymotion special functions                *easymotion-special-function*
+4.11  Easymotion special functions                *easymotion-special-function*
 
-4.12.1 Select Line                                    *easymotion-select-line*
+4.11.1 Select Line                                    *easymotion-select-line*
                                                 *<Plug>(easymotion-special-l)*
 
 SelectLine function which allows you to select any range of lines using two
@@ -744,7 +766,7 @@ or map it by yourself(Recommend)
 Note: special line function when d & y is a little bit different. So you
 should map them individually, don't define omap only.
 
-4.12.2 Select Phrase                             *easymotion-select-phrase*
+4.11.2 Select Phrase                             *easymotion-select-phrase*
                                                 *<Plug>(easymotion-special-p)*
 
 (Experimental) SelectPhrase function which allows you to make selection
@@ -774,7 +796,7 @@ Note: special phrase function when d & y is a little bit different. So you
 should map them individually, don't define omap only.
 
 ------------------------------------------------------------------------------
-4.13  Jump to first match by Enter                *EasyMotion_enter_jump_first*
+4.12  Jump to first match by Enter                *EasyMotion_enter_jump_first*
                                                 *g:EasyMotion_enter_jump_first*
 
 Type Enter key and jump to first match (first letter of |g:EasyMotion_keys| ).
