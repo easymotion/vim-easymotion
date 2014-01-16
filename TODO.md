@@ -38,4 +38,6 @@
     - 依存なしでやるには、exprを使わなければならないが、exprだとバッファを書き換えることができない
 - [] Fix: highlightのバグ https://github.com/Lokaltog/vim-easymotion/issues/78
 - [] Feature: 複数文字でfuzzy matchingができればやってみたい。
-- [] Feature: `<Plug>(easymotion-;)`,`<Plug>(easymotion-,)`or `<Plug>(easymotion-next)`
+- [x] Feature: `<Plug>(easymotion-next)`,`<Plug>(easymotion-prev)`
+    - highlightを実装?
+- [] Feature: multi input motionで正規表現を実装する
