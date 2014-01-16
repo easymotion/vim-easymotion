@@ -6,13 +6,12 @@
 - [ ] Fix: nostartofline=1かつJK motionをした時に、マルチバイト文字がLineに含まれていると直感的にcolumnがずれているように見える
     - というかずれてるっぽい
     - Hint: strdisplaywidth()などでcol_numを変換
-- [ ] Feature: テストをかいてみる
-    - Hint: Travisとか? clever-fとかが参考になりそう。
-    - 内部のごちゃごちゃのテストは置いといて、提供している機能のテストぐらいならnear futureにできそう
+- [x] Feature: テストをかいてみる
+    - vim-specだとmode(1)の値が変わるせいでoperator-pendingやrepeatをうまくテストできない
 - [ ] Fix: migemoを使っていると大文字小文字を無視したり、ターゲットが'i'なのに'y'にもマッチしたりしてしまう
     - Hint: migemo辞書改変?
 - [x] Feature & Fix: 折りたたみをスキップさせない時の挙動を安定させる
-    - 改善した。が、highlightなどまだ改善の余地はある。
+    - 改善した。が、highlightなどまだ改善の余地はある?
 - [ ] ドキュメントをもっとしっかり書く(英語含む)
     - むしろ壊して再構築する勢いでやる
 - [ ] ユーザー側から簡単にEasyMotionコマンドを定義できるようにする。
@@ -20,18 +19,23 @@
     - のようにvisual modeとdirectionしかいじれない
     - Mappingの上書き防止にもつながりそう
     - EasyMotion#User()
+    - is\_cancelledを返す。座標を返すかどうか。Enterキーでのキャンセルなどの使い分けが欲しい
 - [x] Fix?: concealを使用する
     - 現状、バッファ書き換えでundotreeが壊れてしまうのを直せるかも
     - Hint: vim-sneakで実装されている
     - :wundo, :rundoで解決したほうが良さそう
     - (パフォーマンスなど場合によってはconcealのほうがいいという可能性も)
     - wundo & rundo で解決。初回時だけundolistがないせいでundoの通し番号が進んでしまう。
+    - おそらくマルチバイト文字の幅の分をスペースなどで埋め合わせできないのでconcealはつらそう
 - [] Feature: 1行だけのwithin line モーションを拡張して、指定の行数分を範囲に取れるようにする。
     - ユーザーがvimrcによって何行分指定するかを前後別々に決めれるようにする。
     - ラベルが少なくなるので打ちやすい。上下移動してから使う人などに便利そう。
     - もし、モーションのタイプによって決めたいとなると面倒くさい感じ
 - [] Feature: sticky table,migemoの機能のような、キーによって複数マッチさせれる仕組みをユーザーが作れるようにすると便利そう
     - アルファベット以外の文字やリガチャなどへの対応もできるかも。それぞれもれなくアルファベットと対応していればよさげ
-- [] Feature: operator-pending motionとして使った際、dot repeatを対応させる。
+- [x] Feature: operator-pending motionとして使った際、dot repeatを対応させる。
+    - tpope/vim-repeat依存
+    - 依存なしでやるには、exprを使わなければならないが、exprだとバッファを書き換えることができない
 - [] Fix: highlightのバグ https://github.com/Lokaltog/vim-easymotion/issues/78
 - [] Feature: 複数文字でfuzzy matchingができればやってみたい。
+- [] Feature: `<Plug>(easymotion-;)`,`<Plug>(easymotion-,)`or `<Plug>(easymotion-next)`
