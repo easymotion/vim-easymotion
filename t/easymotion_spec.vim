@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: t/easymotion_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 16 Jan 2014.
+" Last Change: 17 Jan 2014.
 " Test: https://github.com/kana/vim-vspec
 " Refer: https://github.com/rhysd/clever-f.vim
 " Description: EasyMotion test with vim-vspec
@@ -747,16 +747,16 @@ end
 describe 'EasyMotion#helper#include_multibyte_char'
 
     it 'return true when the argument includes multibyte char'
-        Expect EasyMotion#helper#include_multibyte_char("あいうえお") to_be_true
-        Expect EasyMotion#helper#include_multibyte_char("aiueoあ") to_be_true
-        Expect EasyMotion#helper#include_multibyte_char("１２3ABC４5") to_be_true
+        Expect EasyMotion#helper#include_multibyte_char("あいうえお") ==# 1
+        Expect EasyMotion#helper#include_multibyte_char("aiueoあ") ==# 1
+        Expect EasyMotion#helper#include_multibyte_char("１２3ABC４5") ==# 1
     end
 
     it 'return false when the argument does not include multibyte char'
-        Expect EasyMotion#helper#include_multibyte_char("aiueo") to_be_false
-        Expect EasyMotion#helper#include_multibyte_char("this_is_a_pen.") to_be_false
-        Expect EasyMotion#helper#include_multibyte_char("!#$%&'()'") to_be_false
-        Expect EasyMotion#helper#include_multibyte_char("") to_be_false
+        Expect EasyMotion#helper#include_multibyte_char("aiueo") ==# 0
+        Expect EasyMotion#helper#include_multibyte_char("this_is_a_pen.") ==# 0
+        Expect EasyMotion#helper#include_multibyte_char("!#$%&'()'") ==# 0
+        Expect EasyMotion#helper#include_multibyte_char("") ==# 0
     end
 
 end
