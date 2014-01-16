@@ -151,6 +151,8 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-bd-n)           | See |<Plug>(easymotion-bd-n)|
     <Plug>(easymotion-jumptoanywhere) | See |<Plug>(easymotion-jumptoanywhere)|
     <Plug>(easymotion-repeat)         | See |<Plug>(easymotion-repeat)|
+    <Plug>(easymotion-next)           | See |<Plug>(easymotion-next)|
+    <Plug>(easymotion-previous)       | See |<Plug>(easymotion-previous)|
     <Plug>(easymotion-sol-j)          | See |<Plug>(easymotion-sol-j)|
     <Plug>(easymotion-eol-j)          | See |<Plug>(easymotion-eol-j)|
                                       |
@@ -244,17 +246,30 @@ Jump To Anywhere ~
 Repeat ~
 
 <Plug>(easymotion-repeat)                           *<Plug>(easymotion-repeat)*
-                Repeat last motion!
+        Repeat last motion!
 
-                Repeat last motion type including input target character.
-                Nothing will happen when previous motion doesn't exist.
+        Repeat last motion type including input target character.
+        Nothing will happen when previous motion doesn't exist.
 
-                Last Find Motion~
-                    In Find motion (e.g. |<Plug>(easymoion-s)| ), to type `<CR>`
-                    without input characters invoke last find motion. This
-                    does not repeat motion type (e.g. othrer word motion,
-                    <Plug>(easymotion-j) etc...) but only repeat input
-                    characters.
+        Last Find Motion~
+            In Find motion (e.g. |<Plug>(easymoion-s)| ), to type `<CR>`
+            without input characters invoke last find motion. This
+            does not repeat motion type (e.g. othrer word motion,
+            <Plug>(easymotion-j) etc...) but only repeat input
+            characters.
+
+<Plug>(easymotion-next)                               *<Plug>(easymotion-next)*
+<Plug>(easymotion-previous)                       *<Plug>(easymotion-previous)*
+
+        Jump to next/previous much. Only this motion can be move to offscrren
+        match. This motion wrap around the end of the file if you set
+        |'wrapscan'| in your vimrc.
+
+        Example:
+>
+            nmap <Leader>; <Plug>(easymotion-next)
+            nmap <Leader>, <Plug>(easymotion-previous)
+<
 
 EasyMotion dot repeat~
                                     *easymotion-dotrepeat* *easymotion-textobjct*

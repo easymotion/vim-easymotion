@@ -291,6 +291,22 @@ describe 'Default settings'
             \ ==# '<Esc>:<C-U>call EasyMotion#DotRepeat(1)<CR>'
         " }}}
 
+        " Next, Previous motion {{{
+        Expect maparg('<Plug>(easymotion-next)', 'n')
+            \ ==# ':<C-U>call EasyMotion#NextPrevious(0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-next)', 'o')
+            \ ==# ':<C-U>call EasyMotion#NextPrevious(0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-next)', 'v')
+            \ ==# '<Esc>:<C-U>call EasyMotion#NextPrevious(1,0)<CR>'
+
+        Expect maparg('<Plug>(easymotion-previous)', 'n')
+            \ ==# ':<C-U>call EasyMotion#NextPrevious(0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-previous)', 'o')
+            \ ==# ':<C-U>call EasyMotion#NextPrevious(0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-previous)', 'v')
+            \ ==# '<Esc>:<C-U>call EasyMotion#NextPrevious(1,1)<CR>'
+        " }}}
+
         " Line Motion: {{{
         " word
         Expect maparg('<Plug>(easymotion-wl)', 'n') ==# ':<C-U>call EasyMotion#WBL(0,0)<CR>'
@@ -390,6 +406,7 @@ describe 'Default settings'
         Expect exists('*EasyMotion#SelectPhraseYank') ==# 1
         Expect exists('*EasyMotion#SelectPhraseDelete') ==# 1
         Expect exists('*EasyMotion#Repeat') ==# 1
+        Expect exists('*EasyMotion#NextPrevious') ==# 1
         Expect exists('*EasyMotion#DotRepeat') ==# 1
         "}}}
     end
@@ -944,5 +961,85 @@ describe 'g:EasyMotion_smartsign'
     "     Expect col('.') == 20
     " end
     " }}}
+end
+"}}}
+
+" Next & Previous {{{
+describe '<Plug>(easymotion-next) & <Plug>(easymotion-previous)'
+    before
+        new
+        let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        map s <Plug>(easymotion-s)
+        map ; <Plug>(easymotion-next)
+        map , <Plug>(easymotion-previous)
+        set wrapscan
+        call EasyMotion#init()
+        call AddLine('poge huga hiyo poyo')
+        "             1234567890123456789
+    end
+
+    after
+        close!
+    end
+
+    " provide next & previous motion to replace `;`, `,` {{{
+    it 'provide next & previous motion to replace `;`, `,`'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+        normal sha
+        Expect CursorPos() == [l,6,'h']
+
+        normal ;
+        Expect CursorPos() == [l,11,'h']
+
+        normal ,
+        Expect CursorPos() == [l,6,'h']
+
+        " wrapscan
+        normal ,
+        Expect CursorPos() == [l,11,'h']
+        normal ;
+        Expect CursorPos() == [l,6,'h']
+
+        normal! $
+        let l = line('.')
+        Expect CursorPos() == [l,19,'o']
+
+        normal ,
+        Expect CursorPos() == [l,11,'h']
+
+    end
+    "}}}
+
+    " next & previous motion count {{{
+    it 'next & previous motion count'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+        normal sha
+        Expect CursorPos() == [l,6,'h']
+
+        normal ;
+        Expect CursorPos() == [l,11,'h']
+
+        normal 2,
+        Expect CursorPos() == [l,11,'h']
+
+        " wrapscan
+        normal 4,
+        Expect CursorPos() == [l,11,'h']
+        normal 3;
+        Expect CursorPos() == [l,6,'h']
+
+        normal! $
+        let l = line('.')
+        Expect CursorPos() == [l,19,'o']
+
+        normal ,
+        Expect CursorPos() == [l,11,'h']
+
+    end
+    "}}}
 end
 "}}}
