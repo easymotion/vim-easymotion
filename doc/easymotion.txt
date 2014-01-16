@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:15 Jan 2014.
+*easymotion.txt*	Version 2.0  Last change:16 Jan 2014.
 
 
             ______                  __  ___       __  _
@@ -255,6 +255,35 @@ Repeat ~
                     does not repeat motion type (e.g. othrer word motion,
                     <Plug>(easymotion-j) etc...) but only repeat input
                     characters.
+
+EasyMotion dot repeat~
+                                    *easymotion-dotrepeat* *easymotion-textobjct*
+
+        This feature requires tpope/vim-repeat
+        https://github.com/tpope/vim-repeat
+
+        All motion type support '.' repeat.
+
+        Example:
+>
+        " vimrc:
+        omap z <Plug>(easymotion-t)
+        let g:EasyMotion_keys='hklyuiopnm,qwertzxcvbasdgjf;'
+<
+        Text sample:
+>
+        {cursor}Lorem ipsum dolor sit ame*t*, consectetur adipisicing eli*t*,
+        sed do eiusmod tempor
+<
+        type `dzt` and type first target marker(in this case, `h`)
+>
+        {cursor}*t*, consectetur adipisicing eli*t,* sed do eiusmod tempor
+<
+        just type '`.`'
+>
+        *t,* sed do eiusmod tempor
+<
+
 JK Motion ~
                                                          *easymotion-jk-motion*
 

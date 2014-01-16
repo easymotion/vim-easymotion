@@ -111,7 +111,7 @@ function! s:find_motion_map_helper(motions) "{{{
         silent exec 'xnoremap <silent><Plug>(easymotion-'.name.')' .
             \ ' <Esc>:<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',1,'. dict.direction .')<CR>'
     " Example:
-    " noremap  <silent><Plug>(easymotion-f2) <Esc>:<C-u>call EasyMotion#S(2,1,0)<CR>
+    " noremap  <silent><Plug>(easymotion-f2) :<C-u>call EasyMotion#S(2,1,0)<CR>
     " xnoremap <silent><Plug>(easymotion-f2) <Esc>:<C-u>call EasyMotion#S(2,1,0)<CR>
     endfor
 endfunction "}}}
@@ -209,6 +209,8 @@ noremap  <silent><Plug>(easymotion-sol-k)          :<C-u>call EasyMotion#Sol(0,1
 xnoremap <silent><Plug>(easymotion-sol-k)     <Esc>:<C-u>call EasyMotion#Sol(1,1)<CR>
 noremap  <silent><Plug>(easymotion-sol-bd-jk)      :<C-u>call EasyMotion#Sol(0,2)<CR>
 xnoremap <silent><Plug>(easymotion-sol-bd-jk) <Esc>:<C-u>call EasyMotion#Sol(1,2)<CR>
+"}}}
+
 " End of Line JK {{{
 noremap  <silent><Plug>(easymotion-eol-j)          :<C-u>call EasyMotion#Eol(0,0)<CR>
 xnoremap <silent><Plug>(easymotion-eol-j)     <Esc>:<C-u>call EasyMotion#Eol(1,0)<CR>
@@ -241,6 +243,11 @@ noremap  <silent><Plug>(easymotion-repeat)
     \      :<C-u>call EasyMotion#Repeat(0)<CR>
 xnoremap <silent><Plug>(easymotion-repeat)
     \ <Esc>:<C-u>call EasyMotion#Repeat(1)<CR>
+
+noremap  <silent><Plug>(easymotion-dotrepeat)
+    \      :<C-u>call EasyMotion#DotRepeat(0)<CR>
+xnoremap <silent><Plug>(easymotion-dotrepeat)
+    \ <Esc>:<C-u>call EasyMotion#DotRepeat(1)<CR>
 "}}}
 
 " -- Line Motion {{{

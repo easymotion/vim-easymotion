@@ -1,0 +1,8 @@
+language: ruby
+rvm:
+    - 2.0.0
+script:
+    - rake ci
+install:
+    - git clone https://github.com/kana/vim-vspec.git
+    - git clone https://github.com/tpope/vim-repeat.git
