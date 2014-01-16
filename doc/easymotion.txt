@@ -246,17 +246,17 @@ Jump To Anywhere ~
 Repeat ~
 
 <Plug>(easymotion-repeat)                           *<Plug>(easymotion-repeat)*
-                Repeat last motion!
+        Repeat last motion!
 
-                Repeat last motion type including input target character.
-                Nothing will happen when previous motion doesn't exist.
+        Repeat last motion type including input target character.
+        Nothing will happen when previous motion doesn't exist.
 
-                Last Find Motion~
-                    In Find motion (e.g. |<Plug>(easymoion-s)| ), to type `<CR>`
-                    without input characters invoke last find motion. This
-                    does not repeat motion type (e.g. othrer word motion,
-                    <Plug>(easymotion-j) etc...) but only repeat input
-                    characters.
+        Last Find Motion~
+            In Find motion (e.g. |<Plug>(easymoion-s)| ), to type `<CR>`
+            without input characters invoke last find motion. This
+            does not repeat motion type (e.g. othrer word motion,
+            <Plug>(easymotion-j) etc...) but only repeat input
+            characters.
 
 <Plug>(easymotion-next)                               *<Plug>(easymotion-next)*
 <Plug>(easymotion-previous)                       *<Plug>(easymotion-previous)*
