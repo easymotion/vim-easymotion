@@ -259,7 +259,7 @@ Repeat ~
             characters.
 
 <Plug>(easymotion-next)                               *<Plug>(easymotion-next)*
-<Plug>(easymotion-previous)                       *<Plug>(easymotion-previous)*
+<Plug>(easymotion-prev)                               *<Plug>(easymotion-prev)*
 
         Jump to next/previous much. Only this motion can be move to offscrren
         match. This motion wrap around the end of the file if you set
@@ -268,7 +268,7 @@ Repeat ~
         Example:
 >
             nmap <Leader>; <Plug>(easymotion-next)
-            nmap <Leader>, <Plug>(easymotion-previous)
+            nmap <Leader>, <Plug>(easymotion-prev)
 <
 
 EasyMotion dot repeat~

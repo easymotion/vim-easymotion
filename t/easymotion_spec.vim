@@ -299,11 +299,11 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-next)', 'v')
             \ ==# '<Esc>:<C-U>call EasyMotion#NextPrevious(1,0)<CR>'
 
-        Expect maparg('<Plug>(easymotion-previous)', 'n')
+        Expect maparg('<Plug>(easymotion-prev)', 'n')
             \ ==# ':<C-U>call EasyMotion#NextPrevious(0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-previous)', 'o')
+        Expect maparg('<Plug>(easymotion-prev)', 'o')
             \ ==# ':<C-U>call EasyMotion#NextPrevious(0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-previous)', 'v')
+        Expect maparg('<Plug>(easymotion-prev)', 'v')
             \ ==# '<Esc>:<C-U>call EasyMotion#NextPrevious(1,1)<CR>'
         " }}}
 
@@ -965,13 +965,13 @@ end
 "}}}
 
 " Next & Previous {{{
-describe '<Plug>(easymotion-next) & <Plug>(easymotion-previous)'
+describe '<Plug>(easymotion-next) & <Plug>(easymotion-prev)'
     before
         new
         let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
         map s <Plug>(easymotion-s)
         map ; <Plug>(easymotion-next)
-        map , <Plug>(easymotion-previous)
+        map , <Plug>(easymotion-prev)
         set wrapscan
         call EasyMotion#init()
         call AddLine('poge huga hiyo poyo')
