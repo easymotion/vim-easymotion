@@ -1307,7 +1307,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
 		" -- Jump back before prompt for visual scroll {{{
 		" Because searchpos() change current cursor position and
 		" if you just use cursor([orig_num, orig_pos]) to jump back,
-		" current line will bebecome center of window
+		" current line will become center of window
 		if ! empty(a:visualmode)
 			keepjumps call cursor(win_first_line,0)
 			normal! zt
