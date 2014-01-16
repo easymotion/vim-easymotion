@@ -250,6 +250,18 @@ xnoremap <silent><Plug>(easymotion-dotrepeat)
     \ <Esc>:<C-u>call EasyMotion#DotRepeat(1)<CR>
 "}}}
 
+" -- Next,Previous Motion {{{
+noremap  <silent><Plug>(easymotion-next)
+    \      :<C-u>call EasyMotion#NextPrevious(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-next)
+    \ <Esc>:<C-u>call EasyMotion#NextPrevious(1,0)<CR>
+
+noremap  <silent><Plug>(easymotion-previous)
+    \      :<C-u>call EasyMotion#NextPrevious(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-previous)
+    \ <Esc>:<C-u>call EasyMotion#NextPrevious(1,1)<CR>
+"}}}
+
 " -- Line Motion {{{
 " Word Line: {{{
 noremap  <silent><Plug>(easymotion-wl)         :<C-u>call EasyMotion#WBL(0,0)<CR>

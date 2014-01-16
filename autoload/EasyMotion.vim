@@ -413,6 +413,20 @@ function! EasyMotion#DotRepeat(visualmode) " {{{
 		silent call s:EasyMotion(re, direction, 0, is_exclusive)
 	endfor
 endfunction " }}}
+function! EasyMotion#NextPrevious(visualmode, direction) " {{{
+	" Repeat previous motion with previous targets
+	if s:previous ==# {}
+		call s:Message("Previous targets doesn't exist")
+		return
+	endif
+	let re = s:previous.regexp
+	let search_direction = (a:direction >= 1 ? 'b' : '')
+
+	for i in range(v:count1)
+		call searchpos(re, search_direction)
+	endfor
+	call EasyMotion#reset()
+endfunction " }}}
 " }}}
 " == Helper functions {{{
 " -- Message -----------------------------
