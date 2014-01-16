@@ -111,7 +111,7 @@ function! s:find_motion_map_helper(motions) "{{{
         silent exec 'xnoremap <silent><Plug>(easymotion-'.name.')' .
             \ ' <Esc>:<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',1,'. dict.direction .')<CR>'
     " Example:
-    " noremap  <silent><Plug>(easymotion-f2) <Esc>:<C-u>call EasyMotion#S(2,1,0)<CR>
+    " noremap  <silent><Plug>(easymotion-f2) :<C-u>call EasyMotion#S(2,1,0)<CR>
     " xnoremap <silent><Plug>(easymotion-f2) <Esc>:<C-u>call EasyMotion#S(2,1,0)<CR>
     endfor
 endfunction "}}}
@@ -167,8 +167,8 @@ xnoremap <silent><Plug>(easymotion-bd-w) <Esc>:<C-u>call EasyMotion#WB(1,2)<CR>
 "}}}
 
 " WORD: {{{
-noremap  <silent><Plug>(easymotion-w)         :<C-u>call EasyMotion#WBW(0,0)<CR>
-xnoremap <silent><Plug>(easymotion-w)    <Esc>:<C-u>call EasyMotion#WBW(1,0)<CR>
+noremap  <silent><Plug>(easymotion-W)         :<C-u>call EasyMotion#WBW(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-W)    <Esc>:<C-u>call EasyMotion#WBW(1,0)<CR>
 noremap  <silent><Plug>(easymotion-B)         :<C-u>call EasyMotion#WBW(0,1)<CR>
 xnoremap <silent><Plug>(easymotion-B)    <Esc>:<C-u>call EasyMotion#WBW(1,1)<CR>
 noremap  <silent><Plug>(easymotion-bd-W)      :<C-u>call EasyMotion#WBW(0,2)<CR>
@@ -207,8 +207,10 @@ noremap  <silent><Plug>(easymotion-sol-j)          :<C-u>call EasyMotion#Sol(0,0
 xnoremap <silent><Plug>(easymotion-sol-j)     <Esc>:<C-u>call EasyMotion#Sol(1,0)<CR>
 noremap  <silent><Plug>(easymotion-sol-k)          :<C-u>call EasyMotion#Sol(0,1)<CR>
 xnoremap <silent><Plug>(easymotion-sol-k)     <Esc>:<C-u>call EasyMotion#Sol(1,1)<CR>
-noremap  <silent><Plug>(easymotion-sol-bd-Jk)      :<C-u>call EasyMotion#Sol(0,2)<CR>
-xnoremap <silent><Plug>(easymotion-sol-bd-Jk) <Esc>:<C-u>call EasyMotion#Sol(1,2)<CR>
+noremap  <silent><Plug>(easymotion-sol-bd-jk)      :<C-u>call EasyMotion#Sol(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-sol-bd-jk) <Esc>:<C-u>call EasyMotion#Sol(1,2)<CR>
+"}}}
+
 " End of Line JK {{{
 noremap  <silent><Plug>(easymotion-eol-j)          :<C-u>call EasyMotion#Eol(0,0)<CR>
 xnoremap <silent><Plug>(easymotion-eol-j)     <Esc>:<C-u>call EasyMotion#Eol(1,0)<CR>
