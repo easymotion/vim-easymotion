@@ -241,6 +241,11 @@ noremap  <silent><Plug>(easymotion-repeat)
     \      :<C-u>call EasyMotion#Repeat(0)<CR>
 xnoremap <silent><Plug>(easymotion-repeat)
     \ <Esc>:<C-u>call EasyMotion#Repeat(1)<CR>
+
+noremap  <silent><Plug>(easymotion-dotrepeat)
+    \      :<C-u>call EasyMotion#DotRepeat(0)<CR>
+xnoremap <silent><Plug>(easymotion-dotrepeat)
+    \ <Esc>:<C-u>call EasyMotion#DotRepeat(1)<CR>
 "}}}
 
 " -- Line Motion {{{
