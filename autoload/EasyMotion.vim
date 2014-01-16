@@ -13,11 +13,6 @@ set cpo&vim
 function! EasyMotion#init()
 	" Init Migemo Dictionary
 	let s:previous = {}
-	let s:current = {
-		\ 'is_operator' : 0,
-		\ 'dot_repeat_target_cnt' : 0,
-		\ 'dot_prompt_user_cnt' : 0,
-		\ }
 	" dot_ prefix key is especially for dot repeat varibale
 	call EasyMotion#reset()
 	let s:migemo_dicts = {}
@@ -54,10 +49,11 @@ function! EasyMotion#reset()
 		\ 'within_line' : 0,
 		\ 'dot_repeat' : 0,
 		\ }
-	" Reset count for dot repeat target chars
-	let s:current.dot_repeat_target_cnt = 0
-	let s:current.dot_prompt_user_cnt = 0
-
+	let s:current = {
+		\ 'is_operator' : 0,
+		\ 'dot_repeat_target_cnt' : 0,
+		\ 'dot_prompt_user_cnt' : 0,
+		\ }
 	return ""
 endfunction "}}}
 " == Motion functions {{{
