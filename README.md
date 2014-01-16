@@ -1,4 +1,4 @@
-# Vim motion on speed!
+# Vim motion on speed! [![Build Status](https://travis-ci.org/haya14busa/vim-easymotion.png?branch=master)](https://travis-ci.org/haya14busa/vim-easymotion)
 
 ![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion.gif)
 
