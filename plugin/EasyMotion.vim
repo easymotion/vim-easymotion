@@ -167,8 +167,8 @@ xnoremap <silent><Plug>(easymotion-bd-w) <Esc>:<C-u>call EasyMotion#WB(1,2)<CR>
 "}}}
 
 " WORD: {{{
-noremap  <silent><Plug>(easymotion-w)         :<C-u>call EasyMotion#WBW(0,0)<CR>
-xnoremap <silent><Plug>(easymotion-w)    <Esc>:<C-u>call EasyMotion#WBW(1,0)<CR>
+noremap  <silent><Plug>(easymotion-W)         :<C-u>call EasyMotion#WBW(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-W)    <Esc>:<C-u>call EasyMotion#WBW(1,0)<CR>
 noremap  <silent><Plug>(easymotion-B)         :<C-u>call EasyMotion#WBW(0,1)<CR>
 xnoremap <silent><Plug>(easymotion-B)    <Esc>:<C-u>call EasyMotion#WBW(1,1)<CR>
 noremap  <silent><Plug>(easymotion-bd-W)      :<C-u>call EasyMotion#WBW(0,2)<CR>
