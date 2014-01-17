@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:16 Jan 2014.
+*easymotion.txt*	Version 2.0  Last change:17 Jan 2014.
 
 
             ______                  __  ___       __  _
@@ -36,6 +36,7 @@ CONTENTS                                                 *easymotion-contents*
            4.11.1 Select Line ............. |easymotion-select-line|
            4.11.2 Select Phrase ........... |easymotion-select-phrase|
        4.12 EasyMotion_enter_jump_first ... |EasyMotion_enter_jump_first|
+       4.13 EasyMotion_prompt ............. |EasyMotion_prompt|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -853,6 +854,26 @@ Example:
 <
 Default: 0
 
+
+4.13 Customize command line prompt                          *EasyMotion_prompt*
+                                                          *g:EasyMotion_prompt*
+
+    You can customize command line prompt message in find motion.
+    `{n}` is how many characters you type, and if {n} == 1 `(s)` will be
+    ignored.
+
+Sample:
+>
+    let g:EasyMotion_prompt = '{n}>>> '
+<
+Default:
+>
+    let g:EasyMotion_prompt = 'Search for {n} character(s): '
+<
+    This message will be:
+        |<Plug>(easymotion-s)|  -> 'Search for 1 character: '
+        |<Plug>(easymotion-s2)| -> 'Search for 2 characters: '
+        |<Plug>(easymotion-sn)| -> 'Search for characters: '
 
 ==============================================================================
 5. License                                                *easymotion-license*

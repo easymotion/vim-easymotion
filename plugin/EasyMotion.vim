@@ -32,7 +32,8 @@ let g:EasyMotion_use_migemo         = get(g: , 'EasyMotion_use_migemo'         ,
 let g:EasyMotion_use_upper          = get(g: , 'EasyMotion_use_upper'          , 0)
 let g:EasyMotion_enter_jump_first   = get(g: , 'EasyMotion_enter_jump_first'   , 0)
 let g:EasyMotion_show_prompt        = get(g: , 'EasyMotion_show_prompt'        , 1)
-let g:EasyMotion_prompt             = get(g: , 'EasyMotion_prompt' , '> ')
+let g:EasyMotion_prompt             =
+    \ get(g: , 'EasyMotion_prompt' , 'Search for {n} character(s): ')
 let g:EasyMotion_command_line_key_mappings =
     \ get(g: , 'EasyMotion_command_line_key_mappings' , {})
 
@@ -139,16 +140,16 @@ call s:find_motion_map_helper({
     \ 'tl2' : {'fnc': 'TL', 'cnt': 2, 'direction': 0},
     \ 'Tl2' : {'fnc': 'TL', 'cnt': 2, 'direction': 1},
     \
-    \ 'fn'  : {'fnc': 'S' , 'cnt': 50, 'direction': 0},
-    \ 'Fn'  : {'fnc': 'S' , 'cnt': 50, 'direction': 1},
-    \ 'sn'  : {'fnc': 'S' , 'cnt': 50, 'direction': 2},
-    \ 'tn'  : {'fnc': 'T' , 'cnt': 50, 'direction': 0},
-    \ 'Tn'  : {'fnc': 'T' , 'cnt': 50, 'direction': 1},
-    \ 'fln' : {'fnc': 'SL', 'cnt': 50, 'direction': 0},
-    \ 'Fln' : {'fnc': 'SL', 'cnt': 50, 'direction': 1},
-    \ 'sln' : {'fnc': 'SL', 'cnt': 50, 'direction': 2},
-    \ 'tln' : {'fnc': 'TL', 'cnt': 50, 'direction': 0},
-    \ 'Tln' : {'fnc': 'TL', 'cnt': 50, 'direction': 1},
+    \ 'fn'  : {'fnc': 'S' , 'cnt': -1, 'direction': 0},
+    \ 'Fn'  : {'fnc': 'S' , 'cnt': -1, 'direction': 1},
+    \ 'sn'  : {'fnc': 'S' , 'cnt': -1, 'direction': 2},
+    \ 'tn'  : {'fnc': 'T' , 'cnt': -1, 'direction': 0},
+    \ 'Tn'  : {'fnc': 'T' , 'cnt': -1, 'direction': 1},
+    \ 'fln' : {'fnc': 'SL', 'cnt': -1, 'direction': 0},
+    \ 'Fln' : {'fnc': 'SL', 'cnt': -1, 'direction': 1},
+    \ 'sln' : {'fnc': 'SL', 'cnt': -1, 'direction': 2},
+    \ 'tln' : {'fnc': 'TL', 'cnt': -1, 'direction': 0},
+    \ 'Tln' : {'fnc': 'TL', 'cnt': -1, 'direction': 1},
     \ })
 "}}}
 
