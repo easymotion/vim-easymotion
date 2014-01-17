@@ -322,8 +322,8 @@ function! EasyMotion#DotRepeat(visualmode) " {{{
     let is_exclusive = s:previous.is_exclusive
     let s:current.is_operator = 1
     let s:flag.within_line = s:previous.line_flag
-    let s:flag.dot_repeat = 1
     for cnt in range(v:count1)
+        let s:flag.dot_repeat = 1 " s:EasyMotion() always call reset
         silent call s:EasyMotion(re, direction, 0, is_exclusive)
     endfor
 endfunction " }}}

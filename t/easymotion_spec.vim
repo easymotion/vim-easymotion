@@ -919,7 +919,7 @@ describe 'g:EasyMotion_smartsign'
         map T <Plug>(easymotion-T)
         call EasyMotion#init()
         call AddLine('poHe huga Hiyo hoyo: poyo();')
-                      1234567890123456789012345678
+        "             1234567890123456789012345678
         normal! gg0
         let g:EasyMotion_smartcase = 1
         let g:EasyMotion_use_smartsign_us = 1
