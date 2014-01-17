@@ -4,12 +4,13 @@
 " Maintainer: haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/haya14busa/vim-easymotion
 " Original: https://github.com/Lokaltog/vim-easymotion
-
-" == Saving 'cpoptions' {{{
+"=============================================================================
+" Saving 'cpoptions' {{{
+scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 " }}}
-" == Init {{{
+" Init: {{{
 function! EasyMotion#init()
     " Init Migemo Dictionary
     let s:previous = {}
@@ -40,7 +41,7 @@ function! EasyMotion#init()
     "}}}
     return ""
 endfunction "}}}
-" == Reset {{{
+" Reset: {{{
 function! EasyMotion#reset()
     let s:flag = {
         \ 'within_line' : 0,
@@ -54,7 +55,7 @@ function! EasyMotion#reset()
         \ }
     return ""
 endfunction "}}}
-" == Motion functions {{{
+" Motion Functions: {{{
 " -- Find Motion -------------------------
 function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
     let is_exclusive = mode(1) ==# 'no' ? 1 : 0
@@ -342,7 +343,7 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
     call EasyMotion#reset()
 endfunction " }}}
 " }}}
-" == Helper functions {{{
+" Helper Functions: {{{
 " -- Message -----------------------------
 function! s:Message(message) " {{{
     echo 'EasyMotion: ' . a:message
@@ -401,20 +402,15 @@ endfunction " }}}
 " -- Get characters from user input ------
 function! s:GetChar() " {{{
     let char = getchar()
-
     if char == 27
         " Escape key pressed
         redraw
-
         call s:Message('Cancelled')
-
         return ''
     endif
-
     return nr2char(char)
 endfunction " }}}
 function! s:GetSearchChar2(visualmode) " {{{
-
     let chars = []
     for i in [1, 2]
         redraw
@@ -428,12 +424,10 @@ function! s:GetSearchChar2(visualmode) " {{{
             if ! empty(a:visualmode)
                 silent exec 'normal! gv'
             endif
-
             return ''
         endif
         call add(chars, char)
     endfor
-
     return chars
 endfunction " }}}
 function! s:GetSearchChar(visualmode) " {{{
@@ -447,10 +441,8 @@ function! s:GetSearchChar(visualmode) " {{{
         if ! empty(a:visualmode)
             silent exec 'normal! gv'
         endif
-
         return ''
     endif
-
     return char
 endfunction " }}}
 " -- Find Motion Helper ------------------
@@ -465,13 +457,7 @@ function! s:findMotion(num_strokes) "{{{
 
     " Check that we have an input char
     if empty(input)
-        " Restore selection
-        " if ! empty(a:visualmode)
-        "     silent exec 'normal! gv'
-        " endif
-        redraw
-        echo ''
-        return ''
+        redraw | echo '' | return ''
     endif
 
     let re = s:convertRegep(input)
@@ -653,7 +639,7 @@ function! s:should_use_wundo() "{{{
     return ! s:is_cmdwin() && undotree().seq_last != 0
 endfunction "}}}
 "}}}
-" == Grouping algorithms {{{
+" Grouping Algorithms: {{{
 let s:grouping_algorithms = {
 \   1: 'SCTree'
 \ , 2: 'Original'
@@ -823,14 +809,13 @@ function! s:CreateCoordKeyDict(groups, ...)
 endfunction
 " }}}
 " }}}
-" == Core functions {{{
+" Core Functions: {{{
 function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
-    " -- If only one possible match, jump directly to it {{{
     let group_values = values(a:groups)
 
+    " -- If only one possible match, jump directly to it {{{
     if len(group_values) == 1
         redraw
-
         return group_values[0]
     endif
     " }}}
@@ -1375,10 +1360,10 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
     endtry
 endfunction " }}}
 "}}}
-" == Call init {{{
+" Call Init: {{{
 call EasyMotion#init()
 "}}}
-" == Restore 'cpoptions' {{{
+" Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
 unlet s:save_cpo
 " }}}
