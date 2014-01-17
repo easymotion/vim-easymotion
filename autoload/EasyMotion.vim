@@ -13,9 +13,8 @@ set cpo&vim
 function! EasyMotion#init()
     " Init Migemo Dictionary
     let s:previous = {}
-    " dot_ prefix key is especially for dot repeat varibale
-    call EasyMotion#reset()
     let s:migemo_dicts = {}
+    call EasyMotion#reset()
     " Anywhere regular expression: {{{
     let re = '\v' .
         \    '(<.|^$)' . '|' .
@@ -30,7 +29,6 @@ function! EasyMotion#init()
     " 5. after '#' hoge#foo
     let g:EasyMotion_re_anywhere = get(g:, 'EasyMotion_re_anywhere', re)
 
-
     " Anywhere regular expression within line:
     let re = '\v' .
         \    '(<.|^$)' . '|' .
@@ -40,7 +38,6 @@ function! EasyMotion#init()
         \    '(#\zs.)'
     let g:EasyMotion_re_line_anywhere = get(g:, 'EasyMotion_re_line_anywhere', re)
     "}}}
-
     return ""
 endfunction "}}}
 " == Reset {{{
@@ -59,57 +56,16 @@ endfunction "}}}
 " == Motion functions {{{
 " -- Find Motion -------------------------
 function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
-    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let is_exclusive = mode(1) ==# 'no' ? 1 : 0
-
-    let s:previous['input'] = get(s:previous, 'input', '')
-    let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
-    let s:previous['input'] = input
-
-    " Check that we have an input char
-    if empty(input)
-        " Restore selection
-        if ! empty(a:visualmode)
-            silent exec 'normal! gv'
-        endif
-        redraw
-        echo ''
-        return
-    endif
-
-    let re = s:findMotion(input)
-
+    let re = s:findMotion(a:num_strokes)
+    if s:handleEmpty(re, a:visualmode) | return | endif
     call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
-    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let is_exclusive = mode(1) ==# 'no' ? 1 : 0
-
-    let s:previous['input'] = get(s:previous, 'input', '')
-    let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
-    let s:previous['input'] = input
-
-    " Check that we have an input char
-    if empty(input)
-        " Restore selection
-        if ! empty(a:visualmode)
-            silent exec 'normal! gv'
-        endif
-        redraw
-        echo ''
-        return
-    endif
-
-    let re = s:findMotion(input)
-
-    if a:direction == 1
-        " backward
-        let re = re . '\zs.'
-    else
-        " forward
-        let re = '.\ze' . re
-    endif
-
+    let re = s:findMotion(a:num_strokes)
+    if s:handleEmpty(re, a:visualmode) | return | endif
+    let re = a:direction == 1 ? '\('.re.'\)\zs.' : '.\ze\('.re.'\)'
     call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 " -- Word Motion -------------------------
@@ -162,61 +118,18 @@ function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
 endfunction " }}}
 " -- Line Motion -------------------------
 function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
-    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let is_exclusive = mode(1) ==# 'no' ? 1 : 0
-
-    let s:previous['input'] = get(s:previous, 'input', '')
-    let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
-    let s:previous['input'] = input
-
-    " Check that we have an input char
-    if empty(input)
-        " Restore selection
-        if ! empty(a:visualmode)
-            silent exec 'normal! gv'
-        endif
-        redraw
-        echo ''
-        return
-    endif
-
     let s:flag.within_line = 1
-
-    let re = s:findMotion(input)
-
+    let re = s:findMotion(a:num_strokes)
+    if s:handleEmpty(re, a:visualmode) | return | endif
     call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
-    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let is_exclusive = mode(1) ==# 'no' ? 1 : 0
-
-    let s:previous['input'] = get(s:previous, 'input', '')
-    let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
-    let s:previous['input'] = input
-
-    " Check that we have an input char
-    if empty(input)
-        " Restore selection
-        if ! empty(a:visualmode)
-            silent exec 'normal! gv'
-        endif
-        redraw
-        echo ''
-        return
-    endif
-
     let s:flag.within_line = 1
-
-    let re = s:findMotion(input)
-
-    if a:direction == 1
-        " backward
-        let re = re . '\zs.'
-    else
-        " forward
-        let re = '.\ze' . re
-    endif
-
+    let re = s:findMotion(a:num_strokes)
+    if s:handleEmpty(re, a:visualmode) | return | endif
+    let re = a:direction == 1 ? '\('.re.'\)\zs.' : '.\ze\('.re.'\)'
     call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
 endfunction " }}}
 function! EasyMotion#WBL(visualmode, direction) " {{{
@@ -295,15 +208,15 @@ function! EasyMotion#SelectPhrase() "{{{
 
     " Generate regexp {{{
     if chars[0] ==# chars[1]
-        let re = s:findMotion(chars[0])
+        let re = s:convertRegep(chars[0])
     else
         " Convert chars {{{
         " let g:EasyMotion_smartcase to 0 temporarily
         let save_smart = g:EasyMotion_smartcase
         let g:EasyMotion_smartcase = 0
 
-        let re1 = s:findMotion(chars[0])
-        let re2 = s:findMotion(chars[1])
+        let re1 = s:convertRegep(chars[0])
+        let re2 = s:convertRegep(chars[1])
 
         let g:EasyMotion_smartcase = save_smart
         unlet save_smart
@@ -540,23 +453,41 @@ function! s:GetSearchChar(visualmode) " {{{
     return char
 endfunction " }}}
 " -- Find Motion Helper ------------------
-function! s:findMotion(char) "{{{
+function! s:findMotion(num_strokes) "{{{
     " Find Motion: S,F,T
-    let re = escape(a:char, '.$^~\[]')
+    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
 
-    let should_use_migemo = s:should_use_migemo(a:char)
-    if should_use_migemo
+    let s:previous['input'] = get(s:previous, 'input', '')
+    let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
+    let s:previous['input'] = input
+
+    " Check that we have an input char
+    if empty(input)
+        " Restore selection
+        " if ! empty(a:visualmode)
+        "     silent exec 'normal! gv'
+        " endif
+        redraw
+        echo ''
+        return ''
+    endif
+
+    let re = s:convertRegep(input)
+    return re
+endfunction "}}}
+function! s:convertRegep(input) "{{{
+    let re = escape(a:input, '.$^~\[]')
+
+    if s:should_use_migemo(a:input)
         let re = s:convertMigemo(re)
     endif
 
-    if s:useSmartsign(a:char)
-        let re = s:convertSmartsign(re, a:char)
+    if s:should_use_smartsign(a:input)
+        let re = s:convertSmartsign(re, a:input)
     endif
 
-    if g:EasyMotion_smartcase
-        let re = s:convertSmartcase(re, a:char)
-    endif
-
+    let case_flag = s:should_use_smartcase(a:input) ? '\c' : '\C'
+    let re .= case_flag
     return re
 endfunction "}}}
 function! s:convertMigemo(re) "{{{
@@ -576,14 +507,6 @@ function! s:convertMigemo(re) "{{{
     endif
     return re
 endfunction "}}}
-function! s:convertSmartcase(re, char) "{{{
-    let re = a:re
-    if a:char =~# '\U' "nonuppercase
-        return '\c' . re
-    else "uppercase
-        return '\C' . re
-    endif
-endfunction "}}}
 function! s:convertSmartsign(re, char) "{{{
     let smart_dict = s:load_smart_dict()
     let upper_sign = escape(get(smart_dict, a:char, ''), '.$^~')
@@ -594,14 +517,66 @@ function! s:convertSmartsign(re, char) "{{{
         return re
     endif
 endfunction "}}}
-function! s:useSmartsign(char) "{{{
+function! s:convertSmartcase(re, char) "{{{
+    let re = a:re
+    if a:char =~# '\U' "nonuppercase
+        return '\c' . re
+    else "uppercase
+        return '\C' . re
+    endif
+endfunction "}}}
+function! s:should_use_migemo(char) "{{{
+    if ! g:EasyMotion_use_migemo || match(a:char, '\A') != -1
+        return 0
+    endif
+
+    " TODO: use direction
+    if s:flag.within_line == 1
+        let first_line = line('.')
+        let end_line = line('.')
+    else
+        let first_line = line('w0')
+        let end_line = line('w$')
+    endif
+
+
+    for line in range(first_line, end_line)
+        if s:is_folded(line)
+            continue
+        endif
+
+        if EasyMotion#helper#include_multibyte_char(getline(line)) == 1
+            return 1
+        endif
+    endfor
+
+    return 0
+endfunction "}}}
+function! s:should_use_smartsign(char) "{{{
     if (exists('g:EasyMotion_use_smartsign_us')  ||
     \   exists('g:EasyMotion_use_smartsign_jp')) &&
-    \  a:char =~# '\A'
+    \  match(a:char, '\A') != -1
         return 1
     else
         return 0
     endif
+endfunction "}}}
+function! s:should_use_smartcase(input) "{{{
+    if g:EasyMotion_smartcase == 0
+        return 0
+    endif
+    " return 1 if input didn't match upporcase letter
+    return match(a:input, '\u') == -1
+endfunction "}}}
+function! s:handleEmpty(input, visualmode) "{{{
+    " if empty, reselect and return 1
+    if empty(a:input)
+        if ! empty(a:visualmode)
+            silent exec 'normal! gv'
+        endif
+        return 1
+    endif
+    return 0
 endfunction "}}}
 function! s:load_smart_dict() "{{{
     if exists('g:EasyMotion_use_smartsign_us')
@@ -612,8 +587,6 @@ function! s:load_smart_dict() "{{{
         return ''
     endif
 endfunction "}}}
-
-
 " -- Handle Visual Mode ------------------
 function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
     let vmode = mode(1)
@@ -659,33 +632,6 @@ function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
     endif
 endfunction "}}}
 " -- Others ------------------------------
-function! s:should_use_migemo(char) "{{{
-    if ! g:EasyMotion_use_migemo || match(a:char, '\A') != -1
-        return 0
-    endif
-
-    " TODO: use direction
-    if s:flag.within_line == 1
-        let first_line = line('.')
-        let end_line = line('.')
-    else
-        let first_line = line('w0')
-        let end_line = line('w$')
-    endif
-
-
-    for line in range(first_line, end_line)
-        if s:is_folded(line)
-            continue
-        endif
-
-        if EasyMotion#helper#include_multibyte_char(getline(line)) == 1
-            return 1
-        endif
-    endfor
-
-    return 0
-endfunction "}}}
 function! s:is_folded(line) "{{{
     " Return false if g:EasyMotion_skipfoldedline == 1
     " and line is start of folded lines
@@ -696,7 +642,7 @@ endfunction "}}}
 function! s:is_cmdwin() "{{{
   return bufname('%') ==# '[Command Line]'
 endfunction "}}}
-function! s:use_wundo() "{{{
+function! s:should_use_wundo() "{{{
     " wundu cannot use in command-line window and
     " unless undolist is not empty
     return ! s:is_cmdwin() && undotree().seq_last != 0
@@ -1013,7 +959,7 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
     " -- Put labels on targets & Get User Input & Restore all {{{
     " Save undo tree {{{
     let s:undo_file = tempname()
-    if s:use_wundo()
+    if s:should_use_wundo()
         execute "wundo" s:undo_file
     endif
     "}}}
@@ -1066,7 +1012,7 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
         " }}}
 
         " Restore undo tree {{{
-        if s:use_wundo() && filereadable(s:undo_file)
+        if s:should_use_wundo() && filereadable(s:undo_file)
             silent execute "rundo" s:undo_file
             unlet s:undo_file
         else
