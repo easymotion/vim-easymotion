@@ -1091,5 +1091,44 @@ describe 'EasyMotion is jump motion'
 end
 "}}}
 
+" Regexp {{{
+describe 'EasyMotion regexp'
+    before
+        new
+        let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        let g:EasyMotion_use_regexp = 1
+        map s <Plug>(easymotion-sn)
+        call EasyMotion#init()
+        call AddLine('poge1 2huga 3hiyo 4poyo')
+        "             12345678901234567890123
+    end
+
+    after
+        let g:EasyMotion_use_regexp = 0
+        close!
+    end
+
+    " <C-o> could jump back to previous location {{{
+    it 'provide regexp motion'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+        exe "normal s\\d\<CR>a"
+        Expect CursorPos() == [l,5,'1']
+
+        normal! 0
+        Expect CursorPos() == [l,1,'p']
+        exe "normal s\\d\<CR>c"
+        Expect CursorPos() == [l,13,'3']
+
+        exe "normal s\$\<CR>a"
+        Expect CursorPos() == [l,23,'o']
+
+        exe "normal s\^\<CR>b"
+        Expect CursorPos() == [l,1,'p']
+    end
+    "}}}
+end
+"}}}
 
 " vim: fdm=marker:et:ts=4:sw=4:sts=4

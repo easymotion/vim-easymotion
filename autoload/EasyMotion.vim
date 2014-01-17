@@ -45,6 +45,7 @@ function! EasyMotion#reset()
     let s:flag = {
         \ 'within_line' : 0,
         \ 'dot_repeat' : 0,
+        \ 'regexp' : 0,
         \ }
     let s:current = {
         \ 'is_operator' : 0,
@@ -321,8 +322,8 @@ function! EasyMotion#DotRepeat(visualmode) " {{{
     let is_exclusive = s:previous.is_exclusive
     let s:current.is_operator = 1
     let s:flag.within_line = s:previous.line_flag
+    let s:flag.dot_repeat = 1
     for cnt in range(v:count1)
-        let s:flag.dot_repeat = 1
         silent call s:EasyMotion(re, direction, 0, is_exclusive)
     endfor
 endfunction " }}}
@@ -456,6 +457,7 @@ endfunction " }}}
 function! s:findMotion(num_strokes) "{{{
     " Find Motion: S,F,T
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
+    let s:flag.regexp = a:num_strokes == -1 ? 1 : 0
 
     let s:previous['input'] = get(s:previous, 'input', '')
     let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
@@ -476,7 +478,7 @@ function! s:findMotion(num_strokes) "{{{
     return re
 endfunction "}}}
 function! s:convertRegep(input) "{{{
-    let re = escape(a:input, '.$^~\[]')
+    let re = s:should_use_regexp() ? a:input : escape(a:input, '.$^~\[]')
 
     if s:should_use_migemo(a:input)
         let re = s:convertMigemo(re)
@@ -524,6 +526,9 @@ function! s:convertSmartcase(re, char) "{{{
     else "uppercase
         return '\C' . re
     endif
+endfunction "}}}
+function! s:should_use_regexp() "{{{
+    return g:EasyMotion_use_regexp == 1 && s:flag.regexp == 1
 endfunction "}}}
 function! s:should_use_migemo(char) "{{{
     if ! g:EasyMotion_use_migemo || match(a:char, '\A') != -1
