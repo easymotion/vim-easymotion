@@ -1333,15 +1333,17 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
 		endif
 		"}}}
 
-		" -- Update selection -------------------- {{{
-		if ! empty(a:visualmode)
-			keepjumps call cursor(orig_pos[0], orig_pos[1])
+		" -- Update cursor position -------------- {{{
+		keepjumps call cursor(orig_pos[0], orig_pos[1])
+		" Consider EasyMotion as jump motion :h jump-motion
+		normal! m`
 
+		" Update selection {{{
+		if ! empty(a:visualmode)
 			exec 'normal! ' . a:visualmode
 		endif
 		" }}}
-		" -- Update cursor position -------------- {{{
-		call cursor(orig_pos[0], orig_pos[1])
+
 		if s:flag.dot_repeat == 1
 			" support dot repeat {{{
 			" Use visual mode to emulate dot repeat
