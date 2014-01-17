@@ -425,7 +425,7 @@ describe 'Default settings'
         Expect g:EasyMotion_use_upper          ==# 0
         Expect g:EasyMotion_enter_jump_first   ==# 0
         Expect g:EasyMotion_show_prompt        ==# 1
-        Expect g:EasyMotion_prompt             ==# '> '
+        Expect g:EasyMotion_prompt             ==# 'Search for {n} character(s): '
         Expect g:EasyMotion_command_line_key_mappings ==# {}
         " }}}
 
