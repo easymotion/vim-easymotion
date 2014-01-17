@@ -1043,3 +1043,47 @@ describe '<Plug>(easymotion-next) & <Plug>(easymotion-prev)'
     "}}}
 end
 "}}}
+
+" Jumplist {{{
+describe 'EasyMotion is jump motion'
+    before
+        new
+        let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        map s <Plug>(easymotion-s)
+        call EasyMotion#init()
+        call AddLine('poge huga hiyo poyo')
+        "             1234567890123456789
+    end
+
+    after
+        close!
+    end
+
+    " <C-o> could jump back to previous location {{{
+    it '<C-o> could jump back to previous location'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+        normal sha
+        Expect CursorPos() == [l,6,'h']
+
+        exec "normal! \<C-o>"
+        Expect CursorPos() == [l,1,'p']
+
+        normal! ``
+        Expect CursorPos() == [l,6,'h']
+        normal! ``
+        Expect CursorPos() == [l,1,'p']
+        normal! ``
+        Expect CursorPos() == [l,6,'h']
+
+        normal! $
+        Expect CursorPos() == [l,19,'o']
+        normal spa
+        Expect CursorPos() == [l,16,'p']
+        exec "normal! \<C-o>"
+        Expect CursorPos() == [l,19,'o']
+    end
+    "}}}
+end
+"}}}
