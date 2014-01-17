@@ -122,45 +122,45 @@ describe 'Default settings'
 
         " Multi Char Find Motion: {{{
         " sn
-        Expect maparg('<Plug>(easymotion-sn)', 'n') ==# ':<C-U>call EasyMotion#S(50,0,2)<CR>'
-        Expect maparg('<Plug>(easymotion-sn)', 'o') ==# ':<C-U>call EasyMotion#S(50,0,2)<CR>'
-        Expect maparg('<Plug>(easymotion-sn)', 'v') ==# '<Esc>:<C-U>call EasyMotion#S(50,1,2)<CR>'
+        Expect maparg('<Plug>(easymotion-sn)', 'n') ==# ':<C-U>call EasyMotion#S(-1,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-sn)', 'o') ==# ':<C-U>call EasyMotion#S(-1,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-sn)', 'v') ==# '<Esc>:<C-U>call EasyMotion#S(-1,1,2)<CR>'
         " fn
-        Expect maparg('<Plug>(easymotion-fn)', 'n') ==# ':<C-U>call EasyMotion#S(50,0,0)<CR>'
-        Expect maparg('<Plug>(easymotion-fn)', 'o') ==# ':<C-U>call EasyMotion#S(50,0,0)<CR>'
-        Expect maparg('<Plug>(easymotion-fn)', 'v') ==# '<Esc>:<C-U>call EasyMotion#S(50,1,0)<CR>'
+        Expect maparg('<Plug>(easymotion-fn)', 'n') ==# ':<C-U>call EasyMotion#S(-1,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-fn)', 'o') ==# ':<C-U>call EasyMotion#S(-1,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-fn)', 'v') ==# '<Esc>:<C-U>call EasyMotion#S(-1,1,0)<CR>'
         " Fn
-        Expect maparg('<Plug>(easymotion-Fn)', 'n') ==# ':<C-U>call EasyMotion#S(50,0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-Fn)', 'o') ==# ':<C-U>call EasyMotion#S(50,0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-Fn)', 'v') ==# '<Esc>:<C-U>call EasyMotion#S(50,1,1)<CR>'
+        Expect maparg('<Plug>(easymotion-Fn)', 'n') ==# ':<C-U>call EasyMotion#S(-1,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-Fn)', 'o') ==# ':<C-U>call EasyMotion#S(-1,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-Fn)', 'v') ==# '<Esc>:<C-U>call EasyMotion#S(-1,1,1)<CR>'
         " tn
-        Expect maparg('<Plug>(easymotion-tn)', 'n') ==# ':<C-U>call EasyMotion#T(50,0,0)<CR>'
-        Expect maparg('<Plug>(easymotion-tn)', 'o') ==# ':<C-U>call EasyMotion#T(50,0,0)<CR>'
-        Expect maparg('<Plug>(easymotion-tn)', 'v') ==# '<Esc>:<C-U>call EasyMotion#T(50,1,0)<CR>'
+        Expect maparg('<Plug>(easymotion-tn)', 'n') ==# ':<C-U>call EasyMotion#T(-1,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-tn)', 'o') ==# ':<C-U>call EasyMotion#T(-1,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-tn)', 'v') ==# '<Esc>:<C-U>call EasyMotion#T(-1,1,0)<CR>'
         " Tn
-        Expect maparg('<Plug>(easymotion-Tn)', 'n') ==# ':<C-U>call EasyMotion#T(50,0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-Tn)', 'o') ==# ':<C-U>call EasyMotion#T(50,0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-Tn)', 'v') ==# '<Esc>:<C-U>call EasyMotion#T(50,1,1)<CR>'
+        Expect maparg('<Plug>(easymotion-Tn)', 'n') ==# ':<C-U>call EasyMotion#T(-1,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-Tn)', 'o') ==# ':<C-U>call EasyMotion#T(-1,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-Tn)', 'v') ==# '<Esc>:<C-U>call EasyMotion#T(-1,1,1)<CR>'
         " sln
-        Expect maparg('<Plug>(easymotion-sln)', 'n') ==# ':<C-U>call EasyMotion#SL(50,0,2)<CR>'
-        Expect maparg('<Plug>(easymotion-sln)', 'o') ==# ':<C-U>call EasyMotion#SL(50,0,2)<CR>'
-        Expect maparg('<Plug>(easymotion-sln)', 'v') ==# '<Esc>:<C-U>call EasyMotion#SL(50,1,2)<CR>'
+        Expect maparg('<Plug>(easymotion-sln)', 'n') ==# ':<C-U>call EasyMotion#SL(-1,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-sln)', 'o') ==# ':<C-U>call EasyMotion#SL(-1,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-sln)', 'v') ==# '<Esc>:<C-U>call EasyMotion#SL(-1,1,2)<CR>'
         " fln
-        Expect maparg('<Plug>(easymotion-fln)', 'n') ==# ':<C-U>call EasyMotion#SL(50,0,0)<CR>'
-        Expect maparg('<Plug>(easymotion-fln)', 'o') ==# ':<C-U>call EasyMotion#SL(50,0,0)<CR>'
-        Expect maparg('<Plug>(easymotion-fln)', 'v') ==# '<Esc>:<C-U>call EasyMotion#SL(50,1,0)<CR>'
+        Expect maparg('<Plug>(easymotion-fln)', 'n') ==# ':<C-U>call EasyMotion#SL(-1,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-fln)', 'o') ==# ':<C-U>call EasyMotion#SL(-1,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-fln)', 'v') ==# '<Esc>:<C-U>call EasyMotion#SL(-1,1,0)<CR>'
         " Fln
-        Expect maparg('<Plug>(easymotion-Fln)', 'n') ==# ':<C-U>call EasyMotion#SL(50,0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-Fln)', 'o') ==# ':<C-U>call EasyMotion#SL(50,0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-Fln)', 'v') ==# '<Esc>:<C-U>call EasyMotion#SL(50,1,1)<CR>'
+        Expect maparg('<Plug>(easymotion-Fln)', 'n') ==# ':<C-U>call EasyMotion#SL(-1,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-Fln)', 'o') ==# ':<C-U>call EasyMotion#SL(-1,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-Fln)', 'v') ==# '<Esc>:<C-U>call EasyMotion#SL(-1,1,1)<CR>'
         " tln
-        Expect maparg('<Plug>(easymotion-tln)', 'n') ==# ':<C-U>call EasyMotion#TL(50,0,0)<CR>'
-        Expect maparg('<Plug>(easymotion-tln)', 'o') ==# ':<C-U>call EasyMotion#TL(50,0,0)<CR>'
-        Expect maparg('<Plug>(easymotion-tln)', 'v') ==# '<Esc>:<C-U>call EasyMotion#TL(50,1,0)<CR>'
+        Expect maparg('<Plug>(easymotion-tln)', 'n') ==# ':<C-U>call EasyMotion#TL(-1,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-tln)', 'o') ==# ':<C-U>call EasyMotion#TL(-1,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-tln)', 'v') ==# '<Esc>:<C-U>call EasyMotion#TL(-1,1,0)<CR>'
         " Tln
-        Expect maparg('<Plug>(easymotion-Tln)', 'n') ==# ':<C-U>call EasyMotion#TL(50,0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-Tln)', 'o') ==# ':<C-U>call EasyMotion#TL(50,0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-Tln)', 'v') ==# '<Esc>:<C-U>call EasyMotion#TL(50,1,1)<CR>'
+        Expect maparg('<Plug>(easymotion-Tln)', 'n') ==# ':<C-U>call EasyMotion#TL(-1,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-Tln)', 'o') ==# ':<C-U>call EasyMotion#TL(-1,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-Tln)', 'v') ==# '<Esc>:<C-U>call EasyMotion#TL(-1,1,1)<CR>'
         "}}}
     end
 

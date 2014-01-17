@@ -139,16 +139,16 @@ call s:find_motion_map_helper({
     \ 'tl2' : {'fnc': 'TL', 'cnt': 2, 'direction': 0},
     \ 'Tl2' : {'fnc': 'TL', 'cnt': 2, 'direction': 1},
     \
-    \ 'fn'  : {'fnc': 'S' , 'cnt': 50, 'direction': 0},
-    \ 'Fn'  : {'fnc': 'S' , 'cnt': 50, 'direction': 1},
-    \ 'sn'  : {'fnc': 'S' , 'cnt': 50, 'direction': 2},
-    \ 'tn'  : {'fnc': 'T' , 'cnt': 50, 'direction': 0},
-    \ 'Tn'  : {'fnc': 'T' , 'cnt': 50, 'direction': 1},
-    \ 'fln' : {'fnc': 'SL', 'cnt': 50, 'direction': 0},
-    \ 'Fln' : {'fnc': 'SL', 'cnt': 50, 'direction': 1},
-    \ 'sln' : {'fnc': 'SL', 'cnt': 50, 'direction': 2},
-    \ 'tln' : {'fnc': 'TL', 'cnt': 50, 'direction': 0},
-    \ 'Tln' : {'fnc': 'TL', 'cnt': 50, 'direction': 1},
+    \ 'fn'  : {'fnc': 'S' , 'cnt': -1, 'direction': 0},
+    \ 'Fn'  : {'fnc': 'S' , 'cnt': -1, 'direction': 1},
+    \ 'sn'  : {'fnc': 'S' , 'cnt': -1, 'direction': 2},
+    \ 'tn'  : {'fnc': 'T' , 'cnt': -1, 'direction': 0},
+    \ 'Tn'  : {'fnc': 'T' , 'cnt': -1, 'direction': 1},
+    \ 'fln' : {'fnc': 'SL', 'cnt': -1, 'direction': 0},
+    \ 'Fln' : {'fnc': 'SL', 'cnt': -1, 'direction': 1},
+    \ 'sln' : {'fnc': 'SL', 'cnt': -1, 'direction': 2},
+    \ 'tln' : {'fnc': 'TL', 'cnt': -1, 'direction': 0},
+    \ 'Tln' : {'fnc': 'TL', 'cnt': -1, 'direction': 1},
     \ })
 "}}}
 

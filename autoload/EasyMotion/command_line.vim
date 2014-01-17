@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: autoload/EasyMotion/command_line.vim
 " AUTHOR: haya14busa
-" Last Change: 14 Jan 2014.
+" Last Change: 17 Jan 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -42,12 +42,12 @@ endfunction " }}}
 
 function! EasyMotion#command_line#GetInput(num_strokes, ...) "{{{
 	let previous_input = a:0 == 1 ? a:1 : ''
-
 	let input = ''
 	" repeat a:num_strokes times
-	let prompt_num = a:num_strokes < 50 ? a:num_strokes : ''
+	let prompt_num = a:num_strokes != -1 ? a:num_strokes : ''
 	let prompt = prompt_num . g:EasyMotion_prompt
-	while EasyMotion#helper#strchars(input) < a:num_strokes
+	while EasyMotion#helper#strchars(input) < a:num_strokes ||
+            \ a:num_strokes == -1
 		if g:EasyMotion_show_prompt
 			call s:InputPrompt(prompt, input)
 		endif
