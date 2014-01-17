@@ -1087,3 +1087,6 @@ describe 'EasyMotion is jump motion'
     "}}}
 end
 "}}}
+
+
+" vim: fdm=marker:et:ts=4:sw=4:sts=4

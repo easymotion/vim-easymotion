@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: autoload/EasyMotion/cmigemo.vim
 " AUTHOR: haya14busa
-" Last Change: 14 Jan 2014.
+" Last Change: 17 Jan 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -107,4 +107,4 @@ endfunction "}}}
 let &cpo = s:save_cpo
 unlet s:save_cpo
 " }}}
-
+" vim: fdm=marker:et:ts=4:sw=4:sts=4

@@ -21,3 +21,4 @@ let EasyMotion#sticky_table#jp = {
 let &cpo = s:save_cpo
 unlet s:save_cpo
 " }}}
+" vim: fdm=marker:et:ts=4:sw=4:sts=4

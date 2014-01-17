@@ -30,13 +30,13 @@ set cpo&vim
 " }}}
 
 function! s:InputPrompt(message, input) "{{{
-	redraw
-	echohl Question | echon a:message | echohl None
-	echon a:input
+    redraw
+    echohl Question | echon a:message | echohl None
+    echon a:input
 endfunction "}}}
 function! s:Cancell() " {{{
     redraw
-	echo 'EasyMotion: Cancelled'
+    echo 'EasyMotion: Cancelled'
     return ''
 endfunction " }}}
 
@@ -58,80 +58,80 @@ function! s:getPromptMessage(num_strokes)
 endfunction
 
 function! EasyMotion#command_line#GetInput(num_strokes, ...) "{{{
-	let previous_input = a:0 == 1 ? a:1 : ''
-	let input = ''
-	let prompt = s:getPromptMessage(a:num_strokes)
+    let previous_input = a:0 == 1 ? a:1 : ''
+    let input = ''
+    let prompt = s:getPromptMessage(a:num_strokes)
 
-	while EasyMotion#helper#strchars(input) < a:num_strokes ||
-			\ a:num_strokes == -1
-		if g:EasyMotion_show_prompt
-			call s:InputPrompt(prompt, input)
-		endif
-		let c = getchar()
-		let s:char = type(c) == type(0) ? nr2char(c) : c
-		if EasyMotion#command_line#is_input("\<Esc>")
-			" Cancel if Escape key pressed
+    while EasyMotion#helper#strchars(input) < a:num_strokes ||
+            \ a:num_strokes == -1
+        if g:EasyMotion_show_prompt
+            call s:InputPrompt(prompt, input)
+        endif
+        let c = getchar()
+        let s:char = type(c) == type(0) ? nr2char(c) : c
+        if EasyMotion#command_line#is_input("\<Esc>")
+            " Cancel if Escape key pressed
             call s:Cancell() | return ''
-		elseif EasyMotion#command_line#is_input("\<C-c>")
+        elseif EasyMotion#command_line#is_input("\<C-c>")
             " Cancel
             call s:Cancell() | return ''
-		elseif EasyMotion#command_line#is_input("\<C-h>")
+        elseif EasyMotion#command_line#is_input("\<C-h>")
             " Delete one character
-			if len(input) == 0 | call s:Cancell() | return '' | endif
-			let input = substitute(input, '.$', '', '')
-		elseif EasyMotion#command_line#is_input("\<C-d>")
+            if len(input) == 0 | call s:Cancell() | return '' | endif
+            let input = substitute(input, '.$', '', '')
+        elseif EasyMotion#command_line#is_input("\<C-d>")
             " Delete one character
-			if len(input) == 0 | call s:Cancell() | return '' | endif
-			let input = substitute(input, '.$', '', '')
-		elseif EasyMotion#command_line#is_input("\<C-u>")
+            if len(input) == 0 | call s:Cancell() | return '' | endif
+            let input = substitute(input, '.$', '', '')
+        elseif EasyMotion#command_line#is_input("\<C-u>")
             " Delete all
-			if len(input) == 0 | call s:Cancell() | return '' | endif
-			let input = ''
-		elseif EasyMotion#command_line#is_input("\<C-w>")
+            if len(input) == 0 | call s:Cancell() | return '' | endif
+            let input = ''
+        elseif EasyMotion#command_line#is_input("\<C-w>")
             " Delete word
-			let input = matchstr(input, '^\zs.\{-}\ze\(\(\w*\)\|\(.\)\)$')
-		elseif EasyMotion#command_line#is_input("\<C-p>")
-			let input = previous_input
-		elseif EasyMotion#command_line#is_input("\<C-n>")
-			let input = ''
-		elseif EasyMotion#command_line#is_input("\<CR>")
-			if len(input) == 0 
-				return previous_input
-			endif
-			" Return input charcters
-			return input
-		elseif EasyMotion#command_line#is_input("\<C-j>")
-			" Return input charcters
+            let input = matchstr(input, '^\zs.\{-}\ze\(\(\w*\)\|\(.\)\)$')
+        elseif EasyMotion#command_line#is_input("\<C-p>")
+            let input = previous_input
+        elseif EasyMotion#command_line#is_input("\<C-n>")
+            let input = ''
+        elseif EasyMotion#command_line#is_input("\<CR>")
+            if len(input) == 0 
+                return previous_input
+            endif
+            " Return input charcters
             return input
-		elseif char2nr(s:char) == 128 || char2nr(s:char) < 27
+        elseif EasyMotion#command_line#is_input("\<C-j>")
+            " Return input charcters
+            return input
+        elseif char2nr(s:char) == 128 || char2nr(s:char) < 27
             " Do nothing for special key
-			continue
-		else
-			let input .= s:char
-		endif
-	endwhile
-	return input
+            continue
+        else
+            let input .= s:char
+        endif
+    endwhile
+    return input
 endfunction "}}}
 
 function! EasyMotion#command_line#char() "{{{
-	return s:char
+    return s:char
 endfunction "}}}
 function! EasyMotion#command_line#is_input(key) "{{{
-	return EasyMotion#command_line#keymap(EasyMotion#command_line#char()) == a:key
+    return EasyMotion#command_line#keymap(EasyMotion#command_line#char()) == a:key
 endfunction "}}}
 function! EasyMotion#command_line#keymap(key) "{{{
-	return get(extend(deepcopy(s:default_key_mapping), g:EasyMotion_command_line_key_mappings), a:key, a:key)
+    return get(extend(deepcopy(s:default_key_mapping), g:EasyMotion_command_line_key_mappings), a:key, a:key)
 endfunction "}}}
 " Default_key_mapping: {{{
 let s:default_key_mapping = {
-\	"\<Right>" : "\<C-f>",
-\	"\<Left>"  : "\<C-b>",
-\	"\<Up>"    : "\<C-p>",
-\	"\<Down>"  : "\<C-n>",
-\	"\<BS>"    : "\<C-h>",
-\	"\<Del>"   : "\<C-d>",
-\	"\<Home>"  : "\<C-a>",
-\	"\<End>"   : "\<C-e>",
+\   "\<Right>" : "\<C-f>",
+\   "\<Left>"  : "\<C-b>",
+\   "\<Up>"    : "\<C-p>",
+\   "\<Down>"  : "\<C-n>",
+\   "\<BS>"    : "\<C-h>",
+\   "\<Del>"   : "\<C-d>",
+\   "\<Home>"  : "\<C-a>",
+\   "\<End>"   : "\<C-e>",
 \}
 "}}}
 "
@@ -139,3 +139,4 @@ let s:default_key_mapping = {
 let &cpo = s:save_cpo
 unlet s:save_cpo
 " }}}
+" vim: fdm=marker:et:ts=4:sw=4:sts=4
