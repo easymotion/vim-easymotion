@@ -40,4 +40,6 @@
 - [] Feature: 複数文字でfuzzy matchingができればやってみたい。
 - [x] Feature: `<Plug>(easymotion-next)`,`<Plug>(easymotion-prev)`
     - highlightを実装?
-- [] Feature: multi input motionで正規表現を実装する
+    - オプションで欲しい
+- [x] Feature: multi input motionで正規表現を実装する
+- [] Fix: dot repeatが他のモーション時にリセットされる
