@@ -949,18 +949,21 @@ describe 'g:EasyMotion_smartsign'
     end
     "}}}
 
-    " makes no effect on searching signs {{{
-    " it 'makes no effect on searching signs'
-    "     normal! 0
-    "     normal f;
-    "     Expect col('.') == 28
-    "     normal! 0
-    "     normal f:
-    "     Expect col('.') == 20
-    "     normal f:
-    "     Expect col('.') == 20
-    " end
-    " }}}
+    " makes t,T smart sign {{{
+    it 'makes t,T smart case'
+        normal! 0
+        normal t;
+        Expect col('.') == 1
+        normal t;a
+        Expect col('.') == 19
+        normal t;
+        Expect col('.') == 27
+        normal! $
+        Expect col('.') == 28
+        normal T;
+        Expect col('.') == 21
+    end
+    "}}}
 end
 "}}}
 
