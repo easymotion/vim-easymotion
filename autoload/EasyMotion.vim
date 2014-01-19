@@ -53,6 +53,7 @@ function! EasyMotion#reset()
         \ 'is_operator' : 0,
         \ 'dot_repeat_target_cnt' : 0,
         \ 'dot_prompt_user_cnt' : 0,
+        \ 'changedtick' : 0,
         \ }
     return ""
 endfunction "}}}
@@ -1095,6 +1096,9 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
         let s:previous['is_exclusive'] = a:is_exclusive
         let s:previous['operator'] = v:operator
     endif
+    " To avoid side effect of overwriting buffer for tpope/repeat
+    " store current b:changedtick
+    let s:current.changedtick = b:changedtick
 
     try
         " -- Reset properties -------------------- {{{
@@ -1320,6 +1324,13 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
 
             keepjumps call cursor(coords[0], coords[1])
 
+            " To avoid side effect of overwriting buffer {{{
+            " for tpope/vim-repeat
+            if exists('g:repeat_tick')
+                if g:repeat_tick == s:current.changedtick
+                    let g:repeat_tick = b:changedtick
+                endif
+            endif "}}}
         endif
 
         " Set tpope/vim-repeat {{{
