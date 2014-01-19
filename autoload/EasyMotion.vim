@@ -340,6 +340,13 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
     let re = s:previous.regexp
     let search_direction = (a:direction >= 1 ? 'b' : '')
 
+    call EasyMotion#highlight#attach_autocmd()
+    call EasyMotion#highlight#add_highlight(re,'EasyMotionMoveHL')
+
+    if ! empty(a:visualmode)
+        " FIXME: blink highlight
+        silent exec 'normal! gv'
+    endif
     for i in range(v:count1)
         call searchpos(re, search_direction)
     endfor
@@ -460,7 +467,7 @@ function! s:findMotion(num_strokes) "{{{
 
     " Check that we have an input char
     if empty(input)
-        redraw | echo '' | return ''
+        redraw | return ''
     endif
 
     let re = s:convertRegep(input)
@@ -939,13 +946,19 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
     " }}}
     " -- Highlight targets ------------------- {{{
     if len(hl_coords) > 0
-        let target_hl_id = matchadd(g:EasyMotion_hl_group_target, join(hl_coords, '\|'), 1)
+        call EasyMotion#highlight#add_highlight(
+            \ join(hl_coords, '\|'),
+            \ g:EasyMotion_hl_group_target)
     endif
     if len(hl2_second_coords) > 0
-        let target_hl2_second_id = matchadd(g:EasyMotion_hl2_second_group_target, join(hl2_second_coords, '\|'), 1)
+        call EasyMotion#highlight#add_highlight(
+            \ join(hl2_second_coords, '\|'),
+            \ g:EasyMotion_hl2_second_group_target)
     endif
     if len(hl2_first_coords) > 0
-        let target_hl2_first_id = matchadd(g:EasyMotion_hl2_first_group_target, join(hl2_first_coords, '\|'), 1)
+        call EasyMotion#highlight#add_highlight(
+            \ join(hl2_first_coords, '\|'),
+            \ g:EasyMotion_hl2_first_group_target)
     endif
     " }}}
 
@@ -993,15 +1006,11 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
         call s:SetLines(lines_items, 'orig')
 
         " Un-highlight targets {{{
-        if exists('target_hl_id')
-            call matchdelete(target_hl_id)
-        endif
-        if exists('target_hl2_first_id')
-            call matchdelete(target_hl2_first_id)
-        endif
-        if exists('target_hl2_second_id')
-            call matchdelete(target_hl2_second_id)
-        endif
+        call EasyMotion#highlight#delete_highlight(
+            \ g:EasyMotion_hl_group_target,
+            \ g:EasyMotion_hl2_first_group_target,
+            \ g:EasyMotion_hl2_second_group_target,
+            \ )
         " }}}
 
         " Restore undo tree {{{
@@ -1242,17 +1251,23 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
                     let shade_hl_re = shade_hl_pos . '\_.*\%'. win_last_line .'l'
                 elseif a:direction == 2
                     " Both directions"
-                    let shade_hl_re = '\%'. win_first_line .'l\_.*\%'. win_last_line .'l'
+                    let shade_hl_re = '.*'
                 endif
                 if !fixed_column
-                    let shade_hl_id = matchadd(g:EasyMotion_hl_group_shade, shade_hl_re, 0)
+                    call EasyMotion#highlight#add_highlight(
+                        \ shade_hl_re,
+                        \ g:EasyMotion_hl_group_shade)
                 endif
             endif
             if hlcurrent != 0
-                let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. hlcurrent .'l.*', 1)
+                call EasyMotion#highlight#add_highlight(
+                    \ '\%'. hlcurrent .'l.*',
+                    \ g:EasyMotion_hl_line_group_shade)
             endif
             if !empty(hlchar)
-                let shade_hl_line_id = matchadd(g:EasyMotion_hl_line_group_shade, '\%'. hlchar[0] .'l\%' . hlchar[1] .'c' , 2)
+                call EasyMotion#highlight#add_highlight(
+                    \ '\%'. hlchar[0] .'l\%' . hlchar[1] .'c',
+                    \ g:EasyMotion_hl_line_group_shade)
             endif
         " }}}
 
@@ -1371,13 +1386,14 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
         call EasyMotion#reset()
         " }}}
         " -- Remove shading ---------------------- {{{
-        if g:EasyMotion_do_shade && exists('shade_hl_id') && (!fixed_column)
-            call matchdelete(shade_hl_id)
-        endif
-        if (hlcurrent || !empty(hlchar)) && exists('shade_hl_line_id')
-            call matchdelete(shade_hl_line_id)
-        endif
+        call EasyMotion#highlight#delete_highlight()
         " }}}
+
+        " -- Landing Highlight ------------------- {{{
+        if g:EasyMotion_landing_highlight
+            call EasyMotion#highlight#add_highlight(a:regexp, 'EasyMotionMoveHL')
+            call EasyMotion#highlight#attach_autocmd()
+        endif "}}}
     endtry
 endfunction " }}}
 "}}}

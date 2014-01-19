@@ -33,6 +33,9 @@ let g:EasyMotion_use_migemo         = get(g: , 'EasyMotion_use_migemo'         ,
 let g:EasyMotion_use_upper          = get(g: , 'EasyMotion_use_upper'          , 0)
 let g:EasyMotion_use_regexp         = get(g: , 'EasyMotion_use_regexp'         , 0)
 let g:EasyMotion_enter_jump_first   = get(g: , 'EasyMotion_enter_jump_first'   , 0)
+let g:EasyMotion_inc_highlight      = get(g: , 'EasyMotion_inc_highlight'      , 1)
+let g:EasyMotion_move_highlight     = get(g: , 'EasyMotion_move_highlight'     , 1)
+let g:EasyMotion_landing_highlight  = get(g: , 'EasyMotion_landing_highlight'  , 0)
 let g:EasyMotion_show_prompt        = get(g: , 'EasyMotion_show_prompt'        , 1)
 let g:EasyMotion_prompt             =
     \ get(g: , 'EasyMotion_prompt' , 'Search for {n} character(s): ')
@@ -52,6 +55,13 @@ let g:EasyMotion_hl_group_shade          = get(g:,
     \ 'EasyMotion_hl_group_shade', 'EasyMotionShade')
 let g:EasyMotion_hl_line_group_shade     = get(g:,
     \ 'EasyMotion_hl_line_group_shade', 'EasyMotionShadeLine')
+
+let g:EasyMotion_hl_inc_search     = get(g:,
+    \ 'EasyMotion_hl_inc_search', 'EasyMotionIncSearch')
+let g:EasyMotion_hl_inc_cursor     = get(g:,
+    \ 'EasyMotion_hl_inc_cursor', 'EasyMotionIncCursor')
+let g:EasyMotion_hl_move           = get(g:,
+    \ 'EasyMotion_hl_move', 'EasyMotionMoveHL')
 
 let s:target_hl_defaults = {
     \   'gui'     : ['NONE', '#ff0000' , 'bold']
@@ -83,11 +93,31 @@ let s:shade_hl_line_defaults = {
     \ , 'cterm'   : ['red' , 'grey'    , 'NONE']
     \ }
 
+let s:target_hl_inc = {
+    \   'gui'     : ['NONE', '#00ff00' , 'bold']
+    \ , 'cterm256': ['NONE', 'green'        , 'bold']
+    \ , 'cterm'   : ['NONE', 'green'   , 'bold']
+    \ }
+let s:target_hl_inc_cursor = {
+    \   'gui'     : ['magenta', 'NONE' , 'bold']
+    \ , 'cterm256': ['magenta', 'NONE' , 'bold']
+    \ , 'cterm'   : ['magenta', 'NONE' , 'bold']
+    \ }
+let s:target_hl_move = {
+    \   'gui'     : ['magenta', 'white' , 'bold']
+    \ , 'cterm256': ['magenta', 'white' , 'bold']
+    \ , 'cterm'   : ['magenta', 'white' , 'bold']
+    \ }
+
 call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
 call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
 call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
 call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
 call EasyMotion#init#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
+
+call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
+call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
+call EasyMotion#init#InitHL(g:EasyMotion_hl_move, s:target_hl_move)
 
 " Reset highlighting after loading a new color scheme {{{
 augroup EasyMotionInitHL
