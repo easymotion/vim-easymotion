@@ -1321,7 +1321,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
         endif
 
         " Set tpope/vim-repeat
-        if s:current.is_operator == 1
+        if s:current.is_operator == 1 &&
+                \ !(v:operator ==# 'y' && match(&cpo, 'y') == -1)
             silent! call repeat#set("\<Plug>(easymotion-dotrepeat)")
         endif
 
