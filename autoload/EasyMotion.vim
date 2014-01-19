@@ -1316,7 +1316,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
                 normal! v
             endif " }}}
 
-            " Adjuast screen for visual scroll {{{
+            " Adjust screen for visual scroll {{{
             if ! empty(a:visualmode)
                 keepjumps call cursor(win_first_line, 0)
                 normal! zt
