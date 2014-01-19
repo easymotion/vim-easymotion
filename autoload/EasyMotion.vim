@@ -14,6 +14,7 @@ set cpo&vim
 function! EasyMotion#init()
     " Init Migemo Dictionary
     let s:previous = {}
+    let s:dot_repeat = {}
     let s:migemo_dicts = {}
     call EasyMotion#reset()
     " Anywhere regular expression: {{{
@@ -52,6 +53,7 @@ function! EasyMotion#reset()
         \ 'is_operator' : 0,
         \ 'dot_repeat_target_cnt' : 0,
         \ 'dot_prompt_user_cnt' : 0,
+        \ 'changedtick' : 0,
         \ }
     return ""
 endfunction "}}}
@@ -313,16 +315,17 @@ function! EasyMotion#Repeat(visualmode) " {{{
 endfunction " }}}
 function! EasyMotion#DotRepeat(visualmode) " {{{
     " Repeat previous motion with previous targets
-    if s:previous ==# {}
+    if s:dot_repeat ==# {}
         call s:Message("Previous motion doesn't exist")
         return
     endif
 
-    let re = s:previous.regexp
-    let direction = s:previous.direction
-    let is_exclusive = s:previous.is_exclusive
+    let re = s:dot_repeat.regexp
+    let direction = s:dot_repeat.direction
+    let is_exclusive = s:dot_repeat.is_exclusive
+    let s:flag.within_line = s:dot_repeat.line_flag
+
     let s:current.is_operator = 1
-    let s:flag.within_line = s:previous.line_flag
     for cnt in range(v:count1)
         let s:flag.dot_repeat = 1 " s:EasyMotion() always call reset
         silent call s:EasyMotion(re, direction, 0, is_exclusive)
@@ -1093,6 +1096,9 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
         let s:previous['is_exclusive'] = a:is_exclusive
         let s:previous['operator'] = v:operator
     endif
+    " To avoid side effect of overwriting buffer for tpope/repeat
+    " store current b:changedtick
+    let s:current.changedtick = b:changedtick
 
     try
         " -- Reset properties -------------------- {{{
@@ -1284,18 +1290,18 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
             " support dot repeat {{{
             " Use visual mode to emulate dot repeat
             normal! v
-            if s:previous.is_exclusive == 0
-                if s:previous.direction == 0 "Forward
+            if s:dot_repeat.is_exclusive == 0
+                if s:dot_repeat.direction == 0 "Forward
                     let coords[1] -= 1
-                elseif s:previous.direction == 1 "Backward
+                elseif s:dot_repeat.direction == 1 "Backward
                     " Shift visual selection to left by making cursor one key
                     " left.
                     normal! hoh
                 endif
             endif
             keepjumps call cursor(coords[0], coords[1])
-            let cmd = s:previous.operator
-            if s:previous.operator ==# 'c'
+            let cmd = s:dot_repeat.operator
+            if s:dot_repeat.operator ==# 'c'
                 let cmd .= getreg('.')
             endif
 
@@ -1310,7 +1316,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
                 normal! v
             endif " }}}
 
-            " Adjuast screen for visual scroll {{{
+            " Adjust screen for visual scroll {{{
             if ! empty(a:visualmode)
                 keepjumps call cursor(win_first_line, 0)
                 normal! zt
@@ -1318,12 +1324,27 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
 
             keepjumps call cursor(coords[0], coords[1])
 
+            " To avoid side effect of overwriting buffer {{{
+            " for tpope/vim-repeat
+            if exists('g:repeat_tick')
+                if g:repeat_tick == s:current.changedtick
+                    let g:repeat_tick = b:changedtick
+                endif
+            endif "}}}
         endif
 
-        " Set tpope/vim-repeat
-        if s:current.is_operator == 1
+        " Set tpope/vim-repeat {{{
+        if s:current.is_operator == 1 &&
+                \ !(v:operator ==# 'y' && match(&cpo, 'y') == -1)
+            " Store previous info for dot repeat {{{
+            let s:dot_repeat.regexp = a:regexp
+            let s:dot_repeat.direction = a:direction
+            let s:dot_repeat.line_flag = s:flag.within_line == 1 ? 1 : 0
+            let s:dot_repeat.is_exclusive = a:is_exclusive
+            let s:dot_repeat.operator = v:operator
+            "}}}
             silent! call repeat#set("\<Plug>(easymotion-dotrepeat)")
-        endif
+        endif "}}}
 
         call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
         let s:EasyMotion_cancelled = 0
