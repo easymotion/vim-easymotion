@@ -36,6 +36,9 @@ let g:EasyMotion_use_migemo         = get(g: , 'EasyMotion_use_migemo'         ,
 let g:EasyMotion_use_upper          = get(g: , 'EasyMotion_use_upper'          , 0)
 let g:EasyMotion_use_regexp         = get(g: , 'EasyMotion_use_regexp'         , 0)
 let g:EasyMotion_enter_jump_first   = get(g: , 'EasyMotion_enter_jump_first'   , 0)
+let g:EasyMotion_inc_highlight      = get(g: , 'EasyMotion_inc_highlight'      , 1)
+let g:EasyMotion_move_highlight     = get(g: , 'EasyMotion_move_highlight'     , 1)
+let g:EasyMotion_landing_highlight  = get(g: , 'EasyMotion_landing_highlight'  , 0)
 let g:EasyMotion_show_prompt        = get(g: , 'EasyMotion_show_prompt'        , 1)
 let g:EasyMotion_prompt             =
     \ get(g: , 'EasyMotion_prompt' , 'Search for {n} character(s): ')
@@ -55,6 +58,13 @@ let g:EasyMotion_hl_group_shade          = get(g:,
     \ 'EasyMotion_hl_group_shade', 'EasyMotionShade')
 let g:EasyMotion_hl_line_group_shade     = get(g:,
     \ 'EasyMotion_hl_line_group_shade', 'EasyMotionShadeLine')
+
+let g:EasyMotion_hl_inc_search     = get(g:,
+    \ 'EasyMotion_hl_inc_search', 'EasyMotionIncSearch')
+let g:EasyMotion_hl_inc_cursor     = get(g:,
+    \ 'EasyMotion_hl_inc_cursor', 'EasyMotionIncCursor')
+let g:EasyMotion_hl_move           = get(g:,
+    \ 'EasyMotion_hl_move', 'EasyMotionMoveHL')
 
 let s:target_hl_defaults = {
     \   'gui'     : ['NONE', '#ff0000' , 'bold']
@@ -86,11 +96,31 @@ let s:shade_hl_line_defaults = {
     \ , 'cterm'   : ['red' , 'grey'    , 'NONE']
     \ }
 
+let s:target_hl_inc = {
+    \   'gui'     : ['NONE', '#7fbf00' , 'bold']
+    \ , 'cterm256': ['NONE', 'green'   , 'bold']
+    \ , 'cterm'   : ['NONE', 'green'   , 'bold']
+    \ }
+let s:target_hl_inc_cursor = {
+    \   'gui'     : ['#d13a84', 'NONE' , 'bold']
+    \ , 'cterm256': ['magenta', 'NONE' , 'bold']
+    \ , 'cterm'   : ['magenta', 'NONE' , 'bold']
+    \ }
+let s:target_hl_move = {
+    \   'gui'     : ['#7fbf00', '#121813' , 'bold']
+    \ , 'cterm256': ['green'  , 'white'   , 'bold']
+    \ , 'cterm'   : ['green'  , 'white'   , 'bold']
+    \ }
+
 call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
 call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
 call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
 call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
 call EasyMotion#init#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
+
+call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
+call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
+call EasyMotion#init#InitHL(g:EasyMotion_hl_move, s:target_hl_move)
 
 " Reset highlighting after loading a new color scheme {{{
 augroup EasyMotionInitHL
@@ -101,6 +131,10 @@ augroup EasyMotionInitHL
     autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
     autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
     autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
+
+    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
+    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
+    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_move, s:target_hl_move)
 augroup end
 " }}}
 " }}}
@@ -318,6 +352,13 @@ nnoremap <silent> <Plug>(easymotion-special-ld)      :<C-u>call EasyMotion#Selec
 nnoremap <silent> <Plug>(easymotion-special-py)      :<C-u>call EasyMotion#SelectPhraseYank()<CR>
 nnoremap <silent> <Plug>(easymotion-special-pd)      :<C-u>call EasyMotion#SelectPhraseDelete()<CR>
 "}}}
+
+map <silent><expr><Plug>(easymotion-clever-s)
+    \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-s)'
+map <silent><expr><Plug>(easymotion-clever-s2)
+    \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-s2)'
+map <silent><expr><Plug>(easymotion-clever-sn)
+    \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-sn)'
 
 " }}}
 

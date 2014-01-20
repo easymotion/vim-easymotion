@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:17 Jan 2014.
+*easymotion.txt*	Version 2.0  Last change:21 Jan 2014.
 
 
             ______                  __  ___       __  _
@@ -37,6 +37,7 @@ CONTENTS                                                 *easymotion-contents*
            4.11.2 Select Phrase ........... |easymotion-select-phrase|
        4.12 EasyMotion_enter_jump_first ... |EasyMotion_enter_jump_first|
        4.13 EasyMotion_prompt ............. |EasyMotion_prompt|
+       4.14 EasyMotion_highlight .......... |EasyMotion_highlight|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -255,16 +256,18 @@ Repeat ~
         Last Find Motion~
             In Find motion (e.g. |<Plug>(easymoion-s)| ), to type `<CR>`
             without input characters invoke last find motion. This
-            does not repeat motion type (e.g. othrer word motion,
+            does not repeat motion type (e.g. Other word motion,
             <Plug>(easymotion-j) etc...) but only repeat input
             characters.
 
 <Plug>(easymotion-next)                               *<Plug>(easymotion-next)*
 <Plug>(easymotion-prev)                               *<Plug>(easymotion-prev)*
 
-        Jump to next/previous much. Only this motion can be move to offscrren
+        Jump to next/previous much. Only this motion can be move to off-screen
         match. This motion wrap around the end of the file if you set
-        |'wrapscan'| in your vimrc.
+        |'wrapscan'| in your vimrc. During this motion, matched text is
+        highlighted. If you don't want to highlight them, set
+        |g:EasyMotion_move_highlight| option to 0.
 
         Example:
 >
@@ -445,6 +448,10 @@ vim-sneak, |EasyMotion| also provide this feature. With above keymapping,
     <Leader>s{char}{char}{char}...<CR>
 
     You can use <C-h> to delete while typing.
+
+    Note: 'n' key motion provide incremental highlighting feature. If you
+          don't want to highlight incrementally, set
+          |g:EasyMotion_inc_highlight| option to 0.
 
 All Find motion (s,f,F,t,T,sl,fl,Fl,tl,Tl) support this feature!
 (|l| means within line motion)
@@ -874,6 +881,39 @@ Default:
         |<Plug>(easymotion-s)|  -> 'Search for 1 character: '
         |<Plug>(easymotion-s2)| -> 'Search for 2 characters: '
         |<Plug>(easymotion-sn)| -> 'Search for characters: '
+
+4.14 Customize highlight behavior                        *EasyMotion_highlight*
+
+                                                   *g:EasyMotion_inc_highlight*
+
+    While 'n' key find motion(e.g. |<Plug>(easymotion-sn)|), EasyMotion
+    incrementally highlight matched text. If you don't want to this feature,
+    set this option to 0
+>
+    let g:EasyMotion_inc_highlight = 0
+<
+    Default: 1
+
+                                                  *g:EasyMotion_move_highlight*
+
+    While moving motion(|<Plug>(easymotion-next)|, |<Plug>(easymotion-prev)|),
+    EasyMotion highlight matched text until cursor move, entering insert
+    mode, or leaving buffer. If you don't want this feature, set this option
+    to 0.
+>
+    let g:EasyMotion_move_highlight = 0
+<
+    Default: 1
+
+                                               *g:EasyMotion_landing_highlight*
+
+    If you want to highlight matched text temporarily (unhighlight timing
+    is same with |g:EasyMotion_move_highlight|) after EasyMotion
+    jump(landing), set this option to 0.
+>
+    let g:EasyMotion_landing_highlight = 1
+<
+    Default: 0
 
 ==============================================================================
 5. License                                                *easymotion-license*
