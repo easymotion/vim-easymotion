@@ -341,8 +341,10 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
     let re = s:previous.regexp
     let search_direction = (a:direction >= 1 ? 'b' : '')
 
-    call EasyMotion#highlight#attach_autocmd()
-    call EasyMotion#highlight#add_highlight(re,'EasyMotionMoveHL')
+    if g:EasyMotion_move_highlight
+        call EasyMotion#highlight#attach_autocmd()
+        call EasyMotion#highlight#add_highlight(re,'EasyMotionMoveHL')
+    endif
 
     if ! empty(a:visualmode)
         " FIXME: blink highlight
