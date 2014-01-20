@@ -128,6 +128,10 @@ augroup EasyMotionInitHL
     autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
     autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
     autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
+
+    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
+    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
+    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_move, s:target_hl_move)
 augroup end
 " }}}
 " }}}
