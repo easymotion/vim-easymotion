@@ -346,6 +346,13 @@ nnoremap <silent> <Plug>(easymotion-special-py)      :<C-u>call EasyMotion#Selec
 nnoremap <silent> <Plug>(easymotion-special-pd)      :<C-u>call EasyMotion#SelectPhraseDelete()<CR>
 "}}}
 
+map <silent><expr><Plug>(easymotion-clever-s)
+    \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-s)'
+map <silent><expr><Plug>(easymotion-clever-s2)
+    \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-s2)'
+map <silent><expr><Plug>(easymotion-clever-sn)
+    \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-sn)'
+
 " }}}
 
 " == Default key mapping {{{

@@ -16,6 +16,7 @@ function! EasyMotion#init()
     let s:previous = {}
     let s:dot_repeat = {}
     let s:migemo_dicts = {}
+    let s:EasyMotion_is_active = 0
     call EasyMotion#reset()
     " Anywhere regular expression: {{{
     let re = '\v' .
@@ -351,6 +352,9 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
         call searchpos(re, search_direction)
     endfor
     call EasyMotion#reset()
+    " -- Activate EasyMotion ----------------- {{{
+    let s:EasyMotion_is_active = 1
+    call EasyMotion#attach_active_autocmd() "}}}
 endfunction " }}}
 " }}}
 " Helper Functions: {{{
@@ -1394,8 +1398,27 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
             call EasyMotion#highlight#add_highlight(a:regexp, 'EasyMotionMoveHL')
             call EasyMotion#highlight#attach_autocmd()
         endif "}}}
+        " -- Activate EasyMotion ----------------- {{{
+        let s:EasyMotion_is_active = 1
+        call EasyMotion#attach_active_autocmd() "}}}
     endtry
 endfunction " }}}
+function! EasyMotion#attach_active_autocmd() "{{{
+    " Reference: https://github.com/justinmk/vim-sneak
+    augroup plugin-easymotion-active
+        autocmd!
+        autocmd InsertEnter,WinLeave,BufLeave <buffer>
+            \ let s:EasyMotion_is_active = 0
+            \  | autocmd! plugin-easymotion-active * <buffer>
+        autocmd CursorMoved <buffer>
+            \ autocmd plugin-easymotion-active CursorMoved <buffer>
+            \ let s:EasyMotion_is_active = 0
+            \  | autocmd! plugin-easymotion-active * <buffer>
+    augroup END
+endfunction "}}}
+function! EasyMotion#is_active() "{{{
+    return s:EasyMotion_is_active
+endfunction "}}}
 "}}}
 " Call Init: {{{
 call EasyMotion#init()
