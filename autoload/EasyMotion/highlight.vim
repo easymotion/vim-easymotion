@@ -2,7 +2,7 @@
 " FILE: highlight.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/t9md/vim-smalls
-" Last Change: 20 Jan 2014.
+" Last Change: 21 Jan 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -40,7 +40,7 @@ let s:priorities = {
     \ 'EasyMotionShade' : 0,
     \ 'EasyMotionShadeLine' : 0,
     \ 'EasyMotionIncSearch' : 1,
-    \ 'EasyMotionIncCursor' : 1,
+    \ 'EasyMotionIncCursor' : 2,
     \ 'EasyMotionMoveHL' : 0,
     \ }
 for group in keys(s:priorities)
