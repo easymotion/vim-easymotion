@@ -37,9 +37,12 @@
     - tpope/vim-repeat依存
     - 依存なしでやるには、exprを使わなければならないが、exprだとバッファを書き換えることができない
 - [] Fix: highlightのバグ https://github.com/Lokaltog/vim-easymotion/issues/78
+    - syntaxのハイライトとの優先度の関係かもしれない
 - [] Feature: 複数文字でfuzzy matchingができればやってみたい。
 - [x] Feature: `<Plug>(easymotion-next)`,`<Plug>(easymotion-prev)`
-    - highlightを実装?
-    - オプションで欲しい
+    - [x] highlightを実装?
+    - [x] オプションで欲しい
 - [x] Feature: multi input motionで正規表現を実装する
-- [] Fix: dot repeatが他のモーション時にリセットされる
+- [x] Fix: dot repeatが他のモーション時にリセットされる
+    - Problem: b:changedtickがバッファ書き換えで変更されtpope/vim-repeatのg:repeat_tickと値が変わってしまう
+    - Solution: g:repeat_tickの値を変える workaround
