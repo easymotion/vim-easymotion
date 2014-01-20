@@ -6,6 +6,9 @@
 " Original: https://github.com/Lokaltog/vim-easymotion
 
 " == Script initialization {{{
+if expand("%:p") ==# expand("<sfile>:p")
+  unlet! g:EasyMotion_loaded
+endif
 if exists('g:EasyMotion_loaded') || &compatible || version < 702
     finish
 endif
