@@ -1263,6 +1263,11 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
         if ! empty(a:visualmode)
             keepjumps call cursor(win_first_line,0)
             normal! zt
+            " for adjusting cursorline
+            keepjumps call cursor(c_pos)
+        else
+            " for adjusting cursorline
+            keepjumps call cursor(orig_pos)
         endif
         "}}}
 
