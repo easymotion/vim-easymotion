@@ -94,19 +94,19 @@ let s:shade_hl_line_defaults = {
     \ }
 
 let s:target_hl_inc = {
-    \   'gui'     : ['NONE', '#00ff00' , 'bold']
-    \ , 'cterm256': ['NONE', 'green'        , 'bold']
+    \   'gui'     : ['NONE', '#7fbf00' , 'bold']
+    \ , 'cterm256': ['NONE', 'green'   , 'bold']
     \ , 'cterm'   : ['NONE', 'green'   , 'bold']
     \ }
 let s:target_hl_inc_cursor = {
-    \   'gui'     : ['magenta', 'NONE' , 'bold']
+    \   'gui'     : ['#d13a84', 'NONE' , 'bold']
     \ , 'cterm256': ['magenta', 'NONE' , 'bold']
     \ , 'cterm'   : ['magenta', 'NONE' , 'bold']
     \ }
 let s:target_hl_move = {
-    \   'gui'     : ['magenta', 'white' , 'bold']
-    \ , 'cterm256': ['magenta', 'white' , 'bold']
-    \ , 'cterm'   : ['magenta', 'white' , 'bold']
+    \   'gui'     : ['#7fbf00', '#121813' , 'bold']
+    \ , 'cterm256': ['green'  , 'white'   , 'bold']
+    \ , 'cterm'   : ['green'  , 'white'   , 'bold']
     \ }
 
 call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
