@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: t/easymotion_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 20 Jan 2014.
+" Last Change: 21 Jan 2014.
 " Test: https://github.com/kana/vim-vspec
 " Refer: https://github.com/rhysd/clever-f.vim
 " Description: EasyMotion test with vim-vspec
@@ -55,6 +55,10 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-T)', 'n') ==# ':<C-U>call EasyMotion#T(1,0,1)<CR>'
         Expect maparg('<Plug>(easymotion-T)', 'o') ==# ':<C-U>call EasyMotion#T(1,0,1)<CR>'
         Expect maparg('<Plug>(easymotion-T)', 'v') ==# '<Esc>:<C-U>call EasyMotion#T(1,1,1)<CR>'
+        " bd-t
+        Expect maparg('<Plug>(easymotion-bd-t)', 'n') ==# ':<C-U>call EasyMotion#T(1,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-t)', 'o') ==# ':<C-U>call EasyMotion#T(1,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-t)', 'v') ==# '<Esc>:<C-U>call EasyMotion#T(1,1,2)<CR>'
         " sl
         Expect maparg('<Plug>(easymotion-sl)', 'n') ==# ':<C-U>call EasyMotion#SL(1,0,2)<CR>'
         Expect maparg('<Plug>(easymotion-sl)', 'o') ==# ':<C-U>call EasyMotion#SL(1,0,2)<CR>'
@@ -75,6 +79,10 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-Tl)', 'n') ==# ':<C-U>call EasyMotion#TL(1,0,1)<CR>'
         Expect maparg('<Plug>(easymotion-Tl)', 'o') ==# ':<C-U>call EasyMotion#TL(1,0,1)<CR>'
         Expect maparg('<Plug>(easymotion-Tl)', 'v') ==# '<Esc>:<C-U>call EasyMotion#TL(1,1,1)<CR>'
+        " bd-tl
+        Expect maparg('<Plug>(easymotion-bd-tl)', 'n') ==# ':<C-U>call EasyMotion#TL(1,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-tl)', 'o') ==# ':<C-U>call EasyMotion#TL(1,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-tl)', 'v') ==# '<Esc>:<C-U>call EasyMotion#TL(1,1,2)<CR>'
         "}}}
 
         " Two Char Find Motion: {{{
@@ -102,6 +110,10 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-sl2)', 'n') ==# ':<C-U>call EasyMotion#SL(2,0,2)<CR>'
         Expect maparg('<Plug>(easymotion-sl2)', 'o') ==# ':<C-U>call EasyMotion#SL(2,0,2)<CR>'
         Expect maparg('<Plug>(easymotion-sl2)', 'v') ==# '<Esc>:<C-U>call EasyMotion#SL(2,1,2)<CR>'
+        " bd-t2
+        Expect maparg('<Plug>(easymotion-bd-t2)', 'n') ==# ':<C-U>call EasyMotion#T(2,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-t2)', 'o') ==# ':<C-U>call EasyMotion#T(2,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-t2)', 'v') ==# '<Esc>:<C-U>call EasyMotion#T(2,1,2)<CR>'
         " fl2
         Expect maparg('<Plug>(easymotion-fl2)', 'n') ==# ':<C-U>call EasyMotion#SL(2,0,0)<CR>'
         Expect maparg('<Plug>(easymotion-fl2)', 'o') ==# ':<C-U>call EasyMotion#SL(2,0,0)<CR>'
@@ -118,6 +130,10 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-Tl2)', 'n') ==# ':<C-U>call EasyMotion#TL(2,0,1)<CR>'
         Expect maparg('<Plug>(easymotion-Tl2)', 'o') ==# ':<C-U>call EasyMotion#TL(2,0,1)<CR>'
         Expect maparg('<Plug>(easymotion-Tl2)', 'v') ==# '<Esc>:<C-U>call EasyMotion#TL(2,1,1)<CR>'
+        " bd-tl2
+        Expect maparg('<Plug>(easymotion-bd-tl2)', 'n') ==# ':<C-U>call EasyMotion#TL(2,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-tl2)', 'o') ==# ':<C-U>call EasyMotion#TL(2,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-tl2)', 'v') ==# '<Esc>:<C-U>call EasyMotion#TL(2,1,2)<CR>'
         "}}}
 
         " Multi Char Find Motion: {{{
@@ -141,6 +157,10 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-Tn)', 'n') ==# ':<C-U>call EasyMotion#T(-1,0,1)<CR>'
         Expect maparg('<Plug>(easymotion-Tn)', 'o') ==# ':<C-U>call EasyMotion#T(-1,0,1)<CR>'
         Expect maparg('<Plug>(easymotion-Tn)', 'v') ==# '<Esc>:<C-U>call EasyMotion#T(-1,1,1)<CR>'
+        " bd-tn
+        Expect maparg('<Plug>(easymotion-bd-tn)', 'n') ==# ':<C-U>call EasyMotion#T(-1,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-tn)', 'o') ==# ':<C-U>call EasyMotion#T(-1,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-tn)', 'v') ==# '<Esc>:<C-U>call EasyMotion#T(-1,1,2)<CR>'
         " sln
         Expect maparg('<Plug>(easymotion-sln)', 'n') ==# ':<C-U>call EasyMotion#SL(-1,0,2)<CR>'
         Expect maparg('<Plug>(easymotion-sln)', 'o') ==# ':<C-U>call EasyMotion#SL(-1,0,2)<CR>'
@@ -161,6 +181,10 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-Tln)', 'n') ==# ':<C-U>call EasyMotion#TL(-1,0,1)<CR>'
         Expect maparg('<Plug>(easymotion-Tln)', 'o') ==# ':<C-U>call EasyMotion#TL(-1,0,1)<CR>'
         Expect maparg('<Plug>(easymotion-Tln)', 'v') ==# '<Esc>:<C-U>call EasyMotion#TL(-1,1,1)<CR>'
+        " bd-tln
+        Expect maparg('<Plug>(easymotion-bd-tln)', 'n') ==# ':<C-U>call EasyMotion#TL(-1,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-tln)', 'o') ==# ':<C-U>call EasyMotion#TL(-1,0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-tln)', 'v') ==# '<Esc>:<C-U>call EasyMotion#TL(-1,1,2)<CR>'
         "}}}
     end
 
@@ -1129,6 +1153,42 @@ describe 'EasyMotion regexp'
 
         exe "normal s\^\<CR>b"
         Expect CursorPos() == [l,1,'p']
+    end
+    "}}}
+end
+"}}}
+
+" bi-directional t motion {{{
+describe 'bi-directional t motion'
+    before
+        new
+        let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        let g:EasyMotion_use_regexp = 1
+        map t <Plug>(easymotion-bd-t)
+        call EasyMotion#init()
+        call AddLine('poge1 2huga 3hiyo 4poyo')
+        "             12345678901234567890123
+    end
+
+    after
+        let g:EasyMotion_use_regexp = 0
+        close!
+    end
+
+    " provide bidirectional motion with one key mapping {{{
+    it 'provide bidirectional motion with one key mapping'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+        normal thb
+        Expect CursorPos() == [l,13,'3']
+
+        normal! h
+        Expect CursorPos() == [l,12,' ']
+
+        normal thb
+        Expect CursorPos() == [l,9,'u']
+
     end
     "}}}
 end

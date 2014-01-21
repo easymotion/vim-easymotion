@@ -49,6 +49,8 @@ function! EasyMotion#reset()
         \ 'within_line' : 0,
         \ 'dot_repeat' : 0,
         \ 'regexp' : 0,
+        \ 'bd_t' : 0,
+        \ 'find_bd' : 0,
         \ }
     let s:current = {
         \ 'is_operator' : 0,
@@ -61,20 +63,39 @@ endfunction "}}}
 " Motion Functions: {{{
 " -- Find Motion -------------------------
 function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
-    let is_exclusive = mode(1) ==# 'no' ? 1 : 0
+    if a:direction == 1
+        let is_inclusive = 0
+    else
+        " Handle bi-direction later
+        let is_inclusive = mode(1) ==# 'no' ? 1 : 0
+    endif
+    let s:flag.find_bd = a:direction == 2 ? 1 : 0
     let re = s:findMotion(a:num_strokes)
     if s:handleEmpty(re, a:visualmode) | return | endif
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
+    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
 endfunction " }}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
-    let is_exclusive = mode(1) ==# 'no' ? 1 : 0
+    if a:direction == 1
+        let is_inclusive = 0
+    else
+        " Handle bi-direction later
+        let is_inclusive = mode(1) ==# 'no' ? 1 : 0
+    endif
+    let s:flag.find_bd = a:direction == 2 ? 1 : 0
     let re = s:findMotion(a:num_strokes)
     if s:handleEmpty(re, a:visualmode) | return | endif
-    let re = a:direction == 1 ? '\('.re.'\)\zs.' : '.\ze\('.re.'\)'
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
+    if a:direction == 2
+        let s:flag.bd_t = 1
+    elseif a:direction == 1
+        let re = '\('.re.'\)\zs.'
+    else
+        let re = '.\ze\('.re.'\)'
+    endif
+    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
 endfunction " }}}
 " -- Word Motion -------------------------
 function! EasyMotion#WB(visualmode, direction) " {{{
+    "FIXME: inconsistent with default vim motion
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
 endfunction " }}}
@@ -84,13 +105,13 @@ function! EasyMotion#WBW(visualmode, direction) " {{{
 endfunction " }}}
 function! EasyMotion#E(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    let is_exclusive = mode(1) ==# 'no' ? 1 : 0
-    call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_exclusive)
+    let is_inclusive = mode(1) ==# 'no' ? 1 : 0
+    call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_inclusive)
 endfunction " }}}
 function! EasyMotion#EW(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    let is_exclusive = mode(1) ==# 'no' ? 1 : 0
-    call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_exclusive)
+    let is_inclusive = mode(1) ==# 'no' ? 1 : 0
+    call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_inclusive)
 endfunction " }}}
 " -- JK Motion ---------------------------
 function! EasyMotion#JK(visualmode, direction) " {{{
@@ -123,31 +144,43 @@ function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
 endfunction " }}}
 " -- Line Motion -------------------------
 function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
-    let is_exclusive = mode(1) ==# 'no' ? 1 : 0
+    if a:direction == 1
+        let is_inclusive = 0
+    else
+        " Handle bi-direction later
+        let is_inclusive = mode(1) ==# 'no' ? 1 : 0
+    endif
+    let s:flag.find_bd = a:direction == 2 ? 1 : 0
     let s:flag.within_line = 1
     let re = s:findMotion(a:num_strokes)
     if s:handleEmpty(re, a:visualmode) | return | endif
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
+    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
 endfunction " }}}
 function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
-    let is_exclusive = mode(1) ==# 'no' ? 1 : 0
+    if a:direction == 1
+        let is_inclusive = 0
+    else
+        " Handle bi-direction later
+        let is_inclusive = mode(1) ==# 'no' ? 1 : 0
+    endif
+    let s:flag.find_bd = a:direction == 2 ? 1 : 0
     let s:flag.within_line = 1
     let re = s:findMotion(a:num_strokes)
     if s:handleEmpty(re, a:visualmode) | return | endif
     let re = a:direction == 1 ? '\('.re.'\)\zs.' : '.\ze\('.re.'\)'
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_exclusive)
+    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
 endfunction " }}}
 function! EasyMotion#WBL(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    let is_exclusive = mode(1) ==# 'no' ? 1 : 0
+    let is_inclusive = mode(1) ==# 'no' ? 1 : 0
     let s:flag.within_line = 1
     call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
 endfunction " }}}
 function! EasyMotion#EL(visualmode, direction) " {{{
     let s:flag.within_line = 1
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    let is_exclusive = mode(1) ==# 'no' ? 1 : 0
-    call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_exclusive)
+    let is_inclusive = mode(1) ==# 'no' ? 1 : 0
+    call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_inclusive)
 endfunction " }}}
 function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
     let s:flag.within_line = 1
@@ -310,9 +343,9 @@ function! EasyMotion#Repeat(visualmode) " {{{
     let direction = s:previous.direction
     let s:flag.within_line = s:previous.line_flag
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    let is_exclusive = mode(1) ==# 'no' ? 1 : 0
+    let is_inclusive = mode(1) ==# 'no' ? 1 : 0
 
-    call s:EasyMotion(re, direction, a:visualmode ? visualmode() : '', is_exclusive)
+    call s:EasyMotion(re, direction, a:visualmode ? visualmode() : '', is_inclusive)
 endfunction " }}}
 function! EasyMotion#DotRepeat(visualmode) " {{{
     " Repeat previous motion with previous targets
@@ -323,13 +356,13 @@ function! EasyMotion#DotRepeat(visualmode) " {{{
 
     let re = s:dot_repeat.regexp
     let direction = s:dot_repeat.direction
-    let is_exclusive = s:dot_repeat.is_exclusive
+    let is_inclusive = s:dot_repeat.is_inclusive
     let s:flag.within_line = s:dot_repeat.line_flag
 
     let s:current.is_operator = 1
     for cnt in range(v:count1)
         let s:flag.dot_repeat = 1 " s:EasyMotion() always call reset
-        silent call s:EasyMotion(re, direction, 0, is_exclusive)
+        silent call s:EasyMotion(re, direction, 0, is_inclusive)
     endfor
 endfunction " }}}
 function! EasyMotion#NextPrevious(visualmode, direction) " {{{
@@ -1082,7 +1115,7 @@ function! s:DotPromptUser(groups) "{{{
         return s:PromptUser(target, a:allows_repeat, a:fixed_column)
     endif
 endfunction "}}}
-function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
+function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
     " For Special Function {{{
     " For SelectLines(), to highlight previous selected line
     let hlcurrent = a:0 >= 1 ? a:1 : 0
@@ -1108,7 +1141,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
         let s:previous['regexp'] = a:regexp
         let s:previous['direction'] = a:direction
         let s:previous['line_flag'] = s:flag.within_line == 1 ? 1 : 0
-        let s:previous['is_exclusive'] = a:is_exclusive
+        let s:previous['is_inclusive'] = a:is_inclusive
         let s:previous['operator'] = v:operator
     endif
     " To avoid side effect of overwriting buffer for tpope/repeat
@@ -1152,12 +1185,20 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
         endif
         " }}}
 
+        " Handle bi-directional t motion {{{
+        if s:flag.bd_t == 1
+            let regexp = '\('.a:regexp.'\)\zs.'
+        else
+            let regexp = a:regexp
+        endif
+        "}}}
+
         " Construct match dict {{{
         while 1
             " Note: searchpos() has side effect which call jump cursor position.
             "       You can disable this side effect by add 'n' flags,
             "       but in this case, it's better to allows jump side effect.
-            let pos = searchpos(a:regexp, search_direction . search_at_cursor, search_stopline)
+            let pos = searchpos(regexp, search_direction . search_at_cursor, search_stopline)
             let search_at_cursor = ''
 
             " Reached end of search range
@@ -1180,6 +1221,11 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
         "}}}
 
         " Handle bidirection "{{{
+        " For bi-directional t motion {{{
+        if s:flag.bd_t == 1
+            let regexp = '.\ze\('.a:regexp.'\)'
+        endif
+        "}}}
         " Reconstruct match dict
         if a:direction == 2
             " Forward
@@ -1196,7 +1242,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
                 let search_stopline = !empty(a:visualmode) ? c_pos[0] : orig_pos[0]
             endif
             while 1
-                let pos = searchpos(a:regexp, '', search_stopline)
+                let pos = searchpos(regexp, '', search_stopline)
                 " Reached end of search range
                 if pos == [0, 0]
                     break
@@ -1316,7 +1362,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
             " support dot repeat {{{
             " Use visual mode to emulate dot repeat
             normal! v
-            if s:dot_repeat.is_exclusive == 0
+            if s:dot_repeat.is_inclusive == 0
                 if s:dot_repeat.direction == 0 "Forward
                     let coords[1] -= 1
                 elseif s:dot_repeat.direction == 1 "Backward
@@ -1334,8 +1380,17 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
             exec 'normal! ' . cmd
             "}}}
         else
-            " Handle operator-pending mode {{{
-            if a:is_exclusive == 1
+            " Handle inclusive & exclusive {{{
+            " Overwrite inclusive flag for special case
+            let is_exclusive = 0
+            if s:flag.find_bd == 1
+                " for bi-directional s(f) & t
+                let is_backward = EasyMotion#helper#is_greater_coords(orig_pos, coords) < 0
+                if is_backward != 0
+                    let is_exclusive = 1
+                endif
+            endif
+            if a:is_inclusive == 1 && is_exclusive == 0
                 " Exclusive motion requires that we eat one more
                 " character to the right if we're using
                 " a forward motion
@@ -1366,7 +1421,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_exclusive, ...) " {{{
             let s:dot_repeat.regexp = a:regexp
             let s:dot_repeat.direction = a:direction
             let s:dot_repeat.line_flag = s:flag.within_line == 1 ? 1 : 0
-            let s:dot_repeat.is_exclusive = a:is_exclusive
+            let s:dot_repeat.is_inclusive = a:is_inclusive
             let s:dot_repeat.operator = v:operator
             "}}}
             silent! call repeat#set("\<Plug>(easymotion-dotrepeat)")
