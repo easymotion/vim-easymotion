@@ -1309,6 +1309,11 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
                     call EasyMotion#highlight#add_highlight(
                         \ shade_hl_re,
                         \ g:EasyMotion_hl_group_shade)
+                    if g:EasyMotion_cursor_highlight
+                        let cursor_hl_re = shade_hl_pos
+                        call EasyMotion#highlight#add_highlight(cursor_hl_re,
+                            \ g:EasyMotion_hl_inc_cursor)
+                    endif
                 endif
             endif
             if hlcurrent != 0

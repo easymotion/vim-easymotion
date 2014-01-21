@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: t/easymotion_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 21 Jan 2014.
+" Last Change: 22 Jan 2014.
 " Test: https://github.com/kana/vim-vspec
 " Refer: https://github.com/rhysd/clever-f.vim
 " Description: EasyMotion test with vim-vspec
@@ -452,6 +452,7 @@ describe 'Default settings'
         Expect g:EasyMotion_inc_highlight      ==# 1
         Expect g:EasyMotion_move_highlight     ==# 1
         Expect g:EasyMotion_landing_highlight  ==# 0
+        Expect g:EasyMotion_cursor_highlight   ==# 0
         Expect g:EasyMotion_prompt             ==# 'Search for {n} character(s): '
         Expect g:EasyMotion_command_line_key_mappings ==# {}
         " }}}
