@@ -179,6 +179,19 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
                                       |
     Multi Input Find Motion           | See |easymotion-multi-input|
     ----------------------------------|---------------------------------
+    <Plug>(easymotion-s2)             | See |<Plug>(easymotion-s2)|
+    <Plug>(easymotion-f2)             | See |<Plug>(easymotion-f2)|
+    <Plug>(easymotion-F2)             | See |<Plug>(easymotion-F2)|
+    <Plug>(easymotion-t2)             | See |<Plug>(easymotion-t2)|
+    <Plug>(easymotion-T2)             | See |<Plug>(easymotion-T2)|
+    <Plug>(easymotion-bd-t2)          | See |<Plug>(easymotion-bd-t2)|
+                                      |
+    <Plug>(easymotion-sl2)            | See |<Plug>(easymotion-sl2)|
+    <Plug>(easymotion-fl2)            | See |<Plug>(easymotion-fl2)|
+    <Plug>(easymotion-Fl2)            | See |<Plug>(easymotion-Fl2)|
+    <Plug>(easymotion-tl2)            | See |<Plug>(easymotion-tl2)|
+    <Plug>(easymotion-Tl2)            | See |<Plug>(easymotion-Tl2)|
+                                      |
     <Plug>(easymotion-sn)             | See |<Plug>(easymotion-sn)|
     <Plug>(easymotion-fn)             | See |<Plug>(easymotion-fn)|
     <Plug>(easymotion-Fn)             | See |<Plug>(easymotion-Fn)|
@@ -432,6 +445,7 @@ Within line motion ~
 
 Multi Input Find Motion!~
                                                        *easymotion-multi-input*
+                                                           *easymotion-two-key*
                                                            *easymotion-{find}n*
                                                    *<Plug>(easymotion-{find}n)*
                                                    *<Plug>(easymotion-{find}2)*
