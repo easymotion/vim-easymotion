@@ -145,6 +145,7 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
 
     More <Plug> Mapping Table         | (No assignment by default)
     ----------------------------------|---------------------------------
+    <Plug>(easymotion-bd-t)           | See |<Plug>(easymotion-bd-t)|
     <Plug>(easymotion-bd-w)           | See |<Plug>(easymotion-bd-w)|
     <Plug>(easymotion-bd-W)           | See |<Plug>(easymotion-bd-W)|
     <Plug>(easymotion-bd-e)           | See |<Plug>(easymotion-bd-e)|
@@ -165,6 +166,7 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-Fl)             | See |<Plug>(easymotion-Fl)|
     <Plug>(easymotion-tl)             | See |<Plug>(easymotion-tl)|
     <Plug>(easymotion-Tl)             | See |<Plug>(easymotion-Tl)|
+    <Plug>(easymotion-bd-tl)          | See |<Plug>(easymotion-bd-tl)|
     <Plug>(easymotion-wl)             | See |<Plug>(easymotion-wl)|
     <Plug>(easymotion-bl)             | See |<Plug>(easymotion-bl)|
     <Plug>(easymotion-bd-wl)          | See |<Plug>(easymotion-bd-wl)|
@@ -182,6 +184,7 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-Fn)             | See |<Plug>(easymotion-Fn)|
     <Plug>(easymotion-tn)             | See |<Plug>(easymotion-tn)|
     <Plug>(easymotion-Tn)             | See |<Plug>(easymotion-Tn)|
+    <Plug>(easymotion-bd-tn)          | See |<Plug>(easymotion-bd-tn)|
                                       |
     <Plug>(easymotion-sln)            | See |<Plug>(easymotion-sln)|
     <Plug>(easymotion-fln)            | See |<Plug>(easymotion-fln)|
@@ -202,9 +205,13 @@ These mappings are not mapped by Default.
 
 Bidirection ~
 
+    Note: bd is short for bidirectional
+
+<Plug>(easymotion-bd-t)                               *<Plug>(easymotion-bd-t)*
+                Till before & after the {char} to the right. See |t| & |T|.
+
 <Plug>(easymotion-bd-w)                               *<Plug>(easymotion-bd-w)*
                 Beginning of word forward and backward. See |w| & |b|.
-                Note: bd is short for bidirectional
 
 <Plug>(easymotion-bd-W)                               *<Plug>(easymotion-bd-W)*
                 Beginning of WORD forward and backward. See |W| & |B|.
@@ -361,6 +368,10 @@ Within line motion ~
                 This function is same as |<Plug>(easymoion-T)|, except range
                 is within current cursor line.
 
+<Plug>(easymotion-bd-tl)                             *<Plug>(easymotion-bd-tl)*
+                This function is same as |<Plug>(easymoion-bd-t)|, except range
+                is within current cursor line.
+
 <Plug>(easymotion-wl)                                   *<Plug>(easymotion-wl)*
                 This function is same as |<Plug>(easymoion-w)|, except range
                 is within current cursor line.
@@ -457,14 +468,15 @@ All Find motion (s,f,F,t,T,sl,fl,Fl,tl,Tl) support this feature!
 (|l| means within line motion)
 
     *<Plug>(easymotion-sn)* *<Plug>(easymotion-fn)* *<Plug>(easymotion-Fn)*
-    *<Plug>(easymotion-tn)* *<Plug>(easymotion-Tn)* *<Plug>(easymotion-sln)*
-    *<Plug>(easymotion-fln)* *<Plug>(easymotion-Fln)* *<Plug>(easymotion-tln)*
-    *<Plug>(easymotion-Tln)*
+    *<Plug>(easymotion-tn)* *<Plug>(easymotion-Tn)* *<Plug>(easymotion-bd-tn)*
+    *<Plug>(easymotion-sln)* *<Plug>(easymotion-fln)* *<Plug>(easymotion-Fln)*
+    *<Plug>(easymotion-tln)* *<Plug>(easymotion-Tln)* *<Plug>(easymotion-bd-tln)*
+
 
     *<Plug>(easymotion-s2)* *<Plug>(easymotion-f2)* *<Plug>(easymotion-F2)*
-    *<Plug>(easymotion-t2)* *<Plug>(easymotion-T2)* *<Plug>(easymotion-sl2)*
-    *<Plug>(easymotion-fl2)* *<Plug>(easymotion-Fl2)* *<Plug>(easymotion-tl2)*
-    *<Plug>(easymotion-Tl2)*
+    *<Plug>(easymotion-t2)* *<Plug>(easymotion-T2)* *<Plug>(easymotion-bd-t2)*
+    *<Plug>(easymotion-sl2)* *<Plug>(easymotion-fl2)* *<Plug>(easymotion-Fl2)*
+    *<Plug>(easymotion-tl2)* *<Plug>(easymotion-Tl2)* *<Plug>(easymoion-bd-tl2)*
 
 But |EasyMotion| is good at simple and fast motion with one or two character.
 
