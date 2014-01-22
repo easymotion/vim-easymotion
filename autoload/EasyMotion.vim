@@ -934,10 +934,15 @@ endfunction
 " }}}
 " Core Functions: {{{
 function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
+    " Recursive
     let group_values = values(a:groups)
 
     " -- If only one possible match, jump directly to it {{{
     if len(group_values) == 1
+        if mode(1) ==# 'no'
+            " Consider jump to first match
+            let s:dot_repeat['target'] = g:EasyMotion_keys[0]
+        endif
         redraw
         return group_values[0]
     endif
@@ -1107,10 +1112,10 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
             " Store previous target when operator pending mode
             if s:current.dot_prompt_user_cnt == 0
                 " Store
-                let s:previous['target'] = char
+                let s:dot_repeat['target'] = char
             else
                 " Append target chars
-                let s:previous['target'] .= char
+                let s:dot_repeat['target'] .= char
             endif
         endif "}}}
 
@@ -1175,7 +1180,7 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
 endfunction "}}}
 function! s:DotPromptUser(groups) "{{{
     " Get char from previous target
-    let char = s:previous.target[s:current.dot_repeat_target_cnt]
+    let char = s:dot_repeat.target[s:current.dot_repeat_target_cnt]
     " For dot repeat target chars
     let s:current.dot_repeat_target_cnt += 1
 
