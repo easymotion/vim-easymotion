@@ -103,9 +103,9 @@ let s:target_hl_inc = {
     \ , 'cterm'   : ['NONE', 'green'   , 'bold']
     \ }
 let s:target_hl_inc_cursor = {
-    \   'gui'     : ['#d13a84', '#f8f8f8' , 'bold']
-    \ , 'cterm256': ['magenta', 'white'   , 'bold']
-    \ , 'cterm'   : ['magenta', 'white'   , 'bold']
+    \   'gui'     : ['#ACDBDA', '#121813' , 'bold']
+    \ , 'cterm256': ['cyan'   , 'black'   , 'bold']
+    \ , 'cterm'   : ['cyan'   , 'black'   , 'bold']
     \ }
 let s:target_hl_move = {
     \   'gui'     : ['#7fbf00', '#121813' , 'bold']
