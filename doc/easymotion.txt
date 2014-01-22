@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:21 Jan 2014.
+*easymotion.txt*	Version 2.0  Last change:22 Jan 2014.
 
 
             ______                  __  ___       __  _
@@ -145,6 +145,7 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
 
     More <Plug> Mapping Table         | (No assignment by default)
     ----------------------------------|---------------------------------
+    (<Plug>(easymotion-bd-f))         | See |<Plug>(easymotion-s)|
     <Plug>(easymotion-bd-t)           | See |<Plug>(easymotion-bd-t)|
     <Plug>(easymotion-bd-w)           | See |<Plug>(easymotion-bd-w)|
     <Plug>(easymotion-bd-W)           | See |<Plug>(easymotion-bd-W)|
@@ -220,8 +221,13 @@ Bidirection ~
 
     Note: bd is short for bidirectional
 
+<Plug>(easymotion-s)                                  *<Plug>(easymotion-s)*
+                                    *<Plug>(easymotion-bd-f)* (doesn't exist)
+                Find {char} to bidirection(forward and backward at the same
+                time.) See |f| & |F|.
+
 <Plug>(easymotion-bd-t)                               *<Plug>(easymotion-bd-t)*
-                Till before & after the {char} to the right. See |t| & |T|.
+                Till before & after the {char}. See |t| & |T|.
 
 <Plug>(easymotion-bd-w)                               *<Plug>(easymotion-bd-w)*
                 Beginning of word forward and backward. See |w| & |b|.
