@@ -198,46 +198,23 @@ function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
 endfunction " }}}
 " -- Line Motion -------------------------
 function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
-    if a:direction == 1
-        let is_inclusive = 0
-    else
-        " Handle bi-direction later
-        let is_inclusive = mode(1) ==# 'no' ? 1 : 0
-    endif
-    let s:flag.find_bd = a:direction == 2 ? 1 : 0
     let s:flag.within_line = 1
-    let re = s:findMotion(a:num_strokes)
-    if s:handleEmpty(re, a:visualmode) | return | endif
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    call EasyMotion#S(a:num_strokes, a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
-    if a:direction == 1
-        let is_inclusive = 0
-    else
-        " Handle bi-direction later
-        let is_inclusive = mode(1) ==# 'no' ? 1 : 0
-    endif
-    let s:flag.find_bd = a:direction == 2 ? 1 : 0
     let s:flag.within_line = 1
-    let re = s:findMotion(a:num_strokes)
-    if s:handleEmpty(re, a:visualmode) | return | endif
-    let re = a:direction == 1 ? '\('.re.'\)\zs.' : '.\ze\('.re.'\)'
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    call EasyMotion#T(a:num_strokes, a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#WBL(visualmode, direction) " {{{
-    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    let is_inclusive = mode(1) ==# 'no' ? 1 : 0
     let s:flag.within_line = 1
-    call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
+    call EasyMotion#WBL(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#EL(visualmode, direction) " {{{
     let s:flag.within_line = 1
-    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    let is_inclusive = mode(1) ==# 'no' ? 1 : 0
-    call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    call EasyMotion#EL(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
@@ -406,7 +383,7 @@ function! EasyMotion#Repeat(visualmode) " {{{
     let s:flag.bd_t = s:previous.bd_t_flag
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     " FIXME: is_inclusive value is inappropriate but handling this value is
-    " difficult and priorities is low because this motion maybe used usually 
+    " difficult and priorities is low because this motion maybe used usually
     " as a 'normal' motion.
     let is_inclusive = mode(1) ==# 'no' ? 1 : 0
 
@@ -957,10 +934,15 @@ endfunction
 " }}}
 " Core Functions: {{{
 function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
+    " Recursive
     let group_values = values(a:groups)
 
     " -- If only one possible match, jump directly to it {{{
     if len(group_values) == 1
+        if mode(1) ==# 'no'
+            " Consider jump to first match
+            let s:dot_repeat['target'] = g:EasyMotion_keys[0]
+        endif
         redraw
         return group_values[0]
     endif
@@ -1130,10 +1112,10 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
             " Store previous target when operator pending mode
             if s:current.dot_prompt_user_cnt == 0
                 " Store
-                let s:previous['target'] = char
+                let s:dot_repeat['target'] = char
             else
                 " Append target chars
-                let s:previous['target'] .= char
+                let s:dot_repeat['target'] .= char
             endif
         endif "}}}
 
@@ -1198,7 +1180,7 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
 endfunction "}}}
 function! s:DotPromptUser(groups) "{{{
     " Get char from previous target
-    let char = s:previous.target[s:current.dot_repeat_target_cnt]
+    let char = s:dot_repeat.target[s:current.dot_repeat_target_cnt]
     " For dot repeat target chars
     let s:current.dot_repeat_target_cnt += 1
 
