@@ -39,6 +39,7 @@ let g:EasyMotion_enter_jump_first   = get(g: , 'EasyMotion_enter_jump_first'   ,
 let g:EasyMotion_inc_highlight      = get(g: , 'EasyMotion_inc_highlight'      , 1)
 let g:EasyMotion_move_highlight     = get(g: , 'EasyMotion_move_highlight'     , 1)
 let g:EasyMotion_landing_highlight  = get(g: , 'EasyMotion_landing_highlight'  , 0)
+let g:EasyMotion_cursor_highlight   = get(g: , 'EasyMotion_cursor_highlight'   , 0)
 let g:EasyMotion_show_prompt        = get(g: , 'EasyMotion_show_prompt'        , 1)
 let g:EasyMotion_prompt             =
     \ get(g: , 'EasyMotion_prompt' , 'Search for {n} character(s): ')
@@ -102,9 +103,9 @@ let s:target_hl_inc = {
     \ , 'cterm'   : ['NONE', 'green'   , 'bold']
     \ }
 let s:target_hl_inc_cursor = {
-    \   'gui'     : ['#d13a84', 'NONE' , 'bold']
-    \ , 'cterm256': ['magenta', 'NONE' , 'bold']
-    \ , 'cterm'   : ['magenta', 'NONE' , 'bold']
+    \   'gui'     : ['#ACDBDA', '#121813' , 'bold']
+    \ , 'cterm256': ['cyan'   , 'black'   , 'bold']
+    \ , 'cterm'   : ['cyan'   , 'black'   , 'bold']
     \ }
 let s:target_hl_move = {
     \   'gui'     : ['#7fbf00', '#121813' , 'bold']

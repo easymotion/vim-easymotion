@@ -1390,6 +1390,11 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
                 call EasyMotion#highlight#add_highlight(
                     \ shade_hl_re,
                     \ g:EasyMotion_hl_group_shade)
+                if g:EasyMotion_cursor_highlight
+                    let cursor_hl_re = shade_hl_pos
+                    call EasyMotion#highlight#add_highlight(cursor_hl_re,
+                        \ g:EasyMotion_hl_inc_cursor)
+                endif
             endif
 
             if hlcurrent != 0
@@ -1548,6 +1553,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
 
         " Show exception message
         call s:Message(v:exception)
+        call s:Message(v:throwpoint)
 
         " -- Restore original cursor position/selection {{{
         if ! empty(a:visualmode)
