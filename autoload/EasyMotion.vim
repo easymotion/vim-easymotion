@@ -385,12 +385,11 @@ function! EasyMotion#SelectPhraseDelete() "{{{
     endif
 endfunction "}}}
 " -- User Motion -------------------------
-" TODO: more improvement
-function! EasyMotion#User(pattern, mode, direction) " {{{
+function! EasyMotion#User(pattern, visualmode, direction, inclusive) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    let visualmode =  match('\v([Vv])|(C-v)', a:mode) > 0 ? visualmode() : ''
-    let re = escape(a:pattern, '|')
-    call s:EasyMotion(re, a:direction, visualmode, 0)
+    let is_inclusive = mode(1) ==# 'no' ? a:inclusive : 0
+    let re = a:pattern
+    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- Repeat Motion -----------------------
