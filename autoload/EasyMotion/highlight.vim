@@ -2,7 +2,7 @@
 " FILE: highlight.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/t9md/vim-smalls
-" Last Change: 21 Jan 2014.
+" Last Change: 22 Jan 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -73,6 +73,13 @@ function! EasyMotion#highlight#attach_autocmd() "{{{
             \  | autocmd! plugin-easymotion * <buffer>
     augroup END
 endfunction "}}}
+function! EasyMotion#highlight#add_color_group(new_groups) "{{{
+    let s:priorities = extend(deepcopy(s:priorities), a:new_groups)
+    for group in keys(a:new_groups)
+        let s:h.ids[group] = []
+    endfor
+endfunction "}}}
+
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
 unlet s:save_cpo
