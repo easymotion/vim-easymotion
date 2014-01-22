@@ -15,9 +15,6 @@
 - [ ] ドキュメントをもっとしっかり書く(英語含む)
     - むしろ壊して再構築する勢いでやる
 - [ ] ユーザー側から簡単にEasyMotionコマンドを定義できるようにする。
-    - Hint: s:EasyMotion(regexp, direction, visualmode, mode, ...)
-    - のようにvisual modeとdirectionしかいじれない
-    - Mappingの上書き防止にもつながりそう
     - EasyMotion#User()
     - is\_cancelledを返す。座標を返すかどうか。Enterキーでのキャンセルなどの使い分けが欲しい
 - [x] Fix?: concealを使用する
@@ -39,6 +36,7 @@
 - [] Fix: highlightのバグ https://github.com/Lokaltog/vim-easymotion/issues/78
     - syntaxのハイライトとの優先度の関係かもしれない
 - [] Feature: 複数文字でfuzzy matchingができればやってみたい。
+    - いらない力
 - [x] Feature: `<Plug>(easymotion-next)`,`<Plug>(easymotion-prev)`
     - [x] highlightを実装?
     - [x] オプションで欲しい
@@ -46,3 +44,7 @@
 - [x] Fix: dot repeatが他のモーション時にリセットされる
     - Problem: b:changedtickがバッファ書き換えで変更されtpope/vim-repeatのg:repeat_tickと値が変わってしまう
     - Solution: g:repeat_tickの値を変える workaround
+- [] 擬似clever-f的モーションが実装できたので、ラベル出さずに最初のマッチに飛ぶモーションがあってもいいのではないか?
+    - clever-fやsneakとかぶるけどEasyMotionのrepeat motionと連携ができて便利な気もする
+    - 複数文字でrepeatかつハイライトできるモーションプラグインは現状ない
+    - 追加プラグインで対応するという手
