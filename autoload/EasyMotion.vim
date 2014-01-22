@@ -198,46 +198,23 @@ function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
 endfunction " }}}
 " -- Line Motion -------------------------
 function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
-    if a:direction == 1
-        let is_inclusive = 0
-    else
-        " Handle bi-direction later
-        let is_inclusive = mode(1) ==# 'no' ? 1 : 0
-    endif
-    let s:flag.find_bd = a:direction == 2 ? 1 : 0
     let s:flag.within_line = 1
-    let re = s:findMotion(a:num_strokes)
-    if s:handleEmpty(re, a:visualmode) | return | endif
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    call EasyMotion#S(a:num_strokes, a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
-    if a:direction == 1
-        let is_inclusive = 0
-    else
-        " Handle bi-direction later
-        let is_inclusive = mode(1) ==# 'no' ? 1 : 0
-    endif
-    let s:flag.find_bd = a:direction == 2 ? 1 : 0
     let s:flag.within_line = 1
-    let re = s:findMotion(a:num_strokes)
-    if s:handleEmpty(re, a:visualmode) | return | endif
-    let re = a:direction == 1 ? '\('.re.'\)\zs.' : '.\ze\('.re.'\)'
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    call EasyMotion#T(a:num_strokes, a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#WBL(visualmode, direction) " {{{
-    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    let is_inclusive = mode(1) ==# 'no' ? 1 : 0
     let s:flag.within_line = 1
-    call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
+    call EasyMotion#WBL(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#EL(visualmode, direction) " {{{
     let s:flag.within_line = 1
-    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    let is_inclusive = mode(1) ==# 'no' ? 1 : 0
-    call s:EasyMotion('\(.\>\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    call EasyMotion#EL(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
@@ -406,7 +383,7 @@ function! EasyMotion#Repeat(visualmode) " {{{
     let s:flag.bd_t = s:previous.bd_t_flag
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     " FIXME: is_inclusive value is inappropriate but handling this value is
-    " difficult and priorities is low because this motion maybe used usually 
+    " difficult and priorities is low because this motion maybe used usually
     " as a 'normal' motion.
     let is_inclusive = mode(1) ==# 'no' ? 1 : 0
 
