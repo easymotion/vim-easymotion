@@ -1,8 +1,10 @@
 " EasyMotion - Vim motions on speed!
 "
-" Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
-" Maintainer: haya14busa <hayabusa1419@gmail.com>
+" Author: haya14busa <hayabusa1419@gmail.com>
+" Last Change: 24 Jan 2014.
 " Source: https://github.com/haya14busa/vim-easymotion
+"
+" Original Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 " Original: https://github.com/Lokaltog/vim-easymotion
 "=============================================================================
 " Saving 'cpoptions' {{{
