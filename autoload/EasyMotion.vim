@@ -611,7 +611,7 @@ function! s:convertMigemo(re) "{{{
         return EasyMotion#cmigemo#getMigemoPattern(re)
     endif
 
-    " EasyMoton migemo one key dict
+    " EasyMotion migemo one key dict
     if ! has_key(s:migemo_dicts, &l:encoding)
         let s:migemo_dicts[&l:encoding] = EasyMotion#helper#load_migemo_dict()
     endif
