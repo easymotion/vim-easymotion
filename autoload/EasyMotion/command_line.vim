@@ -36,7 +36,7 @@ function! s:InputPrompt(message, input) "{{{
     echon a:input
 endfunction "}}}
 function! s:Cancell() " {{{
-    call EasyMotion#highlight#delete_highlight()
+    call s:after_input()
     keepjumps call setpos('.', s:save_orig_pos)
     redraw
     echo 'EasyMotion: Cancelled'
@@ -67,7 +67,7 @@ function! s:before_input(num_strokes) "{{{
         call EasyMotion#highlight#add_highlight('\%#', g:EasyMotion_hl_inc_cursor)
     endif
 endfunction "}}}
-function! s:after_input(num_strokes) "{{{
+function! s:after_input() "{{{
     call EasyMotion#highlight#delete_highlight()
 endfunction "}}}
 function! s:should_use_smartcase(input) "{{{
@@ -92,7 +92,7 @@ function! s:offscreen_search(re) "{{{
             " Match
             keepjumps call setpos('.', pos)
             " Move cursor
-            if s:direction != 'b'
+            if s:save_direction != 'b'
                 normal! zzH0
             else
                 normal! zzL0
@@ -105,7 +105,7 @@ function! s:offscreen_search(re) "{{{
     endif
 endfunction "}}}
 function! s:adjust_screen() "{{{
-    if s:direction != 'b'
+    if s:save_direction != 'b'
         " Forward
         keepjumps call setpos('.', s:orig_line_start)
         normal! zt
@@ -115,10 +115,14 @@ function! s:adjust_screen() "{{{
         normal! zb
     endif
 endfunction "}}}
+function! s:search_histories() "{{{
+	return map(range(&history), 'histget("search", v:val * -1)')
+endfunction "}}}
 
 function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
     let previous_input = a:prev
-    let s:direction = a:direction == 1 ? 'b' : ''
+    let s:save_direction = a:direction == 1 ? 'b' : ''
+    let s:direction = s:save_direction
     let input = ''
     let prompt = s:getPromptMessage(a:num_strokes)
 
@@ -130,6 +134,10 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
 
     call s:before_input(a:num_strokes)
 
+    " let s:search_hist = s:search_histories()
+    let s:search_hist = []
+    let s:search_cnt = 0
+
     while EasyMotion#helper#strchars(input) < a:num_strokes ||
             \ a:num_strokes == -1
         if g:EasyMotion_show_prompt
@@ -140,6 +148,13 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
         if EasyMotion#command_line#is_input("\<Esc>")
             " Cancel if Escape key pressed
             call s:Cancell() | let input = '' | break
+        elseif EasyMotion#command_line#is_input("\<CR>")
+            if len(input) == 0 
+                let input = previous_input | break
+            endif
+            break
+        elseif EasyMotion#command_line#is_input("\<C-j>")
+            break
         elseif EasyMotion#command_line#is_input("\<C-c>")
             " Cancel
             call s:Cancell() | let input = '' | break
@@ -164,32 +179,36 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
         elseif EasyMotion#command_line#is_input("\<C-w>")
             " Delete word
             let input = matchstr(input, '^\zs.\{-}\ze\(\(\w*\)\|\(.\)\)$')
-        elseif EasyMotion#command_line#is_input("\<C-p>")
-            let input = previous_input
-        elseif EasyMotion#command_line#is_input("\<C-n>")
-            let input = ''
-        elseif EasyMotion#command_line#is_input("\<CR>")
-            if len(input) == 0 
-                let input = previous_input | break
+        elseif EasyMotion#command_line#is_input("\<C-p>") || EasyMotion#command_line#is_input("\<C-n>")
+            if s:search_cnt == 0 && empty(s:search_hist)
+                let cmdline = '^' . input
+                let s:search_hist = filter(s:search_histories(), 'v:val =~ cmdline')
             endif
-            break
-        elseif EasyMotion#command_line#is_input("\<C-j>")
-            break
+            if EasyMotion#command_line#is_input("\<C-n>")
+                let s:search_cnt = max([s:search_cnt - 1, 0])
+            endif
+            if EasyMotion#command_line#is_input("\<C-p>")
+                let s:search_cnt = min([s:search_cnt + 1, len(s:search_hist)])
+            endif
+            let input = get(s:search_hist, s:search_cnt, input)
         elseif EasyMotion#command_line#is_input("\<Tab>")
             exec "normal! \<C-f>"
             let s:orig_pos = getpos('.')
             let s:orig_line_start = getpos('w0')
             let s:orig_line_end = getpos('w$')
+            let s:direction = ''
         elseif EasyMotion#command_line#is_input("\<S-Tab>")
             exec "normal! \<C-b>"
             let s:orig_pos = getpos('.')
             let s:orig_line_start = getpos('w0')
             let s:orig_line_end = getpos('w$')
+            let s:direction = 'b'
         elseif EasyMotion#command_line#is_input("\<C-o>")
-            call setpos('.', s:save_orig_pos)
+            keepjumps call setpos('.', s:save_orig_pos)
             let s:orig_pos = s:save_orig_pos
             let s:orig_line_start = getpos('w0')
             let s:orig_line_end = getpos('w$')
+            let s:direction = ''
         elseif EasyMotion#command_line#is_input("\<C-z>")
             normal! zR
         elseif char2nr(s:char) == 128 || char2nr(s:char) < 27
@@ -216,7 +235,7 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
         endif
         "}}}
     endwhile
-    call s:after_input(a:num_strokes)
+    call s:after_input()
     return input
 endfunction "}}}
 function! EasyMotion#command_line#char() "{{{
