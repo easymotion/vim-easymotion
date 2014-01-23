@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: t/easymotion_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 22 Jan 2014.
+" Last Change: 23 Jan 2014.
 " Test: https://github.com/kana/vim-vspec
 " Refer: https://github.com/rhysd/clever-f.vim
 " Description: EasyMotion test with vim-vspec
@@ -392,6 +392,15 @@ describe 'Default settings'
             \ ==# ':<C-U>call EasyMotion#SelectPhraseYank()<CR>'
         Expect maparg('<Plug>(easymotion-special-pd)', 'n')
             \ ==# ':<C-U>call EasyMotion#SelectPhraseDelete()<CR>'
+        " }}}
+
+        " Activate {{{
+        Expect maparg('<Plug>(easymotion-activate)', 'n')
+            \ ==# ':<C-U>call EasyMotion#activate(0)<CR>'
+        Expect maparg('<Plug>(easymotion-activate)', 'o')
+            \ ==# ':<C-U>call EasyMotion#activate(0)<CR>'
+        Expect maparg('<Plug>(easymotion-activate)', 'v')
+            \ ==# ':<C-U>call EasyMotion#activate(1)<CR>'
         " }}}
     end
 

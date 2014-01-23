@@ -367,6 +367,9 @@ map <silent><expr><Plug>(easymotion-clever-s2)
 map <silent><expr><Plug>(easymotion-clever-sn)
     \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-sn)'
 
+noremap  <silent><Plug>(easymotion-activate) :<C-u>call EasyMotion#activate(0)<CR>
+xnoremap <silent><Plug>(easymotion-activate) :<C-u>call EasyMotion#activate(1)<CR>
+
 " }}}
 
 " == Default key mapping {{{

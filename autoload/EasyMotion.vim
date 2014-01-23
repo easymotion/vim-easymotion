@@ -761,6 +761,15 @@ endfunction "}}}
 function! EasyMotion#is_active() "{{{
     return s:EasyMotion_is_active
 endfunction "}}}
+function! EasyMotion#activate(is_visual) "{{{
+    let s:EasyMotion_is_active = 1
+    call EasyMotion#attach_active_autocmd()
+    call EasyMotion#highlight#add_highlight(s:previous.regexp, 'EasyMotionMoveHL')
+    call EasyMotion#highlight#attach_autocmd()
+    if a:is_visual == 1
+        normal! gv
+    endif
+endfunction "}}}
 "}}}
 " Grouping Algorithms: {{{
 let s:grouping_algorithms = {
