@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:22 Jan 2014.
+*easymotion.txt*	Version 2.0  Last change:23 Jan 2014.
 
 
             ______                  __  ___       __  _
@@ -28,7 +28,7 @@ CONTENTS                                                 *easymotion-contents*
        4.6 EasyMotion_smartsign ........... |EasyMotion_smartsign|
        4.7 EasyMotion_use_migemo .......... |EasyMotion_use_migemo|
        4.8 EasyMotion_use_upper  .......... |EasyMotion_use_upper|
-       4.9 Custom highlighting ........... |easymotion-custom-hl|
+       4.9 Custom highlighting ............ |easymotion-custom-hl|
        4.10 Custom mappings ............... |easymotion-custom-mappings|
            4.10.1 Leader key .............. |easymotion-leader-key|
            4.10.2 Custom keys ............. |easymotion-custom-keys|
@@ -38,6 +38,7 @@ CONTENTS                                                 *easymotion-contents*
        4.12 EasyMotion_enter_jump_first ... |EasyMotion_enter_jump_first|
        4.13 EasyMotion_prompt ............. |EasyMotion_prompt|
        4.14 EasyMotion_highlight .......... |EasyMotion_highlight|
+       4.15 EasyMotion_add_search_history.. |EasyMotion_add_search_history|
     5. License ............................ |easymotion-license|
     6. Known bugs ......................... |easymotion-known-bugs|
     7. Contributing ....................... |easymotion-contributing|
@@ -944,6 +945,24 @@ Default:
     jump(landing), set this option to 0.
 >
     let g:EasyMotion_landing_highlight = 1
+<
+    Default: 0
+
+4.15 EasyMotion_add_search_history            *g:EasyMotion_add_search_history*
+
+    If you set this option to 1, 'n' key find motion add inputed pattern to
+    vim default search history.
+>
+    let g:EasyMotion_add_search_history = 1
+<
+    Default: 0
+
+4.15 EasyMotion_off_screen_search              *g:EasyMotion_off_screen_search*
+
+    If you set this option to 1, 'n' key find motion could search patterns
+    even in off-screen range.
+>
+    let g:EasyMotion_off_screen_search = 1
 <
     Default: 0
 

@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: t/easymotion_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 22 Jan 2014.
+" Last Change: 23 Jan 2014.
 " Test: https://github.com/kana/vim-vspec
 " Refer: https://github.com/rhysd/clever-f.vim
 " Description: EasyMotion test with vim-vspec
@@ -393,6 +393,15 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-special-pd)', 'n')
             \ ==# ':<C-U>call EasyMotion#SelectPhraseDelete()<CR>'
         " }}}
+
+        " Activate {{{
+        Expect maparg('<Plug>(easymotion-activate)', 'n')
+            \ ==# ':<C-U>call EasyMotion#activate(0)<CR>'
+        Expect maparg('<Plug>(easymotion-activate)', 'o')
+            \ ==# ':<C-U>call EasyMotion#activate(0)<CR>'
+        Expect maparg('<Plug>(easymotion-activate)', 'v')
+            \ ==# ':<C-U>call EasyMotion#activate(1)<CR>'
+        " }}}
     end
 
     it 'provide autoload functions'
@@ -453,6 +462,8 @@ describe 'Default settings'
         Expect g:EasyMotion_move_highlight     ==# 1
         Expect g:EasyMotion_landing_highlight  ==# 0
         Expect g:EasyMotion_cursor_highlight   ==# 0
+        Expect g:EasyMotion_add_search_history ==# 0
+        Expect g:EasyMotion_off_screen_search  ==# 0
         Expect g:EasyMotion_prompt             ==# 'Search for {n} character(s): '
         Expect g:EasyMotion_command_line_key_mappings ==# {}
         " }}}
@@ -1190,6 +1201,113 @@ describe 'bi-directional t motion'
         normal thb
         Expect CursorPos() == [l,9,'u']
 
+    end
+    "}}}
+end
+"}}}
+
+" off-screen search {{{
+describe 'off-screen search'
+    before
+        new
+        let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        let g:EasyMotion_off_screen_search = 1
+        map s/ <Plug>(easymotion-sn)
+        map f/ <Plug>(easymotion-fn)
+        map F/ <Plug>(easymotion-Fn)
+        map t/ <Plug>(easymotion-tn)
+        map T/ <Plug>(easymotion-Tn)
+        call EasyMotion#init()
+        call AddLine('deco-chan deco-chan')
+        call AddLine('vim')
+        for i in range(50)
+            call AddLine('poge1 2huga 3hiyo 4poyo')
+        endfor
+        "             12345678901234567890123
+    end
+
+    after
+        let g:EasyMotion_off_screen_search = 0
+        close!
+    end
+
+    " provide search with off-screen range {{{
+    it 'provide search with off-screen range'
+        normal! gg0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+
+        exec "normal s/vim\<CR>"
+        Expect CursorPos() == [51,1,'v']
+
+        normal! gg0
+        exec "normal f/im\<CR>"
+        Expect CursorPos() == [51,2,'i']
+
+        set wrapscan
+        Expect &wrapscan == 1
+        normal! gg0
+        exec "normal F/im\<CR>"
+        Expect CursorPos() == [51,2,'i']
+
+        " Cancel
+        normal! gg0
+        exec "normal s/vim\<Esc>"
+        Expect CursorPos() == [l,1,'p']
+
+        " Label
+        normal! gg0
+        exec "normal s/deco-chan\<CR>\<Esc>"
+        Expect CursorPos() == [l,1,'p']
+
+        normal! gg0
+        exec "normal s/deco-chan\<CR>a"
+        Expect CursorPos() == [52,1,'d']
+
+        normal! gg0
+        exec "normal s/deco-chan\<CR>b"
+        Expect CursorPos() == [52,11,'d']
+
+        normal! gg0
+        exec "normal t/chan\<CR>a"
+        Expect CursorPos() == [52,5,'-']
+
+        normal! gg0
+        exec "normal t/chan\<CR>b"
+        Expect CursorPos() == [52,15,'-']
+
+    end
+    "}}}
+end
+
+describe 'dot notoff-screen search'
+    before
+        new
+        let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        let g:EasyMotion_off_screen_search = 0
+        map s/ <Plug>(easymotion-sn)
+        call EasyMotion#init()
+        call AddLine('deco-chan deco-chan')
+        call AddLine('vim')
+        for i in range(50)
+            call AddLine('poge1 2huga 3hiyo 4poyo')
+        endfor
+        "             12345678901234567890123
+    end
+
+    after
+        close!
+    end
+
+    " provide search with off-screen range {{{
+    it 'provide search with off-screen range'
+        normal! gg0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+
+        exec "normal s/vim\<CR>"
+        Expect CursorPos() != [51,1,'v']
+        Expect CursorPos() == [l,1,'p']
     end
     "}}}
 end
