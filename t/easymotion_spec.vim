@@ -1280,7 +1280,7 @@ describe 'off-screen search'
     "}}}
 end
 
-describe 'dot notoff-screen search' "{{{
+describe 'dot notoff-screen search'
     before
         new
         let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -1310,7 +1310,7 @@ describe 'dot notoff-screen search' "{{{
         Expect CursorPos() == [l,1,'p']
     end
     "}}}
-end "}}}
+end
 "}}}
 
 " vim: fdm=marker:et:ts=4:sw=4:sts=4
