@@ -37,7 +37,7 @@ function! s:InputPrompt(message, input) "{{{
 endfunction "}}}
 function! s:Cancell() " {{{
     call EasyMotion#highlight#delete_highlight()
-    keepjumps call setpos('.', s:orig_pos)
+    keepjumps call setpos('.', s:save_orig_pos)
     redraw
     echo 'EasyMotion: Cancelled'
     return ''
@@ -127,6 +127,8 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
     let s:orig_line_start = getpos('w0')
     let s:orig_line_end = getpos('w$')
 
+    let s:save_orig_pos = deepcopy(s:orig_pos)
+
     call s:before_input(a:num_strokes)
 
     while EasyMotion#helper#strchars(input) < a:num_strokes ||
@@ -174,6 +176,23 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
             break
         elseif EasyMotion#command_line#is_input("\<C-j>")
             break
+        elseif EasyMotion#command_line#is_input("\<Tab>")
+            exec "normal! \<C-f>"
+            let s:orig_pos = getpos('.')
+            let s:orig_line_start = getpos('w0')
+            let s:orig_line_end = getpos('w$')
+        elseif EasyMotion#command_line#is_input("\<S-Tab>")
+            exec "normal! \<C-b>"
+            let s:orig_pos = getpos('.')
+            let s:orig_line_start = getpos('w0')
+            let s:orig_line_end = getpos('w$')
+        elseif EasyMotion#command_line#is_input("\<C-o>")
+            call setpos('.', s:save_orig_pos)
+            let s:orig_pos = s:save_orig_pos
+            let s:orig_line_start = getpos('w0')
+            let s:orig_line_end = getpos('w$')
+        elseif EasyMotion#command_line#is_input("\<C-z>")
+            normal! zR
         elseif char2nr(s:char) == 128 || char2nr(s:char) < 27
             " Do nothing for special key
             continue

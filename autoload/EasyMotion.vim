@@ -1294,7 +1294,6 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         if ! empty(a:visualmode)
             " Decide at where visual mode start {{{
             normal! gv
-            let s:current.cursor_position = [line('.'), col('.')]
             let v_start = [line("'<"),col("'<")] " visual_start_position
             let v_end   = [line("'>"),col("'>")] " visual_end_position
 
