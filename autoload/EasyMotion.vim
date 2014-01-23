@@ -1418,25 +1418,22 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
 
         " -- Shade inactive source --------------- {{{
         if g:EasyMotion_do_shade && targets_len != 1 && s:flag.dot_repeat != 1
-            let shade_hl_pos = '\%'. s:current.cursor_position[0] .'l'. 
-                             \ '\%'. s:current.cursor_position[1] .'c'
-
             if a:direction == 1
                 " Backward
-                let shade_hl_re = '\%'. win_first_line .'l\_.*' . shade_hl_pos
+                let shade_hl_re = '\%'. win_first_line .'l\_.*\%#'
             elseif a:direction == 0
                 " Forward
-                let shade_hl_re = shade_hl_pos . '\_.*\%'. win_last_line .'l'
+                let shade_hl_re = '\%#\_.*\%'. win_last_line .'l'
             elseif a:direction == 2
                 " Both directions"
-                let shade_hl_re = '.*'
+                let shade_hl_re = '\_.*'
             endif
             if !fixed_column
                 call EasyMotion#highlight#add_highlight(
                     \ shade_hl_re,
                     \ g:EasyMotion_hl_group_shade)
                 if g:EasyMotion_cursor_highlight
-                    let cursor_hl_re = shade_hl_pos
+                    let cursor_hl_re = '\%#'
                     call EasyMotion#highlight#add_highlight(cursor_hl_re,
                         \ g:EasyMotion_hl_inc_cursor)
                 endif
