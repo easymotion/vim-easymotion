@@ -462,6 +462,7 @@ describe 'Default settings'
         Expect g:EasyMotion_move_highlight     ==# 1
         Expect g:EasyMotion_landing_highlight  ==# 0
         Expect g:EasyMotion_cursor_highlight   ==# 0
+        Expect g:EasyMotion_add_search_history ==# 0
         Expect g:EasyMotion_prompt             ==# 'Search for {n} character(s): '
         Expect g:EasyMotion_command_line_key_mappings ==# {}
         " }}}

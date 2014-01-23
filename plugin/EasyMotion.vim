@@ -40,6 +40,7 @@ let g:EasyMotion_inc_highlight      = get(g: , 'EasyMotion_inc_highlight'      ,
 let g:EasyMotion_move_highlight     = get(g: , 'EasyMotion_move_highlight'     , 1)
 let g:EasyMotion_landing_highlight  = get(g: , 'EasyMotion_landing_highlight'  , 0)
 let g:EasyMotion_cursor_highlight   = get(g: , 'EasyMotion_cursor_highlight'   , 0)
+let g:EasyMotion_add_search_history = get(g: , 'EasyMotion_add_search_history' , 0)
 let g:EasyMotion_show_prompt        = get(g: , 'EasyMotion_show_prompt'        , 1)
 let g:EasyMotion_prompt             =
     \ get(g: , 'EasyMotion_prompt' , 'Search for {n} character(s): ')

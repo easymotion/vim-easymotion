@@ -552,7 +552,11 @@ function! s:findMotion(num_strokes) "{{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let s:flag.regexp = a:num_strokes == -1 ? 1 : 0
 
-    let s:previous['input'] = get(s:previous, 'input', '')
+    if g:EasyMotion_add_search_history && a:num_strokes == -1
+        let s:previous['input'] = @/
+    else
+        let s:previous['input'] = get(s:previous, 'input', '')
+    endif
     let input = EasyMotion#command_line#GetInput(a:num_strokes, s:previous.input)
     let s:previous['input'] = input
 
@@ -562,6 +566,11 @@ function! s:findMotion(num_strokes) "{{{
     endif
 
     let re = s:convertRegep(input)
+
+    if g:EasyMotion_add_search_history && a:num_strokes == -1
+        let @/ = re
+    endif
+
     return re
 endfunction "}}}
 function! s:convertRegep(input) "{{{
