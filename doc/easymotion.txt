@@ -280,7 +280,7 @@ Repeat ~
         Nothing will happen when previous motion doesn't exist.
 
         Last Find Motion~
-            In Find motion (e.g. |<Plug>(easymoion-s)| ), to type `<CR>`
+            In Find motion (e.g. |<Plug>(easymotion-s)| ), to type `<CR>`
             without input characters invoke last find motion. This
             does not repeat motion type (e.g. Other word motion,
             <Plug>(easymotion-j) etc...) but only repeat input
@@ -343,8 +343,8 @@ JK motion option                    *<Plug>(easymotion-j)* *<Plug>(easymotion-k)
         |<Plug>(easymotion-sol-k)| to use start of line JK motion.
 >
         let g:EasyMotion_startofline = 0 # keep cursor colum JK motion
-        map <Leader>J <Plug>(easymoion-sol-j)
-        map <Leader>K <Plug>(easymoion-sol-K)
+        map <Leader>J <Plug>(easymotion-sol-j)
+        map <Leader>K <Plug>(easymotion-sol-K)
 <
 Default: 1
 
@@ -353,66 +353,66 @@ Start of Line JK motion     *<Plug>(easymotion-sol-j)* *<Plug>(easymotion-sol-k)
         Match start of line JK motion
         Example:
 >
-        map <Leader>J <Plug>(easymoion-sol-j)
-        map <Leader>K <Plug>(easymoion-sol-K)
+        map <Leader>J <Plug>(easymotion-sol-j)
+        map <Leader>K <Plug>(easymotion-sol-K)
 <
 End of Line JK motion       *<Plug>(easymotion-eol-j)* *<Plug>(easymotion-eol-k)*
 
         Match End of line JK motion
         Example:
 >
-        map <Leader>J <Plug>(easymoion-eol-j)
-        map <Leader>K <Plug>(easymoion-eol-K)
+        map <Leader>J <Plug>(easymotion-eol-j)
+        map <Leader>K <Plug>(easymotion-eol-K)
 
 Within line motion ~
                                                        *easymotion-within-line*
 
 <Plug>(easymotion-sl)                                   *<Plug>(easymotion-sl)*
-                This function is same as |<Plug>(easymoion-s)|, except range
+                This function is same as |<Plug>(easymotion-s)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-fl)                                   *<Plug>(easymotion-fl)*
-                This function is same as |<Plug>(easymoion-f)|, except range
+                This function is same as |<Plug>(easymotion-f)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-Fl)                                   *<Plug>(easymotion-Fl)*
-                This function is same as |<Plug>(easymoion-F)|, except range
+                This function is same as |<Plug>(easymotion-F)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-tl)                                   *<Plug>(easymotion-tl)*
-                This function is same as |<Plug>(easymoion-t)|, except range
+                This function is same as |<Plug>(easymotion-t)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-Tl)                                   *<Plug>(easymotion-Tl)*
-                This function is same as |<Plug>(easymoion-T)|, except range
+                This function is same as |<Plug>(easymotion-T)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-bd-tl)                             *<Plug>(easymotion-bd-tl)*
-                This function is same as |<Plug>(easymoion-bd-t)|, except range
+                This function is same as |<Plug>(easymotion-bd-t)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-wl)                                   *<Plug>(easymotion-wl)*
-                This function is same as |<Plug>(easymoion-w)|, except range
+                This function is same as |<Plug>(easymotion-w)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-bl)                                   *<Plug>(easymotion-bl)*
-                This function is same as |<Plug>(easymoion-b)|, except range
+                This function is same as |<Plug>(easymotion-b)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-bd-wl)                             *<Plug>(easymotion-bd-wl)*
-                This function is same as |<Plug>(easymoion-bd-w)|, except range
+                This function is same as |<Plug>(easymotion-bd-w)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-el)                                   *<Plug>(easymotion-el)*
-                This function is same as |<Plug>(easymoion-e)|, except range
+                This function is same as |<Plug>(easymotion-e)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-gel)                                 *<Plug>(easymotion-gel)*
-                This function is same as |<Plug>(easymoion-ge)|, except range
+                This function is same as |<Plug>(easymotion-ge)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-bd-el)                             *<Plug>(easymotion-bd-el)*
-                This function is same as |<Plug>(easymoion-bd-e)|, except range
+                This function is same as |<Plug>(easymotion-bd-e)|, except range
                 is within current cursor line.
 
 <Plug>(easymotion-lineforward)                 *<Plug>(easymotion-lineforward)*
@@ -460,12 +460,12 @@ EasyMotion provide another find motion by multi input target.
 
 Example:
 >
-    nmap s         <Plug>(easymoion-s2)
-    xmap s         <Plug>(easymoion-s2)
-    omap z         <Plug>(easymoion-s2)
-    nmap <Leader>s <Plug>(easymoion-sn)
-    xmap <Leader>s <Plug>(easymoion-sn)
-    omap <Leader>z <Plug>(easymoion-sn)
+    nmap s         <Plug>(easymotion-s2)
+    xmap s         <Plug>(easymotion-s2)
+    omap z         <Plug>(easymotion-s2)
+    nmap <Leader>s <Plug>(easymotion-sn)
+    xmap <Leader>s <Plug>(easymotion-sn)
+    omap <Leader>z <Plug>(easymotion-sn)
 <
 If you like typing two or above characters as target similar to vim-smalls or
 vim-sneak, |EasyMotion| also provide this feature. With above keymapping,
@@ -496,7 +496,7 @@ All Find motion (s,f,F,t,T,sl,fl,Fl,tl,Tl) support this feature!
     *<Plug>(easymotion-s2)* *<Plug>(easymotion-f2)* *<Plug>(easymotion-F2)*
     *<Plug>(easymotion-t2)* *<Plug>(easymotion-T2)* *<Plug>(easymotion-bd-t2)*
     *<Plug>(easymotion-sl2)* *<Plug>(easymotion-fl2)* *<Plug>(easymotion-Fl2)*
-    *<Plug>(easymotion-tl2)* *<Plug>(easymotion-Tl2)* *<Plug>(easymoion-bd-tl2)*
+    *<Plug>(easymotion-tl2)* *<Plug>(easymotion-Tl2)* *<Plug>(easymotion-bd-tl2)*
 
 But |EasyMotion| is good at simple and fast motion with one or two character.
 
@@ -785,7 +785,7 @@ tune the plugin to your need by changing every single sequence.
 4.10.1 Leader key                 *EasyMotion_leader_key* *easymotion-leader-key*
                                                     *<Plug>(easymotion-prefix)*
 
-The default leader key can be changed with the |<Plug>(easymoion-prefix)|
+The default leader key can be changed with the |<Plug>(easymotion-prefix)|
 
 Set this keymapping to the key sequence to use as the prefix of the mappings
 described in |easymotion-default-mappings|.
@@ -794,7 +794,7 @@ Note: The default leader key has been changed to '<Leader><Leader>' to
 avoid conflicts with other plugins. You can revert to the original
 leader by setting this keymapping in your vimrc: >
 
-    map <Leader> <Plug>(easymoion-prefix)
+    map <Leader> <Plug>(easymotion-prefix)
 <
 Default: '<Leader><Leader>'
 
