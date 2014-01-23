@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: t/easymotion_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 23 Jan 2014.
+" Last Change: 24 Jan 2014.
 " Test: https://github.com/kana/vim-vspec
 " Refer: https://github.com/rhysd/clever-f.vim
 " Description: EasyMotion test with vim-vspec
@@ -1308,6 +1308,47 @@ describe 'dot notoff-screen search'
         exec "normal s/vim\<CR>"
         Expect CursorPos() != [51,1,'v']
         Expect CursorPos() == [l,1,'p']
+    end
+    "}}}
+end
+"}}}
+
+" off-screen search scroll {{{
+describe 'off-screen search scroll'
+    before
+        new
+        let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        let g:EasyMotion_off_screen_search = 1
+        map / <Plug>(easymotion-sn)
+        call EasyMotion#init()
+        call AddLine('deco-chan deco-chan')
+        call AddLine('vim')
+        for i in range(500)
+            call AddLine('poge1 2huga 3hiyo 4poyo')
+        endfor
+        call AddLine('deco-chan deco-chan')
+        "             12345678901234567890123
+    end
+
+    after
+        let g:EasyMotion_off_screen_search = 0
+        close!
+    end
+
+    " provide scroll {{{
+    it 'provide scroll'
+        normal! gg0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'d']
+
+        normal! gg0
+        exec "normal /deco-chan\<CR>"
+        Expect CursorPos() == [l,11,'d']
+
+        normal! gg0
+        exec "normal /deco-chan\<Tab>\<CR>a"
+        Expect CursorPos() == [503,1,'d']
+
     end
     "}}}
 end
