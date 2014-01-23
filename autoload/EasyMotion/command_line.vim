@@ -2,7 +2,7 @@
 " FILE: autoload/EasyMotion/command_line.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/osyo-manga/vim-over
-" Last Change: 20 Jan 2014.
+" Last Change: 23 Jan 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -37,6 +37,7 @@ function! s:InputPrompt(message, input) "{{{
 endfunction "}}}
 function! s:Cancell() " {{{
     call EasyMotion#highlight#delete_highlight()
+    keepjumps call setpos('.', s:orig_pos)
     redraw
     echo 'EasyMotion: Cancelled'
     return ''
@@ -71,16 +72,60 @@ function! s:after_input(num_strokes) "{{{
     call EasyMotion#highlight#delete_highlight()
 endfunction "}}}
 function! s:should_use_smartcase(input) "{{{
+    " TODO:
     if g:EasyMotion_smartcase == 0
         return 0
     endif
     " return 1 if input didn't match upporcase letter
     return match(a:input, '\u') == -1
 endfunction "}}}
-function! EasyMotion#command_line#GetInput(num_strokes, ...) "{{{
-    let previous_input = a:0 == 1 ? a:1 : ''
+function! s:offscreen_search(re) "{{{
+    " First: search within visible screen range
+    call s:adjust_screen()
+    silent! let pos = searchpos(a:re, s:direction . 'n', s:orig_line_end[1])
+    if pos != [0, 0]
+        " Restore cursor posision
+        keepjumps call setpos('.', s:orig_pos)
+    else
+        " Second: if there were no much, search off screen
+        silent! let pos = searchpos(a:re, s:direction)
+        if pos != [0, 0]
+            " Match
+            keepjumps call setpos('.', pos)
+            " Move cursor
+            if s:direction != 'b'
+                normal! zzH0
+            else
+                normal! zzL0
+            endif
+        else
+            " No much
+            call s:adjust_screen()
+            keepjumps call setpos('.', s:orig_pos)
+        endif
+    endif
+endfunction "}}}
+function! s:adjust_screen() "{{{
+    if s:direction != 'b'
+        " Forward
+        keepjumps call setpos('.', s:orig_line_start)
+        normal! zt
+    else
+        " Backward
+        keepjumps call setpos('.', s:orig_line_end)
+        normal! zb
+    endif
+endfunction "}}}
+
+function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
+    let previous_input = a:prev
+    let s:direction = a:direction == 1 ? 'b' : ''
     let input = ''
     let prompt = s:getPromptMessage(a:num_strokes)
+
+    let s:orig_pos = getpos('.')
+    let s:orig_line_start = getpos('w0')
+    let s:orig_line_end = getpos('w$')
 
     call s:before_input(a:num_strokes)
 
@@ -135,15 +180,23 @@ function! EasyMotion#command_line#GetInput(num_strokes, ...) "{{{
         else
             let input .= s:char
         endif
-        if g:EasyMotion_inc_highlight
-            call EasyMotion#highlight#delete_highlight('EasyMotionIncSearch')
-            if a:num_strokes == -1 && len(input) > 0
-                let re = input
-                let case_flag = s:should_use_smartcase(input) ? '\c' : '\C'
-                let re .= case_flag
-                call EasyMotion#highlight#add_highlight(re, g:EasyMotion_hl_inc_search)
-            endif
+
+        " Incremental routine {{{
+        if a:num_strokes == -1
+            let re = input
+            let case_flag = s:should_use_smartcase(input) ? '\c' : '\C'
+            let re .= case_flag
+            if g:EasyMotion_inc_highlight "{{{
+                call EasyMotion#highlight#delete_highlight('EasyMotionIncSearch')
+                if len(input) > 0
+                    silent! call EasyMotion#highlight#add_highlight(re, g:EasyMotion_hl_inc_search)
+                endif
+            endif "}}}
+            if g:EasyMotion_off_screen_search "{{{
+                call s:offscreen_search(re)
+            endif "}}}
         endif
+        "}}}
     endwhile
     call s:after_input(a:num_strokes)
     return input
