@@ -1206,4 +1206,111 @@ describe 'bi-directional t motion'
 end
 "}}}
 
+" off-screen search {{{
+describe 'off-screen search'
+    before
+        new
+        let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        let g:EasyMotion_off_screen_search = 1
+        map s/ <Plug>(easymotion-sn)
+        map f/ <Plug>(easymotion-fn)
+        map F/ <Plug>(easymotion-Fn)
+        map t/ <Plug>(easymotion-tn)
+        map T/ <Plug>(easymotion-Tn)
+        call EasyMotion#init()
+        call AddLine('deco-chan deco-chan')
+        call AddLine('vim')
+        for i in range(50)
+            call AddLine('poge1 2huga 3hiyo 4poyo')
+        endfor
+        "             12345678901234567890123
+    end
+
+    after
+        let g:EasyMotion_off_screen_search = 0
+        close!
+    end
+
+    " provide search with off-screen range {{{
+    it 'provide search with off-screen range'
+        normal! gg0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+
+        exec "normal s/vim\<CR>"
+        Expect CursorPos() == [51,1,'v']
+
+        normal! gg0
+        exec "normal f/im\<CR>"
+        Expect CursorPos() == [51,2,'i']
+
+        set wrapscan
+        Expect &wrapscan == 1
+        normal! gg0
+        exec "normal F/im\<CR>"
+        Expect CursorPos() == [51,2,'i']
+
+        " Cancel
+        normal! gg0
+        exec "normal s/vim\<Esc>"
+        Expect CursorPos() == [l,1,'p']
+
+        " Label
+        normal! gg0
+        exec "normal s/deco-chan\<CR>\<Esc>"
+        Expect CursorPos() == [l,1,'p']
+
+        normal! gg0
+        exec "normal s/deco-chan\<CR>a"
+        Expect CursorPos() == [52,1,'d']
+
+        normal! gg0
+        exec "normal s/deco-chan\<CR>b"
+        Expect CursorPos() == [52,11,'d']
+
+        normal! gg0
+        exec "normal t/chan\<CR>a"
+        Expect CursorPos() == [52,5,'-']
+
+        normal! gg0
+        exec "normal t/chan\<CR>b"
+        Expect CursorPos() == [52,15,'-']
+
+    end
+    "}}}
+end
+
+describe 'dot notoff-screen search' "{{{
+    before
+        new
+        let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        let g:EasyMotion_off_screen_search = 0
+        map s/ <Plug>(easymotion-sn)
+        call EasyMotion#init()
+        call AddLine('deco-chan deco-chan')
+        call AddLine('vim')
+        for i in range(50)
+            call AddLine('poge1 2huga 3hiyo 4poyo')
+        endfor
+        "             12345678901234567890123
+    end
+
+    after
+        close!
+    end
+
+    " provide search with off-screen range {{{
+    it 'provide search with off-screen range'
+        normal! gg0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+
+        exec "normal s/vim\<CR>"
+        Expect CursorPos() != [51,1,'v']
+        Expect CursorPos() == [l,1,'p']
+    end
+    "}}}
+end "}}}
+"}}}
+
 " vim: fdm=marker:et:ts=4:sw=4:sts=4
