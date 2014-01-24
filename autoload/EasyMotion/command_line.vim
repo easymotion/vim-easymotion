@@ -208,7 +208,7 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
             let s:orig_pos = s:save_orig_pos
             let s:orig_line_start = getpos('w0')
             let s:orig_line_end = getpos('w$')
-            let s:direction = ''
+            let s:direction = s:save_direction
         elseif EasyMotion#command_line#is_input("\<C-z>")
             normal! zR
         elseif char2nr(s:char) == 128 || char2nr(s:char) < 27
