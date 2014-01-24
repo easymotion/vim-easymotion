@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:23 Jan 2014.
+*easymotion.txt*	Version 2.0  Last change:24 Jan 2014.
 
 
             ______                  __  ___       __  _
@@ -334,6 +334,7 @@ JK Motion ~
                                                          *easymotion-jk-motion*
 
 JK motion option                    *<Plug>(easymotion-j)* *<Plug>(easymotion-k)*
+                                                     *<Plug>(easymotion-bd-jk)*
                                                     *g:EasyMotion_startofline*
 
         When using the |j| or |k| motion, the cursor can be configured to stay in
@@ -345,19 +346,21 @@ JK motion option                    *<Plug>(easymotion-j)* *<Plug>(easymotion-k)
 >
         let g:EasyMotion_startofline = 0 # keep cursor colum JK motion
         map <Leader>J <Plug>(easymotion-sol-j)
-        map <Leader>K <Plug>(easymotion-sol-K)
+        map <Leader>K <Plug>(easymotion-sol-k)
 <
 Default: 1
 
 Start of Line JK motion     *<Plug>(easymotion-sol-j)* *<Plug>(easymotion-sol-k)*
+                                                 *<Plug>(easymotion-sol-bd-jk)*
 
         Match start of line JK motion
         Example:
 >
         map <Leader>J <Plug>(easymotion-sol-j)
-        map <Leader>K <Plug>(easymotion-sol-K)
+        map <Leader>K <Plug>(easymotion-sol-k)
 <
 End of Line JK motion       *<Plug>(easymotion-eol-j)* *<Plug>(easymotion-eol-k)*
+                                                 *<Plug>(easymotion-eol-bd-jk)*
 
         Match End of line JK motion
         Example:
