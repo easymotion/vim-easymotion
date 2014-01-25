@@ -1,7 +1,7 @@
 " EasyMotion - Vim motions on speed!
 "
 " Author: haya14busa <hayabusa1419@gmail.com>
-" Last Change: 24 Jan 2014.
+" Last Change: 25 Jan 2014.
 " Source: https://github.com/haya14busa/vim-easymotion
 "
 " Original Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
@@ -582,7 +582,8 @@ function! s:findMotion(num_strokes, direction) "{{{
 
     if g:EasyMotion_add_search_history && a:num_strokes == -1
         let @/ = re "For textobject: 'gn'
-        call histadd('search', re)
+        call histadd('search',
+                    \ substitute(re, '\\c\|\\C', '', ''))
     endif
 
     return re
@@ -603,7 +604,7 @@ function! s:convertRegep(input) "{{{
     endif
 
     let case_flag = s:should_use_smartcase(a:input) ? '\c' : '\C'
-    let re .= case_flag
+    let re = case_flag . re
     return re
 endfunction "}}}
 function! s:convertMigemo(re) "{{{
