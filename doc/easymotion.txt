@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:24 Jan 2014.
+*easymotion.txt*	Version 2.0  Last change:26 Jan 2014.
 
 
             ______                  __  ___       __  _
@@ -334,7 +334,6 @@ JK Motion ~
                                                          *easymotion-jk-motion*
 
 JK motion option                    *<Plug>(easymotion-j)* *<Plug>(easymotion-k)*
-                                                     *<Plug>(easymotion-bd-jk)*
                                                     *g:EasyMotion_startofline*
 
         When using the |j| or |k| motion, the cursor can be configured to stay in
