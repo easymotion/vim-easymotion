@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: autoload/EasyMotion/helper.vim
 " AUTHOR: haya14busa
-" Last Change: 17 Jan 2014.
+" Last Change: 25 Jan 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -53,6 +53,21 @@ function! EasyMotion#helper#is_greater_coords(coords1, coords2) "{{{
     elseif a:coords1[1] > a:coords2[1]
         return -1
     endif
+endfunction "}}}
+
+function! EasyMotion#helper#is_folded(line) "{{{
+    " Return false if g:EasyMotion_skipfoldedline == 1
+    " and line is start of folded lines
+    return foldclosed(a:line) != -1 &&
+        \ (g:EasyMotion_skipfoldedline == 1 ||
+        \  a:line != foldclosed(a:line))
+endfunction "}}}
+function! EasyMotion#helper#should_use_smartcase(input) "{{{
+    if g:EasyMotion_smartcase == 0
+        return 0
+    endif
+    " return 1 if input didn't match uppercase letter
+    return match(a:input, '\u') == -1
 endfunction "}}}
 
 " Migemo {{{

@@ -2,7 +2,7 @@
 " FILE: autoload/EasyMotion/command_line.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/osyo-manga/vim-over
-" Last Change: 24 Jan 2014.
+" Last Change: 26 Jan 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -69,14 +69,6 @@ function! s:before_input(num_strokes) "{{{
 endfunction "}}}
 function! s:after_input() "{{{
     call EasyMotion#highlight#delete_highlight()
-endfunction "}}}
-function! s:should_use_smartcase(input) "{{{
-    " TODO:
-    if g:EasyMotion_smartcase == 0
-        return 0
-    endif
-    " return 1 if input didn't match upporcase letter
-    return match(a:input, '\u') == -1
 endfunction "}}}
 function! s:offscreen_search(re) "{{{
     " First: search within visible screen range
@@ -221,7 +213,7 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
         " Incremental routine {{{
         if a:num_strokes == -1
             let re = input
-            let case_flag = s:should_use_smartcase(input) ? '\c' : '\C'
+            let case_flag = EasyMotion#helper#should_use_smartcase(re) ? '\c' : '\C'
             let re .= case_flag
             if g:EasyMotion_inc_highlight "{{{
                 call EasyMotion#highlight#delete_highlight('EasyMotionIncSearch')
