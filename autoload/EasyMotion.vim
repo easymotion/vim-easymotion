@@ -596,7 +596,7 @@ function! s:convertRegep(input) "{{{
     let re = s:should_use_regexp() ? a:input : escape(a:input, '.$^~\[]')
 
     " Convert space to match only start of spaces
-    if re =~# '\s'
+    if re ==# ' '
         let re = '\s\+'
     endif
 
