@@ -1,7 +1,7 @@
 " EasyMotion - Vim motions on speed!
 "
 " Author: haya14busa <hayabusa1419@gmail.com>
-" Last Change: 26 Jan 2014.
+" Last Change: 27 Jan 2014.
 " Source: https://github.com/haya14busa/vim-easymotion
 "
 " Original Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
@@ -594,6 +594,11 @@ function! s:convertRegep(input) "{{{
     " 3. smartsign
     " 4. smartcase
     let re = s:should_use_regexp() ? a:input : escape(a:input, '.$^~\[]')
+
+    " Convert space to match only start of spaces
+    if re =~# '\s'
+        let re = '\s\+'
+    endif
 
     if s:should_use_migemo(a:input)
         let re = s:convertMigemo(re)
