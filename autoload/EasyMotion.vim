@@ -1,7 +1,7 @@
 " EasyMotion - Vim motions on speed!
 "
 " Author: haya14busa <hayabusa1419@gmail.com>
-" Last Change: 24 Jan 2014.
+" Last Change: 26 Jan 2014.
 " Source: https://github.com/haya14busa/vim-easymotion
 "
 " Original Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
@@ -582,7 +582,8 @@ function! s:findMotion(num_strokes, direction) "{{{
 
     if g:EasyMotion_add_search_history && a:num_strokes == -1
         let @/ = re "For textobject: 'gn'
-        call histadd('search', re)
+        call histadd('search',
+                    \ substitute(re, '\\c\|\\C', '', ''))
     endif
 
     return re
@@ -602,8 +603,8 @@ function! s:convertRegep(input) "{{{
         let re = s:convertSmartsign(re, a:input)
     endif
 
-    let case_flag = s:should_use_smartcase(a:input) ? '\c' : '\C'
-    let re .= case_flag
+    let case_flag = EasyMotion#helper#should_use_smartcase(a:input) ? '\c' : '\C'
+    let re = case_flag . re
     return re
 endfunction "}}}
 function! s:convertMigemo(re) "{{{
@@ -661,7 +662,7 @@ function! s:should_use_migemo(char) "{{{
 
     " Skip folded line and check if text include multibyte haracters
     for line in range(first_line, end_line)
-        if s:is_folded(line)
+        if EasyMotion#helper#is_folded(line)
             continue
         endif
 
@@ -755,13 +756,6 @@ function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
     endif
 endfunction "}}}
 " -- Others ------------------------------
-function! s:is_folded(line) "{{{
-    " Return false if g:EasyMotion_skipfoldedline == 1
-    " and line is start of folded lines
-    return foldclosed(a:line) != -1 &&
-        \ (g:EasyMotion_skipfoldedline == 1 ||
-        \  a:line != foldclosed(a:line))
-endfunction "}}}
 function! s:is_cmdwin() "{{{
   return bufname('%') ==# '[Command Line]'
 endfunction "}}}
@@ -1336,7 +1330,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             endif
 
             " Skip folded lines {{{
-            if s:is_folded(pos[0])
+            if EasyMotion#helper#is_folded(pos[0])
                 if search_direction ==# 'b'
                     keepjumps call cursor(foldclosed(pos[0]-1), 0)
                 else
@@ -1378,7 +1372,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
                 endif
 
                 " Skip folded lines {{{
-                if s:is_folded(pos[0])
+                if EasyMotion#helper#is_folded(pos[0])
                     " Always forward
                     keepjumps call cursor(foldclosedend(pos[0]+1), 0)
                     continue
