@@ -1,16 +1,28 @@
-# Vim motion on speed! [![Build Status](https://travis-ci.org/haya14busa/vim-easymotion.png?branch=master)](https://travis-ci.org/haya14busa/vim-easymotion)
+Vim motion on speed! [![Build Status](https://travis-ci.org/haya14busa/vim-easymotion.png?branch=master)](https://travis-ci.org/haya14busa/vim-easymotion)
+=====
 
-![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion.gif)
+About authors
+=====
+- Kim Silkebækken (https://github.com/Lokaltog)
+- haya14busa (https://github.com/haya14busa) (from version 2.0)
 
-Original: [Lokaltog/vim-easymotion](https://github.com/Lokaltog/vim-easymotion)
+Now, EasyMotion project revived!
+======
+[haya14busa](https://github.com/haya14busa) took over the project from
+version 2.0. Improve default motions, implemented new useful features,
+and fixed some bugs.
 
-I forked Lokaltog's vim-easymotion and currently maintain it. Fix some bugs,
-add new features (based on supasorn's work and others), and improve some function.
+Now, EasyMotion is completely
 
-I greatly appreciate Lokaltog's and others' works!
+- **Well-behaved**. It is consistent with the default motions of Vim and works well in all mode including dot repeat support.
+- **Configurable**. You can easily configure its behavior and map any key you want.
+- **Sophisticated**. It provide bi-directional motion, showing two label feature, smartcase & smartsign sensitive feature, repeat motion, and 'increment search' motion which can jump to even off-screen and so forth.
 
-# Introduction
+haya14busa implemented a lot of new feature and modify default behaviors, but I carefully considered backward compatibility, so you can easily update and enjoy significant benefit!
 
+
+Introduction
+=====
 EasyMotion provides a much simpler way to use some motions in vim. It
 takes the `<number>` out of `<number>w` or `<number>f{char}` by
 highlighting all possible choices and allowing you to press one key to
@@ -22,20 +34,30 @@ highlighted.
 
 EasyMotion is triggered by one of the provided mappings.
 
-# Important notes about the default bindings
+Important notes
+=====
 
+## About the default bindings
 **The default leader has been changed to `<Leader><Leader>` to avoid
 conflicts with other plugins you may have installed.** This can easily be
 changed back to pre-1.3 behavior by rebinding the leader in your vimrc:
 
-	map <Leader> <Plug>(easymotion-prefix)
+```vim
+map <Leader> <Plug>(easymotion-prefix)
+```
 
-All motions are now triggered with `<Leader><Leader>` by default, e.g.
-`<Leader><Leader>t`, `<Leader><Leader>gE`.
+All motions are now triggered with `<Leader>` by default, e.g.
+`<Leader>s`, `<Leader>gE`.
 
-# Usage example
+## About SelectLines & SelectPhrase for fork version user
+These feature are not **motion**, so these features are separated as different plugins.
 
-Type `<Leader><Leader>w` to trigger the word motion `w`. When the motion is
+TODO: url
+
+Usage example
+=====
+
+Type `<Leader><Leader>w`(`<Plug>(easymotion-w)`) to trigger the word motion `w`. When the motion is
 triggered, the text is updated (no braces are actually added, the text
 is highlighted in red by default):
 
@@ -56,42 +78,71 @@ Press `b` to jump to the second "o":
 
 Jeffrey Way of Nettuts+ has also [written
 a tutorial](http://net.tutsplus.com/tutorials/other/vim-essential-plugin-easymotion/)
-about (Lokaltog's) EasyMotion.
+about EasyMotion(but under version 2.0).
 
-# Animated demonstration
+Animated demonstration
+-----
 
-![Animated demonstration](http://oi54.tinypic.com/2yysefm.jpg)
+![Animated demonstration](https://f.cloud.github.com/assets/3797062/2039359/a8e938d6-899f-11e3-8789-60025ea83656.gif)
 
-# New feature
-Modifications to Lokaltog's EasyMotion
-
+New feature from 2.0
+-----
 ## Two key combo
 1. Use one - two character key jump. Display two keys if one-character key is not enough, so you can see what two keys to type without waiting after pressing the first key.
 
-![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion.gif)
+## Support bidirectional motion
+It provide forward-backward (bidirectional) search feature to all motion.
 
-## Bidirectional search
-Added forward-backward search (bidirectional) search. You can jump forward or backward at the same time by `<Leader>s`. One useful trick is to map `map <SPACE> <Plug>(easymotion-s)` to use space bar instead and save one keystroke!
+You can jump forward or backward at the same time by `<Leader>s`. One useful trick is to map `nmap s <Plug>(easymotion-s)` to use `s` instead and save one keystroke!
 
-## Find target by smartcase!
+## 2 key find motion
+EasyMotion provide 2-key find motion like vim-seek/vim-sneak. (e.g. `<Plug>(easymotion-s2)`)
 
-Matching target keys by smartcase. You can type targets more lazily.
+![2-key-find-motion](https://f.cloud.github.com/assets/3797062/2039612/7cafcec8-89a5-11e3-8f2c-5f26a6b83efd.gif)
 
-Type `<Leader><Leader>sv`, and all "v" and "V" characters are highlighted:
+## 'n' key find motion
+EasyMotion also provide 'n' key find motion like default 'search' motion of Vim.
 
-	<cursor>V{a}im v{b}im V{c}IM.
+- Increment highlight
+- Search off-screen by `<Tab>` & `<S-Tab>`
 
-Press `b` to jump to the second "v":
+Scroll by `<Tab>` key (`<S-Tab>` is backward)
+![n-key-motion-scroll](https://f.cloud.github.com/assets/3797062/2039254/4fbf7276-899e-11e3-9bf3-1e446cabc097.gif)
 
-	Vim <cursor>vim VIM.
+Replace default search of Vim with EasyMotion
+![replace-search](https://f.cloud.github.com/assets/3797062/2039751/64b72bd8-89a8-11e3-80ea-2a6b578040b2.gif)
 
-Type `<Leader><Leader>sV`, and all "V" characters are highlighted, not "v":
+```vim
+map  / <Plug>(easymotion-sn)
+omap / <Plug>(easymotion-tn)
+map  n <Plug>(easymotion-next)
+map  N <Plug>(easymotion-prev)
+```
 
-	<cursor>V{a}im vim V{b}IM.
+## Within line motion
+Every motion also support within line motion.(e.g. `<Plug>(easymotion-sl)`,
+`<Plug>(easymotion-bd-wl)`, etc...)
 
-Press `b` to jump to the second "V":
+These motion matches only current line.
 
-	Vim vim <cursor>VIM.
+Example: these motion extend `hjkl` motion!
+```vim
+map <Leader>h <Plug>(easymotion-lineforward)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+map <Leader>l <Plug>(easymotion-linebackward)
+
+let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
+```
+
+![hjkl-motoin](https://f.cloud.github.com/assets/3797062/2039413/d8b32ab2-89a0-11e3-894f-3e81db084cfd.gif)
+
+## Find target by smartcase & smartsign!
+
+Matching target keys by smartcase. You can type targets more easily.
+
+In find motion(e.g. `<Plug>(easymotion-s)`), type 'v' and matches 'v' & 'V',
+and 'V' matches only 'V'.
 
 Add following description in your vimrc:
 
@@ -99,71 +150,62 @@ Add following description in your vimrc:
 
 Default:0
 
+Matching target keys by smartsign. You can type targets more easily.
+
+In find motion, type '1' and matches '1' & '!', and '!' matches only '!'.
+
+Add following description in your vimrc:
+
+```vim
+let g:EasyMotion_use_smartsign_us = 1 " US layout
+" or
+let g:EasyMotion_use_smartsign_jp = 1 " JP layout
+```
+
 ## Migemo feature (for Japanese user)
 Easymotion can match multibyte Japanese character with a alphabet input.
 For example, '<Leader><Leader>fa' can search 'あ'.
 This feature doesn't require cmigemo because Easymotion includes regex
-patterns generated by cmigemo.
+patterns generated by cmigemo. However if you installed `cmigemo`,
+2-key and 'n' key find motion also support migemo feature.
 
 Add following description in your vimrc:
 
-	let g:EasyMotion_use_migemo = 1
+```vim
+let g:EasyMotion_use_migemo = 1
+```
 
 Default:0
 
-## Keep cursor column
-Added keep cursor column option when JK motion.
+## Repeat motion
+`<Plug>(easymotion-repeat)`
+: Repeat last motion
 
-Add following description in your vimrc:
+Repeat last find motion
+: In find motion(e.g. `<Plug>(easymotion-s)` ), to type `<CR>` without input characters invoke last find motion.
+`<Plug>(easymotion-next)` & `<Plug>(easymotion-prev)`
+: Jump to next/previous much even off-screen.
 
-	let g:EasyMotion_startofline = 0
+Dot repeat support
+: Require https://github.com/tpope/vim-repeat
+: You can use EasyMotion in operator-pending and press `.` to repeat! It well-behaved, consistent with default behavior of Vim.
 
-Default:0
+![repeat-motion](https://f.cloud.github.com/assets/3797062/2039538/0aef66aa-89a4-11e3-8242-c27a5208cfca.gif)
 
-## Jump to anywhere!
-JumpToAnywhere motion!
+```vim
+" Require tpope/vim-repeat to enable dot repeat support
+" Jump to anywhere with only `s{char}{target}`
+" `s<CR>` repeat last find motion.
+nmap s <Plug>(easymotion-s)
+" Bidirectional & within line 't' motion
+omap t <Plug>(easymotion-bd-tl)
+" Use uppercase target labels and type as a lower case
+let g:EasyMotion_use_upper = 1
+ " type `l` and match `l`&`L`
+let g:EasyMotion_smartcase = 1
+" Smartsign (type `3` and match `3`&`#`)
+let g:EasyMotion_use_smartsign_us = 1
+```
 
-Add following description in your vimrc and you can customize this behavior:
+Pull requests are welcome including my English check! :)
 
-	map <Space><Space> <Plug>(easymotion-jumptoanywhere)
-	let g:EasyMotion_re_anywhere = '\v' .
-		\  '(<.|^)' . '|' .
-		\  '(.$)' . '|' .
-		\  '(\l)\zs(\u)' . '|' .
-		\  '(_\zs.)' . '|' .
-		\  '(/\zs.)' . '|' .
-		\  '(#\zs.)'
-
-## Select line
-Added SelectLines function which allows you to select any range of lines using two consecutive easymotion calls. Default mappings are `c<Leader>l, d<Leader>l, v<Leader>l, y<Leader>l`(set `let g:EasyMotion_do_special_mapping = 1`, this function is disabled by default).
-
-To yank a single line you can either type the same character(s) twice, or use '.' character. E.g. `vlb.` will select the line with character 'b'.
-
-Note: to promote good Vim habits, you should learn standard movement commands like `}}, vi(, va(, %, ][, ]], [(, etc.` before resorting to this function.
-
-Select lines using `v<Leader>l`
-
-![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion2.gif)
-
-Yank lines using `y<Leader>l`. You can copy lines without moving cursor back and forth between line you want to yank and line you want to paste.
-
-![two-character key](http://homes.cs.washington.edu/~supasorn/easymotion3.gif)
-
-## Select Phrase
-(Experimental) Added SelectPhrase function which allows you to make selection between any two characters. Default mapping are `c<Leader>p, d<Leader>p, v<Leader>p, y<Leader>p`.(set `let g:EasyMotion_do_special_mapping = 1`, this function is disabled by default)
-
-Example usage: type `v<Leader>p` then press two input characters. Now the two input characters will be highlight on the same screen, and you can then type two combos to make selection.
-
-## \<Plug\> mapping support
-But I keep backward compatibility, so you can easily move to new easymotion.
-
-With this `<Plug>` support, I can easily implement new mapping without
-confliction.Such as
-
-- `<Plug>(easymotion-bd-w)`
-  - (bidirectional word motion)
-- `<Plug>(easymotion-jumptoanywhere)`
-- and others! See :h easymotion-more-mapping
-
-
-Pull requests are welcome! :)
