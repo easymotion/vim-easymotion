@@ -97,8 +97,8 @@ function! s:_finish()
 endfunction
 
 
-function! s:module.on_charpre(cmdline)
-	if a:cmdline.is_input("\<Tab>")
+function! s:module.on_char_pre(cmdline)
+	if a:cmdline.is_input("<Over>(buffer-complete)")
 		if self.complete(a:cmdline) == -1
 			call s:_finish()
 			call a:cmdline.setchar('')
@@ -106,14 +106,14 @@ function! s:module.on_charpre(cmdline)
 		endif
 		call a:cmdline.setchar('')
 		call a:cmdline.wait_keyinput_on("Completion")
-	elseif a:cmdline.is_input("\<Tab>", "Completion")
-\		|| a:cmdline.is_input("\<C-f>", "Completion")
+	elseif a:cmdline.is_input("<Over>(buffer-complete)", "Completion")
+\		|| a:cmdline.is_input("\<Right>", "Completion")
 		call a:cmdline.setchar('')
 		let s:count += 1
 		if s:count >= len(s:complete_list)
 			let s:count = 0
 		endif
-	elseif a:cmdline.is_input("\<C-b>", "Completion")
+	elseif a:cmdline.is_input("\<Left>", "Completion")
 		call a:cmdline.setchar('')
 		let s:count -= 1
 		if s:count < 0
@@ -121,7 +121,7 @@ function! s:module.on_charpre(cmdline)
 		endif
 	else
 		if a:cmdline.wait_keyinput_off("Completion")
-			call a:cmdline._on_charpre()
+			call a:cmdline._on_char_pre()
 		endif
 		call s:_finish()
 		return

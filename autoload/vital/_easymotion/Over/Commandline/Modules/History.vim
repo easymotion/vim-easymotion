@@ -17,8 +17,8 @@ function! s:module.enter(...)
 	let s:count = 0
 endfunction
 
-function! s:module.on_charpre(cmdline)
-	if !a:cmdline.is_input("\<C-p>") && !a:cmdline.is_input("\<C-n>")
+function! s:module.on_char_pre(cmdline)
+	if !a:cmdline.is_input("\<Up>") && !a:cmdline.is_input("\<Down>")
 		let s:cmdhist = []
 		let s:count = 0
 		return
@@ -29,10 +29,10 @@ function! s:module.on_charpre(cmdline)
 		endif
 	endif
 	call a:cmdline.setchar("")
-	if a:cmdline.is_input("\<C-n>")
+	if a:cmdline.is_input("\<Down>")
 		let s:count = max([s:count - 1, 0])
 	endif
-	if a:cmdline.is_input("\<C-p>")
+	if a:cmdline.is_input("\<Up>")
 		let s:count = min([s:count + 1, len(s:cmdhist)])
 	endif
 	call a:cmdline.setline(get(s:cmdhist, s:count, a:cmdline.getline()))

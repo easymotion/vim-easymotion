@@ -6,12 +6,13 @@ set cpo&vim
 let s:module = {
 \	"name" : "Delete",
 \}
-function! s:module.on_charpre(cmdline)
+function! s:module.on_char_pre(cmdline)
 	if a:cmdline.is_input("\<C-h>")
-		if a:cmdline.line.length() == 0
-			call a:cmdline.exit()
-		endif
+\	|| a:cmdline.is_input("\<BS>")
 		call a:cmdline.line.remove_prev()
+		call a:cmdline.setchar('')
+	elseif a:cmdline.is_input("\<Del>")
+		call a:cmdline.line.remove_pos()
 		call a:cmdline.setchar('')
 	elseif a:cmdline.is_input("\<C-w>")
 		let backward = matchstr(a:cmdline.backward(), '^\zs.\{-}\ze\(\(\w*\)\|\(.\)\)$')
