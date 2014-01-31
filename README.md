@@ -1,6 +1,8 @@
 Vim motion on speed! [![Build Status](https://travis-ci.org/haya14busa/vim-easymotion.png?branch=master)](https://travis-ci.org/haya14busa/vim-easymotion)
 =====
 
+![Animated demonstration](https://f.cloud.github.com/assets/3797062/2039359/a8e938d6-899f-11e3-8789-60025ea83656.gif)
+
 About authors
 =====
 - Kim Silkebækken (https://github.com/Lokaltog)
@@ -9,7 +11,7 @@ About authors
 Now, EasyMotion project revived!
 ======
 [haya14busa](https://github.com/haya14busa) took over the project from
-version 2.0. Improve default motions, implemented new useful features,
+version 2.0. Improved default motions, implemented new useful features,
 and fixed some bugs.
 
 Now, EasyMotion is completely
@@ -37,7 +39,7 @@ EasyMotion is triggered by one of the provided mappings.
 Important notes
 =====
 
-## About the default bindings
+### About the default bindings
 **The default leader has been changed to `<Leader><Leader>` to avoid
 conflicts with other plugins you may have installed.** This can easily be
 changed back to pre-1.3 behavior by rebinding the leader in your vimrc:
@@ -49,10 +51,11 @@ map <Leader> <Plug>(easymotion-prefix)
 All motions are now triggered with `<Leader>` by default, e.g.
 `<Leader>s`, `<Leader>gE`.
 
-## About SelectLines & SelectPhrase for fork version user
-These feature are not **motion**, so these features are separated as different plugins.
+### About SelectLines & SelectPhrase for fork version user
+These features are not **motion**, so I separated them as different plugins.
 
-TODO: url
+- https://github.com/haya14busa/vim-easyoperator-line
+- https://github.com/haya14busa/vim-easyoperator-phrase
 
 Usage example
 =====
@@ -78,12 +81,8 @@ Press `b` to jump to the second "o":
 
 Jeffrey Way of Nettuts+ has also [written
 a tutorial](http://net.tutsplus.com/tutorials/other/vim-essential-plugin-easymotion/)
-about EasyMotion(but under version 2.0).
+about EasyMotion.
 
-Animated demonstration
------
-
-![Animated demonstration](https://f.cloud.github.com/assets/3797062/2039359/a8e938d6-899f-11e3-8789-60025ea83656.gif)
 
 New feature from 2.0
 -----
@@ -99,6 +98,10 @@ You can jump forward or backward at the same time by `<Leader>s`. One useful tri
 EasyMotion provide 2-key find motion like vim-seek/vim-sneak. (e.g. `<Plug>(easymotion-s2)`)
 
 ![2-key-find-motion](https://f.cloud.github.com/assets/3797062/2039612/7cafcec8-89a5-11e3-8f2c-5f26a6b83efd.gif)
+```vim
+nmap s <Plug>(easymotion-s2)
+nmap t <Plug>(easymotion-t2)
+```
 
 ## 'n' key find motion
 EasyMotion also provide 'n' key find motion like default 'search' motion of Vim.
@@ -178,17 +181,23 @@ let g:EasyMotion_use_migemo = 1
 Default:0
 
 ## Repeat motion
-`<Plug>(easymotion-repeat)`
-: Repeat last motion
+**Repeat last motion:** `<Plug>(easymotion-repeat)`
 
-Repeat last find motion
-: In find motion(e.g. `<Plug>(easymotion-s)` ), to type `<CR>` without input characters invoke last find motion.
+**Repeat last find motion:**
+
+In find motion(e.g. `<Plug>(easymotion-s)`), to type `<CR>` without
+input characters invoke last find motion.
+
+**Jump to next/previous match even off-screen:**
+
 `<Plug>(easymotion-next)` & `<Plug>(easymotion-prev)`
-: Jump to next/previous much even off-screen.
 
-Dot repeat support
-: Require https://github.com/tpope/vim-repeat
-: You can use EasyMotion in operator-pending and press `.` to repeat! It well-behaved, consistent with default behavior of Vim.
+**Dot repeat support:** 
+
+Require https://github.com/tpope/vim-repeat
+
+You can use EasyMotion in operator-pending and press `.` to repeat!
+It is well-behaved, consistent with default behavior of Vim.
 
 ![repeat-motion](https://f.cloud.github.com/assets/3797062/2039538/0aef66aa-89a4-11e3-8242-c27a5208cfca.gif)
 
@@ -206,6 +215,8 @@ let g:EasyMotion_smartcase = 1
 " Smartsign (type `3` and match `3`&`#`)
 let g:EasyMotion_use_smartsign_us = 1
 ```
+
+See `:help easymotion.txt` for more detail!
 
 Pull requests are welcome including my English check! :)
 
