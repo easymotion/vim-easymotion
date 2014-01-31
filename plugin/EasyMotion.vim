@@ -26,7 +26,6 @@ set cpo&vim
 let g:EasyMotion_keys               = get(g:,
     \ 'EasyMotion_keys', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 let g:EasyMotion_do_mapping         = get(g: , 'EasyMotion_do_mapping'         , 1)
-let g:EasyMotion_do_special_mapping = get(g: , 'EasyMotion_do_special_mapping' , 0)
 let g:EasyMotion_do_shade           = get(g: , 'EasyMotion_do_shade'           , 1)
 let g:EasyMotion_grouping           = get(g: , 'EasyMotion_grouping'           , 1)
 let g:EasyMotion_startofline        = get(g: , 'EasyMotion_startofline'        , 1)
@@ -59,8 +58,6 @@ let g:EasyMotion_hl2_second_group_target = get(g:,
     \ 'EasyMotion_hl2_second_group_target', 'EasyMotionTarget2Second')
 let g:EasyMotion_hl_group_shade          = get(g:,
     \ 'EasyMotion_hl_group_shade', 'EasyMotionShade')
-let g:EasyMotion_hl_line_group_shade     = get(g:,
-    \ 'EasyMotion_hl_line_group_shade', 'EasyMotionShadeLine')
 
 let g:EasyMotion_hl_inc_search     = get(g:,
     \ 'EasyMotion_hl_inc_search', 'EasyMotionIncSearch')
@@ -119,7 +116,6 @@ call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
 call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
 call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
 call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
-call EasyMotion#init#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
 
 call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
 call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
@@ -133,7 +129,6 @@ augroup EasyMotionInitHL
     autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
     autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
     autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
-    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_line_group_shade,  s:shade_hl_line_defaults)
 
     autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
     autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
@@ -349,19 +344,6 @@ xnoremap <silent><Plug>(easymotion-lineanywhere)
 "}}}
 "}}}
 
-" -- Special Motion {{{
-onoremap <silent> <Plug>(easymotion-special-l)       :<C-u>call EasyMotion#SelectLines()<CR>
-xnoremap <silent> <Plug>(easymotion-special-l)  <Esc>:<C-u>call EasyMotion#SelectLines()<CR>
-
-onoremap <silent> <Plug>(easymotion-special-p)       :<C-u>call EasyMotion#SelectPhrase()<CR>
-xnoremap <silent> <Plug>(easymotion-special-p)  <Esc>:<C-u>call EasyMotion#SelectPhrase()<CR>
-
-nnoremap <silent> <Plug>(easymotion-special-ly)      :<C-u>call EasyMotion#SelectLinesYank()<CR>
-nnoremap <silent> <Plug>(easymotion-special-ld)      :<C-u>call EasyMotion#SelectLinesDelete()<CR>
-nnoremap <silent> <Plug>(easymotion-special-py)      :<C-u>call EasyMotion#SelectPhraseYank()<CR>
-nnoremap <silent> <Plug>(easymotion-special-pd)      :<C-u>call EasyMotion#SelectPhraseDelete()<CR>
-"}}}
-
 map <silent><expr><Plug>(easymotion-clever-s)
     \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-s)'
 map <silent><expr><Plug>(easymotion-clever-s2)
@@ -375,7 +357,7 @@ xnoremap <silent><Plug>(easymotion-activate) :<C-u>call EasyMotion#activate(1)<C
 " }}}
 
 " == Default key mapping {{{
-if g:EasyMotion_do_mapping == 1 || g:EasyMotion_do_special_mapping == 1
+if g:EasyMotion_do_mapping == 1
     " Prepare Prefix: {{{
     if exists('g:EasyMotion_leader_key')
         exec 'map ' . g:EasyMotion_leader_key . ' <Plug>(easymotion-prefix)'
@@ -407,13 +389,6 @@ if g:EasyMotion_do_mapping == 1 || g:EasyMotion_do_special_mapping == 1
         \ , 'n' : { 'name': 'Search' , 'dir': 0 }
         \ , 'N' : { 'name': 'Search' , 'dir': 1 }
         \ }, g:EasyMotion_do_mapping)
-
-    " Special Mapping For Default: {{{
-    call EasyMotion#init#InitSpecialMappings({
-        \   'l' : { 'name': 'SelectLines'}
-        \ , 'p' : { 'name': 'SelectPhrase'}
-        \ }, g:EasyMotion_do_special_mapping)
-    " }}}
 endif "}}}
 
 " == Restore 'cpoptions' {{{

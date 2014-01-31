@@ -202,11 +202,6 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-Fln)            | See |<Plug>(easymotion-Fln)|
     <Plug>(easymotion-tln)            | See |<Plug>(easymotion-tln)|
     <Plug>(easymotion-Tln)            | See |<Plug>(easymotion-Tln)|
-                                      |
-    Special                           | See |easymotion-special-mappings|
-    ----------------------------------|---------------------------------
-    <Plug>(easymotion-special-l)      | See |<Plug>(easymotion-special-l)|
-    <Plug>(easymotion-special-p)      | See |<Plug>(easymotion-special-p)|
 
 
 ------------------------------------------------------------------------------

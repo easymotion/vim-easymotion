@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: t/easymotion_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 24 Jan 2014.
+" Last Change: 31 Jan 2014.
 " Test: https://github.com/kana/vim-vspec
 " Refer: https://github.com/rhysd/clever-f.vim
 " Description: EasyMotion test with vim-vspec
@@ -373,27 +373,6 @@ describe 'Default settings'
             \ ==# '<Esc>:<C-U>call EasyMotion#LineAnywhere(1,2)<CR>'
         " }}}
 
-        " Special Motion: {{{
-        " SelectLines
-        Expect maparg('<Plug>(easymotion-special-l)', 'o')
-            \ ==# ':<C-U>call EasyMotion#SelectLines()<CR>'
-        Expect maparg('<Plug>(easymotion-special-l)', 'v')
-            \ ==# '<Esc>:<C-U>call EasyMotion#SelectLines()<CR>'
-        Expect maparg('<Plug>(easymotion-special-ly)', 'n')
-            \ ==# ':<C-U>call EasyMotion#SelectLinesYank()<CR>'
-        Expect maparg('<Plug>(easymotion-special-ld)', 'n')
-            \ ==# ':<C-U>call EasyMotion#SelectLinesDelete()<CR>'
-        " SelectPhrase
-        Expect maparg('<Plug>(easymotion-special-p)', 'o')
-            \ ==# ':<C-U>call EasyMotion#SelectPhrase()<CR>'
-        Expect maparg('<Plug>(easymotion-special-p)', 'v')
-            \ ==# '<Esc>:<C-U>call EasyMotion#SelectPhrase()<CR>'
-        Expect maparg('<Plug>(easymotion-special-py)', 'n')
-            \ ==# ':<C-U>call EasyMotion#SelectPhraseYank()<CR>'
-        Expect maparg('<Plug>(easymotion-special-pd)', 'n')
-            \ ==# ':<C-U>call EasyMotion#SelectPhraseDelete()<CR>'
-        " }}}
-
         " Activate {{{
         Expect maparg('<Plug>(easymotion-activate)', 'n')
             \ ==# ':<C-U>call EasyMotion#activate(0)<CR>'
@@ -432,12 +411,6 @@ describe 'Default settings'
         Expect exists('*EasyMotion#WBL') ==# 1
         Expect exists('*EasyMotion#EL') ==# 1
         Expect exists('*EasyMotion#LineAnywhere') ==# 1
-        Expect exists('*EasyMotion#SelectLines') ==# 1
-        Expect exists('*EasyMotion#SelectLinesYank') ==# 1
-        Expect exists('*EasyMotion#SelectLinesDelete') ==# 1
-        Expect exists('*EasyMotion#SelectPhrase') ==# 1
-        Expect exists('*EasyMotion#SelectPhraseYank') ==# 1
-        Expect exists('*EasyMotion#SelectPhraseDelete') ==# 1
         Expect exists('*EasyMotion#Repeat') ==# 1
         Expect exists('*EasyMotion#NextPrevious') ==# 1
         Expect exists('*EasyMotion#DotRepeat') ==# 1
@@ -448,7 +421,6 @@ describe 'Default settings'
         " Option {{{
         Expect g:EasyMotion_keys ==# 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
         Expect g:EasyMotion_do_mapping         ==# 1
-        Expect g:EasyMotion_do_special_mapping ==# 0
         Expect g:EasyMotion_do_shade           ==# 1
         Expect g:EasyMotion_grouping           ==# 1
         Expect g:EasyMotion_startofline        ==# 1
@@ -473,7 +445,6 @@ describe 'Default settings'
         Expect g:EasyMotion_hl2_first_group_target ==# 'EasyMotionTarget2First'
         Expect g:EasyMotion_hl2_second_group_target ==# 'EasyMotionTarget2Second'
         Expect g:EasyMotion_hl_group_shade ==# 'EasyMotionShade'
-        Expect g:EasyMotion_hl_line_group_shade ==# 'EasyMotionShadeLine'
         " }}}
     end
 end

@@ -1,7 +1,7 @@
 " EasyMotion - Vim motions on speed!
 "
 " Author: haya14busa <hayabusa1419@gmail.com>
-" Last Change: 27 Jan 2014.
+" Last Change: 31 Jan 2014.
 " Source: https://github.com/haya14busa/vim-easymotion
 "
 " Original Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
@@ -234,143 +234,6 @@ function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
     call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', 0)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
-" -- Special Motion ----------------------
-function! EasyMotion#SelectLines() "{{{
-    let orig_pos = [line('.'), col('.')]
-
-    call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', 0, 0, 0, 1)
-    if s:EasyMotion_is_cancelled
-        keepjumps call cursor(orig_pos[0], orig_pos[1])
-        return ''
-    else
-        let pos1 = [line('.'), col('.')]
-        keepjumps call cursor(orig_pos[0], orig_pos[1])
-        call s:EasyMotion('^\(\w\|\s*\zs\|$\)', 2, '', 0, pos1[0], 1, 1)
-        if s:EasyMotion_is_cancelled
-            keepjumps call cursor(orig_pos[0], orig_pos[1])
-            return ''
-        else
-            normal! V
-            keepjumps call cursor(pos1[0], pos1[1])
-            normal! o
-            return 1
-        endif
-    endif
-endfunction "}}}
-function! EasyMotion#SelectLinesYank() "{{{
-    let orig_pos = [line('.'), col('.')]
-    call EasyMotion#SelectLines()
-    normal! y
-    keepjumps call cursor(orig_pos[0], orig_pos[1])
-endfunction "}}}
-function! EasyMotion#SelectLinesDelete() "{{{
-    let orig_pos = [line('.'), col('.')]
-    " if cancelled?
-    if EasyMotion#SelectLines()
-        " Prepare the number of lines "{{{
-        let start_of_line = line("v")
-        silent exec "normal!" "o"
-        let end_of_line = line("v")
-        "}}}
-        normal! d
-        if orig_pos[0] < max([start_of_line,end_of_line])
-            keepjumps call cursor(orig_pos[0], orig_pos[1])
-        else
-            " if delete lines above cursor line
-            keepjumps call cursor(orig_pos[0]-abs(end_of_line-start_of_line)-1, orig_pos[1])
-        endif
-    else
-        keepjumps call cursor(orig_pos[0], orig_pos[1])
-    endif
-endfunction "}}}
-
-function! EasyMotion#SelectPhrase() "{{{
-    let chars = s:GetSearchChar2(0)
-    if empty(chars)
-        return
-    endif
-
-    " Generate regexp {{{
-    if chars[0] ==# chars[1]
-        let re = s:convertRegep(chars[0])
-    else
-        " Convert chars {{{
-        " let g:EasyMotion_smartcase to 0 temporarily
-        let save_smart = g:EasyMotion_smartcase
-        let g:EasyMotion_smartcase = 0
-
-        let re1 = s:convertRegep(chars[0])
-        let re2 = s:convertRegep(chars[1])
-
-        let g:EasyMotion_smartcase = save_smart
-        unlet save_smart
-        "}}}
-
-        let re = re1 . '\|' . re2
-
-        if g:EasyMotion_smartcase && chars[0] =~# '\U' || chars[1] =~# '\U'
-            let re = '\c' . re
-        else
-            let re = '\C' . re
-        endif
-    endif
-    "}}}
-
-    " Store original pos
-    let orig_pos = [line('.'), col('.')]
-
-    " First
-    call s:EasyMotion(re, 2, '', 0, 0, 0, 0, 0)
-    if s:EasyMotion_is_cancelled
-        keepjumps call cursor(orig_pos[0], orig_pos[1])
-        return ''
-    endif
-
-    " Store first pos
-    let pos1 = [line('.'), col('.')]
-    keepjumps call cursor(orig_pos[0], orig_pos[1])
-
-    " Second
-    call s:EasyMotion(re, 2, '', 0, 0, 0, 0, pos1)
-    if s:EasyMotion_is_cancelled
-        keepjumps call cursor(orig_pos[0], orig_pos[1])
-        return ''
-    endif
-
-    " Success
-    normal! v
-    keepjumps call cursor(pos1[0], pos1[1])
-    normal! o
-    return 1
-endfunction "}}}
-function! EasyMotion#SelectPhraseYank() "{{{
-    let orig_pos = [line('.'), col('.')]
-
-    call EasyMotion#SelectPhrase()
-    normal! y
-    keepjumps call cursor(orig_pos[0], orig_pos[1])
-endfunction "}}}
-function! EasyMotion#SelectPhraseDelete() "{{{
-    let orig_pos = [line('.'), col('.')]
-
-    " If cancelled?
-    if EasyMotion#SelectPhrase()
-        " Prepare the number of lines "{{{
-        let start_of_line = line("v")
-        silent exec "normal!" "o"
-        let end_of_line = line("v")
-        "}}}
-        normal! d
-        if orig_pos[0] < max([start_of_line,end_of_line])
-            keepjumps call cursor(orig_pos[0], orig_pos[1])
-        else
-            " if you delete phrase above cursor line and phrase is over lines
-            keepjumps call cursor(orig_pos[0]-abs(end_of_line-start_of_line), orig_pos[1])
-        endif
-    else
-        keepjumps call cursor(orig_pos[0], orig_pos[1])
-    endif
-endfunction "}}}
 " -- User Motion -------------------------
 function! EasyMotion#User(pattern, visualmode, direction, inclusive) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
@@ -509,7 +372,6 @@ function! s:SetLines(lines, key) " {{{
 endfunction " }}}
 " -- Get characters from user input ------
 function! s:GetChar() " {{{
-    " [[deprecated]] -> EasyMotion#command_line#GetInput()
     let char = getchar()
     if char == 27
         " Escape key pressed
@@ -518,43 +380,6 @@ function! s:GetChar() " {{{
         return ''
     endif
     return nr2char(char)
-endfunction " }}}
-function! s:GetSearchChar2(visualmode) " {{{
-    " For selectlines and selectphrase
-    let chars = []
-    for i in [1, 2]
-        redraw
-
-        call s:Prompt('Search for character ' . i)
-        let char = s:GetChar()
-
-        " Check that we have an input char
-        if empty(char)
-            " Restore selection
-            if ! empty(a:visualmode)
-                silent exec 'normal! gv'
-            endif
-            return ''
-        endif
-        call add(chars, char)
-    endfor
-    return chars
-endfunction " }}}
-function! s:GetSearchChar(visualmode) " {{{
-    " [[deprecated]] -> EasyMotion#command_line#GetInput()
-    call s:Prompt('Search for character')
-
-    let char = s:GetChar()
-
-    " Check that we have an input char
-    if empty(char)
-        " Restore selection
-        if ! empty(a:visualmode)
-            silent exec 'normal! gv'
-        endif
-        return ''
-    endif
-    return char
 endfunction " }}}
 " -- Find Motion Helper ------------------
 function! s:findMotion(num_strokes, direction) "{{{
@@ -966,7 +791,7 @@ endfunction
 " }}}
 " }}}
 " Core Functions: {{{
-function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
+function! s:PromptUser(groups) "{{{
     " Recursive
     let group_values = values(a:groups)
 
@@ -1021,71 +846,41 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
 
         let target_char_byte_len = strlen(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
 
-        if a:fixed_column
-            let firstS = match(lines[line_num]['marker'], '\S')
-            if firstS >= 4
-                let leftText = strpart(lines[line_num]['marker'], 0, firstS - 3)
-            else
-                let leftText = ''
-            endif
-
-            if firstS >= 1
-                let rightText = strpart(lines[line_num]['marker'], firstS - 1)
-            elseif firstS == 0
-                let rightText = ' ' . lines[line_num]['marker']
-            else
-                let rightText = ''
-            endif
-
-            if target_key_len < 2
-                let text = ' ' . target_key
-                call add(hl_coords, '\%' . line_num . 'l\%2c')
-            else
-                let text = target_key
-                call add(hl2_first_coords, '\%' . line_num . 'l\%1c')
-                call add(hl2_second_coords, '\%' . line_num . 'l\%2c')
-            endif
-            let lines[line_num]['marker'] = text . ' ' . lines[line_num]['marker']
-        else
-            if strlen(lines[line_num]['marker']) > 0
-            " Substitute marker character if line length > 0
-                let c = 0
-                while c < target_key_len && c < 2
-                    if strlen(lines[line_num]['marker']) >= col_num + c
-                        " Substitute marker character if line length > 0
-                        if c == 0
-                            let lines[line_num]['marker'] = substitute(
-                                \ lines[line_num]['marker'],
-                                \ '\%' . (col_num + c) . 'c.',
-                                \ strpart(target_key, c, 1) . repeat(' ', target_char_len - 1),
-                                \ '')
-                        else
-                            let lines[line_num]['marker'] = substitute(
-                                \ lines[line_num]['marker'],
-                                \ '\%' . (col_num + c) . 'c.',
-                                \ strpart(target_key, c, 1),
-                                \ '')
-                        endif
+        if strlen(lines[line_num]['marker']) > 0
+        " Substitute marker character if line length > 0
+            let c = 0
+            while c < target_key_len && c < 2
+                if strlen(lines[line_num]['marker']) >= col_num + c
+                    " Substitute marker character if line length > 0
+                    if c == 0
+                        let lines[line_num]['marker'] = substitute(
+                            \ lines[line_num]['marker'],
+                            \ '\%' . (col_num + c) . 'c.',
+                            \ strpart(target_key, c, 1) . repeat(' ', target_char_len - 1),
+                            \ '')
                     else
-                        let lines[line_num]['marker'] = lines[line_num]['marker'] . strpart(target_key, c, 1)
+                        let lines[line_num]['marker'] = substitute(
+                            \ lines[line_num]['marker'],
+                            \ '\%' . (col_num + c) . 'c.',
+                            \ strpart(target_key, c, 1),
+                            \ '')
                     endif
-                    let c += 1
-                endwhile
-            else
-            " Set the line to the marker character if the line is empty
-                let lines[line_num]['marker'] = target_key
-            endif
+                else
+                    let lines[line_num]['marker'] = lines[line_num]['marker'] . strpart(target_key, c, 1)
+                endif
+                let c += 1
+            endwhile
+        else
+        " Set the line to the marker character if the line is empty
+            let lines[line_num]['marker'] = target_key
         endif
 
         " Add highlighting coordinates
-
-        if !a:fixed_column
-            if target_key_len == 1
-                call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
-            else
-                call add(hl2_first_coords, '\%' . line_num . 'l\%' . (col_num) . 'c')
-                call add(hl2_second_coords, '\%' . line_num . 'l\%' . (col_num + 1) . 'c')
-            endif
+        if target_key_len == 1
+            call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+        else
+            call add(hl2_first_coords, '\%' . line_num . 'l\%' . (col_num) . 'c')
+            call add(hl2_second_coords, '\%' . line_num . 'l\%' . (col_num + 1) . 'c')
         endif
 
         " Add marker/target length difference for multibyte
@@ -1187,13 +982,6 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
         throw 'Cancelled'
     endif
     " }}}
-    " -- Repeat EasyMotion ------------------- {{{
-    if a:allows_repeat &&
-     \ char == '.' &&
-     \ exists('s:previous_target_coord')
-        " For SelectLines
-        return s:previous_target_coord
-    endif "}}}
     " -- Check if the input char is valid ---- {{{
     if ! has_key(a:groups, char)
         throw 'Invalid target'
@@ -1208,7 +996,7 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
     else
         " Prompt for new target character
         let s:current.dot_prompt_user_cnt += 1
-        return s:PromptUser(target, a:allows_repeat, a:fixed_column)
+        return s:PromptUser(target)
     endif
 endfunction "}}}
 function! s:DotPromptUser(groups) "{{{
@@ -1224,24 +1012,10 @@ function! s:DotPromptUser(groups) "{{{
         return target
     else
         " Prompt for new target character
-        return s:PromptUser(target, a:allows_repeat, a:fixed_column)
+        return s:PromptUser(target)
     endif
 endfunction "}}}
-function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
-    " For Special Function {{{
-    " For SelectLines(), to highlight previous selected line
-    let hlcurrent = a:0 >= 1 ? a:1 : 0
-    " For SelectLines(), to allows '.' to repeat the previously pressed
-    " character
-    let allows_repeat = a:0 >= 2 ? a:2 : 0
-    " For SelectLines(), a flag to display character only at the beginning
-    " of the line
-    let fixed_column = a:0 >= 3 ? a:3 : 0
-
-    " For SelectPhrase()
-    let hlchar = a:0 >= 4 ? a:4 : 0
-    "}}}
-
+function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
     " Store s:current original_position & cursor_position {{{
     " current cursor pos.
     let s:current.cursor_position = [line('.'), col('.')]
@@ -1285,7 +1059,6 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         " Setup searchpos args {{{
         let search_direction = (a:direction >= 1 ? 'b' : '')
         let search_stopline = a:direction >= 1 ? win_first_line : win_last_line
-        let search_at_cursor = fixed_column ? 'c' : ''
 
         if s:flag.within_line == 1
             let search_stopline = s:current.original_position[0]
@@ -1326,8 +1099,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             "       You can disable this side effect by add 'n' flags,
             "       but in this case, it's better to allows jump side effect
             "       to gathering matched targets coordinates.
-            let pos = searchpos(regexp, search_direction . search_at_cursor, search_stopline)
-            let search_at_cursor = ''
+            let pos = searchpos(regexp, search_direction, search_stopline)
 
             " Reached end of search range
             if pos == [0, 0]
@@ -1428,26 +1200,23 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
                 " Both directions"
                 let shade_hl_re = '\_.*'
             endif
-            if !fixed_column
-                call EasyMotion#highlight#add_highlight(
-                    \ shade_hl_re,
-                    \ g:EasyMotion_hl_group_shade)
-                if g:EasyMotion_cursor_highlight
-                    let cursor_hl_re = '\%#'
-                    call EasyMotion#highlight#add_highlight(cursor_hl_re,
-                        \ g:EasyMotion_hl_inc_cursor)
-                endif
+
+            call EasyMotion#highlight#add_highlight(
+                \ shade_hl_re,
+                \ g:EasyMotion_hl_group_shade)
+            if g:EasyMotion_cursor_highlight
+                let cursor_hl_re = '\%#'
+                call EasyMotion#highlight#add_highlight(cursor_hl_re,
+                    \ g:EasyMotion_hl_inc_cursor)
             endif
 
-            if hlcurrent != 0
-                call EasyMotion#highlight#add_highlight(
-                    \ '\%'. hlcurrent .'l.*',
-                    \ g:EasyMotion_hl_line_group_shade)
-            endif
-            if !empty(hlchar)
-                call EasyMotion#highlight#add_highlight(
-                    \ '\%'. hlchar[0] .'l\%' . hlchar[1] .'c',
-                    \ g:EasyMotion_hl_line_group_shade)
+            call EasyMotion#highlight#add_highlight(
+                \ shade_hl_re,
+                \ g:EasyMotion_hl_group_shade)
+            if g:EasyMotion_cursor_highlight
+                let cursor_hl_re = '\%#'
+                call EasyMotion#highlight#add_highlight(cursor_hl_re,
+                    \ g:EasyMotion_hl_inc_cursor)
             endif
         endif
         " }}}
@@ -1467,7 +1236,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
 
         " -- Prompt user for target group/character {{{
         if s:flag.dot_repeat != 1
-            let coords = s:PromptUser(groups, allows_repeat, fixed_column)
+            let coords = s:PromptUser(groups)
             let s:previous_target_coord = coords
         else
             let coords = s:DotPromptUser(groups)

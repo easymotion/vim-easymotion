@@ -52,26 +52,6 @@ function! EasyMotion#init#InitMappings(motions, do_mapping) "{{{
     endfor
 endfunction "}}}
 
-function! EasyMotion#init#InitSpecialMappings(motions, do_mapping) "{{{
-    for [motion, fn] in items(a:motions)
-        " Do mapping {{{
-        if a:do_mapping
-                \ && !hasmapto('<Plug>(easymotion-special-' . motion . ')')
-                \ && empty(maparg('<Plug>(easymotion-prefix)' . motion, 'ov'))
-                \ && empty(maparg('d<Plug>(easymotion-prefix)'. motion, 'n'))
-                \ && empty(maparg('y<Plug>(easymotion-prefix)'. motion, 'n'))
-            silent exec 'omap <silent> ' .
-                \ '<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . ')'
-            silent exec 'xmap <silent> ' .
-                \ '<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . ')'
-            silent exec 'nmap <silent> ' .
-                \ 'd<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . 'd)'
-            silent exec 'nmap <silent> ' .
-                \ 'y<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-special-' . motion . 'y)'
-        endif "}}}
-    endfor
-endfunction "}}}
-
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
 unlet s:save_cpo
