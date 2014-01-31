@@ -204,9 +204,6 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-bd-w)', 'n') ==# ':<C-U>call EasyMotion#WB(0,2)<CR>'
         Expect maparg('<Plug>(easymotion-bd-w)', 'o') ==# ':<C-U>call EasyMotion#WB(0,2)<CR>'
         Expect maparg('<Plug>(easymotion-bd-w)', 'v') ==# '<Esc>:<C-U>call EasyMotion#WB(1,2)<CR>'
-        Expect maparg('<Plug>(easymotion-S)', 'n') ==# ':<C-U>call EasyMotion#WB(0,2)<CR>'
-        Expect maparg('<Plug>(easymotion-S)', 'o') ==# ':<C-U>call EasyMotion#WB(0,2)<CR>'
-        Expect maparg('<Plug>(easymotion-S)', 'v') ==# '<Esc>:<C-U>call EasyMotion#WB(1,2)<CR>'
         " }}}
 
         " WORD Motion: {{{

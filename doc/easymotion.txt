@@ -111,8 +111,6 @@ Note: The default leader has been changed to <Leader><Leader> to avoid
     <Leader>N            | Jump to latest "/" or "?" backward. See |N|.
     <Leader>s            | Find(Search) {char} forward and backward.
                          | See |f| and |F|.
-    <Leader>S            | Beginning of word forward and backward.
-                         | See |w| and |b|.
 
 See |easymotion-leader-key| and |mapleader| for details about the leader key.
 See |easymotion-custom-mappings| for customizing the default mappings.
@@ -138,7 +136,6 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-n) | <Leader>n
     <Plug>(easymotion-N) | <Leader>N
     <Plug>(easymotion-s) | <Leader>s
-    <Plug>(easymotion-S) | <Leader>S
 
     More <Plug> Mapping Table         | (No assignment by default)
     ----------------------------------|---------------------------------

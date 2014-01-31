@@ -198,16 +198,12 @@ call s:find_motion_map_helper({
 
 " -- Word Motion {{{
 " Word: {{{
-noremap  <silent><Plug>(easymotion-w)      :<C-u>call EasyMotion#WB(0,0)<CR>
-xnoremap <silent><Plug>(easymotion-w) <Esc>:<C-u>call EasyMotion#WB(1,0)<CR>
-noremap  <silent><Plug>(easymotion-b)      :<C-u>call EasyMotion#WB(0,1)<CR>
-xnoremap <silent><Plug>(easymotion-b) <Esc>:<C-u>call EasyMotion#WB(1,1)<CR>
-
-" backward compatibility
-noremap  <silent><Plug>(easymotion-S)         :<C-u>call EasyMotion#WB(0,2)<CR>
-xnoremap <silent><Plug>(easymotion-S)    <Esc>:<C-u>call EasyMotion#WB(1,2)<CR>
-noremap  <silent><Plug>(easymotion-bd-w)      :<C-u>call EasyMotion#WB(0,2)<CR>
-xnoremap <silent><Plug>(easymotion-bd-w) <Esc>:<C-u>call EasyMotion#WB(1,2)<CR>
+noremap  <silent><Plug>(easymotion-w)          :<C-u>call EasyMotion#WB(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-w)     <Esc>:<C-u>call EasyMotion#WB(1,0)<CR>
+noremap  <silent><Plug>(easymotion-b)          :<C-u>call EasyMotion#WB(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-b)     <Esc>:<C-u>call EasyMotion#WB(1,1)<CR>
+noremap  <silent><Plug>(easymotion-bd-w)       :<C-u>call EasyMotion#WB(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-bd-w)  <Esc>:<C-u>call EasyMotion#WB(1,2)<CR>
 "}}}
 
 " WORD: {{{
