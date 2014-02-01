@@ -1,7 +1,7 @@
 " EasyMotion - Vim motions on speed!
 "
 " Author: haya14busa <hayabusa1419@gmail.com>
-" Last Change: 27 Jan 2014.
+" Last Change: 01 Feb 2014.
 " Source: https://github.com/haya14busa/vim-easymotion
 "
 " Original Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
@@ -1136,7 +1136,7 @@ function! s:PromptUser(groups, allows_repeat, fixed_column) "{{{
         endif "}}}
 
         " Jump first target when Enter key is pressed "{{{
-        if char ==# '' && g:EasyMotion_enter_jump_first == 1
+        if char ==# "\<CR>" && g:EasyMotion_enter_jump_first == 1
             let char = g:EasyMotion_keys[0]
         endif "}}}
 
