@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:31 Jan 2014.
+*easymotion.txt*	Version 2.0  Last change:02 Feb 2014.
 
 
             ______                  __  ___       __  _
@@ -488,6 +488,95 @@ All Find motion (s,f,F,t,T,sl,fl,Fl,tl,Tl) support this feature!
     *<Plug>(easymotion-t2)* *<Plug>(easymotion-T2)* *<Plug>(easymotion-bd-t2)*
     *<Plug>(easymotion-sl2)* *<Plug>(easymotion-fl2)* *<Plug>(easymotion-Fl2)*
     *<Plug>(easymotion-tl2)* *<Plug>(easymotion-Tl2)* *<Plug>(easymotion-bd-tl2)*
+
+Find Motion Command Line~
+                                                      *easymotion-command-line*
+    EasyMotion has own command line for find motions, especially for 'n' key
+    motion(e.g. |<Plug>(easymotoin-sn)|). This command line is inspired by
+    over.vim and actually uses the library of over.vim command line.
+    over.vim can be downloaded here:
+
+        https://github.com/osyo-manga/vim-over
+
+    Note: These settings are experimental. They could be changed in the near
+    future.
+
+    Default Command Line Mappings~
+    Most default mappings work same as default command line mapping of Vim.
+    See |cmdline.txt|
+
+    Key Mappings            | Details
+    ----------------------- |----------------------------------------------
+    <CR>                    | Execute EasyMotion.
+    <ESC> or <C-c>          | Cancel
+    <Right>                 | Cursor right
+    <Left>                  | Cursor left
+    <Home> or <C-b>         | cursor to beginning of command-line
+    <End> or <C-e>          | cursor to end of command-line
+    <BS>  or <C-h>          | Delete one character
+    <C-w>                   | Delete the word before the cursor
+    <C-u>                   | Delete all entered characters before the cursor
+    <Up>                    | Recall older (previous) search from history
+    <Down>                  | Recall more recent (next) search from history
+    ------------------------|---------------------------------------
+    <Over>(paste)           | Paste yanked text to the command line
+                            |   Default: <C-v>
+    <Over>(buffer-complete) | Completion of buffer text Default: <C-d>
+    *<Over>(em-scroll-f)*     | Scroll window forward & jump to the next match
+                            |   Default: <Tab>
+    *<Over>(em-scroll-b)*     | Scroll window backward & jump to previous match
+                            |   Default: <S-Tab>
+    *<Over>(em-jumpback)*     | Jump back original cursor position like <C-o>
+                            |   Default: <C-o>
+    *<Over>(em-openallfold)*  | Open all fold
+                            |   Default: <C-z>
+
+    Customize Command Line Mappings~
+                                                         *EMCommandLineNoremap*
+
+    You can use |EMCommandLineNoremap| to customize find motion command line
+    key mappings by vimrc. This mapping is always no recursive mapping, so
+    you should map to not <Tab> but <Over>(em-scroll-f).
+
+    Example:
+>
+    " EM is short for EasyMotion
+    EMCommandLineNoremap <C-;> <CR>
+    EMCommandLineNoremap <C-f> <Right>
+    EMCommandLineNoremap <C-b> <Left>
+    EMCommandLineNoremap <C-a> <Home>
+    EMCommandLineNoremap <C-l> <Over>(buffer-complete)
+<
+    Note(again): These settings, especially about keymappings are
+    __EXPERIMENTAL__. They could be changed in the near future. However, it
+    works well and so useful, so I release it.
+
+------------------------------------------------------------------------------
+2.3 Special mappings                              *easymotion-special-mappings*
+
+The default configuration defines the following mappings in visual and
+operator-pending mode if |g:EasyMotion_do_special_mapping| is on:
+>
+        let g:EasyMotion_do_special_mapping = 1
+<
+Default: 0
+
+    Special Mapping      | Details
+    ---------------------|----------------------------------------------
+    {operator}<Leader>l  | Select, yank, paste, delete, or other operation of
+                         | lines. See |<Plug>(easymotion-special-l)|.
+    {operator}<Leader>p  | Select, yank, paste, delete, or other operation of
+                         | phrase. See |<Plug>(easymotion-special-p)|.
+
+or you can map them by yourself
+
+    <Plug> Mapping Table         | Details
+    -----------------------------|--------------------------------------
+    <Plug>(easymotion-special-l) | See |<Plug>(easymotion-special-l)|
+    <Plug>(easymotion-special-p) | See |<Plug>(easymotion-special-p)|
+
+
+See |easymotion-leader-key| and |mapleader| for details about the leader key.
 
 ==============================================================================
 Requirements                                          *easymotion-requirements*

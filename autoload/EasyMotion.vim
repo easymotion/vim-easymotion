@@ -1,7 +1,7 @@
 " EasyMotion - Vim motions on speed!
 "
 " Author: haya14busa <hayabusa1419@gmail.com>
-" Last Change: 31 Jan 2014.
+" Last Change: 02 Feb 2014.
 " Source: https://github.com/haya14busa/vim-easymotion
 "
 " Original Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
@@ -400,7 +400,7 @@ function! s:findMotion(num_strokes, direction) "{{{
 
     " Check that we have an input char
     if empty(input)
-        redraw | return ''
+        return ''
     endif
 
     let re = s:convertRegep(input)
@@ -931,7 +931,7 @@ function! s:PromptUser(groups) "{{{
         endif "}}}
 
         " Jump first target when Enter key is pressed "{{{
-        if char ==# '' && g:EasyMotion_enter_jump_first == 1
+        if char ==# "\<CR>" && g:EasyMotion_enter_jump_first == 1
             let char = g:EasyMotion_keys[0]
         endif "}}}
 

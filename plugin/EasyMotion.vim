@@ -33,14 +33,14 @@ let g:EasyMotion_smartcase          = get(g: , 'EasyMotion_smartcase'          ,
 let g:EasyMotion_skipfoldedline     = get(g: , 'EasyMotion_skipfoldedline'     , 1)
 let g:EasyMotion_use_migemo         = get(g: , 'EasyMotion_use_migemo'         , 0)
 let g:EasyMotion_use_upper          = get(g: , 'EasyMotion_use_upper'          , 0)
-let g:EasyMotion_use_regexp         = get(g: , 'EasyMotion_use_regexp'         , 0)
 let g:EasyMotion_enter_jump_first   = get(g: , 'EasyMotion_enter_jump_first'   , 0)
 let g:EasyMotion_inc_highlight      = get(g: , 'EasyMotion_inc_highlight'      , 1)
 let g:EasyMotion_move_highlight     = get(g: , 'EasyMotion_move_highlight'     , 1)
 let g:EasyMotion_landing_highlight  = get(g: , 'EasyMotion_landing_highlight'  , 0)
 let g:EasyMotion_cursor_highlight   = get(g: , 'EasyMotion_cursor_highlight'   , 0)
-let g:EasyMotion_add_search_history = get(g: , 'EasyMotion_add_search_history' , 0)
-let g:EasyMotion_off_screen_search  = get(g: , 'EasyMotion_off_screen_search'  , 0)
+let g:EasyMotion_use_regexp         = get(g: , 'EasyMotion_use_regexp'         , 1)
+let g:EasyMotion_add_search_history = get(g: , 'EasyMotion_add_search_history' , 1)
+let g:EasyMotion_off_screen_search  = get(g: , 'EasyMotion_off_screen_search'  , 1)
 let g:EasyMotion_show_prompt        = get(g: , 'EasyMotion_show_prompt'        , 1)
 let g:EasyMotion_prompt             =
     \ get(g: , 'EasyMotion_prompt' , 'Search for {n} character(s): ')
@@ -386,6 +386,21 @@ if g:EasyMotion_do_mapping == 1
         \ , 'N' : { 'name': 'Search' , 'dir': 1 }
         \ }, g:EasyMotion_do_mapping)
 endif "}}}
+
+" == CommandLine Mapping {{{
+function! s:key_mapping(lhs, rhs)
+	let g:EasyMotion_command_line_key_mappings[a:lhs] = a:rhs
+endfunction
+
+function! s:as_keymapping(key)
+	execute 'let result = "' . substitute(a:key, '\(<.\{-}>\)', '\\\1', 'g') . '"'
+	return result
+endfunction
+
+command! -nargs=*
+\	EMCommandLineNoremap
+\	call call("s:key_mapping", map([<f-args>], "s:as_keymapping(v:val)"))
+"}}}
 
 " == Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
