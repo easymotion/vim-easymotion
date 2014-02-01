@@ -91,14 +91,17 @@ New feature from 2.0
 
 ## Support bidirectional motion
 It provide forward-backward (bidirectional) search feature to all motion.
+(e.g. `<Plug>(easymotion-s)`, `<Plug>(easymotion-bd-w)` and so forth)
 
-You can jump forward or backward at the same time by `<Leader>s`. One useful trick is to map `nmap s <Plug>(easymotion-s)` to use `s` instead and save one keystroke!
+You can jump forward or backward at the same time by `<Leader>s`.
+One useful trick is to map `nmap s <Plug>(easymotion-s)` to use `s` instead and save one keystroke!
 
 ## 2 key find motion
-EasyMotion provide 2-key find motion like vim-seek/vim-sneak. (e.g. `<Plug>(easymotion-s2)`)
+EasyMotion provide 2-key find motions like vim-seek/vim-sneak. (e.g. `<Plug>(easymotion-s2)`)
 
 ![2-key-find-motion](https://f.cloud.github.com/assets/3797062/2039612/7cafcec8-89a5-11e3-8f2c-5f26a6b83efd.gif)
 ```vim
+" Gif config
 nmap s <Plug>(easymotion-s2)
 nmap t <Plug>(easymotion-t2)
 ```
@@ -106,16 +109,17 @@ nmap t <Plug>(easymotion-t2)
 ## 'n' key find motion
 EasyMotion also provide 'n' key find motion like default 'search' motion of Vim.
 
-- Increment highlight
+- Incremental highlight
 - Search off-screen by `<Tab>` & `<S-Tab>`
 
-Scroll by `<Tab>` key (`<S-Tab>` is backward)
+Scroll by `<Tab>` key (`<S-Tab>` is backward) and `<CR>` to execute.
 ![n-key-motion-scroll](https://f.cloud.github.com/assets/3797062/2039254/4fbf7276-899e-11e3-9bf3-1e446cabc097.gif)
 
-Replace default search of Vim with EasyMotion
+Completely replace default search of Vim with EasyMotion example.
 ![replace-search](https://f.cloud.github.com/assets/3797062/2039751/64b72bd8-89a8-11e3-80ea-2a6b578040b2.gif)
 
 ```vim
+" Gif config
 map  / <Plug>(easymotion-sn)
 omap / <Plug>(easymotion-tn)
 map  n <Plug>(easymotion-next)
@@ -130,6 +134,7 @@ These motion matches only current line.
 
 Example: these motion extend `hjkl` motion!
 ```vim
+" Gif config
 map <Leader>h <Plug>(easymotion-lineforward)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
@@ -202,6 +207,8 @@ It is well-behaved, consistent with default behavior of Vim.
 ![repeat-motion](https://f.cloud.github.com/assets/3797062/2039538/0aef66aa-89a4-11e3-8242-c27a5208cfca.gif)
 
 ```vim
+" Gif config
+
 " Require tpope/vim-repeat to enable dot repeat support
 " Jump to anywhere with only `s{char}{target}`
 " `s<CR>` repeat last find motion.
