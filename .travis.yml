@@ -1,0 +1,10 @@
+language: ruby
+rvm:
+    - 2.0.0
+before_script:
+    - bundle install
+    - bundle show
+script:
+    - rake ci
+install:
+    - git clone https://github.com/kana/vim-vspec.git
