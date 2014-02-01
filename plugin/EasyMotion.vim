@@ -416,6 +416,21 @@ if g:EasyMotion_do_mapping == 1 || g:EasyMotion_do_special_mapping == 1
     " }}}
 endif "}}}
 
+" == CommandLine Mapping {{{
+function! s:key_mapping(lhs, rhs)
+	let g:EasyMotion_command_line_key_mappings[a:lhs] = a:rhs
+endfunction
+
+function! s:as_keymapping(key)
+	execute 'let result = "' . substitute(a:key, '\(<.\{-}>\)', '\\\1', 'g') . '"'
+	return result
+endfunction
+
+command! -nargs=*
+\	EMCommandLineNoremap
+\	call call("s:key_mapping", map([<f-args>], "s:as_keymapping(v:val)"))
+"}}}
+
 " == Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
 unlet s:save_cpo

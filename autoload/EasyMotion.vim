@@ -1,7 +1,7 @@
 " EasyMotion - Vim motions on speed!
 "
 " Author: haya14busa <hayabusa1419@gmail.com>
-" Last Change: 01 Feb 2014.
+" Last Change: 02 Feb 2014.
 " Source: https://github.com/haya14busa/vim-easymotion
 "
 " Original Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
@@ -575,7 +575,7 @@ function! s:findMotion(num_strokes, direction) "{{{
 
     " Check that we have an input char
     if empty(input)
-        redraw | return ''
+        return ''
     endif
 
     let re = s:convertRegep(input)
