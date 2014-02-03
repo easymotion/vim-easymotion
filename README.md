@@ -1,4 +1,4 @@
-Vim motion on speed! [![](https://travis-ci.org/haya14busa/vim-easymotion.png?branch=master)](https://travis-ci.org/haya14busa/vim-easymotion)
+Vim motion on speed!
 =====
 
 ![Animated demonstration](https://f.cloud.github.com/assets/3797062/2039359/a8e938d6-899f-11e3-8789-60025ea83656.gif)
