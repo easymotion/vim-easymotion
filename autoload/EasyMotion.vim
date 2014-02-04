@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 02 Feb 2014.
+" Last Change: 04 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -822,9 +822,11 @@ function! s:PromptUser(groups) "{{{
         " Add original line and marker line
         if ! has_key(lines, line_num)
             let current_line = getline(line_num)
-
-            let lines[line_num] = { 'orig': current_line, 'marker': current_line, 'mb_compensation': 0 }
-
+            let lines[line_num] = {
+                \ 'orig': current_line,
+                \ 'marker': current_line,
+                \ 'mb_compensation': 0,
+                \ }
         endif
 
         " Solve multibyte issues by matching the byte column
@@ -837,13 +839,17 @@ function! s:PromptUser(groups) "{{{
         " This has to be done in order to match the correct
         " column; \%c matches the byte column and not display
         " column.
-        let target_char_len = strdisplaywidth(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
+        let target_char_len = strdisplaywidth(
+                                \ matchstr(lines[line_num]['marker'],
+                                \          '\%' . col_num . 'c.'))
         let target_key_len = strdisplaywidth(target_key)
 
 
         let target_line_byte_len = strlen(lines[line_num]['marker'])
 
-        let target_char_byte_len = strlen(matchstr(lines[line_num]['marker'], '\%' . col_num . 'c.'))
+        let target_char_byte_len = strlen(matchstr(
+                                            \ lines[line_num]['marker'],
+                                            \ '\%' . col_num . 'c.'))
 
         if strlen(lines[line_num]['marker']) > 0
         " Substitute marker character if line length > 0
@@ -865,7 +871,7 @@ function! s:PromptUser(groups) "{{{
                             \ '')
                     endif
                 else
-                    let lines[line_num]['marker'] = lines[line_num]['marker'] . strpart(target_key, c, 1)
+                    let lines[line_num]['marker'] .= strpart(target_key, c, 1)
                 endif
                 let c += 1
             endwhile
@@ -878,32 +884,35 @@ function! s:PromptUser(groups) "{{{
         if target_key_len == 1
             call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
         else
-            call add(hl2_first_coords, '\%' . line_num . 'l\%' . (col_num) . 'c')
-            call add(hl2_second_coords, '\%' . line_num . 'l\%' . (col_num + 1) . 'c')
+            call add(hl2_first_coords,
+                  \ '\%' . line_num . 'l\%' . col_num . 'c')
+            call add(hl2_second_coords,
+                  \ '\%' . line_num . 'l\%' . (col_num + 1) . 'c')
         endif
 
         " Add marker/target length difference for multibyte
         " compensation
-        let lines[line_num]['mb_compensation'] += (target_line_byte_len - strlen(lines[line_num]['marker']) )
+        let lines[line_num]['mb_compensation'] +=
+            \ (target_line_byte_len - strlen(lines[line_num]['marker']))
     endfor
 
     let lines_items = items(lines)
     " }}}
     " -- Highlight targets ------------------- {{{
     if len(hl_coords) > 0
+        let hl_coords_re = '\%(' . join(hl_coords, '\|') . '\)'
         call EasyMotion#highlight#add_highlight(
-            \ join(hl_coords, '\|'),
-            \ g:EasyMotion_hl_group_target)
-    endif
-    if len(hl2_second_coords) > 0
-        call EasyMotion#highlight#add_highlight(
-            \ join(hl2_second_coords, '\|'),
-            \ g:EasyMotion_hl2_second_group_target)
+            \ hl_coords_re, g:EasyMotion_hl_group_target)
     endif
     if len(hl2_first_coords) > 0
+        let hl2_first_coords_re = '\%(' . join(hl2_first_coords, '\|') . '\)'
         call EasyMotion#highlight#add_highlight(
-            \ join(hl2_first_coords, '\|'),
-            \ g:EasyMotion_hl2_first_group_target)
+            \ hl2_first_coords_re, g:EasyMotion_hl2_first_group_target)
+    endif
+    if len(hl2_second_coords) > 0
+        let hl2_second_coords_re = '\%(' . join(hl2_second_coords, '\|') . '\)'
+        call EasyMotion#highlight#add_highlight(
+            \ hl2_second_coords_re, g:EasyMotion_hl2_second_group_target)
     endif
     " }}}
 
@@ -1201,17 +1210,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
             endif
 
             call EasyMotion#highlight#add_highlight(
-                \ shade_hl_re,
-                \ g:EasyMotion_hl_group_shade)
-            if g:EasyMotion_cursor_highlight
-                let cursor_hl_re = '\%#'
-                call EasyMotion#highlight#add_highlight(cursor_hl_re,
-                    \ g:EasyMotion_hl_inc_cursor)
-            endif
-
-            call EasyMotion#highlight#add_highlight(
-                \ shade_hl_re,
-                \ g:EasyMotion_hl_group_shade)
+                \ shade_hl_re, g:EasyMotion_hl_group_shade)
             if g:EasyMotion_cursor_highlight
                 let cursor_hl_re = '\%#'
                 call EasyMotion#highlight#add_highlight(cursor_hl_re,
