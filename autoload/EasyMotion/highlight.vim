@@ -2,7 +2,7 @@
 " FILE: highlight.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/t9md/vim-smalls
-" Last Change: 31 Jan 2014.
+" Last Change: 04 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -34,13 +34,13 @@ set cpo&vim
 let s:h = {}
 let s:h.ids = {}
 let s:priorities = {
-    \ 'EasyMotionTarget' : 1,
-    \ 'EasyMotionTarget2First' : 1,
-    \ 'EasyMotionTarget2Second' : 1,
-    \ 'EasyMotionShade' : 0,
-    \ 'EasyMotionIncSearch' : 1,
-    \ 'EasyMotionIncCursor' : 2,
-    \ 'EasyMotionMoveHL' : 0,
+    \  g:EasyMotion_hl_group_target : 1,
+    \  g:EasyMotion_hl2_first_group_target : 1,
+    \  g:EasyMotion_hl2_second_group_target : 1,
+    \  g:EasyMotion_hl_group_shade : 0,
+    \  g:EasyMotion_hl_inc_search : 1,
+    \  g:EasyMotion_hl_inc_cursor : 2,
+    \  g:EasyMotion_hl_move : 0,
     \ }
 for group in keys(s:priorities)
     let s:h.ids[group] = []
