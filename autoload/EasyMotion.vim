@@ -294,7 +294,7 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
 
     if g:EasyMotion_move_highlight
         call EasyMotion#highlight#attach_autocmd()
-        call EasyMotion#highlight#add_highlight(re,'EasyMotionMoveHL')
+        call EasyMotion#highlight#add_highlight(re, g:EasyMotion_hl_move)
     endif
 
     if ! empty(a:visualmode)
@@ -611,7 +611,8 @@ endfunction "}}}
 function! EasyMotion#activate(is_visual) "{{{
     let s:EasyMotion_is_active = 1
     call EasyMotion#attach_active_autocmd()
-    call EasyMotion#highlight#add_highlight(s:previous.regexp, 'EasyMotionMoveHL')
+    call EasyMotion#highlight#add_highlight(s:previous.regexp,
+                                          \ g:EasyMotion_hl_move)
     call EasyMotion#highlight#attach_autocmd()
     if a:is_visual == 1
         normal! gv
@@ -1384,7 +1385,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         if s:EasyMotion_is_cancelled == 0 " Success
             " -- Landing Highlight ------------------- {{{
             if g:EasyMotion_landing_highlight
-                call EasyMotion#highlight#add_highlight(a:regexp, 'EasyMotionMoveHL')
+                call EasyMotion#highlight#add_highlight(a:regexp,
+                                                      \ g:EasyMotion_hl_move)
                 call EasyMotion#highlight#attach_autocmd()
             endif "}}}
             " -- Activate EasyMotion ----------------- {{{
