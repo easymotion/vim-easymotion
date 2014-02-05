@@ -105,7 +105,7 @@ function! s:module.on_char_pre(cmdline)
 			return
 		endif
 		call a:cmdline.setchar('')
-		call a:cmdline.wait_keyinput_on("Completion")
+		call a:cmdline.tap_keyinput("Completion")
 	elseif a:cmdline.is_input("<Over>(buffer-complete)", "Completion")
 \		|| a:cmdline.is_input("\<Right>", "Completion")
 		call a:cmdline.setchar('')
@@ -120,7 +120,7 @@ function! s:module.on_char_pre(cmdline)
 			let s:count = len(s:complete_list) - 1
 		endif
 	else
-		if a:cmdline.wait_keyinput_off("Completion")
+		if a:cmdline.untap_keyinput("Completion")
 			call a:cmdline._on_char_pre()
 		endif
 		call s:_finish()
@@ -132,7 +132,7 @@ function! s:module.on_char_pre(cmdline)
 		let &statusline = s:_as_statusline(s:complete_list, s:count)
 	endif
 	if len(s:complete_list) == 1
-		call a:cmdline.wait_keyinput_off("Completion")
+		call a:cmdline.untap_keyinput("Completion")
 	endif
 endfunction
 
