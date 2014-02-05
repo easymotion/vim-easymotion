@@ -12,6 +12,7 @@ set cpo&vim
 " }}}
 " Init: {{{
 function! EasyMotion#init()
+    call EasyMotion#highlight#init()
     " Store previous motion info
     let s:previous = {}
     " Store previous operator-pending motion info for '.' repeat
