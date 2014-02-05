@@ -2,7 +2,7 @@
 " FILE: highlight.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/t9md/vim-smalls
-" Last Change: 04 Feb 2014.
+" Last Change: 05 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -29,6 +29,10 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 " }}}
+
+function! EasyMotion#highlight#load()
+   "load
+endfunction
 
 function! EasyMotion#highlight#init() "{{{
     " -- Default highlighting ---------------- {{{

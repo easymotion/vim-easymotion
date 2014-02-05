@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 02 Feb 2014.
+" Last Change: 05 Feb 2014.
 " == Script initialization {{{
 if expand("%:p") ==# expand("<sfile>:p")
   unlet! g:EasyMotion_loaded
@@ -48,93 +48,6 @@ let g:EasyMotion_command_line_key_mappings =
 
 "}}}
 
-" -- Default highlighting ---------------- {{{
-let g:EasyMotion_hl_group_target         = get(g:,
-    \ 'EasyMotion_hl_group_target', 'EasyMotionTarget')
-let g:EasyMotion_hl2_first_group_target  = get(g:,
-    \ 'EasyMotion_hl2_first_group_target', 'EasyMotionTarget2First')
-let g:EasyMotion_hl2_second_group_target = get(g:,
-    \ 'EasyMotion_hl2_second_group_target', 'EasyMotionTarget2Second')
-let g:EasyMotion_hl_group_shade          = get(g:,
-    \ 'EasyMotion_hl_group_shade', 'EasyMotionShade')
-
-let g:EasyMotion_hl_inc_search     = get(g:,
-    \ 'EasyMotion_hl_inc_search', 'EasyMotionIncSearch')
-let g:EasyMotion_hl_inc_cursor     = get(g:,
-    \ 'EasyMotion_hl_inc_cursor', 'EasyMotionIncCursor')
-let g:EasyMotion_hl_move           = get(g:,
-    \ 'EasyMotion_hl_move', 'EasyMotionMoveHL')
-
-let s:target_hl_defaults = {
-    \   'gui'     : ['NONE', '#ff0000' , 'bold']
-    \ , 'cterm256': ['NONE', '196'     , 'bold']
-    \ , 'cterm'   : ['NONE', 'red'     , 'bold']
-    \ }
-
-let s:target_hl2_first_defaults = {
-	\   'gui'     : ['NONE', '#ffb400' , 'bold']
-	\ , 'cterm256': ['NONE', '11'      , 'bold']
-	\ , 'cterm'   : ['NONE', 'yellow'  , 'bold']
-	\ }
-
-let s:target_hl2_second_defaults = {
-	\   'gui'     : ['NONE', '#b98300' , 'bold']
-	\ , 'cterm256': ['NONE', '3'       , 'bold']
-	\ , 'cterm'   : ['NONE', 'yellow'  , 'bold']
-	\ }
-
-let s:shade_hl_defaults = {
-    \   'gui'     : ['NONE', '#777777' , 'NONE']
-    \ , 'cterm256': ['NONE', '242'     , 'NONE']
-    \ , 'cterm'   : ['NONE', 'grey'    , 'NONE']
-    \ }
-
-let s:shade_hl_line_defaults = {
-    \   'gui'     : ['red' , '#FFFFFF' , 'NONE']
-    \ , 'cterm256': ['red' , '242'     , 'NONE']
-    \ , 'cterm'   : ['red' , 'grey'    , 'NONE']
-    \ }
-
-let s:target_hl_inc = {
-    \   'gui'     : ['NONE', '#7fbf00' , 'bold']
-    \ , 'cterm256': ['NONE', 'green'   , 'bold']
-    \ , 'cterm'   : ['NONE', 'green'   , 'bold']
-    \ }
-let s:target_hl_inc_cursor = {
-    \   'gui'     : ['#ACDBDA', '#121813' , 'bold']
-    \ , 'cterm256': ['cyan'   , 'black'   , 'bold']
-    \ , 'cterm'   : ['cyan'   , 'black'   , 'bold']
-    \ }
-let s:target_hl_move = {
-    \   'gui'     : ['#7fbf00', '#121813' , 'bold']
-    \ , 'cterm256': ['green'  , 'white'   , 'bold']
-    \ , 'cterm'   : ['green'  , 'white'   , 'bold']
-    \ }
-
-call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
-call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
-call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
-call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
-
-call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
-call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
-call EasyMotion#init#InitHL(g:EasyMotion_hl_move, s:target_hl_move)
-
-" Reset highlighting after loading a new color scheme {{{
-augroup EasyMotionInitHL
-    autocmd!
-
-    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
-    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
-    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
-    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
-
-    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
-    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
-    autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_move, s:target_hl_move)
-augroup end
-" }}}
-" }}}
 " }}}
 
 " == <Plug> Mapping {{{
