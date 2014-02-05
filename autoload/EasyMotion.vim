@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 04 Feb 2014.
+" Last Change: 05 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -12,6 +12,7 @@ set cpo&vim
 " }}}
 " Init: {{{
 function! EasyMotion#init()
+    call EasyMotion#highlight#init()
     " Store previous motion info
     let s:previous = {}
     " Store previous operator-pending motion info for '.' repeat
@@ -806,9 +807,6 @@ function! s:PromptUser(groups) "{{{
     " }}}
     " -- Prepare marker lines ---------------- {{{
     let lines = {}
-    let hl_coords = []
-    let hl2_first_coords = [] " Highlight for two characters
-    let hl2_second_coords = [] " Highlight for two characters
 
     let coord_key_dict = s:CreateCoordKeyDict(a:groups)
 
@@ -880,15 +878,20 @@ function! s:PromptUser(groups) "{{{
             let lines[line_num]['marker'] = target_key
         endif
 
-        " Add highlighting coordinates
+        " -- Highlight targets ------------------- {{{
         if target_key_len == 1
-            call add(hl_coords, '\%' . line_num . 'l\%' . col_num . 'c')
+            call EasyMotion#highlight#add_highlight(
+                \ '\%' . line_num . 'l\%' . col_num . 'c',
+                \ g:EasyMotion_hl_group_target)
         else
-            call add(hl2_first_coords,
-                  \ '\%' . line_num . 'l\%' . col_num . 'c')
-            call add(hl2_second_coords,
-                  \ '\%' . line_num . 'l\%' . (col_num + 1) . 'c')
+            call EasyMotion#highlight#add_highlight(
+                \ '\%' . line_num . 'l\%' . col_num . 'c',
+                \ g:EasyMotion_hl2_first_group_target)
+            call EasyMotion#highlight#add_highlight(
+                \ '\%' . line_num . 'l\%' . (col_num + 1) . 'c',
+                \ g:EasyMotion_hl2_second_group_target)
         endif
+        "}}}
 
         " Add marker/target length difference for multibyte
         " compensation
@@ -897,23 +900,6 @@ function! s:PromptUser(groups) "{{{
     endfor
 
     let lines_items = items(lines)
-    " }}}
-    " -- Highlight targets ------------------- {{{
-    if len(hl_coords) > 0
-        let hl_coords_re = '\%(' . join(hl_coords, '\|') . '\)'
-        call EasyMotion#highlight#add_highlight(
-            \ hl_coords_re, g:EasyMotion_hl_group_target)
-    endif
-    if len(hl2_first_coords) > 0
-        let hl2_first_coords_re = '\%(' . join(hl2_first_coords, '\|') . '\)'
-        call EasyMotion#highlight#add_highlight(
-            \ hl2_first_coords_re, g:EasyMotion_hl2_first_group_target)
-    endif
-    if len(hl2_second_coords) > 0
-        let hl2_second_coords_re = '\%(' . join(hl2_second_coords, '\|') . '\)'
-        call EasyMotion#highlight#add_highlight(
-            \ hl2_second_coords_re, g:EasyMotion_hl2_second_group_target)
-    endif
     " }}}
 
     " -- Put labels on targets & Get User Input & Restore all {{{
