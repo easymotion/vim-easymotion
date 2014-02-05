@@ -139,7 +139,7 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
 
     More <Plug> Mapping Table         | (No assignment by default)
     ----------------------------------|---------------------------------
-    (<Plug>(easymotion-bd-f))         | See |<Plug>(easymotion-s)|
+    <Plug>(easymotion-bd-f)           | See |<Plug>(easymotion-s)|
     <Plug>(easymotion-bd-t)           | See |<Plug>(easymotion-bd-t)|
     <Plug>(easymotion-bd-w)           | See |<Plug>(easymotion-bd-w)|
     <Plug>(easymotion-bd-W)           | See |<Plug>(easymotion-bd-W)|
@@ -159,6 +159,7 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-sl)             | See |<Plug>(easymotion-sl)|
     <Plug>(easymotion-fl)             | See |<Plug>(easymotion-fl)|
     <Plug>(easymotion-Fl)             | See |<Plug>(easymotion-Fl)|
+    <Plug>(easymotion-bd-fl)          | See |<Plug>(easymotion-sl)|
     <Plug>(easymotion-tl)             | See |<Plug>(easymotion-tl)|
     <Plug>(easymotion-Tl)             | See |<Plug>(easymotion-Tl)|
     <Plug>(easymotion-bd-tl)          | See |<Plug>(easymotion-bd-tl)|
@@ -177,6 +178,7 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-s2)             | See |<Plug>(easymotion-s2)|
     <Plug>(easymotion-f2)             | See |<Plug>(easymotion-f2)|
     <Plug>(easymotion-F2)             | See |<Plug>(easymotion-F2)|
+    <Plug>(easymotion-bd-f2)          | See |<Plug>(easymotion-s2)|
     <Plug>(easymotion-t2)             | See |<Plug>(easymotion-t2)|
     <Plug>(easymotion-T2)             | See |<Plug>(easymotion-T2)|
     <Plug>(easymotion-bd-t2)          | See |<Plug>(easymotion-bd-t2)|
@@ -190,6 +192,7 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-sn)             | See |<Plug>(easymotion-sn)|
     <Plug>(easymotion-fn)             | See |<Plug>(easymotion-fn)|
     <Plug>(easymotion-Fn)             | See |<Plug>(easymotion-Fn)|
+    <Plug>(easymotion-bd-fn)          | See |<Plug>(easymotion-sn)|
     <Plug>(easymotion-tn)             | See |<Plug>(easymotion-tn)|
     <Plug>(easymotion-Tn)             | See |<Plug>(easymotion-Tn)|
     <Plug>(easymotion-bd-tn)          | See |<Plug>(easymotion-bd-tn)|
@@ -197,8 +200,10 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-sln)            | See |<Plug>(easymotion-sln)|
     <Plug>(easymotion-fln)            | See |<Plug>(easymotion-fln)|
     <Plug>(easymotion-Fln)            | See |<Plug>(easymotion-Fln)|
+    <Plug>(easymotion-bd-fln)         | See |<Plug>(easymotion-sln)|
     <Plug>(easymotion-tln)            | See |<Plug>(easymotion-tln)|
     <Plug>(easymotion-Tln)            | See |<Plug>(easymotion-Tln)|
+    <Plug>(easymotion-bd-tln)         | See |<Plug>(easymotion-bd-tln)|
 
 
 ------------------------------------------------------------------------------
@@ -210,8 +215,8 @@ Bidirection ~
 
     Note: bd is short for bidirectional
 
-<Plug>(easymotion-s)                                  *<Plug>(easymotion-s)*
-                                    *<Plug>(easymotion-bd-f)* (doesn't exist)
+<Plug>(easymotion-s)                                    *<Plug>(easymotion-s)*
+                                                     *<Plug>(easymotion-bd-f)*
                 Find {char} to bidirection(forward and backward at the same
                 time.) See |f| & |F|.
 
@@ -359,6 +364,7 @@ Within line motion ~
                                                        *easymotion-within-line*
 
 <Plug>(easymotion-sl)                                   *<Plug>(easymotion-sl)*
+                                                     *<Plug>(easymotion-bd-fl)*
                 This function is same as |<Plug>(easymotion-s)|, except range
                 is within current cursor line.
 
