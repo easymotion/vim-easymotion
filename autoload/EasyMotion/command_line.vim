@@ -2,7 +2,7 @@
 " FILE: autoload/EasyMotion/command_line.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/osyo-manga/vim-over
-" Last Change: 05 Feb 2014.
+" Last Change: 06 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -148,11 +148,6 @@ function! s:search.on_char() "{{{
         call s:search.exit()
     endif
 endfunction "}}}
-function! s:search.on_cancel() "{{{
-    call s:Cancell()
-    call s:search.setline('')
-endfunction "}}}
-"}}}
 
 " Main:
 function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
@@ -173,6 +168,9 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
     let input = s:search.get()
     if input == '' && ! s:search.exit_code()
         return a:prev
+    elseif s:search.exit_code() == 1 " cancelled
+        call s:Cancell()
+        return ''
     else
         return input
     endif
