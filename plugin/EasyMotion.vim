@@ -23,7 +23,8 @@ set cpo&vim
 " == Default configuration {{{
 " -- Option ------------------------------ {{{
 let g:EasyMotion_keys               = get(g:,
-    \ 'EasyMotion_keys', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    \ 'EasyMotion_keys', 'asdghklqwertyuiopzxcvbnmfj;')
+    " \ 'EasyMotion_keys', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 let g:EasyMotion_do_mapping         = get(g: , 'EasyMotion_do_mapping'         , 1)
 let g:EasyMotion_do_shade           = get(g: , 'EasyMotion_do_shade'           , 1)
 let g:EasyMotion_grouping           = get(g: , 'EasyMotion_grouping'           , 1)
@@ -33,6 +34,7 @@ let g:EasyMotion_skipfoldedline     = get(g: , 'EasyMotion_skipfoldedline'     ,
 let g:EasyMotion_use_migemo         = get(g: , 'EasyMotion_use_migemo'         , 0)
 let g:EasyMotion_use_upper          = get(g: , 'EasyMotion_use_upper'          , 0)
 let g:EasyMotion_enter_jump_first   = get(g: , 'EasyMotion_enter_jump_first'   , 0)
+let g:EasyMotion_space_jump_first   = get(g: , 'EasyMotion_space_jump_first'   , 0)
 let g:EasyMotion_inc_highlight      = get(g: , 'EasyMotion_inc_highlight'      , 1)
 let g:EasyMotion_move_highlight     = get(g: , 'EasyMotion_move_highlight'     , 1)
 let g:EasyMotion_landing_highlight  = get(g: , 'EasyMotion_landing_highlight'  , 0)
@@ -258,12 +260,12 @@ xnoremap <silent><Plug>(easymotion-lineanywhere)
 "}}}
 "}}}
 
-map <silent><expr><Plug>(easymotion-clever-s)
-    \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-s)'
-map <silent><expr><Plug>(easymotion-clever-s2)
-    \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-s2)'
-map <silent><expr><Plug>(easymotion-clever-sn)
-    \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-sn)'
+" map <silent><expr><Plug>(easymotion-clever-s)
+"     \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-s)'
+" map <silent><expr><Plug>(easymotion-clever-s2)
+"     \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-s2)'
+" map <silent><expr><Plug>(easymotion-clever-sn)
+"     \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-sn)'
 
 noremap  <silent><Plug>(easymotion-activate) :<C-u>call EasyMotion#activate(0)<CR>
 xnoremap <silent><Plug>(easymotion-activate) :<C-u>call EasyMotion#activate(1)<CR>
@@ -287,7 +289,6 @@ if g:EasyMotion_do_mapping == 1
         \   'f' : { 'name': 'S'      , 'dir': 0 }
         \ , 'F' : { 'name': 'S'      , 'dir': 1 }
         \ , 's' : { 'name': 'S'      , 'dir': 2 }
-        \ , 'S' : { 'name': 'WB'     , 'dir': 2 }
         \ , 't' : { 'name': 'T'      , 'dir': 0 }
         \ , 'T' : { 'name': 'T'      , 'dir': 1 }
         \ , 'w' : { 'name': 'WB'     , 'dir': 0 }

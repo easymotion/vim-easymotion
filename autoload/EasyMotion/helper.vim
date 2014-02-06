@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: autoload/EasyMotion/helper.vim
 " AUTHOR: haya14busa
-" Last Change: 25 Jan 2014.
+" Last Change: 06 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -62,12 +62,22 @@ function! EasyMotion#helper#is_folded(line) "{{{
         \ (g:EasyMotion_skipfoldedline == 1 ||
         \  a:line != foldclosed(a:line))
 endfunction "}}}
-function! EasyMotion#helper#should_use_smartcase(input) "{{{
-    if g:EasyMotion_smartcase == 0
-        return 0
+function! EasyMotion#helper#should_case_sensitive(input, is_search) "{{{
+    if !a:is_search
+        if g:EasyMotion_smartcase == 0
+            return 0
+        else
+            " return 1 if input didn't match uppercase letter
+            return match(a:input, '\u') == -1
+        endif
     endif
-    " return 1 if input didn't match uppercase letter
-    return match(a:input, '\u') == -1
+
+    if (g:EasyMotion_smartcase == 1 && match(a:input, '\u') == -1) ||
+    \  (&ignorecase && &smartcase && match(a:input, '\u') == -1) ||
+    \  (&ignorecase && !&smartcase)
+        return 1
+    endif
+    return 0
 endfunction "}}}
 
 " Migemo {{{
