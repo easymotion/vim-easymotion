@@ -51,3 +51,4 @@
 - [] Feature: implement jump space first
 - [] Improve: take &ignorecase and &smartcase into account for n key find motion
 - [] Improve: default g:EasyMotion_keys
+- [] Improve: use :h winsaveview()
