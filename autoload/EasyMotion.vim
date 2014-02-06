@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 06 Feb 2014.
+" Last Change: 07 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -538,7 +538,7 @@ endfunction "}}}
 " -- Handle Visual Mode ------------------
 function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
     let vmode = mode(1)
-    if match('Vv',vmode) < 0
+    if vmode !~# "^[Vv\<C-v>]"
         throw 'Unkown visual mode:'.vmode
     endif
 
