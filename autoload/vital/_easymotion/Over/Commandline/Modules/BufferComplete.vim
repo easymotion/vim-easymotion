@@ -63,6 +63,7 @@ endfunction
 
 
 function! s:module.complete(cmdline)
+	call s:_finish()
 	let s:old_statusline = &statusline
 
 	let backward = a:cmdline.backward()
@@ -98,6 +99,10 @@ endfunction
 
 
 function! s:module.on_char_pre(cmdline)
+" 	echom "-----"
+" 	echom a:cmdline.char()
+" 	echom "Completion\<Tab>"
+" 	echom "Completion\<Tab>" == a:cmdline.char()
 	if a:cmdline.is_input("<Over>(buffer-complete)")
 		if self.complete(a:cmdline) == -1
 			call s:_finish()
@@ -106,6 +111,7 @@ function! s:module.on_char_pre(cmdline)
 		endif
 		call a:cmdline.setchar('')
 		call a:cmdline.tap_keyinput("Completion")
+" 	elseif a:cmdline.is_input("\<Tab>", "Completion")
 	elseif a:cmdline.is_input("<Over>(buffer-complete)", "Completion")
 \		|| a:cmdline.is_input("\<Right>", "Completion")
 		call a:cmdline.setchar('')
@@ -121,7 +127,7 @@ function! s:module.on_char_pre(cmdline)
 		endif
 	else
 		if a:cmdline.untap_keyinput("Completion")
-			call a:cmdline._on_char_pre()
+" 			call a:cmdline._on_char_pre()
 		endif
 		call s:_finish()
 		return
@@ -138,6 +144,7 @@ endfunction
 
 
 function! s:module.on_leave(cmdline)
+	call s:_finish()
 	unlet! s:complete
 endfunction
 
