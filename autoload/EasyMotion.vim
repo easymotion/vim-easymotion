@@ -511,13 +511,7 @@ function! s:should_use_smartsign(char) "{{{
         return 0
     endif
 endfunction "}}}
-function! s:should_use_smartcase(input) "{{{
-    if g:EasyMotion_smartcase == 0
-        return 0
-    endif
-    " return 1 if input didn't match uppercase letter
-    return match(a:input, '\u') == -1
-endfunction "}}}
+
 function! s:handleEmpty(input, visualmode) "{{{
     " if empty, reselect and return 1
     if empty(a:input)
