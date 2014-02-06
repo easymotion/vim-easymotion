@@ -2,7 +2,7 @@
 " FILE: autoload/EasyMotion/command_line.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/osyo-manga/vim-over
-" Last Change: 05 Feb 2014.
+" Last Change: 06 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -36,12 +36,15 @@ let s:search = s:cmdline.make_plain("/")
 let s:search.highlights.prompt = "Question"
 
 " Add Module: {{{
-call s:search.connect(s:cmdline.module_delete())
-call s:search.connect(s:cmdline.module_cursor_move())
-call s:search.connect(s:cmdline.module_paste())
-call s:search.connect(s:cmdline.module_buffer_complete())
-call s:search.connect(s:cmdline.module_history("/"))
-call s:search.connect(s:cmdline.module_no_insert_special_chars())
+call s:search.connect('Delete')
+call s:search.connect('CursorMove')
+call s:search.connect('Paste')
+call s:search.connect('BufferComplete')
+call s:search.connect('InsertRegister')
+call s:search.connect(s:cmdline.get_module('History').make('/'))
+call s:search.connect(s:cmdline.get_module('NoInsert').make_special_chars())
+call s:search.connect(s:cmdline.get_module('KeyMapping').make_emacs())
+call s:search.connect(s:cmdline.get_module('Doautocmd').make('EMCommandLine'))
 
 let s:module = {
 \   "name" : "EasyMotion",
@@ -70,20 +73,51 @@ call s:search.connect(s:module)
 "}}}
 
 " CommandLine Keymap: {{{
-let s:default_key_mapping = {
-\   "\<C-d>"   : "<Over>(buffer-complete)",
-\   "\<Tab>"   : "<Over>(em-scroll-f)",
-\   "\<S-Tab>" : "<Over>(em-scroll-b)",
-\   "\<C-o>"   : "<Over>(em-jumpback)",
-\   "\<C-z>"   : "<Over>(em-openallfold)",
-\}
-function! EasyMotion#command_line#keymaps() "{{{
-    return extend(deepcopy(s:default_key_mapping),
-                \ g:EasyMotion_command_line_key_mappings)
+function! s:search.keymapping() "{{{
+    return {
+\       "\<C-l>" : {
+\           "key" : "<Over>(buffer-complete)",
+\           "noremap" : 1,
+\       },
+\       "\<Tab>"   : {
+\           "key" : "<Over>(em-scroll-f)",
+\           "noremap" : 1,
+\       },
+\       "\<S-Tab>" : {
+\           "key" : "<Over>(em-scroll-b)",
+\           "noremap" : 1,
+\       },
+\       "\<C-o>"   : {
+\           "key" : "<Over>(em-jumpback)",
+\           "noremap" : 1,
+\       },
+\       "\<C-z>"   : {
+\           "key" : "<Over>(em-openallfold)",
+\           "noremap" : 1,
+\       },
+\   }
 endfunction "}}}
-function! s:search.keymappings() "{{{
-    return EasyMotion#command_line#keymaps()
-endfunction "}}}
+
+" Fins Motion CommandLine Mapping Command: {{{
+function! EasyMotion#command_line#cmap(args)
+    let lhs = s:as_keymapping(a:args[0])
+    let rhs = s:as_keymapping(a:args[1])
+    call s:search.cmap(lhs, rhs)
+endfunction
+function! EasyMotion#command_line#cnoremap(args)
+    let lhs = s:as_keymapping(a:args[0])
+    let rhs = s:as_keymapping(a:args[1])
+    call s:search.cnoremap(lhs, rhs)
+endfunction
+function! EasyMotion#command_line#cunmap(lhs)
+    let lhs = s:as_keymapping(a:lhs)
+    call s:search.cunmap(lhs)
+endfunction
+function! s:as_keymapping(key)
+	execute 'let result = "' . substitute(a:key, '\(<.\{-}>\)', '\\\1', 'g') . '"'
+	return result
+endfunction
+"}}}
 "}}}
 
 " Event: {{{
@@ -117,11 +151,6 @@ function! s:search.on_char() "{{{
         call s:search.exit()
     endif
 endfunction "}}}
-function! s:search.on_cancel() "{{{
-    call s:Cancell()
-    call s:search.setline('')
-endfunction "}}}
-"}}}
 
 " Main:
 function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
@@ -142,6 +171,9 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
     let input = s:search.get()
     if input == '' && ! s:search.exit_code()
         return a:prev
+    elseif s:search.exit_code() == 1 " cancelled
+        call s:Cancell()
+        return ''
     else
         return input
     endif

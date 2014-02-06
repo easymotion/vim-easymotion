@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 05 Feb 2014.
+" Last Change: 06 Feb 2014.
 " == Script initialization {{{
 if expand("%:p") ==# expand("<sfile>:p")
   unlet! g:EasyMotion_loaded
@@ -306,18 +306,15 @@ if g:EasyMotion_do_mapping == 1
 endif "}}}
 
 " == CommandLine Mapping {{{
-function! s:key_mapping(lhs, rhs)
-	let g:EasyMotion_command_line_key_mappings[a:lhs] = a:rhs
-endfunction
-
-function! s:as_keymapping(key)
-	execute 'let result = "' . substitute(a:key, '\(<.\{-}>\)', '\\\1', 'g') . '"'
-	return result
-endfunction
-
 command! -nargs=*
-\	EMCommandLineNoremap
-\	call call("s:key_mapping", map([<f-args>], "s:as_keymapping(v:val)"))
+\	EMCommandLineNoreMap
+\   call EasyMotion#command_line#cnoremap([<f-args>])
+command! -nargs=*
+\	EMCommandLineMap
+\   call EasyMotion#command_line#cmap([<f-args>])
+command! -nargs=1
+\	EMCommandLineUnMap
+\   call EasyMotion#command_line#cunmap(<f-args>)
 "}}}
 
 " == Restore 'cpoptions' {{{

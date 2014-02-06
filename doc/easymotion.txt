@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:02 Feb 2014.
+*easymotion.txt*	Version 2.0  Last change:06 Feb 2014.
 
 
             ______                  __  ___       __  _
@@ -504,6 +504,8 @@ Find Motion Command Line~
 
         https://github.com/osyo-manga/vim-over
 
+        Library: https://github.com/osyo-manga/vital-over
+
     Note: These settings are experimental. They could be changed in the near
     future.
 
@@ -515,19 +517,21 @@ Find Motion Command Line~
     ----------------------- |----------------------------------------------
     <CR>                    | Execute EasyMotion.
     <ESC> or <C-c>          | Cancel
-    <Right>                 | Cursor right
-    <Left>                  | Cursor left
-    <Home> or <C-b>         | cursor to beginning of command-line
+    <Right> or <C-f>        | Cursor right
+    <Left> or <C-b>         | Cursor left
+    <Home> or <C-a>         | cursor to beginning of command-line
     <End> or <C-e>          | cursor to end of command-line
     <BS>  or <C-h>          | Delete one character
+    <C-d>                   | Delete one character at the cursor pos
     <C-w>                   | Delete the word before the cursor
     <C-u>                   | Delete all entered characters before the cursor
-    <Up>                    | Recall older (previous) search from history
-    <Down>                  | Recall more recent (next) search from history
+    <Up> or <C-p>           | Recall older (previous) search from history
+    <Down> or <C-n>         | Recall more recent (next) search from history
+    <C-r> {0-9a-z"%#:-=.}   | Insert Register. See |c_Ctrl-R|
     ------------------------|---------------------------------------
     <Over>(paste)           | Paste yanked text to the command line
                             |   Default: <C-v>
-    <Over>(buffer-complete) | Completion of buffer text Default: <C-d>
+    <Over>(buffer-complete) | Completion of buffer text Default: <C-l>
     *<Over>(em-scroll-f)*     | Scroll window forward & jump to the next match
                             |   Default: <Tab>
     *<Over>(em-scroll-b)*     | Scroll window backward & jump to previous match
@@ -538,21 +542,30 @@ Find Motion Command Line~
                             |   Default: <C-z>
 
     Customize Command Line Mappings~
-                                                         *EMCommandLineNoremap*
+                                                         *EMCommandLineNoreMap*
 
-    You can use |EMCommandLineNoremap| to customize find motion command line
-    key mappings by vimrc. This mapping is always no recursive mapping, so
-    you should map to not <Tab> but <Over>(em-scroll-f).
+    You can use |EMCommandLineNoreMap| (like |cnoremap|) to customize find motion
+    command line key mappings by vimrc. This mapping is always no recursive
+    mapping, so you should map to not <Tab> but |<Over>(em-scroll-f)|.
 
     Example:
 >
-    " EM is short for EasyMotion
-    EMCommandLineNoremap <C-;> <CR>
-    EMCommandLineNoremap <C-f> <Right>
-    EMCommandLineNoremap <C-b> <Left>
-    EMCommandLineNoremap <C-a> <Home>
-    EMCommandLineNoremap <C-l> <Over>(buffer-complete)
+    " == EM is short for EasyMotion
+    " Enter by <Space> to excute faster & easily
+    EMCommandLineNoreMap <Space> <CR>
+    EMCommandLineNoreMap <C-j> <Space>
+    " Enter by `;` to excute faster & easily
+    EMCommandLineNoreMap ; <CR>
+    EMCommandLineNoreMap <C-j> ;
+    " Buffer Completion with Ctrl-D
+    EMCommandLineNoreMap <C-d> <Over>(buffer-complete)
 <
+                                                             *EMCommandLineMap*
+                                                           *EMCommandLineUnMap*
+    EasyMotion also provide |EMCommandLineMap| (like |cmap|) and
+    |EMCommandLineUnMap| (like |cunmap|) command, but probably you don't need
+    these command because there is no case it require recursive mappings.
+
     Note(again): These settings, especially about keymappings are
     __EXPERIMENTAL__. They could be changed in the near future. However, it
     works well and so useful, so I release it.
