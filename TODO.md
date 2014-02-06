@@ -48,3 +48,6 @@
     - clever-fやsneakとかぶるけどEasyMotionのrepeat motionと連携ができて便利な気もする
     - 複数文字でrepeatかつハイライトできるモーションプラグインは現状ない
     - 追加プラグインで対応するという手
+- [] Feature: implement jump space first
+- [] Improve: take &ignorecase and &smartcase into account for n key find motion
+- [] Improve: default g:EasyMotion_keys
