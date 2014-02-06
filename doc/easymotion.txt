@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:05 Feb 2014.
+*easymotion.txt*	Version 2.0  Last change:06 Feb 2014.
 
 
             ______                  __  ___       __  _
@@ -538,9 +538,9 @@ Find Motion Command Line~
     Customize Command Line Mappings~
                                                          *EMCommandLineNoreMap*
 
-    You can use |EMCommandLineNoreMap| to customize find motion command line
-    key mappings by vimrc. This mapping is always no recursive mapping, so
-    you should map to not <Tab> but |<Over>(em-scroll-f)|.
+    You can use |EMCommandLineNoreMap| (like |cnoremap|) to customize find motion
+    command line key mappings by vimrc. This mapping is always no recursive
+    mapping, so you should map to not <Tab> but |<Over>(em-scroll-f)|.
 
     Example:
 >
