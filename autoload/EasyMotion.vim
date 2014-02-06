@@ -72,6 +72,7 @@ function! EasyMotion#reset()
         "   backward find motion is exclusive
     let s:current = {
         \ 'is_operator' : 0,
+        \ 'is_search' : 0,
         \ 'dot_repeat_target_cnt' : 0,
         \ 'dot_prompt_user_cnt' : 0,
         \ 'changedtick' : 0,
@@ -386,7 +387,8 @@ function! s:findMotion(num_strokes, direction) "{{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     " store cursor pos because 'n' key find motion could be jump to offscreen
     let s:current.original_position = [line('.'), col('.')]
-    let s:flag.regexp = a:num_strokes == -1 ? 1 : 0
+    let s:current.is_search = a:num_strokes == -1 ? 1: 0
+    let s:flag.regexp = a:num_strokes == -1 ? 1 : 0 " TODO: remove?
 
     if g:EasyMotion_add_search_history && a:num_strokes == -1
         let s:previous['input'] = @/
@@ -432,7 +434,8 @@ function! s:convertRegep(input) "{{{
         let re = s:convertSmartsign(re, a:input)
     endif
 
-    let case_flag = EasyMotion#helper#should_use_smartcase(a:input) ? '\c' : '\C'
+    let case_flag = EasyMotion#helper#should_case_sensitive(
+                        \ a:input, s:current.is_search) ? '\c' : '\C'
     let re = case_flag . re
     return re
 endfunction "}}}

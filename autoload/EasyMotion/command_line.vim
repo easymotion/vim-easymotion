@@ -138,10 +138,13 @@ endfunction "}}}
 function! s:search.on_char() "{{{
     if s:num_strokes == -1
         let re = s:search.getline()
+        if EasyMotion#helper#should_case_sensitive(re, 1)
+            let case_flag = '\c'
+        else
+            let case_flag = '\C'
+        endif
+        let re .= case_flag
         if g:EasyMotion_inc_highlight
-            let case_flag = EasyMotion#helper#should_use_smartcase(re) ?
-                            \ '\c' : '\C'
-            let re .= case_flag
             call s:inc_highlight(re)
         endif
         if g:EasyMotion_off_screen_search
