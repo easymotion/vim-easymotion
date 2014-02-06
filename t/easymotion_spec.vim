@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: t/easymotion_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 02 Feb 2014.
+" Last Change: 06 Feb 2014.
 " Test: https://github.com/kana/vim-vspec
 " Refer: https://github.com/rhysd/clever-f.vim
 " Description: EasyMotion test with vim-vspec
@@ -440,7 +440,8 @@ describe 'Default settings'
 
     it 'provide variables to customize EasyMotion'
         " Option {{{
-        Expect g:EasyMotion_keys ==# 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        Expect g:EasyMotion_keys ==# 'asdghklqwertyuiopzxcvbnmfj;'
+        " Expect g:EasyMotion_keys ==# 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
         Expect g:EasyMotion_do_mapping         ==# 1
         Expect g:EasyMotion_do_shade           ==# 1
         Expect g:EasyMotion_grouping           ==# 1
