@@ -137,7 +137,11 @@ function! s:base.is_input(key, ...)
 	let prekey = get(a:, 1, "")
 	return self.get_tap_key() == prekey
 \		&& self.char() == a:key
-" \		&& s:_unmap(self._get_keymapping(), self.char()).key == a:key
+endfunction
+
+
+function! s:base.input_key()
+	return self.variables.input_key
 endfunction
 
 
@@ -219,10 +223,10 @@ function! s:base.exit(...)
 endfunction
 
 
-function! s:base.cancel()
-	call self.exit(1)
-	call self._on_cancel()
-endfunction
+" function! s:base.cancel()
+" 	call self.exit(1)
+" 	call self._on_cancel()
+" endfunction
 
 
 function! s:base.exit_code()
@@ -328,9 +332,9 @@ function! s:base._main(...)
 		while !self._is_exit()
 			call s:_echo_cmdline(self)
 
-			let self.variables.char = s:_unmap(self._get_keymapping(), s:_getchar())
+			let self.variables.input_key = s:_getchar()
+			let self.variables.char = s:_unmap(self._get_keymapping(), self.variables.input_key)
 
-" 			let self.variables.char = s:_getchar()
 			call self.setchar(self.variables.char)
 
 			call self._on_char_pre()

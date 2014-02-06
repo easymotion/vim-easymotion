@@ -11,7 +11,8 @@ function! s:module.on_char_pre(cmdline)
 \	|| a:cmdline.is_input("\<C-c>")
 \	||(a:cmdline.is_input("\<BS>") && a:cmdline.line.length() == 0)
 \	||(a:cmdline.is_input("\<C-h>") && a:cmdline.line.length() == 0)
-		call a:cmdline.cancel()
+" 		call a:cmdline.cancel()
+		call a:cmdline.exit(1)
 		call a:cmdline.setchar("")
 	endif
 endfunction
