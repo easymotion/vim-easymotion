@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 05 Feb 2014.
+" Last Change: 06 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -918,8 +918,9 @@ function! s:PromptUser(groups) "{{{
             let char = toupper(char)
         endif "}}}
 
-        " Jump first target when Enter key is pressed "{{{
-        if char ==# "\<CR>" && g:EasyMotion_enter_jump_first == 1
+        " Jump first target when Enter or Space key is pressed "{{{
+        if (char ==# "\<CR>" && g:EasyMotion_enter_jump_first == 1) ||
+        \  (char ==# " " && g:EasyMotion_space_jump_first == 1)
             let char = g:EasyMotion_keys[0]
         endif "}}}
 
