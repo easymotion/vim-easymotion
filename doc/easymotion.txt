@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:06 Feb 2014.
+*easymotion.txt*	Version 2.0  Last change:07 Feb 2014.
 
 
             ______                  __  ___       __  _
@@ -628,9 +628,25 @@ EasyMotion_keys                                               *EasyMotion_keys*
 
 Set the keys which will be used for motion targets. Add as many keys as you
 want. There's a lower chance that the motion targets will be grouped if many
-keys are available.
+keys are available. However, the most people are easier to type 2 keys than
+press shift and EasyMotion shows two labels at the same time, so it's maybe
+better to remove the keys which is hard to type. EasyMotion uses the last keys
+as a first of grouped targets if there are a lot of targets, so I recommend to
+set keys which is easier to type as last keys(like `f`,`j`,`;`).
 
-Default: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+Default: 'asdghklqwertyuiopzxcvbnmfj;'
+
+Example:
+>
+    " Lower a-z
+    let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyz'
+    " a-z & A-Z
+    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    " a-z & A-Z & 0-9
+    'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    " qwerty
+    'asdfghjkl;qwertyuiopzxcvbnm'
+<
 
 ------------------------------------------------------------------------------
 EasyMotion_do_shade                                       *EasyMotion_do_shade*
