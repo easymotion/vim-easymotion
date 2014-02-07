@@ -9,8 +9,12 @@ let s:module = {
 function! s:module.on_char_pre(cmdline)
 	if a:cmdline.is_input("\<C-h>")
 \	|| a:cmdline.is_input("\<BS>")
-		call a:cmdline.line.remove_prev()
-		call a:cmdline.setchar('')
+		if a:cmdline.line.length() == 0
+			return a:cmdline.exit(1)
+		else
+			call a:cmdline.line.remove_prev()
+			call a:cmdline.setchar('')
+		endif
 	elseif a:cmdline.is_input("\<Del>")
 		call a:cmdline.line.remove_pos()
 		call a:cmdline.setchar('')
