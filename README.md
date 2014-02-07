@@ -97,7 +97,7 @@ You can jump forward or backward at the same time by `<Leader>s`.
 One useful trick is to map `nmap s <Plug>(easymotion-s)` to use `s` instead and save one keystroke!
 
 ## 2 key find motion
-EasyMotion provide 2-key find motions like vim-seek/vim-sneak. (e.g. `<Plug>(easymotion-s2)`)
+EasyMotion provide 2-key find motions like [vim-seek](https://github.com/goldfeld/vim-seek)/[vim-sneak](https://github.com/justinmk/vim-sneak). (e.g. `<Plug>(easymotion-s2)`)
 
 ![2-key-find-motion](https://f.cloud.github.com/assets/3797062/2039612/7cafcec8-89a5-11e3-8f2c-5f26a6b83efd.gif)
 ```vim
