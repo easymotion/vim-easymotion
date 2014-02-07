@@ -364,6 +364,34 @@ function! s:RestoreValue() "{{{
     call s:VarReset('&virtualedit')
     call s:VarReset('&foldmethod')
 endfunction "}}}
+function! s:turn_on_hl_error() "{{{
+    if exists("s:old_hl_error")
+        execute "highlight Error " . s:old_hl_error
+        unlet s:old_hl_error
+    endif
+endfunction "}}}
+function! s:turn_off_hl_error() "{{{
+    if exists("s:old_hl_error")
+        return s:old_hl_error
+    endif
+    if hlexists("Error")
+        let save_verbose = &verbose
+        let &verbose = 0
+        try
+            redir => cursor
+            silent highlight Error
+            redir END
+        finally
+            let &verbose = save_verbose
+        endtry
+        let hl = substitute(matchstr(cursor, 'xxx \zs.*'), '[ \t\n]\+\|cleared', ' ', 'g')
+        if !empty(substitute(hl, '\s', '', 'g'))
+            let s:old_hl_error = hl
+        endif
+        highlight Error NONE
+        return s:old_hl_error
+    endif
+endfunction "}}}
 " -- Draw --------------------------------
 function! s:SetLines(lines, key) " {{{
     for [line_num, line] in a:lines
@@ -1047,6 +1075,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         " -- Reset properties -------------------- {{{
         " Save original value and set new value
         call s:SaveValue()
+        call s:turn_off_hl_error()
         " }}}
         " Setup searchpos args {{{
         let search_direction = (a:direction >= 1 ? 'b' : '')
@@ -1359,6 +1388,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
     finally
         " -- Restore properties ------------------ {{{
         call s:RestoreValue()
+        call s:turn_on_hl_error()
         call EasyMotion#reset()
         " }}}
         " -- Remove shading ---------------------- {{{
