@@ -135,6 +135,9 @@ function! EasyMotion#highlight#init() "{{{
     call EasyMotion#highlight#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
     call EasyMotion#highlight#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
     call EasyMotion#highlight#InitHL(g:EasyMotion_hl_move, s:target_hl_move)
+    if exists(':CSApprox') == 2
+        CSApprox!
+    endif
 endfunction "}}}
 
 " Reset highlighting after loading a new color scheme {{{
