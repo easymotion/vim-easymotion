@@ -2,7 +2,7 @@
 " FILE: highlight.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/t9md/vim-smalls
-" Last Change: 05 Feb 2014.
+" Last Change: 07 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -34,97 +34,115 @@ function! EasyMotion#highlight#load()
    "load
 endfunction
 
+" -- Default highlighting ---------------- {{{
+let g:EasyMotion_hl_group_target         = get(g:,
+    \ 'EasyMotion_hl_group_target', 'EasyMotionTarget')
+let g:EasyMotion_hl2_first_group_target  = get(g:,
+    \ 'EasyMotion_hl2_first_group_target', 'EasyMotionTarget2First')
+let g:EasyMotion_hl2_second_group_target = get(g:,
+    \ 'EasyMotion_hl2_second_group_target', 'EasyMotionTarget2Second')
+let g:EasyMotion_hl_group_shade          = get(g:,
+    \ 'EasyMotion_hl_group_shade', 'EasyMotionShade')
+
+let g:EasyMotion_hl_inc_search     = get(g:,
+    \ 'EasyMotion_hl_inc_search', 'EasyMotionIncSearch')
+let g:EasyMotion_hl_inc_cursor     = get(g:,
+    \ 'EasyMotion_hl_inc_cursor', 'EasyMotionIncCursor')
+let g:EasyMotion_hl_move           = get(g:,
+    \ 'EasyMotion_hl_move', 'EasyMotionMoveHL')
+
+let s:target_hl_defaults = {
+    \   'gui'     : ['NONE', '#ff0000' , 'bold']
+    \ , 'cterm256': ['NONE', '196'     , 'bold']
+    \ , 'cterm'   : ['NONE', 'red'     , 'bold']
+    \ }
+
+let s:target_hl2_first_defaults = {
+    \   'gui'     : ['NONE', '#ffb400' , 'bold']
+    \ , 'cterm256': ['NONE', '11'      , 'bold']
+    \ , 'cterm'   : ['NONE', 'yellow'  , 'bold']
+    \ }
+
+let s:target_hl2_second_defaults = {
+    \   'gui'     : ['NONE', '#b98300' , 'bold']
+    \ , 'cterm256': ['NONE', '3'       , 'bold']
+    \ , 'cterm'   : ['NONE', 'yellow'  , 'bold']
+    \ }
+
+let s:shade_hl_defaults = {
+    \   'gui'     : ['NONE', '#777777' , 'NONE']
+    \ , 'cterm256': ['NONE', '242'     , 'NONE']
+    \ , 'cterm'   : ['NONE', 'grey'    , 'NONE']
+    \ }
+
+let s:shade_hl_line_defaults = {
+    \   'gui'     : ['red' , '#FFFFFF' , 'NONE']
+    \ , 'cterm256': ['red' , '242'     , 'NONE']
+    \ , 'cterm'   : ['red' , 'grey'    , 'NONE']
+    \ }
+
+let s:target_hl_inc = {
+    \   'gui'     : ['NONE', '#7fbf00' , 'bold']
+    \ , 'cterm256': ['NONE', 'green'   , 'bold']
+    \ , 'cterm'   : ['NONE', 'green'   , 'bold']
+    \ }
+let s:target_hl_inc_cursor = {
+    \   'gui'     : ['#ACDBDA', '#121813' , 'bold']
+    \ , 'cterm256': ['cyan'   , 'black'   , 'bold']
+    \ , 'cterm'   : ['cyan'   , 'black'   , 'bold']
+    \ }
+let s:target_hl_move = {
+    \   'gui'     : ['#7fbf00', '#121813' , 'bold']
+    \ , 'cterm256': ['green'  , 'white'   , 'bold']
+    \ , 'cterm'   : ['green'  , 'white'   , 'bold']
+    \ }
+" }}}
+function! EasyMotion#highlight#InitHL(group, colors) " {{{
+    let group_default = a:group . 'Default'
+
+    " Prepare highlighting variables
+    let guihl = printf('guibg=%s guifg=%s gui=%s', a:colors.gui[0], a:colors.gui[1], a:colors.gui[2])
+    " FIXME: support CSApprox correctly
+    if !exists('g:CSApprox_loaded')
+        let ctermhl = &t_Co == 256
+            \ ? printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm256[0], a:colors.cterm256[1], a:colors.cterm256[2])
+            \ : printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm[0], a:colors.cterm[1], a:colors.cterm[2])
+    else
+        let ctermhl = ''
+    endif
+
+    " Create default highlighting group
+    execute printf('hi default %s %s %s', group_default, guihl, ctermhl)
+
+    " Check if the hl group exists
+    if hlexists(a:group)
+        redir => hlstatus | exec 'silent hi ' . a:group | redir END
+
+        " Return if the group isn't cleared
+        if hlstatus !~ 'cleared'
+            return
+        endif
+    endif
+
+    " No colors are defined for this group, link to defaults
+    execute printf('hi default link %s %s', a:group, group_default)
+endfunction " }}}
 function! EasyMotion#highlight#init() "{{{
-    " -- Default highlighting ---------------- {{{
-    let g:EasyMotion_hl_group_target         = get(g:,
-        \ 'EasyMotion_hl_group_target', 'EasyMotionTarget')
-    let g:EasyMotion_hl2_first_group_target  = get(g:,
-        \ 'EasyMotion_hl2_first_group_target', 'EasyMotionTarget2First')
-    let g:EasyMotion_hl2_second_group_target = get(g:,
-        \ 'EasyMotion_hl2_second_group_target', 'EasyMotionTarget2Second')
-    let g:EasyMotion_hl_group_shade          = get(g:,
-        \ 'EasyMotion_hl_group_shade', 'EasyMotionShade')
-
-    let g:EasyMotion_hl_inc_search     = get(g:,
-        \ 'EasyMotion_hl_inc_search', 'EasyMotionIncSearch')
-    let g:EasyMotion_hl_inc_cursor     = get(g:,
-        \ 'EasyMotion_hl_inc_cursor', 'EasyMotionIncCursor')
-    let g:EasyMotion_hl_move           = get(g:,
-        \ 'EasyMotion_hl_move', 'EasyMotionMoveHL')
-
-    let s:target_hl_defaults = {
-        \   'gui'     : ['NONE', '#ff0000' , 'bold']
-        \ , 'cterm256': ['NONE', '196'     , 'bold']
-        \ , 'cterm'   : ['NONE', 'red'     , 'bold']
-        \ }
-
-    let s:target_hl2_first_defaults = {
-        \   'gui'     : ['NONE', '#ffb400' , 'bold']
-        \ , 'cterm256': ['NONE', '11'      , 'bold']
-        \ , 'cterm'   : ['NONE', 'yellow'  , 'bold']
-        \ }
-
-    let s:target_hl2_second_defaults = {
-        \   'gui'     : ['NONE', '#b98300' , 'bold']
-        \ , 'cterm256': ['NONE', '3'       , 'bold']
-        \ , 'cterm'   : ['NONE', 'yellow'  , 'bold']
-        \ }
-
-    let s:shade_hl_defaults = {
-        \   'gui'     : ['NONE', '#777777' , 'NONE']
-        \ , 'cterm256': ['NONE', '242'     , 'NONE']
-        \ , 'cterm'   : ['NONE', 'grey'    , 'NONE']
-        \ }
-
-    let s:shade_hl_line_defaults = {
-        \   'gui'     : ['red' , '#FFFFFF' , 'NONE']
-        \ , 'cterm256': ['red' , '242'     , 'NONE']
-        \ , 'cterm'   : ['red' , 'grey'    , 'NONE']
-        \ }
-
-    let s:target_hl_inc = {
-        \   'gui'     : ['NONE', '#7fbf00' , 'bold']
-        \ , 'cterm256': ['NONE', 'green'   , 'bold']
-        \ , 'cterm'   : ['NONE', 'green'   , 'bold']
-        \ }
-    let s:target_hl_inc_cursor = {
-        \   'gui'     : ['#ACDBDA', '#121813' , 'bold']
-        \ , 'cterm256': ['cyan'   , 'black'   , 'bold']
-        \ , 'cterm'   : ['cyan'   , 'black'   , 'bold']
-        \ }
-    let s:target_hl_move = {
-        \   'gui'     : ['#7fbf00', '#121813' , 'bold']
-        \ , 'cterm256': ['green'  , 'white'   , 'bold']
-        \ , 'cterm'   : ['green'  , 'white'   , 'bold']
-        \ }
-
-    call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
-    call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
-    call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
-    call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
-
-    call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
-    call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
-    call EasyMotion#init#InitHL(g:EasyMotion_hl_move, s:target_hl_move)
-
-    " Reset highlighting after loading a new color scheme {{{
-    augroup EasyMotionInitHL
-        autocmd!
-
-        autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
-        autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
-        autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
-        autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
-
-        autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
-        autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
-        autocmd ColorScheme * call EasyMotion#init#InitHL(g:EasyMotion_hl_move, s:target_hl_move)
-    augroup end
-    " }}}
-    " }}}
+    call EasyMotion#highlight#InitHL(g:EasyMotion_hl_group_target, s:target_hl_defaults)
+    call EasyMotion#highlight#InitHL(g:EasyMotion_hl2_first_group_target, s:target_hl2_first_defaults)
+    call EasyMotion#highlight#InitHL(g:EasyMotion_hl2_second_group_target, s:target_hl2_second_defaults)
+    call EasyMotion#highlight#InitHL(g:EasyMotion_hl_group_shade,  s:shade_hl_defaults)
+    call EasyMotion#highlight#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
+    call EasyMotion#highlight#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
+    call EasyMotion#highlight#InitHL(g:EasyMotion_hl_move, s:target_hl_move)
 endfunction "}}}
 
-
+" Reset highlighting after loading a new color scheme {{{
+augroup EasyMotionInitHL
+    autocmd!
+    autocmd ColorScheme * call EasyMotion#highlight#init()
+augroup end
+" }}}
 
 call EasyMotion#highlight#init()
 " Init: {{{
