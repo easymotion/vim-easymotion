@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:07 Feb 2014.
+*easymotion.txt*	Version 2.0  Last change:08 Feb 2014.
 
 
             ______                  __  ___       __  _
@@ -528,6 +528,9 @@ Find Motion Command Line~
     <Up> or <C-p>           | Recall older (previous) search from history
     <Down> or <C-n>         | Recall more recent (next) search from history
     <C-r> {0-9a-z"%#:-=.}   | Insert Register. See |c_Ctrl-R|
+    <C-r><C-w>              | Insert the Word under cursor
+    <C-r><C-a>              | Insert the |WORD| under cursor
+    <C-r><C-f>              | Insert the Filename under cursor
     ------------------------|---------------------------------------
     <Over>(paste)           | Paste yanked text to the command line
                             |   Default: <C-v>
