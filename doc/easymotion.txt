@@ -612,7 +612,7 @@ Vi-compatible mode must be disabled.
 If there are any problems due to the vim version you use, feel free to open
 an issue on github!
 
-https://github.com/haya14busa/vim-easymotion/issues
+https://github.com/Lokaltog/vim-easymotion/issues
 
 ==============================================================================
 Configuration                                        *easymotion-configuration*
