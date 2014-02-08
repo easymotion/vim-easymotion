@@ -8,7 +8,7 @@
 if expand("%:p") ==# expand("<sfile>:p")
   unlet! g:EasyMotion_loaded
 endif
-if exists('g:EasyMotion_loaded') || &compatible || version < 702
+if exists('g:EasyMotion_loaded') || &compatible || version < 703
     finish
 endif
 

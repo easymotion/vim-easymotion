@@ -603,13 +603,14 @@ See |easymotion-leader-key| and |mapleader| for details about the leader key.
 ==============================================================================
 Requirements                                          *easymotion-requirements*
 
-EasyMotion has been developed and tested in vim 7.3, but it should run without
-any problems in vim 7.2.
+EasyMotion needs at least vim 7.3 to run without problems.
+Active development and testing is done with vim 7.4 since the 2.0 release of
+EasyMotion.
 
 Vi-compatible mode must be disabled.
 
-Note: Now @haya14busa maintain EasyMotion in vim 7.4. If there is any
-problems, open an issue or pull requests are welcome.
+If there are any problems due to the vim version you use, feel free to open
+an issue on github!
 
 https://github.com/haya14busa/vim-easymotion/issues
 
