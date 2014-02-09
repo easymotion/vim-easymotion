@@ -21,13 +21,20 @@ function! s:_vital_loaded(V)
 	for module in s:modules
 		let s:{module} = s:V.import('Over.Commandline.Modules.' . module)
 	endfor
-	let s:String = s:V.import("Over.String")
+	let s:String  = s:V.import("Over.String")
+	let s:Signals = s:V.import("Over.Signals")
+	let s:base.variables.modules = s:Signals.make()
+	function! s:base.variables.modules.get_slot(val)
+		return a:val.slot.module
+	endfunction
 endfunction
 
 
 function! s:_vital_depends()
-	return ["Over.String"]
-\		 + map(copy(s:modules), "'Over.Commandline.Modules.' . v:val")
+	return [
+\		"Over.String",
+\		"Over.Signals",
+\	] + map(copy(s:modules), "'Over.Commandline.Modules.' . v:val")
 endfunction
 
 
@@ -45,6 +52,7 @@ function! s:make_plain(prompt)
 	let result.prompt = a:prompt
 	call result.connect("Enter")
 	call result.connect("Cancel")
+	call result.connect(result, "_")
 	return result
 endfunction
 
@@ -75,7 +83,6 @@ let s:base = {
 \		"tap_key" : "",
 \		"exit" : 0,
 \		"keymapping" : {},
-\		"modules" : {},
 \	},
 \	"highlights" : {
 \		"prompt" : "NONE",
@@ -166,28 +173,30 @@ function! s:base.connect(module, ...)
 	if type(a:module) == type("")
 		return call(self.connect, [s:get_module(a:module).make()] + a:000, self)
 	endif
-	let name = get(a:, 1, a:module.name)
-	let self.variables.modules[name] = a:module
+	let name = a:0 > 0 ? a:1 : a:module.name
+	let slot = self.variables.modules.find_first_by("get(v:val.slot, 'name', '') == " . string(name))
+	if empty(slot)
+		call self.variables.modules.connect({ "name" : name, "module" : a:module })
+	else
+		let slot.slot.module = a:module
+	endif
+" 	let self.variables.modules[name] = a:module
 endfunction
 
 
 function! s:base.disconnect(name)
-	unlet self.variables.modules[a:name]
+	return self.variables.modules.disconnect_by(
+\		"get(v:val.slot, 'name', '') == " . string(a:name)
+\	)
+" 	unlet self.variables.modules[a:name]
 endfunction
 
 
-for s:_ in ["enter", "leave", "char", "char_pre", "execute_pre", "execute_failed", "execute", "cancel"]
-	execute join([
-\		"function! s:base._on_" . s:_ . "()",
-\		"	call map(copy(self.variables.modules), 'has_key(v:val, \"on_" . s:_ . "\") ? v:val.on_" . s:_ . "(self) : 0')",
-\		"	call self.on_" . s:_ . "()",
-\		"endfunction",
-\	], "\n")
-	
-	execute "function! s:base.on_" . s:_ . "()"
-	endfunction
-endfor
-unlet s:_
+function! s:base.callevent(event)
+	call self.variables.modules.sort_by("has_key(v:val.slot.module, 'priority') ? v:val.slot.module.priority('" . a:event . "') : 0")
+	return self.variables.modules.call(a:event, [self])
+" 	call map(filter(copy(self.variables.modules), "has_key(v:val, a:event)"), "v:val." . a:event . "(self)")
+endfunction
 
 
 function! s:base.cmap(lhs, rhs)
@@ -310,16 +319,16 @@ endfunction
 
 function! s:base._execute()
 	call s:redraw()
-	call self._on_execute_pre()
+	call self.callevent("on_execute_pre")
 	try
 		call self.execute()
 	catch
 		echohl ErrorMsg
 		echo matchstr(v:exception, 'Vim\((\w*)\)\?:\zs.*\ze')
 		echohl None
-		call self._on_execute_failed()
+		call self.callevent("on_execute_failed")
 	finally
-		call self._on_execute()
+		call self.callevent("on_execute")
 	endtry
 endfunction
 
@@ -328,7 +337,7 @@ function! s:base._main(...)
 	try
 		call self._init()
 		let self.line = deepcopy(s:String.make(get(a:, 1, "")))
-		call self._on_enter()
+		call self.callevent("on_enter")
 
 		while !self._is_exit()
 			call s:_echo_cmdline(self)
@@ -339,18 +348,18 @@ function! s:base._main(...)
 
 			call self.setchar(self.variables.char)
 
-			call self._on_char_pre()
+			call self.callevent("on_char_pre")
 			call self.insert(self.variables.input)
-			call self._on_char()
+			call self.callevent("on_char")
 		endwhile
 	catch
 		echohl ErrorMsg | echo v:throwpoint . " " . v:exception | echohl None
 		return -1
 	finally
 		call self._finish()
-		call self._on_leave()
+		call s:redraw()
+		call self.callevent("on_leave")
 	endtry
-	call s:redraw()
 	return self.exit_code()
 endfunction
 
@@ -410,9 +419,12 @@ endfunction
 
 function! s:base._get_keymapping()
 	let result = {}
-	for module in values(self.variables.modules)
+" 	for module in values(self.variables.modules)
+	for module in self.variables.modules.slots()
 		if has_key(module, "keymapping")
-			call extend(result, module.keymapping(self))
+			if module isnot self
+				call extend(result, module.keymapping(self))
+			endif
 		endif
 	endfor
 	return extend(extend(result, self.variables.keymapping), self.keymapping())
