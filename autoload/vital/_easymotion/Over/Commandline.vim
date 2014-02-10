@@ -262,7 +262,9 @@ function! s:base.hl_cursor_off()
 		finally
 			let &verbose = save_verbose
 		endtry
-		let hl = substitute(matchstr(cursor, 'xxx \zs.*'), '[ \t\n]\+\|cleared', ' ', 'g')
+		" NOTE: do not match across newlines, to remove 'links to Foo'
+		" (https://github.com/osyo-manga/vital-over/issues/23)
+		let hl = substitute(matchstr(cursor, 'xxx \zs[^\n]*'), '[ \t\n]\+\|cleared', ' ', 'g')
 		if !empty(substitute(hl, '\s', '', 'g'))
 			let self.variables.old_hi_cursor = hl
 		endif
