@@ -384,7 +384,9 @@ function! s:turn_off_hl_error() "{{{
         finally
             let &verbose = save_verbose
         endtry
-        let hl = substitute(matchstr(error, 'xxx \zs.*'), '[ \t\n]\+\|cleared', ' ', 'g')
+        " NOTE: do not match across newlines, to remove 'links to Foo'
+        " (https://github.com/Lokaltog/vim-easymotion/issues/95)
+        let hl = substitute(matchstr(error, 'xxx \zs[^\n]*'), '[ \t\n]\+\|cleared', ' ', 'g')
         if !empty(substitute(hl, '\s', '', 'g'))
             let s:old_hl_error = hl
         endif
