@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 07 Feb 2014.
+" Last Change: 10 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -378,13 +378,13 @@ function! s:turn_off_hl_error() "{{{
         let save_verbose = &verbose
         let &verbose = 0
         try
-            redir => cursor
+            redir => error
             silent highlight Error
             redir END
         finally
             let &verbose = save_verbose
         endtry
-        let hl = substitute(matchstr(cursor, 'xxx \zs.*'), '[ \t\n]\+\|cleared', ' ', 'g')
+        let hl = substitute(matchstr(error, 'xxx \zs.*'), '[ \t\n]\+\|cleared', ' ', 'g')
         if !empty(substitute(hl, '\s', '', 'g'))
             let s:old_hl_error = hl
         endif
