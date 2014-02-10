@@ -437,9 +437,9 @@ function! s:findMotion(num_strokes, direction) "{{{
     let re = s:convertRegep(input)
 
     if g:EasyMotion_add_search_history && a:num_strokes == -1
+        let re = substitute(re, '\\c\|\\C', '', '')
         let @/ = re "For textobject: 'gn'
-        call histadd('search',
-                    \ substitute(re, '\\c\|\\C', '', ''))
+        call histadd('search', re)
     endif
 
     return re
