@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 10 Feb 2014.
+" Last Change: 11 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -437,9 +437,9 @@ function! s:findMotion(num_strokes, direction) "{{{
     let re = s:convertRegep(input)
 
     if g:EasyMotion_add_search_history && a:num_strokes == -1
-        let re = substitute(re, '\\c\|\\C', '', '')
-        let @/ = re "For textobject: 'gn'
-        call histadd('search', re)
+        let history_re = substitute(re, '\\c\|\\C', '', '')
+        let @/ = history_re "For textobject: 'gn'
+        call histadd('search', history_re)
     endif
 
     return re
