@@ -796,7 +796,8 @@ function! s:PromptUser(groups) "{{{
     if len(group_values) == 1
         if mode(1) ==# 'no'
             " Consider jump to first match
-            let s:dot_repeat['target'] = g:EasyMotion_keys[0]
+            " NOTE: matchstr() handles multibyte characters.
+            let s:dot_repeat['target'] = matchstr(g:EasyMotion_keys, '^.')
         endif
         redraw
         return group_values[0]
@@ -924,7 +925,8 @@ function! s:PromptUser(groups) "{{{
         " Jump first target when Enter or Space key is pressed "{{{
         if (char ==# "\<CR>" && g:EasyMotion_enter_jump_first == 1) ||
         \  (char ==# " " && g:EasyMotion_space_jump_first == 1)
-            let char = g:EasyMotion_keys[0]
+            " NOTE: matchstr() is multibyte aware.
+            let char = matchstr(g:EasyMotion_keys, '^.')
         endif "}}}
 
         " For dot repeat {{{
