@@ -295,7 +295,7 @@ Repeat ~
             nmap <Leader>, <Plug>(easymotion-prev)
 <
         This feature is partly inspired by and based on vim-sneak. vim-sneak
-        can be downloaded here: https://github.com/justinmk/vim-sneak 
+        can be downloaded here: https://github.com/justinmk/vim-sneak
 
 EasyMotion dot repeat~
                                     *easymotion-dotrepeat* *easymotion-textobjct*
@@ -1045,23 +1045,23 @@ can be downloaded here:
 http://www.vim.org/scripts/script.php?script_id=3437
 
 Special Thanks for other plugins and the authors:~
-Migemo feature: 
+Migemo feature:
     - Author: rhysd(@Linda_pp)
     - https://github.com/rhysd/clever-f.vim
 Show uppercase feature:
     - Author: t9md
     - https://github.com/t9md/vim-smalls
-Find motion command line: 
+Find motion command line:
     - Author: osyo-manga
     - https://github.com/osyo-manga/vim-over
     - Library: https://github.com/osyo-manga/vital-over
 2-key find motion:
     - Authors: goldfeld & justinmk
     - https://github.com/goldfeld/vim-seek
-    - https://github.com/justinmk/vim-sneak 
+    - https://github.com/justinmk/vim-sneak
 Next/Previous motion:
     - Author: justinmk
-    - https://github.com/justinmk/vim-sneak 
+    - https://github.com/justinmk/vim-sneak
 Dot repeat feature:
     - Author: tpope
     - https://github.com/tpope/vim-repeat
