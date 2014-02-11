@@ -2,7 +2,7 @@
 " FILE: highlight.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/t9md/vim-smalls
-" Last Change: 07 Feb 2014.
+" Last Change: 11 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -102,14 +102,9 @@ function! EasyMotion#highlight#InitHL(group, colors) " {{{
 
     " Prepare highlighting variables
     let guihl = printf('guibg=%s guifg=%s gui=%s', a:colors.gui[0], a:colors.gui[1], a:colors.gui[2])
-    " FIXME: support CSApprox correctly
-    if !exists('g:CSApprox_loaded')
-        let ctermhl = &t_Co == 256
-            \ ? printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm256[0], a:colors.cterm256[1], a:colors.cterm256[2])
-            \ : printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm[0], a:colors.cterm[1], a:colors.cterm[2])
-    else
-        let ctermhl = ''
-    endif
+    let ctermhl = &t_Co == 256
+        \ ? printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm256[0], a:colors.cterm256[1], a:colors.cterm256[2])
+        \ : printf('ctermbg=%s ctermfg=%s cterm=%s', a:colors.cterm[0], a:colors.cterm[1], a:colors.cterm[2])
 
     " Create default highlighting group
     execute printf('hi default %s %s %s', group_default, guihl, ctermhl)
@@ -136,6 +131,7 @@ function! EasyMotion#highlight#init() "{{{
     call EasyMotion#highlight#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
     call EasyMotion#highlight#InitHL(g:EasyMotion_hl_move, s:target_hl_move)
     if exists(':CSApprox') == 2
+        "TODO: better solution or remove completly
         CSApprox!
     endif
 endfunction "}}}
