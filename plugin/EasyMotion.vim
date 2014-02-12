@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 06 Feb 2014.
+" Last Change: 12 Feb 2014.
 " == Script initialization {{{
 if expand("%:p") ==# expand("<sfile>:p")
   unlet! g:EasyMotion_loaded
@@ -42,6 +42,7 @@ let g:EasyMotion_cursor_highlight   = get(g: , 'EasyMotion_cursor_highlight'   ,
 let g:EasyMotion_use_regexp         = get(g: , 'EasyMotion_use_regexp'         , 1)
 let g:EasyMotion_add_search_history = get(g: , 'EasyMotion_add_search_history' , 1)
 let g:EasyMotion_off_screen_search  = get(g: , 'EasyMotion_off_screen_search'  , 1)
+let g:EasyMotion_force_csapprox      = get(g: , 'EasyMotion_force_csapprox'    , 0)
 let g:EasyMotion_show_prompt        = get(g: , 'EasyMotion_show_prompt'        , 1)
 let g:EasyMotion_prompt             =
     \ get(g: , 'EasyMotion_prompt' , 'Search for {n} character(s): ')
