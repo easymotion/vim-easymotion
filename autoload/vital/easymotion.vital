@@ -1,8 +1,16 @@
 easymotion
 39d8e9c
 
-Over.Commandline
+Over.Commandline.Base
+Over.Commandline.Modules.Cancel
+Over.Commandline.Modules.Execute
 Over.Commandline.Modules.BufferComplete
 Over.Commandline.Modules.Paste
 Over.Commandline.Modules.KeyMapping
 Over.Commandline.Modules.Doautocmd
+Over.Commandline.Modules.CursorMove
+Over.Commandline.Modules.Delete
+Over.Commandline.Modules.Redraw
+Over.Commandline.Modules.InsertRegister
+Over.Commandline.Modules.History
+Over.Commandline.Modules.NoInsert
