@@ -2,7 +2,7 @@
 " FILE: highlight.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/t9md/vim-smalls
-" Last Change: 11 Feb 2014.
+" Last Change: 12 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -130,7 +130,7 @@ function! EasyMotion#highlight#init() "{{{
     call EasyMotion#highlight#InitHL(g:EasyMotion_hl_inc_search, s:target_hl_inc)
     call EasyMotion#highlight#InitHL(g:EasyMotion_hl_inc_cursor, s:target_hl_inc_cursor)
     call EasyMotion#highlight#InitHL(g:EasyMotion_hl_move, s:target_hl_move)
-    if exists(':CSApprox') == 2
+    if exists(':CSApprox') == 2 && g:EasyMotion_force_csapprox
         "TODO: better solution or remove completly
         CSApprox!
     endif

@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:11 Feb 2014.
+*easymotion.txt*	Version 2.0  Last change:12 Feb 2014.
 
 
             ______                  __  ___       __  _
@@ -955,6 +955,15 @@ There are two ways to override the default colors:
           hi link EasyMotionTarget2First MatchParen
           hi link EasyMotionTarget2Second MatchParen
 <
+
+Use CSApprox                                        *EasyMotion_force_csapprox*
+                                                  *g:EasyMotion_force_csapprox*
+    if you install CSApprox & want to use gui color for EasyMotion, set this
+    option to 1.
+>
+    let g:EasyMotion_force_csapprox = 1
+<
+    Default: 0
 
 ------------------------------------------------------------------------------
 Custom mappings                                    *easymotion-custom-mappings*
