@@ -1369,14 +1369,13 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         endif "}}}
 
         " Highlight all the matches by n-key find motions {{{
-        if s:current.is_search == 1 && mode(1) !=# 'ce'
-            " FIXME: mode(1) !=# 'ce' exists only for the test
-            "        It seems let &hlsearch=&hlsearch doesn't work when called
-            "        in script.
+        if s:current.is_search == 1
+            " It seems let &hlsearch=&hlsearch doesn't work when called
+            " in script, so use :h feedkeys() instead.
+            " Ref: :h v:hlsearch
             call EasyMotion#helper#silent_feedkeys(
                                     \ ":let &hlsearch=&hlsearch\<CR>",
                                     \ 'hlsearch', 'n')
-            " Ref: :h v:hlsearch
         endif "}}}
 
         call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')

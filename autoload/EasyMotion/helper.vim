@@ -91,7 +91,12 @@ function! EasyMotion#helper#silent_feedkeys(expr, name, ...) "{{{
         let command = "nmap"
     endif
     execute command "<silent>" map printf("%s:nunmap %s<CR>", a:expr, map)
-    call feedkeys(printf("\<Plug>(%s)", name))
+    if mode(1) !=# 'ce'
+        " FIXME: mode(1) !=# 'ce' exists only for the test
+        "        :h feedkeys() doesn't work while runnning a test script
+        "        https://github.com/kana/vim-vspec/issues/27
+        call feedkeys(printf("\<Plug>(%s)", name))
+    endif
 endfunction "}}}
 
 " Migemo {{{
