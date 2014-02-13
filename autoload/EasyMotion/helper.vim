@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: autoload/EasyMotion/helper.vim
 " AUTHOR: haya14busa
-" Last Change: 06 Feb 2014.
+" Last Change: 13 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -78,6 +78,20 @@ function! EasyMotion#helper#should_case_sensitive(input, is_search) "{{{
         return 1
     endif
     return 0
+endfunction "}}}
+function! EasyMotion#helper#silent_feedkeys(expr, name, ...) "{{{
+    " Ref:
+    " https://github.com/osyo-manga/vim-over/blob/d51b028c29661d4a5f5b79438ad6d69266753711/autoload/over.vim#L6
+    let mode = get(a:, 1, "m")
+    let name = "easymotion-" . a:name
+    let map = printf("<Plug>(%s)", name)
+    if mode == "n"
+        let command = "nnoremap"
+    else
+        let command = "nmap"
+    endif
+    execute command "<silent>" map printf("%s:nunmap %s<CR>", a:expr, map)
+    call feedkeys(printf("\<Plug>(%s)", name))
 endfunction "}}}
 
 " Migemo {{{

@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 11 Feb 2014.
+" Last Change: 13 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -1366,6 +1366,17 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
             let s:dot_repeat.true_direction = true_direction " Check inclusive
             "}}}
             silent! call repeat#set("\<Plug>(easymotion-dotrepeat)")
+        endif "}}}
+
+        " Highlight all the matches by n-key find motions {{{
+        if s:current.is_search == 1 && mode(1) !=# 'ce'
+            " FIXME: mode(1) !=# 'ce' exists only for the test
+            "        It seems let &hlsearch=&hlsearch doesn't work when called
+            "        in script.
+            call EasyMotion#helper#silent_feedkeys(
+                                    \ ":let &hlsearch=&hlsearch\<CR>",
+                                    \ 'hlsearch', 'n')
+            " Ref: :h v:hlsearch
         endif "}}}
 
         call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
