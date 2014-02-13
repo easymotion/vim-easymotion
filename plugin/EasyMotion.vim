@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 12 Feb 2014.
+" Last Change: 13 Feb 2014.
 " == Script initialization {{{
 if expand("%:p") ==# expand("<sfile>:p")
   unlet! g:EasyMotion_loaded
@@ -261,13 +261,6 @@ xnoremap <silent><Plug>(easymotion-lineanywhere)
 "}}}
 "}}}
 
-" map <silent><expr><Plug>(easymotion-clever-s)
-"     \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-s)'
-" map <silent><expr><Plug>(easymotion-clever-s2)
-"     \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-s2)'
-" map <silent><expr><Plug>(easymotion-clever-sn)
-"     \ EasyMotion#is_active() ? '<Plug>(easymotion-next)' : '<Plug>(easymotion-sn)'
-
 noremap  <silent><Plug>(easymotion-activate) :<C-u>call EasyMotion#activate(0)<CR>
 xnoremap <silent><Plug>(easymotion-activate) :<C-u>call EasyMotion#activate(1)<CR>
 
@@ -285,8 +278,26 @@ if g:EasyMotion_do_mapping == 1
     endif
     "}}}
 
+    function! s:default_mapping(motions, do_mapping) "{{{
+        for [motion, fn] in items(a:motions)
+            " Mapping {{{
+            if exists('g:EasyMotion_mapping_' . motion)
+                " Backward compatible mapping [deprecated]
+                silent exec 'map <silent> ' .
+                    \ eval('g:EasyMotion_mapping_' . motion) . ' <Plug>(easymotion-' . motion . ')'
+            elseif a:do_mapping
+                    \ && !hasmapto('<Plug>(easymotion-' . motion . ')')
+                    \ && empty(maparg('<Plug>(easymotion-prefix)' . motion, 'nov'))
+
+                " Do mapping
+                silent exec 'map <silent> ' .
+                    \'<Plug>(easymotion-prefix)' . motion . ' <Plug>(easymotion-' . motion . ')'
+            endif "}}}
+        endfor
+    endfunction "}}}
+
     " Default Mapping:
-    call EasyMotion#init#InitMappings({
+    call s:default_mapping({
         \   'f' : { 'name': 'S'      , 'dir': 0 }
         \ , 'F' : { 'name': 'S'      , 'dir': 1 }
         \ , 's' : { 'name': 'S'      , 'dir': 2 }
