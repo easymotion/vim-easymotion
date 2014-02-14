@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 13 Feb 2014.
+" Last Change: 15 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -364,34 +364,21 @@ function! s:RestoreValue() "{{{
     call s:VarReset('&virtualedit')
     call s:VarReset('&foldmethod')
 endfunction "}}}
-function! s:turn_on_hl_error() "{{{
-    if exists("s:old_hl_error")
-        execute "highlight Error " . s:old_hl_error
-        unlet s:old_hl_error
-    endif
-endfunction "}}}
 function! s:turn_off_hl_error() "{{{
-    if exists("s:old_hl_error")
-        return s:old_hl_error
+    let s:error_hl = EasyMotion#highlight#capture('Error')
+    call EasyMotion#highlight#turn_off(s:error_hl)
+    let s:matchparen_hl = EasyMotion#highlight#capture('MatchParen')
+    call EasyMotion#highlight#turn_off(s:matchparen_hl)
+endfunction "}}}
+function! s:turn_on_hl_error() "{{{
+    if exists('s:error_hl')
+        call EasyMotion#highlight#turn_on(s:error_hl)
+        unlet s:error_hl
     endif
-    if hlexists("Error")
-        let save_verbose = &verbose
-        let &verbose = 0
-        try
-            redir => error
-            silent highlight Error
-            redir END
-        finally
-            let &verbose = save_verbose
-        endtry
-        " NOTE: do not match across newlines, to remove 'links to Foo'
-        " (https://github.com/Lokaltog/vim-easymotion/issues/95)
-        let hl = substitute(matchstr(error, 'xxx \zs[^\n]*'), '[ \t\n]\+\|cleared', ' ', 'g')
-        if !empty(substitute(hl, '\s', '', 'g'))
-            let s:old_hl_error = hl
-        endif
-        highlight Error NONE
-        return s:old_hl_error
+
+    if exists('s:matchparen_hl')
+        call EasyMotion#highlight#turn_on(s:matchparen_hl)
+        unlet s:matchparen_hl
     endif
 endfunction "}}}
 " -- Draw --------------------------------

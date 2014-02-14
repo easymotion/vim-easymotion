@@ -193,7 +193,50 @@ function! EasyMotion#highlight#add_color_group(new_groups) "{{{
     endfor
 endfunction "}}}
 
-
+function! EasyMotion#highlight#capture(hlname) "{{{
+    " Based On: https://github.com/t9md/vim-ezbar
+    "           https://github.com/osyo-manga/vital-over
+    let hlname = a:hlname
+    if !hlexists(hlname)
+        return
+    endif
+    while 1
+        let save_verbose = &verbose
+        let &verbose = 0
+        try
+            redir => HL_SAVE
+            execute 'silent! highlight ' . hlname
+            redir END
+        finally
+            let &verbose = save_verbose
+        endtry
+        if !empty(matchstr(HL_SAVE, 'xxx cleared$'))
+            return ''
+        endif
+        " follow highlight link
+        let ml = matchlist(HL_SAVE, 'links to \zs.*')
+        if !empty(ml)
+            let hlname = ml[0]
+            continue
+        endif
+        break
+    endwhile
+    let HL_SAVE = substitute(matchstr(HL_SAVE, 'xxx \zs.*'),
+                           \ '[ \t\n]\+', ' ', 'g')
+    return [hlname, HL_SAVE]
+endfunction "}}}
+function! EasyMotion#highlight#turn_off(hl) "{{{
+    if type(a:hl) != type([])
+        return
+    endif
+    execute 'highlight ' . a:hl[0] . ' NONE'
+endfunction "}}}
+function! EasyMotion#highlight#turn_on(hl) "{{{
+    if type(a:hl) != type([])
+        return
+    endif
+    execute 'highlight ' . a:hl[0] . ' ' . a:hl[1]
+endfunction "}}}
 
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
