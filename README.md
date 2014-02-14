@@ -9,20 +9,25 @@ About the authors
 - Kim Silkebækken (https://github.com/Lokaltog)
 - haya14busa (https://github.com/haya14busa) (since version 2.0)
 
-The EasyMotion project was revived!
+The EasyMotion project, revived!
 ======
 
-Since version 2.0 [haya14busa](https://github.com/haya14busa) took over the project from
-[Lokaltog](https://github.com/Lokaltog). He improved the default motions, implemented many new useful features,
-and fixed some bugs.
+Starting from version 2.0 [haya14busa](https://github.com/haya14busa) will be
+taking over the project from [Lokaltog](https://github.com/Lokaltog). He's
+improved the default motions, implemented many useful new features, and fixed
+some bugs.
 
 EasyMotion is now completely
 
-- **Well-behaved**: It's consistent with the default motions of Vim and works well in all modes. And it now suports dot repeat.
-- **Configurable**. You can easily configure its behavior and map it to any key you want.
+- **Well-behaved**: It's consistent with the default motions of Vim and works
+  well in all modes. And it now supports repeating with the dot operator.
+- **Configurable**. You can easily configure its behavior and map it to any key
+  you want.
 
-Even though some default behaviors where modified and many new features where added, I carefully considered backward compatibility, so you can easily update and enjoy significant benefit!
-
+Even though some default behaviors were modified and many new features were
+added, I carefully considered backward compatibility. So those of you updating
+from older versions can do so without worry and start benefitting immediately
+from all the new features!
 
 Introduction
 =====
@@ -36,10 +41,10 @@ When one of the available motions is triggered, all visible text
 preceding or following the cursor is faded, and motion targets are
 highlighted.
 
-EasyMotion is triggered by one of the provided mappings.
-
-See `:help easymotion.txt` for more detail!
-
+EasyMotion is triggered by the provided mappings. This readme only covers the
+basics; please refer to
+[`:help easymotion.txt`](https://github.com/Lokaltog/vim-easymotion/blob/master/doc/easymotion.txt#L86)
+to see all of the available mappings.
 
 Important notes
 =====
@@ -54,13 +59,13 @@ changed back to pre-1.3 behavior by rebinding the leader in your vimrc:
 map <Leader> <Plug>(easymotion-prefix)
 ```
 
-All motions are now triggered with `<Leader>` by default, e.g.
+All motions will then be triggered with `<Leader>` by default, e.g.
 `<Leader>s`, `<Leader>gE`.
 
 ### For users of the forked version
 
-SelectLines and SelectPhrase are not related to *motion*, so I've moved them out
-to seperate plugins.
+SelectLines and SelectPhrase are not actually *motions*, so I've moved them into
+separate plugins.
 
 - https://github.com/haya14busa/vim-easyoperator-line
 - https://github.com/haya14busa/vim-easyoperator-phrase
@@ -70,9 +75,9 @@ Usage example for the base features
 
 	<cursor>Lorem ipsum dolor sit amet.
 
-Type `<Leader><Leader>w`(`<Plug>(easymotion-w)`) to trigger the word motion `w`. When the motion is
-triggered, the text is updated (no braces are actually added, the text
-is highlighted in red by default):
+Type `<Leader><Leader>w`(`<Plug>(easymotion-w)`) to trigger the word motion `w`.
+When the motion is triggered, the text is updated (no braces are actually added,
+the text is highlighted in red by default):
 
 	<cursor>Lorem {a}psum {b}olor {c}it {d}met.
 
@@ -94,22 +99,26 @@ a tutorial](http://net.tutsplus.com/tutorials/other/vim-essential-plugin-easymot
 about EasyMotion.
 
 
-New features since 2.0
+New features in version 2.0
 ====
 
 ### Two key highlighting
 
-When EasyMotion runs out of single characters to highlight movement targets, it now tells you
-right away both keys you have press.
+When EasyMotion runs out of single characters to highlight movement targets, it
+now shows you immediately the keys you have to press.
 
-In previous versions you would see the same character repeated over and over again for distant
-movement targets. You first had to type this key before the highlighting changed to expose the
-next key you had to press.
+In previous versions you could not see the next character you would needed to
+press until you entered the first one. This made movement over long distances
+less fluid. Now you can see at a glance exactly which characters to select to
+get to your destination.
 
 ### Bidirectional motions
 
-All motions now come in a bidirectional variant (e.g. `<Plug>(easymotion-s)`, `<Plug>(easymotion-bd-w)` and so forth).
-By default you can already jump forward or backward with `<Leader>s`. A useful trick is to map `nmap s <Plug>(easymotion-s)` to use `s` instead and save one keystroke!
+All motions now come in a bidirectional variants (e.g. `<Plug>(easymotion-s)`,
+`<Plug>(easymotion-bd-w)` and so forth).
+By default you can already jump forward or backward with `<Leader>s`. A useful
+trick is to map `nmap s <Plug>(easymotion-s)` to use `s` instead and save one
+keystroke!
 
 ### 2-character search motion
 
@@ -146,14 +155,16 @@ map  N <Plug>(easymotion-prev)
 
 ### Within line motion
 
-Every motion can also be restricted to the current line (e.g. `<Plug>(easymotion-sl)`,
-`<Plug>(easymotion-bd-wl)`, etc...). These motions match only the current line.
+Every motion also has variants that are restricted to just the current line
+(e.g. `<Plug>(easymotion-sl)`, `<Plug>(easymotion-bd-wl)`, etc...). This can be
+helpful if you find the full search distracting or slows down vim.
 
 ### hjkl motions
 
-EasyMotion can be configured to avoid repetitive use of the `h` `j` `k` and `l`keys.
+EasyMotion can be configured to avoid repetitive use of the `h` `j` `k` and
+`l` keys.
 
-![hjkl-motoin](https://f.cloud.github.com/assets/3797062/2039413/d8b32ab2-89a0-11e3-894f-3e81db084cfd.gif)
+![hjkl-motion](https://f.cloud.github.com/assets/3797062/2039413/d8b32ab2-89a0-11e3-894f-3e81db084cfd.gif)
 
 ```vim
 " Gif config
@@ -167,13 +178,15 @@ let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
 
 ### Smartcase & Smartsign
 
-With this new setting EasyMotion works similar to Vim's smartcase option.
+This setting makes EasyMotion work similarly to Vim's `smartcase` option for
+global searches.
 
 ```vim
 let g:EasyMotion_smartcase = 1
 ```
 
-Type `v` to match `v` and `V`. Type `V` to match `V` only. Default: 0.
+With this option set, `v` will match both `v` and `V`, but `V` will match `V`
+only. Default: 0.
 
 ```vim
 let g:EasyMotion_use_smartsign_us = 1 " US layout
@@ -181,7 +194,8 @@ let g:EasyMotion_use_smartsign_us = 1 " US layout
 let g:EasyMotion_use_smartsign_jp = 1 " JP layout
 ```
 
-Type `1` to match `1` and `!`. Type `!` to match `!` only. Default: 0.
+This applies the same concept, but for symbols and numerals. `1` will match `1`
+and `!`; `!` matches `!` only. Default: 0.
 
 
 ### Migemo feature (for Japanese user)
@@ -191,11 +205,11 @@ let g:EasyMotion_use_migemo = 1
 ```
 
 
-Easymotion can match multibyte Japanese characters with a alphabet input.
+Easymotion can match multibyte Japanese characters with alphabetical input.
 For example, `<Leader><Leader>sa` can search 'あ'.
 This feature doesn't require cmigemo because Easymotion includes regex
-patterns generated by cmigemo. However if you installed `cmigemo`,
-2-character and n-character search motions also support the migemo feature.
+patterns generated by cmigemo. However installing `cmigemo` will make
+2-character and n-character search motions to also support the migemo feature.
 Default:0
 
 
@@ -212,15 +226,15 @@ input characters to find the last motion again.
 
 #### Jump to next/previous match (even on next/previous page)
 
-* `<Plug>(easymotion-next)` 
+* `<Plug>(easymotion-next)`
 * `<Plug>(easymotion-prev)`
 
 #### Support for dot repeat
 
 This requires https://github.com/tpope/vim-repeat.
 
-You can use EasyMotion in operator-pending and press `.` to repeat!
-It is well-behaved, consistent with default behavior of Vim.
+You can use EasyMotion with operators and press `.` to repeat!
+It is well-behaved, and consistent with the default behavior of Vim.
 
 ![repeat-motion](https://f.cloud.github.com/assets/3797062/2039538/0aef66aa-89a4-11e3-8242-c27a5208cfca.gif)
 
