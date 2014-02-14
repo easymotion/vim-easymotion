@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:12 Feb 2014.
+*easymotion.txt*	Version 2.0  Last change:14 Feb 2014.
 
 
             ______                  __  ___       __  _
@@ -378,32 +378,32 @@ Within line motion ~
                 is limited to the current cursor line.
 
 <Plug>(easymotion-tl)                                   *<Plug>(easymotion-tl)*
-                This function is same as |<Plug>(easymotion-t)|, except the range
-                is limited to the current cursor line.
+                This function is same as |<Plug>(easymotion-t)|, except the
+                range is limited to the current cursor line.
 
 <Plug>(easymotion-Tl)                                   *<Plug>(easymotion-Tl)*
-                This function is same as |<Plug>(easymotion-T)|, except the range
-                is limited to the current cursor line.
+                This function is same as |<Plug>(easymotion-T)|, except the
+                range is limited to the current cursor line.
 
 <Plug>(easymotion-bd-tl)                             *<Plug>(easymotion-bd-tl)*
                 This function is same as |<Plug>(easymotion-bd-t)|, except the
                 range is limited to the current cursor line.
 
 <Plug>(easymotion-wl)                                   *<Plug>(easymotion-wl)*
-                This function is same as |<Plug>(easymotion-w)|, except the range
-                is limited to the current cursor line.
+                This function is same as |<Plug>(easymotion-w)|, except the
+                range is limited to the current cursor line.
 
 <Plug>(easymotion-bl)                                   *<Plug>(easymotion-bl)*
-                This function is same as |<Plug>(easymotion-b)|, except the range
-                is limited to the current cursor line.
+                This function is same as |<Plug>(easymotion-b)|, except the
+                range is limited to the current cursor line.
 
 <Plug>(easymotion-bd-wl)                             *<Plug>(easymotion-bd-wl)*
                 This function is same as |<Plug>(easymotion-bd-w)|, except the
                 range is limited to the current cursor line.
 
 <Plug>(easymotion-el)                                   *<Plug>(easymotion-el)*
-                This function is same as |<Plug>(easymotion-e)|, except the range
-                is limited to the current cursor line.
+                This function is same as |<Plug>(easymotion-e)|, except the
+                range is limited to the current cursor line.
 
 <Plug>(easymotion-gel)                                 *<Plug>(easymotion-gel)*
                 This function is same as |<Plug>(easymotion-ge)|, except the
@@ -879,7 +879,7 @@ Customize highlight behavior                             *EasyMotion_highlight*
     this feature, set this option to 0.
 >
     let g:EasyMotion_move_highlight = 0
-
+<
     Default: 1
 
                                                *g:EasyMotion_landing_highlight*
@@ -897,7 +897,9 @@ EasyMotion_add_search_history                 *g:EasyMotion_add_search_history*
     If you set this option to 1, the 'n' key find motion will add the
     inputted pattern to vim default search history.
 >
-    let g:EasyMotion_add_search_history = 1 < Default: 0
+    let g:EasyMotion_add_search_history = 1 
+< 
+    Default: 0
 
 EasyMotion_off_screen_search                   *g:EasyMotion_off_screen_search*
 
