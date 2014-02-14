@@ -274,20 +274,19 @@ Repeat ~
         Nothing will happen when previous motion doesn't exist.
 
         Last Find Motion~
-            In Find motion (e.g. |<Plug>(easymotion-s)| ), to type `<CR>`
-            without input characters invoke last find motion. This
-            does not repeat motion type (e.g. Other word motion,
-            <Plug>(easymotion-j) etc...) but only repeat input
-            characters.
+            With a Find motion (e.g. |<Plug>(easymotion-s)| ), type `<CR>`
+            without input characters to invoke the last find motion. This does
+            not repeat the motion type (e.g. other word motion,
+            <Plug>(easymotion-j) etc...) only input characters.
 
 <Plug>(easymotion-next)                               *<Plug>(easymotion-next)*
 <Plug>(easymotion-prev)                               *<Plug>(easymotion-prev)*
 
-        Jump to next/previous much. Only this motion can be move to off-screen
-        match. This motion wrap around the end of the file if you set
-        |'wrapscan'| in your vimrc. During this motion, matched text is
-        highlighted. If you don't want to highlight them, set
-        |g:EasyMotion_move_highlight| option to 0.
+        Jump to next/previous match. This is the only motion that can move to
+        off-screen locations. With set |'wrapscan'| enabled, this motion will
+        also wrap around the end of the file. During this motion, matched
+        text is highlighted. If you don't want highlighting, set
+        |g:EasyMotion_move_highlight| to 0.
 
         Example:
 >
@@ -303,7 +302,7 @@ EasyMotion dot repeat~
         This feature requires tpope/vim-repeat
         https://github.com/tpope/vim-repeat
 
-        All motion type support '.' repeat.
+        All motions support '.' repeat.
 
         Example:
 >
@@ -320,7 +319,7 @@ EasyMotion dot repeat~
 >
         {cursor}*t*, consectetur adipisicing eli*t,* sed do eiusmod tempor
 <
-        just type '`.`'
+        from here type '`.`' and you get:
 >
         *t,* sed do eiusmod tempor
 <
@@ -331,12 +330,12 @@ JK Motion ~
 JK motion option                    *<Plug>(easymotion-j)* *<Plug>(easymotion-k)*
                                                     *g:EasyMotion_startofline*
 
-        When using the |j| or |k| motion, the cursor can be configured to stay in
-        the current column instead of start of line by setting this option to
-        0.  If you want to use both keep cursor colum JK motion and start of
-        line JK motion, set g:EasyMotion_startofline to 0 to keep cursor
-        colum JK motion and map |<Plug>(easymotion-sol-j)| &
-        |<Plug>(easymotion-sol-k)| to use start of line JK motion.
+        The default behavior of the |j| and |k| is to move your cursor to the
+        start of the line. Set this option to 0 to force the cursor to stay in
+        the same column If you want to use both movements as separate
+        mappings, set |'g:EasyMotion_startofline'| to 0 and map
+        |<Plug>(easymotion-sol-j)| & |<Plug>(easymotion-sol-k)| to the start
+        of line mapping:
 >
         let g:EasyMotion_startofline = 0 # keep cursor colum JK motion
         map <Leader>J <Plug>(easymotion-sol-j)
@@ -347,7 +346,7 @@ Default: 1
 Start of Line JK motion     *<Plug>(easymotion-sol-j)* *<Plug>(easymotion-sol-k)*
                                                  *<Plug>(easymotion-sol-bd-jk)*
 
-        Match start of line JK motion
+        Start of line J/K motion
         Example:
 >
         map <Leader>J <Plug>(easymotion-sol-j)
@@ -356,7 +355,7 @@ Start of Line JK motion     *<Plug>(easymotion-sol-j)* *<Plug>(easymotion-sol-k)
 End of Line JK motion       *<Plug>(easymotion-eol-j)* *<Plug>(easymotion-eol-k)*
                                                  *<Plug>(easymotion-eol-bd-jk)*
 
-        Match End of line JK motion
+        End of line J/K motion
         Example:
 >
         map <Leader>J <Plug>(easymotion-eol-j)
@@ -367,68 +366,69 @@ Within line motion ~
 
 <Plug>(easymotion-sl)                                   *<Plug>(easymotion-sl)*
                                                      *<Plug>(easymotion-bd-fl)*
-                This function is same as |<Plug>(easymotion-s)|, except range
-                is within current cursor line.
+                This function is same as |<Plug>(easymotion-s)|, except the range
+                is limited to the current cursor line.
 
 <Plug>(easymotion-fl)                                   *<Plug>(easymotion-fl)*
-                This function is same as |<Plug>(easymotion-f)|, except range
-                is within current cursor line.
+                This function is same as |<Plug>(easymotion-f)|, except the range
+                is limited to the current cursor line.
 
 <Plug>(easymotion-Fl)                                   *<Plug>(easymotion-Fl)*
-                This function is same as |<Plug>(easymotion-F)|, except range
-                is within current cursor line.
+                This function is same as |<Plug>(easymotion-F)|, except the range
+                is limited to the current cursor line.
 
 <Plug>(easymotion-tl)                                   *<Plug>(easymotion-tl)*
-                This function is same as |<Plug>(easymotion-t)|, except range
-                is within current cursor line.
+                This function is same as |<Plug>(easymotion-t)|, except the range
+                is limited to the current cursor line.
 
 <Plug>(easymotion-Tl)                                   *<Plug>(easymotion-Tl)*
-                This function is same as |<Plug>(easymotion-T)|, except range
-                is within current cursor line.
+                This function is same as |<Plug>(easymotion-T)|, except the range
+                is limited to the current cursor line.
 
 <Plug>(easymotion-bd-tl)                             *<Plug>(easymotion-bd-tl)*
-                This function is same as |<Plug>(easymotion-bd-t)|, except range
-                is within current cursor line.
+                This function is same as |<Plug>(easymotion-bd-t)|, except the
+                range is limited to the current cursor line.
 
 <Plug>(easymotion-wl)                                   *<Plug>(easymotion-wl)*
-                This function is same as |<Plug>(easymotion-w)|, except range
-                is within current cursor line.
+                This function is same as |<Plug>(easymotion-w)|, except the range
+                is limited to the current cursor line.
 
 <Plug>(easymotion-bl)                                   *<Plug>(easymotion-bl)*
-                This function is same as |<Plug>(easymotion-b)|, except range
-                is within current cursor line.
+                This function is same as |<Plug>(easymotion-b)|, except the range
+                is limited to the current cursor line.
 
 <Plug>(easymotion-bd-wl)                             *<Plug>(easymotion-bd-wl)*
-                This function is same as |<Plug>(easymotion-bd-w)|, except range
-                is within current cursor line.
+                This function is same as |<Plug>(easymotion-bd-w)|, except the
+                range is limited to the current cursor line.
 
 <Plug>(easymotion-el)                                   *<Plug>(easymotion-el)*
-                This function is same as |<Plug>(easymotion-e)|, except range
-                is within current cursor line.
+                This function is same as |<Plug>(easymotion-e)|, except the range
+                is limited to the current cursor line.
 
 <Plug>(easymotion-gel)                                 *<Plug>(easymotion-gel)*
-                This function is same as |<Plug>(easymotion-ge)|, except range
-                is within current cursor line.
+                This function is same as |<Plug>(easymotion-ge)|, except the
+                range is limited to the current cursor line.
 
 <Plug>(easymotion-bd-el)                             *<Plug>(easymotion-bd-el)*
-                This function is same as |<Plug>(easymotion-bd-e)|, except range
-                is within current cursor line.
+                This function is same as |<Plug>(easymotion-bd-e)|, except the
+                range is limited to the current cursor line.
 
 <Plug>(easymotion-lineforward)                 *<Plug>(easymotion-lineforward)*
-                This function is a little same as
-                |<Plug>(easymotion-jumptoanywhere)|, except range is within
-                current cursor line and direction is forward.
+                This function is similar to
+                |<Plug>(easymotion-jumptoanywhere)|, except the range is
+                limited to the current cursor line in the forward direction.
 
 <Plug>(easymotion-linebackward)               *<Plug>(easymotion-linebackward)*
-                This function is a little same as
-                |<Plug>(easymotion-jumptoanywhere)|, except range is within
-                current cursor line and direction is backward.
+                This function is similar to
+                |<Plug>(easymotion-jumptoanywhere)|, except the range is
+                limited to the current cursor line in the backward direction.
 
 <Plug>(easymotion-lineanywhere)               *<Plug>(easymotion-lineanywhere)*
                 This function is same as |<Plug>(easymotion-jumptoanywhere)|,
-                except range is within current cursor line.(bidirectional)
+                but limited to within the current cursor line.
 
-                You can customize the behavior of this function by vimrc.
+                You can customize the behavior of this function in your
+                vimrc.
 
     |g:EasyMotion_re_line_anywhere|:             *g:EasyMotion_re_line_anywhere*
 
@@ -466,25 +466,27 @@ Example:
     xmap <Leader>s <Plug>(easymotion-sn)
     omap <Leader>z <Plug>(easymotion-sn)
 <
-If you like typing two or above characters as target similar to vim-smalls or
-vim-seek/vim-sneak, |EasyMotion| also provide this feature. With above
+If you like typing two or more characters as targets, similar to vim-smalls
+or vim-seek/vim-sneak, |EasyMotion| also provide this feature. With the above
 keymapping,
 
     Invoke EasyMotion by two character:
 
     s{char}{char} (Type s{char}<CR> to use just one {char} is also allowed)
 
-    And you can use as much target char as you like:
+    And you can use as many target characters as you like:
 
     <Leader>s{char}{char}{char}...<CR>
 
     You can use <C-h> to delete while typing.
 
-    Note: 'n' key motion provide incremental highlighting feature. If you
-          don't want to highlight incrementally, set
-          |g:EasyMotion_inc_highlight| option to 0.
+    Note: the 'n' key motion provides incremental highlighting. If you don't
+          want to highlight incrementally, set |g:EasyMotion_inc_highlight|
+          to 0.
 
-All Find motion (s,f,F,t,T,sl,fl,Fl,tl,Tl) support this feature!
+    let g:EasyMotion_inc_highlight = 0
+
+All Find motions (s,f,F,t,T,sl,fl,Fl,tl,Tl, see below) support this feature!
 (|l| means within line motion)
 
     *<Plug>(easymotion-sn)* *<Plug>(easymotion-fn)* *<Plug>(easymotion-Fn)*
@@ -500,21 +502,21 @@ All Find motion (s,f,F,t,T,sl,fl,Fl,tl,Tl) support this feature!
 
 Find Motion Command Line~
                                                       *easymotion-command-line*
-    EasyMotion has own command line for find motions, especially for 'n' key
-    motion(e.g. |<Plug>(easymotoin-sn)|). This command line is inspired by
-    over.vim and actually uses the library of over.vim command line.
-    over.vim can be downloaded here:
+    EasyMotion has own command line for find motions, especially for
+    'n' key motion(e.g. |<Plug>(easymotion-sn)|). This command is inspired
+    by over.vim and actually uses over.vim's library. over.vim can be
+    downloaded here:
 
         https://github.com/osyo-manga/vim-over
 
         Library: https://github.com/osyo-manga/vital-over
 
-    Note: These settings are experimental. They could be changed in the near
+    Note: These settings are experimental. They may be changed in the near
     future.
 
     Default Command Line Mappings~
-    Most default mappings work same as default command line mapping of Vim.
-    See |cmdline.txt|
+    Most default mappings work the same as the default command line mappings
+    of Vim. See |cmdline.txt|
 
     Key Mappings            | Details
     ----------------------- |----------------------------------------------
@@ -550,9 +552,9 @@ Find Motion Command Line~
     Customize Command Line Mappings~
                                                          *EMCommandLineNoreMap*
 
-    You can use |EMCommandLineNoreMap| (like |cnoremap|) to customize find motion
-    command line key mappings by vimrc. This mapping is always no recursive
-    mapping, so you should map to not <Tab> but |<Over>(em-scroll-f)|.
+    You can use |EMCommandLineNoreMap| (like |cnoremap|) to customize find
+    motion command line key mappings in your vimrc. This mapping is always
+    nonrecursive, so you should map to |<Over>(em-scroll-f)| and not <Tab>.
 
     Example:
 >
@@ -569,12 +571,13 @@ Find Motion Command Line~
                                                              *EMCommandLineMap*
                                                            *EMCommandLineUnMap*
     EasyMotion also provide |EMCommandLineMap| (like |cmap|) and
-    |EMCommandLineUnMap| (like |cunmap|) command, but probably you don't need
-    these command because there is no case it require recursive mappings.
+    |EMCommandLineUnMap| (like |cunmap|), but you probably don't need
+    these commands because there is no case where it should require
+    recursive mappings.
 
-    Note(again): These settings, especially about keymappings are
-    __EXPERIMENTAL__. They could be changed in the near future. However, it
-    works well and so useful, so I release it.
+    Note(again): These settings, especially the keymappings are
+    __EXPERIMENTAL__. They could be changed in the near future. However, they
+    work well and are very useful, so I've released them anyway for now.
 
 ------------------------------------------------------------------------------
 2.3 Special mappings                              *easymotion-special-mappings*
@@ -593,7 +596,7 @@ Default: 0
     {operator}<Leader>p  | Select, yank, paste, delete, or other operation of
                          | phrase. See |<Plug>(easymotion-special-p)|.
 
-or you can map them by yourself
+or you can map them yourself
 
     <Plug> Mapping Table         | Details
     -----------------------------|--------------------------------------
@@ -607,15 +610,15 @@ See |easymotion-leader-key| and |mapleader| for details about the leader key.
 Requirements                                          *easymotion-requirements*
 
 EasyMotion needs at least vim 7.3 to run without problems.
-Active development and testing is done with vim 7.4 since the 2.0 release of
-EasyMotion.
+Active development and testing is done with vim 7.4 starting from the 2.0
+release of EasyMotion.
 
 Vi-compatible mode must be disabled.
 
-If there are any problems due to the vim version you use, feel free to open
-an issue on github!
+If your vim version is causing you problems with using this plugin, feel free
+to open an issue on github!
 
-https://github.com/Lokaltog/vim-easymotion/issues
+Link: https://github.com/Lokaltog/vim-easymotion/issues
 
 ==============================================================================
 Configuration                                        *easymotion-configuration*
@@ -633,13 +636,14 @@ Example (this will change the target keys and disable shading): >
 EasyMotion_keys                                               *EasyMotion_keys*
                                                             *g:EasyMotion_keys*
 
-Set the keys which will be used for motion targets. Add as many keys as you
-want. There's a lower chance that the motion targets will be grouped if many
-keys are available. However, the most people are easier to type 2 keys than
-press shift and EasyMotion shows two labels at the same time, so it's maybe
-better to remove the keys which is hard to type. EasyMotion uses the last keys
-as a first of grouped targets if there are a lot of targets, so I recommend to
-set keys which is easier to type as last keys(like `f`,`j`,`;`).
+Set the keys to be used for motion targets. You can have as many (or few)
+keys as you want. It's recommended to add as many keys as you are comfortable
+typing, because here's a lower chance that the motion targets will be grouped
+if many keys are available. However, this has its limits; most people find it
+easier to type 2 lowercase keys than to chord a key with shift, so you may
+want to leave out keys that are harder to type, like capital letters.
+EasyMotion also uses the last keys to group targets, so it's recommended to
+set the last keys to ones that are easier to type, like `f`,`j`,`;`, etc.
 
 Default: 'asdghklqwertyuiopzxcvbnmfj;'
 
@@ -660,8 +664,9 @@ EasyMotion_do_shade                                       *EasyMotion_do_shade*
                                                         *g:EasyMotion_do_shade*
 
 The default behavior is to shade the text following the cursor (forward
-motions) or preceding the cursor (backward motions) to make the motion targets
-more visible. Set this option to 0 if you want to disable text shading.
+motions), preceding the cursor (backward motions), or on either side of the
+cursor (bidirectional motions) to make the motion targets more visible. Set
+this option to 0 if you want to disable text shading.
 
 Default: 1
 
@@ -742,8 +747,8 @@ Smartsign                                                *EasyMotion_smartsign*
 Matching signs target keys by smartcase like. E.g. type '1' and it matches
 both '1' and '!' in Find motion.
 
-This feature is depend on keyboard layout, so you must choose which keyboard
-layout you use.
+This feature depends on your keyboard layout, so you must choose which
+keyboard layout you use.
 
 How to discriminate:
     Shift-2 = @ -> US layout
@@ -763,14 +768,14 @@ Default: 0
 Migemo                                                  *EasyMotion_use_migemo*
                                                       *g:EasyMotion_use_migemo*
 
-|Easymotion| can match multibyte Japanese character with a alphabet input.
-For example, '<Leader><Leader>fa' can search 'あ'.
-This feature doesn't require |cmigemo| because |Easymotion| includes regex
-patterns generated by cmigemo.
+|Easymotion| can match multibyte Japanese character with alphabetical input.
+For example, '<Leader><Leader>fa' can search 'あ'. This feature doesn't
+require |cmigemo| because |Easymotion| already includes basic regex patterns
+generated by cmigemo.
 
-Please see http://0xcc.net/migemo/ if you want to know more about migemo.
+See http://0xcc.net/migemo/ if you want to know more about migemo.
 
-Add following description in your vimrc: >
+Add following line to your vimrc to enable this option: >
 
     let g:EasyMotion_use_migemo = 1
 
@@ -785,10 +790,11 @@ https://github.com/rhysd/clever-f.vim
 Show target key by upper letter                          *EasyMotion_use_upper*
                                                        *g:EasyMotion_use_upper*
 
-|Easymotion| shows target labels by uppercase letter, but you can type it as
-lowercase and Easymotion automatically convert it uppercase.
+With this option enabled, |Easymotion| will shows target labels with
+uppercase letters, but allow you to type it in lowercase and have Easymotion
+automatically convert it uppercase.
 
-This feature improve targets readability.
+This feature improve targets' readability.
 
 Example: >
 
@@ -802,7 +808,7 @@ Press "c" (<- lowercase!) to jump to the beginning of the word "sit": >
 
     Lorem ipsum dolor <cursor>sit amet.
 
-Add following description in your vimrc: >
+Add following description in your vimrc to enable this: >
 
     let g:EasyMotion_use_upper = 1
     let g:EasyMotion_keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ;'
@@ -837,9 +843,9 @@ Default: 0
 Customize command line prompt                               *EasyMotion_prompt*
                                                           *g:EasyMotion_prompt*
 
-    You can customize command line prompt message in find motion.
-    `{n}` is how many characters you type, and if {n} == 1 `(s)` will be
-    ignored.
+    Use this command to customize the command line prompt message in find
+    motion. `{n}` is how many characters you type, and if {n} == 1 `(s)` will
+    be ignored.
 
 Sample:
 >
@@ -857,30 +863,30 @@ Default:
 Customize highlight behavior                             *EasyMotion_highlight*
                                                    *g:EasyMotion_inc_highlight*
 
-    While 'n' key find motion(e.g. |<Plug>(easymotion-sn)|), EasyMotion
-    incrementally highlight matched text. If you don't want to this feature,
-    set this option to 0
+    Using the 'n' key find motion (e.g. |<Plug>(easymotion-sn)|), EasyMotion
+    by default incrementally highlights matched text. If you don't want this
+    feature, set this option to 0
 >
     let g:EasyMotion_inc_highlight = 0
-<
+
     Default: 1
 
                                                   *g:EasyMotion_move_highlight*
 
-    While moving motion(|<Plug>(easymotion-next)|, |<Plug>(easymotion-prev)|),
-    EasyMotion highlight matched text until cursor move, entering insert
-    mode, or leaving buffer. If you don't want this feature, set this option
-    to 0.
+    By default, when using |<Plug>(easymotion-next)| and/or
+    |<Plug>(easymotion-prev)|, EasyMotion highlights matched text until the
+    cursor moves, enters insert mode, or leaves the buffer. If you don't want
+    this feature, set this option to 0.
 >
     let g:EasyMotion_move_highlight = 0
-<
+
     Default: 1
 
                                                *g:EasyMotion_landing_highlight*
 
-    If you want to highlight matched text temporarily (unhighlight timing
-    is same with |g:EasyMotion_move_highlight|) after EasyMotion
-    jump(landing), set this option to 0.
+    If you want to keep highlights temporarily after EasyMotion
+    jumps to a destination (with timing set to
+    |g:EasyMotion_move_highlight|), set this option to 0.
 >
     let g:EasyMotion_landing_highlight = 1
 <
@@ -888,17 +894,15 @@ Customize highlight behavior                             *EasyMotion_highlight*
 
 EasyMotion_add_search_history                 *g:EasyMotion_add_search_history*
 
-    If you set this option to 1, 'n' key find motion add inputed pattern to
-    vim default search history.
+    If you set this option to 1, the 'n' key find motion will add the
+    inputted pattern to vim default search history.
 >
-    let g:EasyMotion_add_search_history = 1
-<
-    Default: 0
+    let g:EasyMotion_add_search_history = 1 < Default: 0
 
 EasyMotion_off_screen_search                   *g:EasyMotion_off_screen_search*
 
-    If you set this option to 1, 'n' key find motion could search patterns
-    even in off-screen range.
+    If you set this option to 1, the 'n' key find motion will search patterns
+    even outside of the current screen range.
 >
     let g:EasyMotion_off_screen_search = 1
 <
