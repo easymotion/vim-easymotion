@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 15 Feb 2014.
+" Last Change: 16 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -1356,10 +1356,11 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         endif "}}}
 
         " Highlight all the matches by n-key find motions {{{
-        if s:current.is_search == 1
+        if s:current.is_search == 1 && s:current.is_operator == 0
             " It seems let &hlsearch=&hlsearch doesn't work when called
             " in script, so use :h feedkeys() instead.
             " Ref: :h v:hlsearch
+            " FIXME: doesn't work with `c` operator
             call EasyMotion#helper#silent_feedkeys(
                                     \ ":let &hlsearch=&hlsearch\<CR>",
                                     \ 'hlsearch', 'n')
