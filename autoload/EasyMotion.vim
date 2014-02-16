@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 16 Feb 2014.
+" Last Change: 21 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -325,44 +325,25 @@ function! s:Prompt(message) " {{{
     echohl None
 endfunction " }}}
 " -- Save & Restore values ---------------
-function! s:VarReset(var, ...) " {{{
-    if ! exists('s:var_reset')
-        let s:var_reset = {}
-    endif
-
-    if a:0 == 0 && has_key(s:var_reset, a:var)
-        " Reset var to original value
-        " setbufbar( or bufname): '' or '%' can be used for the current buffer
-        call setbufvar("", a:var, s:var_reset[a:var])
-    elseif a:0 == 1
-        " Save original value and set new var value
-
-        let new_value = a:0 == 1 ? a:1 : ''
-
-        " Store original value
-        let s:var_reset[a:var] = getbufvar("", a:var)
-
-        " Set new var value
-        call setbufvar("", a:var, new_value)
-    endif
-endfunction " }}}
 function! s:SaveValue() "{{{
-    call s:VarReset('&scrolloff', 0)
-    call s:VarReset('&modified', 0)
-    call s:VarReset('&modifiable', 1)
-    call s:VarReset('&readonly', 0)
-    call s:VarReset('&spell', 0)
-    call s:VarReset('&virtualedit', '')
-    call s:VarReset('&foldmethod', 'manual')
+    if ! s:current.is_search
+        call EasyMotion#helper#VarReset('&scrolloff', 0)
+    endif
+    call EasyMotion#helper#VarReset('&modified', 0)
+    call EasyMotion#helper#VarReset('&modifiable', 1)
+    call EasyMotion#helper#VarReset('&readonly', 0)
+    call EasyMotion#helper#VarReset('&spell', 0)
+    call EasyMotion#helper#VarReset('&virtualedit', '')
+    call EasyMotion#helper#VarReset('&foldmethod', 'manual')
 endfunction "}}}
 function! s:RestoreValue() "{{{
-    call s:VarReset('&scrolloff')
-    call s:VarReset('&modified')
-    call s:VarReset('&modifiable')
-    call s:VarReset('&readonly')
-    call s:VarReset('&spell')
-    call s:VarReset('&virtualedit')
-    call s:VarReset('&foldmethod')
+    call EasyMotion#helper#VarReset('&scrolloff')
+    call EasyMotion#helper#VarReset('&modified')
+    call EasyMotion#helper#VarReset('&modifiable')
+    call EasyMotion#helper#VarReset('&readonly')
+    call EasyMotion#helper#VarReset('&spell')
+    call EasyMotion#helper#VarReset('&virtualedit')
+    call EasyMotion#helper#VarReset('&foldmethod')
 endfunction "}}}
 function! s:turn_off_hl_error() "{{{
     let s:error_hl = EasyMotion#highlight#capture('Error')

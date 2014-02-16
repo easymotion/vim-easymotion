@@ -2,7 +2,7 @@
 " FILE: autoload/EasyMotion/command_line.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/osyo-manga/vim-over
-" Last Change: 09 Feb 2014.
+" Last Change: 16 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -124,6 +124,7 @@ endfunction
 function! s:search.on_enter(cmdline) "{{{
     if s:num_strokes == -1
         call EasyMotion#highlight#delete_highlight()
+        call EasyMotion#helper#VarReset('&scrolloff', 0)
         if g:EasyMotion_do_shade
             call EasyMotion#highlight#add_highlight('\_.*',
                                                 \ g:EasyMotion_hl_group_shade)
@@ -133,7 +134,9 @@ function! s:search.on_enter(cmdline) "{{{
     endif
 endfunction "}}}
 function! s:search.on_leave(cmdline) "{{{
-    call EasyMotion#highlight#delete_highlight(g:EasyMotion_hl_inc_search)
+    if s:num_strokes == -1
+        call EasyMotion#highlight#delete_highlight(g:EasyMotion_hl_inc_search)
+    endif
 endfunction "}}}
 function! s:search.on_char(cmdline) "{{{
     if s:num_strokes == -1
@@ -185,6 +188,7 @@ endfunction "}}}
 " Helper:
 function! s:Cancell() " {{{
     call EasyMotion#highlight#delete_highlight()
+    call EasyMotion#helper#VarReset('&scrolloff')
     keepjumps call setpos('.', s:save_orig_pos)
     echo 'EasyMotion: Cancelled'
     return ''

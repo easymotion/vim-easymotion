@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: autoload/EasyMotion/helper.vim
 " AUTHOR: haya14busa
-" Last Change: 13 Feb 2014.
+" Last Change: 16 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -96,6 +96,27 @@ function! EasyMotion#helper#silent_feedkeys(expr, name, ...) "{{{
         "        :h feedkeys() doesn't work while runnning a test script
         "        https://github.com/kana/vim-vspec/issues/27
         call feedkeys(printf("\<Plug>(%s)", name))
+    endif
+endfunction "}}}
+function! EasyMotion#helper#VarReset(var, ...) "{{{
+    if ! exists('s:var_reset')
+        let s:var_reset = {}
+    endif
+
+    if a:0 == 0 && has_key(s:var_reset, a:var)
+        " Reset var to original value
+        " setbufbar( or bufname): '' or '%' can be used for the current buffer
+        call setbufvar("", a:var, s:var_reset[a:var])
+    elseif a:0 == 1
+        " Save original value and set new var value
+
+        let new_value = a:0 == 1 ? a:1 : ''
+
+        " Store original value
+        let s:var_reset[a:var] = getbufvar("", a:var)
+
+        " Set new var value
+        call setbufvar("", a:var, new_value)
     endif
 endfunction "}}}
 
