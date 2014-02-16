@@ -2,7 +2,7 @@
 " FILE: autoload/EasyMotion/command_line.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/osyo-manga/vim-over
-" Last Change: 09 Feb 2014.
+" Last Change: 16 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -31,20 +31,25 @@ set cpo&vim
 " }}}
 
 " CommandLine:
-let s:cmdline = vital#of("easymotion").import("Over.Commandline")
-let s:search = s:cmdline.make_plain("/")
-let s:search.highlights.prompt = "Question"
+let s:V = vital#of('easymotion')
+let s:cmdline = s:V.import('Over.Commandline.Base')
+let s:modules = s:V.import("Over.Commandline.Modules")
+let s:search = s:cmdline.make()
+let s:search.highlights.prompt = 'Question'
 
 " Add Module: {{{
+call s:search.connect(s:modules.get("Execute").make_no_execute())
+call s:search.connect('Cancel')
+call s:search.connect('Redraw')
 call s:search.connect('Delete')
 call s:search.connect('CursorMove')
 call s:search.connect('Paste')
 call s:search.connect('BufferComplete')
 call s:search.connect('InsertRegister')
-call s:search.connect(s:cmdline.get_module('History').make('/'))
-call s:search.connect(s:cmdline.get_module('NoInsert').make_special_chars())
-call s:search.connect(s:cmdline.get_module('KeyMapping').make_emacs())
-call s:search.connect(s:cmdline.get_module('Doautocmd').make('EMCommandLine'))
+call s:search.connect(s:modules.get('History').make('/'))
+call s:search.connect(s:modules.get('NoInsert').make_special_chars())
+call s:search.connect(s:modules.get('KeyMapping').make_emacs())
+call s:search.connect(s:modules.get('Doautocmd').make('EMCommandLine'))
 
 let s:module = {
 \   "name" : "EasyMotion",
@@ -154,6 +159,7 @@ function! s:search.on_char(cmdline) "{{{
         call s:search.exit()
     endif
 endfunction "}}}
+"}}}
 
 " Main:
 function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{

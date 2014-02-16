@@ -3,26 +3,11 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
-let s:modules = [
-\	"Scroll",
-\	"CursorMove",
-\	"Delete",
-\	"HistAdd",
-\	"History",
-\	"Cancel",
-\	"Enter",
-\	"NoInsert",
-\	"InsertRegister",
-\]
-
-
 function! s:_vital_loaded(V)
 	let s:V = a:V
-	for module in s:modules
-		let s:{module} = s:V.import('Over.Commandline.Modules.' . module)
-	endfor
 	let s:String  = s:V.import("Over.String")
 	let s:Signals = s:V.import("Over.Signals")
+	let s:Module = s:V.import("Over.Commandline.Modules")
 	let s:base.variables.modules = s:Signals.make()
 	function! s:base.variables.modules.get_slot(val)
 		return a:val.slot.module
@@ -34,43 +19,22 @@ function! s:_vital_depends()
 	return [
 \		"Over.String",
 \		"Over.Signals",
-\	] + map(copy(s:modules), "'Over.Commandline.Modules.' . v:val")
+\		"Over.Commandline.Modules",
+\	]
 endfunction
 
 
-function! s:get_module(name)
-	if exists("s:" . a:name)
-		return s:{a:name}
-	endif
-	let s:{a:name} = s:V.import('Over.Commandline.Modules.' . a:name)
-	return s:{a:name}
-endfunction
-
-
-function! s:make_plain(prompt)
-	let result = s:make(a:prompt)
-	let result.prompt = a:prompt
-	call result.connect("Enter")
-	call result.connect("Cancel")
+function! s:make(...)
+	let prompt = get(a:, 1, ":")
+	let result = deepcopy(s:base)
+	let result.prompt = prompt
 	call result.connect(result, "_")
 	return result
 endfunction
 
 
-function! s:make_standard(prompt)
-	let result = s:make_plain(a:prompt)
-	call result.connect("Delete")
-	call result.connect("CursorMove")
-	call result.connect("HistAdd")
-	call result.connect("History")
-	call result.connect("InsertRegister")
-	call result.connect(s:get_module("NoInsert").make_special_chars())
-	return result
-endfunction
-
-
-function! s:make(prompt)
-	return deepcopy(s:base)
+function! s:make_plain()
+	return deepcpy(s:base)
 endfunction
 
 
@@ -86,9 +50,9 @@ let s:base = {
 \	},
 \	"highlights" : {
 \		"prompt" : "NONE",
-\		"cursor" : "OverCommandLineDefaultCursor",
-\		"cursor_on" : "OverCommandLineDefaultCursorOn",
-\		"cursor_insert" : "OverCommandLineDefaultOnCursor",
+\		"cursor" : "VitalOverCommandLineCursor",
+\		"cursor_on" : "VitalOverCommandLineCursorOn",
+\		"cursor_insert" : "VitalOverCommandLineOnCursor",
 \	},
 \}
 
@@ -98,7 +62,6 @@ if exists("s:Signals")
 		return a:val.slot.module
 	endfunction
 endif
-
 
 
 function! s:base.getline()
@@ -116,8 +79,13 @@ function! s:base.char()
 endfunction
 
 
-function! s:base.setchar(char)
-	let self.variables.input = a:char
+function! s:base.setchar(char, ...)
+	" 1 の場合は既に設定されていても上書きする
+	" 0 の場合は既に設定されていれば上書きしない
+	let overwrite = get(a:, 1, 1)
+	if overwrite || self.variables.input == self.char()
+		let self.variables.input = a:char
+	endif
 endfunction
 
 
@@ -180,7 +148,10 @@ endfunction
 
 function! s:base.connect(module, ...)
 	if type(a:module) == type("")
-		return call(self.connect, [s:get_module(a:module).make()] + a:000, self)
+		return call(self.connect, [s:Module.make(a:module)] + a:000, self)
+	endif
+	if empty(a:module)
+		return
 	endif
 	let name = a:0 > 0 ? a:1 : a:module.name
 	let slot = self.variables.modules.find_first_by("get(v:val.slot, 'name', '') == " . string(name))
@@ -198,6 +169,12 @@ function! s:base.disconnect(name)
 \		"get(v:val.slot, 'name', '') == " . string(a:name)
 \	)
 " 	unlet self.variables.modules[a:name]
+endfunction
+
+
+function! s:base.get_module(name)
+	let slot = self.variables.modules.find_first_by("get(v:val.slot, 'name', '') == " . string(a:name))
+	return empty(slot) ? {} : slot.slot.module
 endfunction
 
 
@@ -231,8 +208,10 @@ function! s:base.keymapping()
 endfunction
 
 
-function! s:base.execute()
-	execute self.getline()
+function! s:base.execute(...)
+	let command = get(a:, 1, self.getline())
+	call self._execute(command)
+" 	execute self.getline()
 endfunction
 
 
@@ -271,8 +250,9 @@ function! s:base.hl_cursor_off()
 	if exists("self.variables.old_t_ve")
 		return
 	endif
+
 	let self.variables.old_guicursor = &guicursor
-	set guicursor=a:-NONE
+	set guicursor=n:block-NONE
 	let self.variables.old_t_ve = &t_ve
 	set t_ve=
 endfunction
@@ -280,17 +260,25 @@ endfunction
 
 function! s:base.start(...)
 	let exit_code = call(self._main, a:000, self)
-	if exit_code == 0
-		call self._execute()
-	endif
+	return exit_code
+endfunction
+
+
+function! s:base.__empty(...)
 endfunction
 
 
 function! s:base.get(...)
-	let exit_code = call(self._main, a:000, self)
-	if exit_code == 0
-		return self.getline()
-	endif
+	let Old_execute = self.execute
+	let self.execute = self.__empty
+	try
+		let exit_code = self.start()
+		if exit_code == 0
+			return self.getline()
+		endif
+	finally
+		let self.execute = Old_execute
+	endtry
 	return ""
 endfunction
 
@@ -302,23 +290,22 @@ function! s:base._init()
 	let self.variables.exit = 0
 	let self.variables.exit_code = 1
 	call self.hl_cursor_off()
-	if !hlexists("OverCommandLineDefaultCursor")
-		highlight link OverCommandLineDefaultCursor Cursor
+	if !hlexists(self.highlights.cursor)
+		execute "highlight link " . self.highlights.cursor . " Cursor"
 	endif
-	if !hlexists("OverCommandLineDefaultCursorOn")
-		highlight link OverCommandLineDefaultCursorOn OverCommandLineDefaultCursor
+	if !hlexists(self.highlights.cursor_on)
+		execute "highlight link " . self.highlights.cursor_on . " " . self.highlights.cursor
 	endif
-	if !hlexists("OverCommandLineDefaultCursorInsert")
-		highlight OverCommandLineDefaultCursorInsert cterm=underline term=underline gui=underline
+	if !hlexists(self.highlights.cursor_insert)
+		execute "highlight " . self.highlights.cursor_insert . " cterm=underline term=underline gui=underline"
 	endif
 endfunction
 
 
-function! s:base._execute()
-	call s:redraw()
+function! s:base._execute(command)
 	call self.callevent("on_execute_pre")
 	try
-		call self.execute()
+		execute a:command
 	catch
 		echohl ErrorMsg
 		echo matchstr(v:exception, 'Vim\((\w*)\)\?:\zs.*\ze')
@@ -354,7 +341,6 @@ function! s:base._main(...)
 		return -1
 	finally
 		call self._finish()
-		call s:redraw()
 		call self.callevent("on_leave")
 	endtry
 	return self.exit_code()
