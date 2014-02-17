@@ -25,9 +25,8 @@ endfunction
 
 
 function! s:make(...)
-	let prompt = get(a:, 1, ":")
 	let result = deepcopy(s:base)
-	let result.prompt = prompt
+	let result.set_prompt(get(a:, 1, ":"))
 	call result.connect(result, "_")
 	return result
 endfunction
@@ -39,9 +38,9 @@ endfunction
 
 
 let s:base = {
-\	"prompt" : "",
 \	"line" : {},
 \	"variables" : {
+\		"prompt" : "",
 \		"char" : "",
 \		"input" : "",
 \		"tap_key" : "",
@@ -127,6 +126,16 @@ endfunction
 
 function! s:base.input_key()
 	return self.variables.input_key
+endfunction
+
+
+function! s:base.set_prompt(prompt)
+	let self.variables.prompt = a:prompt
+endfunction
+
+
+function! s:base.get_prompt()
+	return self.variables.prompt
 endfunction
 
 
@@ -355,7 +364,7 @@ endfunction
 function! s:_echo_cmdline(cmdline)
 	call s:redraw()
 	execute "echohl" a:cmdline.highlights.prompt
-	echon a:cmdline.prompt
+	echon a:cmdline.get_prompt()
 	echohl NONE
 	echon a:cmdline.backward()
 	if empty(a:cmdline.line.pos_word())
