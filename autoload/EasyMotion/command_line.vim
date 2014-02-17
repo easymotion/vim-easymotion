@@ -2,7 +2,7 @@
 " FILE: autoload/EasyMotion/command_line.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/osyo-manga/vim-over
-" Last Change: 16 Feb 2014.
+" Last Change: 17 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -165,7 +165,8 @@ endfunction "}}}
 function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
     let s:num_strokes = a:num_strokes
 
-    let s:search.prompt = s:getPromptMessage(a:num_strokes)
+    let s:prompt_base = s:getPromptMessage(a:num_strokes)
+    let s:search.set_prompt(s:prompt_base)
 
     " Screen: cursor position, first and last line
     let s:orig_pos = getpos('.')
