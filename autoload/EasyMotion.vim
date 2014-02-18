@@ -887,7 +887,9 @@ function! s:PromptUser(groups) "{{{
         if strlen(lines[line_num]['marker']) > 0
         " Substitute marker character if line length > 0
             let c = 0
-            while c < target_key_len && c < 2
+            let marker_max_length = g:EasyMotion_disable_two_key_combo == 1
+                                  \ ? 1 : 2
+            while c < target_key_len && c < marker_max_length
                 if strlen(lines[line_num]['marker']) >= col_num + c
                     " Substitute marker character if line length > 0
                     if c == 0
@@ -922,9 +924,11 @@ function! s:PromptUser(groups) "{{{
             call EasyMotion#highlight#add_highlight(
                 \ '\%' . line_num . 'l\%' . col_num . 'c',
                 \ g:EasyMotion_hl2_first_group_target)
-            call EasyMotion#highlight#add_highlight(
-                \ '\%' . line_num . 'l\%' . (col_num + 1) . 'c',
-                \ g:EasyMotion_hl2_second_group_target)
+            if g:EasyMotion_disable_two_key_combo == 1
+                call EasyMotion#highlight#add_highlight(
+                    \ '\%' . line_num . 'l\%' . (col_num + 1) . 'c',
+                    \ g:EasyMotion_hl2_second_group_target)
+            endif
         endif
         "}}}
 

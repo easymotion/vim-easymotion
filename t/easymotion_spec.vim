@@ -487,6 +487,7 @@ describe 'Default settings'
         Expect g:EasyMotion_prompt             ==# 'Search for {n} character(s): '
         Expect g:EasyMotion_command_line_key_mappings ==# {}
         Expect g:EasyMotion_force_csapprox ==# 0
+        Expect g:EasyMotion_disable_two_key_combo ==# 0
         " }}}
 
         " highlight {{{
