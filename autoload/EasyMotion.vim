@@ -160,6 +160,12 @@ function! EasyMotion#WBW(visualmode, direction) " {{{
     call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
+function! EasyMotion#WBK(visualmode, direction) " {{{
+    " vim's iskeyword style word motion
+    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
+    call s:EasyMotion('\(\(\<\|\>\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
+    return s:EasyMotion_is_cancelled
+endfunction " }}}
 function! EasyMotion#E(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let is_inclusive = mode(1) ==# 'no' ? 1 : 0
@@ -170,6 +176,13 @@ function! EasyMotion#EW(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let is_inclusive = mode(1) ==# 'no' ? 1 : 0
     call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    return s:EasyMotion_is_cancelled
+endfunction " }}}
+function! EasyMotion#EK(visualmode, direction) " {{{
+    " vim's iskeyword style word motion
+    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
+    let is_inclusive = mode(1) ==# 'no' ? 1 : 0
+    call s:EasyMotion('\(\S\(\>\|\<\|\s\)\@=\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_inclusive)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- JK Motion ---------------------------
