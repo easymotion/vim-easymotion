@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:14 Feb 2014.
+*easymotion.txt*	Version 2.0  Last change:18 Feb 2014.
 
 
             ______                  __  ___       __  _
@@ -152,7 +152,15 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-next)           | See |<Plug>(easymotion-next)|
     <Plug>(easymotion-previous)       | See |<Plug>(easymotion-previous)|
     <Plug>(easymotion-sol-j)          | See |<Plug>(easymotion-sol-j)|
+    <Plug>(easymotion-sol-k)          | See |<Plug>(easymotion-sol-k)|
     <Plug>(easymotion-eol-j)          | See |<Plug>(easymotion-eol-j)|
+    <Plug>(easymotion-eol-k)          | See |<Plug>(easymotion-eol-k)|
+    <Plug>(easymotion-iskeyword-w)    | See |<Plug>(easymotion-iskeyword-w)|
+    <Plug>(easymotion-iskeyword-b)    | See |<Plug>(easymotion-iskeyword-b)|
+    <Plug>(easymotion-iskeyword-bd-w) | See |<Plug>(easymotion-iskeyword-bd-w)|
+    <Plug>(easymotion-iskeyword-e)    | See |<Plug>(easymotion-iskeyword-e)|
+    <Plug>(easymotion-iskeyword-ge)   | See |<Plug>(easymotion-iskeyword-ge)|
+    <Plug>(easymotion-iskeyword-bd-e) | See |<Plug>(easymotion-iskeyword-bd-e)|
                                       |
     Within Line Motion                | See |easymotion-within-line|
     ----------------------------------|---------------------------------
@@ -360,6 +368,26 @@ End of Line JK motion       *<Plug>(easymotion-eol-j)* *<Plug>(easymotion-eol-k)
 >
         map <Leader>J <Plug>(easymotion-eol-j)
         map <Leader>K <Plug>(easymotion-eol-K)
+<
+
+iskeyword compatible word motions           *<Plug>(easymotion-iskeyword-w)*
+                                            *<Plug>(easymotion-iskeyword-b)*
+                                            *<Plug>(easymotion-iskeyword-bd-w)*
+                                            *<Plug>(easymotion-iskeyword-e)*
+                                            *<Plug>(easymotion-iskeyword-ge)*
+                                            *<Plug>(easymotion-iskeyword-bd-e)*
+        Default word motions which EasyMotion provide is not completely
+        compatible with |iskeyword| options. But if you make default word
+        motion completely compatible with it, there will be so many targets
+        that they maybe annoy you, so provide |iskeyword| compatible word
+        motions with another |<Plug>| mappings.
+
+        Example:
+>
+        map <Leader>w <Plug>(easymotion-iskeyword-w)
+        map <Leader>b <Plug>(easymotion-iskeyword-b)
+<
+        NOTE: Within line motions are compatible with |iskeyword| by default.
 
 Within line motion ~
                                                        *easymotion-within-line*
@@ -390,28 +418,28 @@ Within line motion ~
                 range is limited to the current cursor line.
 
 <Plug>(easymotion-wl)                                   *<Plug>(easymotion-wl)*
-                This function is same as |<Plug>(easymotion-w)|, except the
-                range is limited to the current cursor line.
+                This function is same as |<Plug>(easymotion-iskeyword-w)|,
+                except the range is limited to the current cursor line.
 
 <Plug>(easymotion-bl)                                   *<Plug>(easymotion-bl)*
-                This function is same as |<Plug>(easymotion-b)|, except the
-                range is limited to the current cursor line.
+                This function is same as |<Plug>(easymotion-iskeyword-b)|,
+                except the range is limited to the current cursor line.
 
 <Plug>(easymotion-bd-wl)                             *<Plug>(easymotion-bd-wl)*
-                This function is same as |<Plug>(easymotion-bd-w)|, except the
-                range is limited to the current cursor line.
+                This function is same as |<Plug>(easymotion-iskeyword-bd-w)|,
+                except the range is limited to the current cursor line.
 
 <Plug>(easymotion-el)                                   *<Plug>(easymotion-el)*
-                This function is same as |<Plug>(easymotion-e)|, except the
-                range is limited to the current cursor line.
+                This function is same as |<Plug>(easymotion-iskeyword-e)|,
+                except the range is limited to the current cursor line.
 
 <Plug>(easymotion-gel)                                 *<Plug>(easymotion-gel)*
-                This function is same as |<Plug>(easymotion-ge)|, except the
-                range is limited to the current cursor line.
+                This function is same as |<Plug>(easymotion-iskeyword-ge)|,
+                except the range is limited to the current cursor line.
 
 <Plug>(easymotion-bd-el)                             *<Plug>(easymotion-bd-el)*
-                This function is same as |<Plug>(easymotion-bd-e)|, except the
-                range is limited to the current cursor line.
+                This function is same as |<Plug>(easymotion-iskeyword-bd-e)|,
+                except the range is limited to the current cursor line.
 
 <Plug>(easymotion-lineforward)                 *<Plug>(easymotion-lineforward)*
                 This function is similar to

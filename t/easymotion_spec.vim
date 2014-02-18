@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: t/easymotion_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 12 Feb 2014.
+" Last Change: 18 Feb 2014.
 " Test: https://github.com/kana/vim-vspec
 " Refer: https://github.com/rhysd/clever-f.vim
 " Description: EasyMotion test with vim-vspec
@@ -242,6 +242,18 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-bd-W)', 'v') ==# '<Esc>:<C-U>call EasyMotion#WBW(1,2)<CR>'
         " }}}
 
+        " Word Motion IsKeyWord: {{{
+        Expect maparg('<Plug>(easymotion-iskeyword-w)', 'n') ==# ':<C-U>call EasyMotion#WBK(0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-w)', 'o') ==# ':<C-U>call EasyMotion#WBK(0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-w)', 'v') ==# '<Esc>:<C-U>call EasyMotion#WBK(1,0)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-b)', 'n') ==# ':<C-U>call EasyMotion#WBK(0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-b)', 'o') ==# ':<C-U>call EasyMotion#WBK(0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-b)', 'v') ==# '<Esc>:<C-U>call EasyMotion#WBK(1,1)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-bd-w)', 'n') ==# ':<C-U>call EasyMotion#WBK(0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-bd-w)', 'o') ==# ':<C-U>call EasyMotion#WBK(0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-bd-w)', 'v') ==# '<Esc>:<C-U>call EasyMotion#WBK(1,2)<CR>'
+        " }}}
+
         " End Of Word Motion: {{{
         Expect maparg('<Plug>(easymotion-e)', 'n')    ==# ':<C-U>call EasyMotion#E(0,0)<CR>'
         Expect maparg('<Plug>(easymotion-e)', 'o')    ==# ':<C-U>call EasyMotion#E(0,0)<CR>'
@@ -264,6 +276,18 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-bd-E)', 'n') ==# ':<C-U>call EasyMotion#EW(0,2)<CR>'
         Expect maparg('<Plug>(easymotion-bd-E)', 'o') ==# ':<C-U>call EasyMotion#EW(0,2)<CR>'
         Expect maparg('<Plug>(easymotion-bd-E)', 'v') ==# '<Esc>:<C-U>call EasyMotion#EW(1,2)<CR>'
+        " }}}
+
+        " End Of Word Motion IsKeyWord: {{{
+        Expect maparg('<Plug>(easymotion-iskeyword-e)', 'n')    ==# ':<C-U>call EasyMotion#EK(0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-e)', 'o')    ==# ':<C-U>call EasyMotion#EK(0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-e)', 'v')    ==# '<Esc>:<C-U>call EasyMotion#EK(1,0)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-ge)', 'n')   ==# ':<C-U>call EasyMotion#EK(0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-ge)', 'o')   ==# ':<C-U>call EasyMotion#EK(0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-ge)', 'v')   ==# '<Esc>:<C-U>call EasyMotion#EK(1,1)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-bd-e)', 'n') ==# ':<C-U>call EasyMotion#EK(0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-bd-e)', 'o') ==# ':<C-U>call EasyMotion#EK(0,2)<CR>'
+        Expect maparg('<Plug>(easymotion-iskeyword-bd-e)', 'v') ==# '<Esc>:<C-U>call EasyMotion#EK(1,2)<CR>'
         " }}}
 
         " JK Motion: {{{
