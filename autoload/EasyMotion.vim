@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 16 Feb 2014.
+" Last Change: 18 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -232,12 +232,12 @@ function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
 endfunction " }}}
 function! EasyMotion#WBL(visualmode, direction) " {{{
     let s:flag.within_line = 1
-    call EasyMotion#WB(a:visualmode, a:direction)
+    call EasyMotion#WBK(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#EL(visualmode, direction) " {{{
     let s:flag.within_line = 1
-    call EasyMotion#E(a:visualmode, a:direction)
+    call EasyMotion#EK(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
