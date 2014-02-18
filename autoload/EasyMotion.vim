@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 18 Feb 2014.
+" Last Change: 19 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -924,7 +924,7 @@ function! s:PromptUser(groups) "{{{
             call EasyMotion#highlight#add_highlight(
                 \ '\%' . line_num . 'l\%' . col_num . 'c',
                 \ g:EasyMotion_hl2_first_group_target)
-            if g:EasyMotion_disable_two_key_combo == 1
+            if g:EasyMotion_disable_two_key_combo != 1
                 call EasyMotion#highlight#add_highlight(
                     \ '\%' . line_num . 'l\%' . (col_num + 1) . 'c',
                     \ g:EasyMotion_hl2_second_group_target)
