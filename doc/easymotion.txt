@@ -898,7 +898,7 @@ Customize highlight behavior                             *EasyMotion_highlight*
     feature, set this option to 0
 >
     let g:EasyMotion_inc_highlight = 0
-
+<
     Default: 1
 
                                                   *g:EasyMotion_move_highlight*
