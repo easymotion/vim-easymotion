@@ -141,9 +141,9 @@ function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
     if a:direction == 2
         let s:flag.bd_t = 1
     elseif a:direction == 1
-        let re = '\('.re.'\)\zs.'
+        let re = s:convert_t_regexp(re, 1) " backward
     else
-        let re = '.\ze\('.re.'\)'
+        let re = s:convert_t_regexp(re, 0) " forward
     endif
     call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
     return s:EasyMotion_is_cancelled
@@ -544,6 +544,13 @@ function! s:should_use_smartsign(char) "{{{
         return 0
     endif
 endfunction "}}}
+function! s:convert_t_regexp(re, direction)
+    if a:direction == 0 "forward
+        return '\_.\ze\('.a:re.'\)'
+    elseif a:direction == 1 "backward
+        return '\('.a:re.'\)\@<=\_.'
+    endif
+endfunction
 
 function! s:handleEmpty(input, visualmode) "{{{
     " if empty, reselect and return 1
@@ -1112,7 +1119,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
 
         " Handle bi-directional t motion {{{
         if s:flag.bd_t == 1
-            let regexp = '\('.a:regexp.'\)\zs.'
+            let regexp = s:convert_t_regexp(a:regexp, 1) "backward
         else
             let regexp = a:regexp
         endif
@@ -1148,7 +1155,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         " Handle bidirection "{{{
         " For bi-directional t motion {{{
         if s:flag.bd_t == 1
-            let regexp = '.\ze\('.a:regexp.'\)'
+            let regexp = s:convert_t_regexp(a:regexp, 0) "forward
         endif
         "}}}
         " Reconstruct match dict
