@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 18 Feb 2014.
+" Last Change: 20 Feb 2014.
 " == Script initialization {{{
 if expand("%:p") ==# expand("<sfile>:p")
   unlet! g:EasyMotion_loaded
@@ -299,7 +299,7 @@ if g:EasyMotion_do_mapping == 1
     "}}}
 
     function! s:default_mapping(motions, do_mapping) "{{{
-        for [motion, fn] in items(a:motions)
+        for motion in a:motions
             " Mapping {{{
             if exists('g:EasyMotion_mapping_' . motion)
                 " Backward compatible mapping [deprecated]
@@ -317,25 +317,10 @@ if g:EasyMotion_do_mapping == 1
     endfunction "}}}
 
     " Default Mapping:
-    call s:default_mapping({
-        \   'f' : { 'name': 'S'      , 'dir': 0 }
-        \ , 'F' : { 'name': 'S'      , 'dir': 1 }
-        \ , 's' : { 'name': 'S'      , 'dir': 2 }
-        \ , 't' : { 'name': 'T'      , 'dir': 0 }
-        \ , 'T' : { 'name': 'T'      , 'dir': 1 }
-        \ , 'w' : { 'name': 'WB'     , 'dir': 0 }
-        \ , 'W' : { 'name': 'WBW'    , 'dir': 0 }
-        \ , 'b' : { 'name': 'WB'     , 'dir': 1 }
-        \ , 'B' : { 'name': 'WBW'    , 'dir': 1 }
-        \ , 'e' : { 'name': 'E'      , 'dir': 0 }
-        \ , 'E' : { 'name': 'EW'     , 'dir': 0 }
-        \ , 'ge': { 'name': 'E'      , 'dir': 1 }
-        \ , 'gE': { 'name': 'EW'     , 'dir': 1 }
-        \ , 'j' : { 'name': 'JK'     , 'dir': 0 }
-        \ , 'k' : { 'name': 'JK'     , 'dir': 1 }
-        \ , 'n' : { 'name': 'Search' , 'dir': 0 }
-        \ , 'N' : { 'name': 'Search' , 'dir': 1 }
-        \ }, g:EasyMotion_do_mapping)
+    call s:default_mapping(
+        \ ['f', 'F', 's', 't', 'T',
+        \  'w', 'W', 'b', 'B', 'e', 'E', 'ge', 'gE',
+        \  'j', 'k', 'n', 'N'], g:EasyMotion_do_mapping)
 endif "}}}
 
 " == CommandLine Mapping {{{
