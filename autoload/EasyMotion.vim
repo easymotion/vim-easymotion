@@ -928,11 +928,11 @@ function! s:PromptUser(groups) "{{{
                     " EOL
                     let lines[line_num]['marker'] .= split(marker_chars, '\zs')[i]
                 endif
-                let col_add += marker_chars_first_byte_len
+                let col_add += strlen(split(marker_chars, '\zs')[i])
             endfor
         else
         " Set the line to the marker character if the line is empty
-            let lines[line_num]['marker'] = marker_chars
+            let lines[line_num]['marker'] = matchstr(marker_chars, '^.\{,2}')
         endif
 
         " -- Highlight targets ------------------- {{{
