@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 19 Feb 2014.
+" Last Change: 20 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -846,7 +846,9 @@ function! s:PromptUser(groups) "{{{
     let coord_key_dict = s:CreateCoordKeyDict(a:groups)
 
     for dict_key in sort(coord_key_dict[0])
-        let target_key = coord_key_dict[1][dict_key]
+        let marker_key = coord_key_dict[1][dict_key]
+        let marker_key_first = matchstr(marker_key, '^.')
+        let marker_key_first_byte_len = strlen(marker_key_first)
         let [line_num, col_num] = split(dict_key, ',')
 
         let line_num = str2nr(line_num)
@@ -875,7 +877,7 @@ function! s:PromptUser(groups) "{{{
         let target_char_len = strdisplaywidth(
                                 \ matchstr(lines[line_num]['marker'],
                                 \          '\%' . col_num . 'c.'))
-        let target_key_len = strdisplaywidth(target_key)
+        let marker_key_len = strchars(marker_key)
 
 
         let target_line_byte_len = strlen(lines[line_num]['marker'])
@@ -887,36 +889,41 @@ function! s:PromptUser(groups) "{{{
         if strlen(lines[line_num]['marker']) > 0
         " Substitute marker character if line length > 0
             let c = 0
+            let col_add = 0
             let marker_max_length = g:EasyMotion_disable_two_key_combo == 1
                                   \ ? 1 : 2
-            while c < target_key_len && c < marker_max_length
-                if strlen(lines[line_num]['marker']) >= col_num + c
+            let marker_limit = min([marker_key_len, marker_max_length])
+            while c < marker_limit
+                if strlen(lines[line_num]['marker']) >= col_num + col_add
                     " Substitute marker character if line length > 0
                     if c == 0
                         let lines[line_num]['marker'] = substitute(
                             \ lines[line_num]['marker'],
-                            \ '\%' . (col_num + c) . 'c.',
-                            \ strpart(target_key, c, 1) . repeat(' ', target_char_len - 1),
+                            \ '\%' . (col_num + col_add) . 'c.',
+                            \ marker_key_first
+                            \   . repeat(' ', target_char_len - 1),
                             \ '')
                     else
                         let lines[line_num]['marker'] = substitute(
                             \ lines[line_num]['marker'],
-                            \ '\%' . (col_num + c) . 'c.',
-                            \ strpart(target_key, c, 1),
+                            \ '\%' . (col_num + col_add) . 'c.',
+                            \ matchstr(marker_key, '^.\zs.'),
                             \ '')
                     endif
                 else
-                    let lines[line_num]['marker'] .= strpart(target_key, c, 1)
+                    " EOL
+                    let lines[line_num]['marker'] .= split(marker_key, '\zs')[c]
                 endif
                 let c += 1
+                let col_add += marker_key_first_byte_len
             endwhile
         else
         " Set the line to the marker character if the line is empty
-            let lines[line_num]['marker'] = target_key
+            let lines[line_num]['marker'] = marker_key
         endif
 
         " -- Highlight targets ------------------- {{{
-        if target_key_len == 1
+        if EasyMotion#helper#strchars(marker_key) == 1
             call EasyMotion#highlight#add_highlight(
                 \ '\%' . line_num . 'l\%' . col_num . 'c',
                 \ g:EasyMotion_hl_group_target)
@@ -926,7 +933,7 @@ function! s:PromptUser(groups) "{{{
                 \ g:EasyMotion_hl2_first_group_target)
             if g:EasyMotion_disable_two_key_combo != 1
                 call EasyMotion#highlight#add_highlight(
-                    \ '\%' . line_num . 'l\%' . (col_num + 1) . 'c',
+                    \ '\%' . line_num . 'l\%' . (col_num + marker_key_first_byte_len) . 'c',
                     \ g:EasyMotion_hl2_second_group_target)
             endif
         endif
