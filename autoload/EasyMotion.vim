@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 19 Feb 2014.
+" Last Change: 20 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -756,7 +756,7 @@ endfunction "}}}
 function! s:GroupingAlgorithmOriginal(targets, keys)
     " Split targets into groups (1 level)
     let targets_len = len(a:targets)
-    let keys_len = len(a:keys)
+    " let keys_len = len(a:keys)
 
     let groups = {}
 
@@ -882,9 +882,9 @@ function! s:PromptUser(groups) "{{{
 
         let target_line_byte_len = strlen(lines[line_num]['marker'])
 
-        let target_char_byte_len = strlen(matchstr(
-                                            \ lines[line_num]['marker'],
-                                            \ '\%' . col_num . 'c.'))
+        " let target_char_byte_len = strlen(matchstr(
+        "                                     \ lines[line_num]['marker'],
+        "                                     \ '\%' . col_num . 'c.'))
 
         if strlen(lines[line_num]['marker']) > 0
         " Substitute marker character if line length > 0
@@ -1234,7 +1234,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
             elseif a:direction == 0
                 " Forward
                 let shade_hl_re = '\%#\_.*\%'. win_last_line .'l'
-            elseif a:direction == 2
+            else
                 " Both directions"
                 let shade_hl_re = '\_.*'
             endif
