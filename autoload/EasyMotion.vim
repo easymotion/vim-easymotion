@@ -291,10 +291,12 @@ function! EasyMotion#DotRepeat(visualmode) " {{{
     let s:flag.bd_t = s:dot_repeat.bd_t_flag
 
     let s:current.is_operator = 1
-    for cnt in range(v:count1)
+    let i = 0
+    while i < v:count1
         let s:flag.dot_repeat = 1 " s:EasyMotion() always call reset
         silent call s:EasyMotion(re, direction, 0, is_inclusive)
-    endfor
+        let i += 1
+    endwhile
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#NextPrevious(visualmode, direction) " {{{
