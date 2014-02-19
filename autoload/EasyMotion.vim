@@ -914,20 +914,16 @@ function! s:PromptUser(groups) "{{{
             for i in range(marker_limit)
                 if strlen(lines[line_num]['marker']) >= col_num + col_add
                     " Substitute marker character if line length > 0
-                    if i == 0
-                        let lines[line_num]['marker'] = substitute(
-                            \ lines[line_num]['marker'],
-                            \ '\%' . (col_num + col_add) . 'c.',
-                            \ marker_chars_first
-                            \   . repeat(' ', target_char_disp_len - 1),
-                            \ '')
-                    else
-                        let lines[line_num]['marker'] = substitute(
-                            \ lines[line_num]['marker'],
-                            \ '\%' . (col_num + col_add) . 'c.',
-                            \ matchstr(marker_chars, '^.\zs.'),
-                            \ '')
-                    endif
+                    let substitute_expr = i == 0
+                        \ ? marker_chars_first .
+                        \   repeat(' ', target_char_disp_len - 1)
+                        \ : matchstr(marker_chars, '^.\zs.')
+
+                    let lines[line_num]['marker'] = substitute(
+                        \ lines[line_num]['marker'],
+                        \ '\%' . (col_num + col_add) . 'c.',
+                        \ substitute_expr,
+                        \ '')
                 else
                     " EOL
                     let lines[line_num]['marker'] .= split(marker_chars, '\zs')[i]
