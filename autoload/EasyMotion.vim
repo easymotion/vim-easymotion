@@ -917,7 +917,7 @@ function! s:PromptUser(groups) "{{{
                     let substitute_expr = i == 0
                         \ ? marker_chars_first .
                         \   repeat(' ', target_char_disp_len - 1)
-                        \ : matchstr(marker_chars, '^.\zs.')
+                        \ : split(marker_chars, '\zs')[i]
 
                     let lines[line_num]['marker'] = substitute(
                         \ lines[line_num]['marker'],
