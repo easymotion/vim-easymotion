@@ -258,7 +258,7 @@ endfunction " }}}
 " -- Repeat Motion -----------------------
 function! EasyMotion#Repeat(visualmode) " {{{
     " Repeat previous motion with previous targets
-    if s:previous ==# {}
+    if !has_key(s:previous, 'regexp')
         call s:Message("Previous targets doesn't exist")
         let s:EasyMotion_is_cancelled = 1
         return s:EasyMotion_is_cancelled
@@ -278,7 +278,7 @@ function! EasyMotion#Repeat(visualmode) " {{{
 endfunction " }}}
 function! EasyMotion#DotRepeat(visualmode) " {{{
     " Repeat previous '.' motion with previous targets and operator
-    if s:dot_repeat ==# {}
+    if !has_key(s:dot_repeat, 'regexp')
         call s:Message("Previous motion doesn't exist")
         let s:EasyMotion_is_cancelled = 1
         return s:EasyMotion_is_cancelled
@@ -301,7 +301,7 @@ function! EasyMotion#DotRepeat(visualmode) " {{{
 endfunction " }}}
 function! EasyMotion#NextPrevious(visualmode, direction) " {{{
     " Move next/previous destination using previous motion regexp
-    if s:previous ==# {}
+    if !has_key(s:previous, 'regexp')
         call s:Message("Previous targets doesn't exist")
         let s:EasyMotion_is_cancelled = 1
         return s:EasyMotion_is_cancelled
