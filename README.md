@@ -1,5 +1,6 @@
-Vim motion on speed! [![Build Status](https://travis-ci.org/Lokaltog/vim-easymotion.png?branch=master)](https://travis-ci.org/Lokaltog/vim-easymotion)
+Vim motion on speed!
 =====
+ [![Build Status](https://travis-ci.org/Lokaltog/vim-easymotion.png?branch=master)](https://travis-ci.org/Lokaltog/vim-easymotion)
 
 ![Animated demonstration](https://f.cloud.github.com/assets/3797062/2039359/a8e938d6-899f-11e3-8789-60025ea83656.gif)
 
