@@ -399,7 +399,7 @@ function! s:_echo_cmdline(cmdline)
 	endif
 	echohl NONE
 	call s:echon(a:cmdline.forward())
-	call s:echon(s:suffix(a:cmdline.get_prompt() . a:cmdline.getline() . repeat(" ", empty(a:cmdline.line.pos_word())), a:cmdline.get_suffix()))
+	" call s:echon(s:suffix(a:cmdline.get_prompt() . a:cmdline.getline() . repeat(" ", empty(a:cmdline.line.pos_word())), a:cmdline.get_suffix()))
 endfunction
 
 
