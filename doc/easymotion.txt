@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:18 Feb 2014.
+*easymotion.txt*	Version 2.0  Last change:22 Feb 2014.
 
 
             ______                  __  ___       __  _
@@ -925,20 +925,22 @@ Customize highlight behavior                             *EasyMotion_highlight*
 EasyMotion_add_search_history                 *g:EasyMotion_add_search_history*
 
     If you set this option to 1, the 'n' key find motion will add the
-    inputted pattern to vim default search history.
+    inputted pattern to vim default search history. If you want to disable
+    this feature, set this value to 0.
 >
-    let g:EasyMotion_add_search_history = 1 
+    let g:EasyMotion_add_search_history = 0 
 < 
-    Default: 0
+    Default: 1
 
 EasyMotion_off_screen_search                   *g:EasyMotion_off_screen_search*
 
     If you set this option to 1, the 'n' key find motion will search patterns
-    even outside of the current screen range.
+    even outside of the current screen range. If you want to disable this
+    feature, set this value to 0.
 >
-    let g:EasyMotion_off_screen_search = 1
+    let g:EasyMotion_off_screen_search = 0
 <
-    Default: 0
+    Default: 1
 
 EasyMotion_disable_two_key_combo           *g:EasyMotion_disable_two_key_combo*
 
