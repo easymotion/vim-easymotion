@@ -38,7 +38,7 @@ let s:search = s:cmdline.make()
 let s:search.highlights.prompt = 'Question'
 
 " Add Module: {{{
-call s:search.connect(s:modules.get("Execute").make_no_execute())
+call s:search.connect('Execute')
 call s:search.connect('Cancel')
 call s:search.connect('Redraw')
 call s:search.connect('Delete')
@@ -169,7 +169,7 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
     let s:num_strokes = a:num_strokes
 
     let s:prompt_base = s:getPromptMessage(a:num_strokes)
-    let s:search.set_prompt(s:prompt_base)
+    call s:search.set_prompt(s:prompt_base)
 
     " Screen: cursor position, first and last line
     let s:orig_pos = getpos('.')
