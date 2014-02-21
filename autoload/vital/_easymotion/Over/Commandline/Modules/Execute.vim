@@ -3,6 +3,19 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
+function! s:silent_feedkeys(expr, name, ...)
+	let mode = get(a:, 1, "m")
+	let map = printf("<Plug>(%s)", a:name)
+	if mode == "n"
+		let command = "nnoremap"
+	else
+		let command = "nmap"
+	endif
+	execute command "<silent>" map printf("%s:nunmap %s<CR>", a:expr, map)
+	call feedkeys(printf("\<Plug>(%s)", a:name))
+endfunction
+
+
 function! s:_is_input_enter(cmdline)
 	return a:cmdline.is_input("\<CR>")
 \		|| a:cmdline.is_input("\<NL>")
@@ -36,28 +49,18 @@ function! s:make()
 endfunction
 
 
-let s:empty = deepcopy(s:module)
-
-function! s:empty.execute(...)
-endfunction
-
-
-function! s:make_no_execute()
-	return deepcopy(s:empty)
-endfunction
-
-
 let s:search = deepcopy(s:module)
 let s:search.prefix = "/"
 
 
 function! s:search.execute(cmdline)
-" 	let cmd = printf("call feedkeys(\"%s%s\<CR>\", 'n')", self.prefix, a:cmdline.getline())
-	let cmd = printf("call search('%s')", a:cmdline.getline())
-	call a:cmdline.execute(cmd)
-	let @/ = a:cmdline.getline()
-	let &hlsearch = &hlsearch
-	call feedkeys(":set hlsearch | set incsearch\<CR>", 'n')
+	call s:silent_feedkeys(":call histdel('/', -1)\<CR>", "remove_hist", "n")
+	let cmd = printf("call s:silent_feedkeys(\"%s%s\<CR>\", 'search', 'n')", self.prefix, a:cmdline.getline())
+	execute cmd
+" 	let cmd = printf("call search('%s')", a:cmdline.getline())
+" 	call a:cmdline.execute(cmd)
+" 	let @/ = a:cmdline.getline()
+" 	call s:silent_feedkeys(":let &hlsearch = &hlsearch\<CR>", "hlsearch", "n")
 endfunction
 
 

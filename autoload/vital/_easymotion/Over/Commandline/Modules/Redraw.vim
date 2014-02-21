@@ -29,9 +29,8 @@ function! s:module.on_leave(cmdline)
 	endif
 endfunction
 
-function! s:module.redraw(...)
-	redraw
-	echo ""
+function! s:module.redraw(cmdline)
+	call a:cmdline.redraw()
 endfunction
 
 function! s:make()

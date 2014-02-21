@@ -26,7 +26,7 @@ endfunction
 
 function! s:make(...)
 	let result = deepcopy(s:base)
-	let result.set_prompt(get(a:, 1, ":"))
+	call result.set_prompt(get(a:, 1, ":"))
 	call result.connect(result, "_")
 	return result
 endfunction
@@ -46,6 +46,7 @@ let s:base = {
 \		"tap_key" : "",
 \		"exit" : 0,
 \		"keymapping" : {},
+\		"suffix" : "",
 \	},
 \	"highlights" : {
 \		"prompt" : "NONE",
@@ -136,6 +137,16 @@ endfunction
 
 function! s:base.get_prompt()
 	return self.variables.prompt
+endfunction
+
+
+function! s:base.set_suffix(str)
+	let self.variables.suffix = a:str
+endfunction
+
+
+function! s:base.get_suffix()
+	return self.variables.suffix
 endfunction
 
 
@@ -317,7 +328,7 @@ function! s:base._execute(command)
 		execute a:command
 	catch
 		echohl ErrorMsg
-		echo matchstr(v:exception, 'Vim\((\w*)\)\?:\zs.*\ze')
+		echom matchstr(v:exception, 'Vim\((\w*)\)\?:\zs.*\ze')
 		echohl None
 		call self.callevent("on_execute_failed")
 	finally
@@ -346,7 +357,7 @@ function! s:base._main(...)
 			call self.callevent("on_char")
 		endwhile
 	catch
-		echohl ErrorMsg | echo v:throwpoint . " " . v:exception | echohl None
+		echohl ErrorMsg | echom v:throwpoint . " " . v:exception | echohl None
 		return -1
 	finally
 		call self._finish()
@@ -361,21 +372,34 @@ function! s:base._finish()
 endfunction
 
 
+function! s:suffix(left, suffix)
+	let left_len = strdisplaywidth(a:left)
+	let len = &columns - left_len % &columns
+	let len = len + (&columns * (strdisplaywidth(a:suffix) > (len - 1))) - 1
+	return printf("%" . len . "S", a:suffix)
+endfunction
+
+
+function! s:echon(expr)
+	echon strtrans(a:expr)
+endfunction
+
 function! s:_echo_cmdline(cmdline)
-	call s:redraw()
+	call a:cmdline.redraw()
 	execute "echohl" a:cmdline.highlights.prompt
-	echon a:cmdline.get_prompt()
+	call s:echon(a:cmdline.get_prompt())
 	echohl NONE
-	echon a:cmdline.backward()
+	call s:echon(a:cmdline.backward())
 	if empty(a:cmdline.line.pos_word())
 		execute "echohl" a:cmdline.highlights.cursor
-		echon  ' '
+		call s:echon(' ')
 	else
 		execute "echohl" a:cmdline.highlights.cursor_on
-		echon a:cmdline.line.pos_word()
+		call s:echon(a:cmdline.line.pos_word())
 	endif
 	echohl NONE
-	echon a:cmdline.forward()
+	call s:echon(a:cmdline.forward())
+	call s:echon(s:suffix(a:cmdline.get_prompt() . a:cmdline.getline() . repeat(" ", empty(a:cmdline.line.pos_word())), a:cmdline.get_suffix()))
 endfunction
 
 
@@ -422,10 +446,15 @@ function! s:base._get_keymapping()
 	return extend(extend(result, self.variables.keymapping), self.keymapping())
 endfunction
 
-
-function! s:redraw()
+function! s:_redraw()
+" 	normal! :
 	redraw
-	echo ""
+" 	echo ""
+endfunction
+
+
+function! s:base.redraw()
+	call s:_redraw()
 endfunction
 
 
