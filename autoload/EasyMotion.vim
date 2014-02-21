@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 20 Feb 2014.
+" Last Change: 21 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -399,7 +399,7 @@ endfunction "}}}
 " -- Draw --------------------------------
 function! s:SetLines(lines, key) " {{{
     for [line_num, line] in a:lines
-        call setline(line_num, line[a:key])
+        keepjumps call setline(line_num, line[a:key])
     endfor
 endfunction " }}}
 " -- Get characters from user input ------
@@ -1004,11 +1004,11 @@ function! s:PromptUser(groups) "{{{
             " Break undo history (undobreak)
             let old_undolevels = &undolevels
             set undolevels=-1
-            call setline('.', getline('.'))
+            keepjumps call setline('.', getline('.'))
             let &undolevels = old_undolevels
             unlet old_undolevels
             " FIXME: Error occur by GundoToggle for undo number 2 is empty
-            call setline('.', getline('.'))
+            keepjumps call setline('.', getline('.'))
         endif "}}}
 
         redraw
