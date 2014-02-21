@@ -779,7 +779,7 @@ function! s:CreateCoordKeyDict(groups, ...)
         let key = group_key . key
         "let key = ( ! empty(group_key) ? group_key : key)
 
-        if type(item) == 3 " List
+        if type(item) == type([]) " List
             " Destination coords
 
             " The key needs to be zero-padded in order to
@@ -1008,7 +1008,7 @@ function! s:PromptUser(groups) "{{{
 
     let target = a:groups[char]
 
-    if type(target) == 3
+    if type(target) == type([])
         " Return target coordinates
         return target
     else
@@ -1025,7 +1025,7 @@ function! s:DotPromptUser(groups) "{{{
 
     let target = a:groups[char]
 
-    if type(target) == 3
+    if type(target) == type([])
         " Return target coordinates
         return target
     else
