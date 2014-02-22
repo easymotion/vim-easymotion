@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 20 Feb 2014.
+" Last Change: 22 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -897,10 +897,12 @@ function! s:PromptUser(groups) "{{{
         "}}}
 
         " Prepare targets characters {{{
-        let target_char = matchstr(lines[line_num]['orig'],
+        " Get target_char by compensated line.
+        let target_char = matchstr(lines[line_num]['marker'],
                                  \ '\%' . col_num . 'c.')
         let target_char_disp_len = strdisplaywidth(target_char)
         let target_char_byte_len = strlen(target_char)
+        " Original target_line
         let target_line_byte_len = strlen(lines[line_num]['orig'])
         "}}}
 
@@ -954,7 +956,7 @@ function! s:PromptUser(groups) "{{{
 
         " Add marker/target length difference for multibyte
         " compensation
-        let lines[line_num]['mb_compensation'] +=
+        let lines[line_num]['mb_compensation'] =
             \ (target_line_byte_len - strlen(lines[line_num]['marker']))
     endfor
 
