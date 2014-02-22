@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 21 Feb 2014.
+" Last Change: 22 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -504,8 +504,7 @@ function! s:should_use_migemo(char) "{{{
         let end_line = line('w$')
     endif
 
-
-    " Skip folded line and check if text include multibyte haracters
+    " Skip folded line and check if text include multibyte characters
     for line in range(first_line, end_line)
         if EasyMotion#helper#is_folded(line)
             continue
