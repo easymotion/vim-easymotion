@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: t/easymotion_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 18 Feb 2014.
+" Last Change: 22 Feb 2014.
 " Test: https://github.com/kana/vim-vspec
 " Refer: https://github.com/rhysd/clever-f.vim
 " Description: EasyMotion test with vim-vspec
@@ -1370,6 +1370,52 @@ describe 'off-screen search scroll'
         exec "normal /deco-chan\<Tab>\<CR>a"
         Expect CursorPos() == [503,1,'d']
 
+    end
+    "}}}
+end
+"}}}
+
+"Word motion {{{
+describe 'Word motion'
+    before
+        new
+        let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        map w <Plug>(easymotion-w)
+        map b <Plug>(easymotion-b)
+        map <Leader>w <Plug>(easymotion-iskeyword-w)
+        map <Leader>b <Plug>(easymotion-iskeyword-b)
+        call EasyMotion#init()
+        call AddLine('vim vim vim')
+        call AddLine('poge1 2huga 3hiyo 4poyo 5:test')
+        "             12345678901234567890123
+        " 0        1         2         3
+        " 123456789012345678901234567890
+        " poge1 2huga 3hiyo 4poyo 5:test
+        " vim vim vim
+    end
+
+    after
+        close!
+    end
+
+    " Default word motion {{
+    it 'Default word motion'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,'p']
+        normal wc
+        Expect CursorPos() == [l,19,'4']
+
+        normal bb
+        Expect CursorPos() == [l,7,'2']
+
+        normal! 0
+        Expect CursorPos() == [l,1,'p']
+
+        normal wh
+        Expect CursorPos() == [2,9,'v']
+        normal bh
+        Expect CursorPos() == [l,1,'p']
     end
     "}}}
 end
