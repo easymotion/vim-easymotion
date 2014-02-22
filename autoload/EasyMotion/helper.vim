@@ -1,7 +1,7 @@
 "=============================================================================
 " FILE: autoload/EasyMotion/helper.vim
 " AUTHOR: haya14busa
-" Last Change: 16 Feb 2014.
+" Last Change: 22 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -58,9 +58,9 @@ endfunction "}}}
 function! EasyMotion#helper#is_folded(line) "{{{
     " Return false if g:EasyMotion_skipfoldedline == 1
     " and line is start of folded lines
-    return foldclosed(a:line) != -1 &&
-        \ (g:EasyMotion_skipfoldedline == 1 ||
-        \  a:line != foldclosed(a:line))
+    let _foldclosed = foldclosed(a:line)
+    return _foldclosed != -1 &&
+        \ (g:EasyMotion_skipfoldedline == 1 || a:line != _foldclosed)
 endfunction "}}}
 function! EasyMotion#helper#should_case_sensitive(input, is_search) "{{{
     if !a:is_search
