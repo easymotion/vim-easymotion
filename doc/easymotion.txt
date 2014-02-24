@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:22 Feb 2014.
+*easymotion.txt*	Version 2.0  Last change:24 Feb 2014.
 
 
             ______                  __  ___       __  _
@@ -687,6 +687,8 @@ Example:
     'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
     " qwerty
     'asdfghjkl;qwertyuiopzxcvbnm'
+    " You can use non-ascii, multibyte key characters as well
+    'asdfghjkl;qwertyuiopzxcvbnmèòàùì'
 <
 
 ------------------------------------------------------------------------------
