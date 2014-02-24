@@ -94,15 +94,12 @@ function! s:_finish()
 	if exists("s:old_statusline")
 		let &statusline = s:old_statusline
 		unlet s:old_statusline
+		redrawstatus
 	endif
 endfunction
 
 
 function! s:module.on_char_pre(cmdline)
-" 	echom "-----"
-" 	echom a:cmdline.char()
-" 	echom "Completion\<Tab>"
-" 	echom "Completion\<Tab>" == a:cmdline.char()
 	if a:cmdline.is_input("<Over>(buffer-complete)")
 		if self.complete(a:cmdline) == -1
 			call s:_finish()
@@ -127,7 +124,7 @@ function! s:module.on_char_pre(cmdline)
 		endif
 	else
 		if a:cmdline.untap_keyinput("Completion")
-" 			call a:cmdline._on_char_pre()
+			call a:cmdline.callevent("on_char_pre")
 		endif
 		call s:_finish()
 		return
@@ -136,10 +133,16 @@ function! s:module.on_char_pre(cmdline)
 	call a:cmdline.insert(s:complete_list[s:count], s:pos)
 	if len(s:complete_list) > 1
 		let &statusline = s:_as_statusline(s:complete_list, s:count)
+		redrawstatus
 	endif
 	if len(s:complete_list) == 1
 		call a:cmdline.untap_keyinput("Completion")
 	endif
+endfunction
+
+
+function! s:module.on_draw_pre(...)
+" 	redrawstatus
 endfunction
 
 

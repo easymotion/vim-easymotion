@@ -24,13 +24,20 @@ function! s:module.on_execute_failed(...)
 endfunction
 
 function! s:module.on_leave(cmdline)
-	if self.is_execute == 0
+	if self.is_execute == 0 && a:cmdline.exit_code() != -1
 		call self.redraw(a:cmdline)
 	endif
 endfunction
 
+
+" function! s:module.on_draw_pre(cmdline)
+" 	call self.redraw(a:cmdline)
+" endfunction
+
+
 function! s:module.redraw(cmdline)
-	call a:cmdline.redraw()
+	redraw
+	normal! :
 endfunction
 
 function! s:make()

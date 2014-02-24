@@ -235,6 +235,12 @@ function! s:base.execute(...)
 endfunction
 
 
+function! s:base.draw()
+	call self.callevent("on_draw_pre")
+	call self.callevent("on_draw")
+endfunction
+
+
 function! s:base.exit(...)
 	let self.variables.exit = 1
 	let self.variables.exit_code = get(a:, 1, 0)
@@ -344,7 +350,8 @@ function! s:base._main(...)
 		call self.callevent("on_enter")
 
 		while !self._is_exit()
-			call s:_echo_cmdline(self)
+			try
+			call self.draw()
 
 			let self.variables.input_key = s:_getchar()
 			let self.variables.char = s:_unmap(self._get_keymapping(), self.variables.input_key)
@@ -355,10 +362,13 @@ function! s:base._main(...)
 			call self.callevent("on_char_pre")
 			call self.insert(self.variables.input)
 			call self.callevent("on_char")
+			catch
+				call self.callevent("on_exception")
+			endtry
 		endwhile
 	catch
 		echohl ErrorMsg | echom v:throwpoint . " " . v:exception | echohl None
-		return -1
+		let self.variables.exit_code = -1
 	finally
 		call self._finish()
 		call self.callevent("on_leave")
@@ -369,37 +379,6 @@ endfunction
 
 function! s:base._finish()
 	call self.hl_cursor_on()
-endfunction
-
-
-function! s:suffix(left, suffix)
-	let left_len = strdisplaywidth(a:left)
-	let len = &columns - left_len % &columns
-	let len = len + (&columns * (strdisplaywidth(a:suffix) > (len - 1))) - 1
-	return printf("%" . len . "S", a:suffix)
-endfunction
-
-
-function! s:echon(expr)
-	echon strtrans(a:expr)
-endfunction
-
-function! s:_echo_cmdline(cmdline)
-	call a:cmdline.redraw()
-	execute "echohl" a:cmdline.highlights.prompt
-	call s:echon(a:cmdline.get_prompt())
-	echohl NONE
-	call s:echon(a:cmdline.backward())
-	if empty(a:cmdline.line.pos_word())
-		execute "echohl" a:cmdline.highlights.cursor
-		call s:echon(' ')
-	else
-		execute "echohl" a:cmdline.highlights.cursor_on
-		call s:echon(a:cmdline.line.pos_word())
-	endif
-	echohl NONE
-	call s:echon(a:cmdline.forward())
-	" call s:echon(s:suffix(a:cmdline.get_prompt() . a:cmdline.getline() . repeat(" ", empty(a:cmdline.line.pos_word())), a:cmdline.get_suffix()))
 endfunction
 
 
@@ -444,17 +423,6 @@ function! s:base._get_keymapping()
 		endif
 	endfor
 	return extend(extend(result, self.variables.keymapping), self.keymapping())
-endfunction
-
-function! s:_redraw()
-" 	normal! :
-	redraw
-" 	echo ""
-endfunction
-
-
-function! s:base.redraw()
-	call s:_redraw()
 endfunction
 
 
