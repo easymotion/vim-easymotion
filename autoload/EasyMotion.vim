@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 22 Feb 2014.
+" Last Change: 24 Feb 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -924,7 +924,7 @@ function! s:PromptUser(groups) "{{{
                     let lines[line_num]['marker'] = substitute(
                         \ lines[line_num]['marker'],
                         \ '\%' . (col_num + col_add) . 'c.',
-                        \ substitute_expr,
+                        \ escape(substitute_expr,'&'),
                         \ '')
                 else
                     " EOL
