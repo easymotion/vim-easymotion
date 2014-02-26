@@ -958,7 +958,7 @@ function! s:PromptUser(groups) "{{{
 
         " Jump first target when Enter or Space key is pressed "{{{
         if (char ==# "\<CR>" && g:EasyMotion_enter_jump_first == 1) ||
-        \  (char ==# " " && g:EasyMotion_space_jump_first == 1)
+        \  (char ==# "\<Space>" && g:EasyMotion_space_jump_first == 1)
             " NOTE: matchstr() is multibyte aware.
             let char = matchstr(g:EasyMotion_keys, '^.')
         endif "}}}
