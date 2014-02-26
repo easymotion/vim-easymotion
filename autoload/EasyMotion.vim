@@ -350,6 +350,16 @@ function! s:SaveValue() "{{{
     call EasyMotion#helper#VarReset('&spell', 0)
     call EasyMotion#helper#VarReset('&virtualedit', '')
     call EasyMotion#helper#VarReset('&foldmethod', 'manual')
+    if has('conceal')
+        let s:old_conceal_hl = EasyMotion#highlight#capture('Conceal')
+        exec "hi! link " . s:old_conceal_hl[0] . " EasyMotionTarget"
+        let s:old_concealcursor = &concealcursor
+        let s:old_conceallevel = &conceallevel
+        setlocal concealcursor=nvic
+        setlocal conceallevel=1
+        let s:syntax_orig=&syntax
+        syntax clear
+    endif
 endfunction "}}}
 function! s:RestoreValue() "{{{
     call EasyMotion#helper#VarReset('&scrolloff')
@@ -359,6 +369,13 @@ function! s:RestoreValue() "{{{
     call EasyMotion#helper#VarReset('&spell')
     call EasyMotion#helper#VarReset('&virtualedit')
     call EasyMotion#helper#VarReset('&foldmethod')
+    if has('conceal')
+        syntax clear EasyMotionTarget
+        exec "hi! " . s:old_conceal_hl[0] . " " . s:old_conceal_hl[1]
+        let &concealcursor=s:old_concealcursor
+        let &conceallevel=s:old_conceallevel
+        let &syntax=s:syntax_orig
+    endif
 endfunction "}}}
 function! s:turn_off_hl_error() "{{{
     let s:error_hl = EasyMotion#highlight#capture('Error')
@@ -903,23 +920,30 @@ function! s:PromptUser(groups) "{{{
             " Substitute marker character
             let substitute_expr = marker_char . repeat(' ', space_len)
 
-            let lines[line_num]['marker'] = substitute(
-                \ lines[line_num]['marker'],
-                \ target_col,
-                \ escape(substitute_expr,'&'),
-                \ '')
-
-            " Highlight targets {{{
-            if marker_chars_len == 1
-                let _hl_group = g:EasyMotion_hl_group_target
-            elseif i == 0
-                let _hl_group = g:EasyMotion_hl2_first_group_target
+            if has('conceal') && marker_chars_len == 1
+            \&& EasyMotion#helper#strchars(substitute_expr) == 1
+                exec "syntax match " . g:EasyMotion_hl_group_target .
+                    \ " /\\%" . line_num . "l\\%". (col_num + col_add) ."c./" .
+                    \ " containedin=ALL conceal cchar=" . marker_char
             else
-                let _hl_group = g:EasyMotion_hl2_second_group_target
+                let is_all_concealed = 0
+                let lines[line_num]['marker'] = substitute(
+                    \ lines[line_num]['marker'],
+                    \ target_col,
+                    \ escape(substitute_expr,'&'),
+                    \ '')
+                " Highlight targets {{{
+                if marker_chars_len == 1
+                    let _hl_group = g:EasyMotion_hl_group_target
+                elseif i == 0
+                    let _hl_group = g:EasyMotion_hl2_first_group_target
+                else
+                    let _hl_group = g:EasyMotion_hl2_second_group_target
+                endif
+                call EasyMotion#highlight#add_highlight(
+                    \ '\%' . line_num . 'l' . target_col,
+                    \ _hl_group)
             endif
-            call EasyMotion#highlight#add_highlight(
-                \ '\%' . line_num . 'l' . target_col,
-                \ _hl_group)
             "}}}
 
             " Add marker/target length difference for multibyte compensation
@@ -942,9 +966,12 @@ function! s:PromptUser(groups) "{{{
     endif
     "}}}
     try
-        " Set lines with markers {{{
-        call s:SetLines(lines_items, 'marker')
-        redraw "}}}
+        if exists('is_all_concealed') && is_all_concealed == 0
+            " Set lines with marker
+            call s:SetLines(lines_items, 'marker')
+            unlet is_all_concealed
+        endif
+        redraw
 
         " Get target character {{{
         call s:Prompt('Target key')
