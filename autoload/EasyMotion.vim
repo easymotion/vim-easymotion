@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 26 Feb 2014.
+" Last Change: 03 Mar 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -96,7 +96,7 @@ function! EasyMotion#reset()
         " start_position:
         "   Original, start cursor position.
         " cursor_position:
-        "   Usually, this valuse is same with start_position, but in
+        "   Usually, this values is same with start_position, but in
         "   visualmode and 'n' key motion, this value could be different.
     return ""
 endfunction "}}}
@@ -1111,7 +1111,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
             keepjumps call cursor(s:current.cursor_position)
             "}}}
             " Update s:current.original_position
-            let s:current.original_position = v_original_pos " overwrite original start positio
+            " overwrite original start position
+            let s:current.original_position = v_original_pos
         endif "}}}
 
         " Handle bi-directional t motion {{{

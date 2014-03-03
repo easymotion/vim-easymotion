@@ -136,7 +136,7 @@ nmap t <Plug>(easymotion-t2)
 ### n-character search motion
 
 You can also search for `n` characters, which basically can be used to replace the default search of Vim.
-It suports incremental highlighting and you can use `<Tab>` and `<S-Tab>` to scroll down/up a page. If you press
+It supports incremental highlighting and you can use `<Tab>` and `<S-Tab>` to scroll down/up a page. If you press
 `<CR>` you get the usual EasyMotion highlighting and can jump to any matching target destination with a
 single keystroke.
 
