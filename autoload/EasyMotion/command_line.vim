@@ -2,7 +2,7 @@
 " FILE: autoload/EasyMotion/command_line.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/osyo-manga/vim-over
-" Last Change: 21 Feb 2014.
+" Last Change: 15 Mar 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -38,14 +38,17 @@ let s:search = s:cmdline.make()
 let s:search.highlights.prompt = 'Question'
 
 " Add Module: {{{
-call s:search.connect('Execute')
+call s:search.connect('Exit')
 call s:search.connect('Cancel')
 call s:search.connect('Redraw')
+call s:search.connect('DrawCommandline')
 call s:search.connect('Delete')
 call s:search.connect('CursorMove')
 call s:search.connect('Paste')
 call s:search.connect('BufferComplete')
 call s:search.connect('InsertRegister')
+call s:search.connect('ExceptionExit')
+call s:search.connect(s:modules.get('ExceptionMessage').make('EasyMotion: ', 'echom'))
 call s:search.connect(s:modules.get('History').make('/'))
 call s:search.connect(s:modules.get('NoInsert').make_special_chars())
 call s:search.connect(s:modules.get('KeyMapping').make_emacs())
@@ -100,6 +103,11 @@ function! s:search.keymapping() "{{{
 \           "key" : "<Over>(em-openallfold)",
 \           "noremap" : 1,
 \       },
+\       "\<CR>"   : {
+\           "key" : "<Over>(exit)",
+\           "noremap" : 1,
+\           "lock" : 1,
+\       },
 \   }
 endfunction "}}}
 
@@ -119,8 +127,8 @@ function! EasyMotion#command_line#cunmap(lhs)
     call s:search.cunmap(lhs)
 endfunction
 function! s:as_keymapping(key)
-	execute 'let result = "' . substitute(a:key, '\(<.\{-}>\)', '\\\1', 'g') . '"'
-	return result
+    execute 'let result = "' . substitute(a:key, '\(<.\{-}>\)', '\\\1', 'g') . '"'
+    return result
 endfunction
 "}}}
 "}}}
@@ -136,6 +144,8 @@ function! s:search.on_enter(cmdline) "{{{
         endif
         call EasyMotion#highlight#add_highlight('\%#',
                                               \ g:EasyMotion_hl_inc_cursor)
+        call a:cmdline.set_suffix(printf("col:%d", a:cmdline.getpos()))
+        " redraw
     endif
 endfunction "}}}
 function! s:search.on_leave(cmdline) "{{{
@@ -158,6 +168,9 @@ function! s:search.on_char(cmdline) "{{{
         if g:EasyMotion_off_screen_search
             call s:off_screen_search(re)
         endif
+        call a:cmdline.set_suffix(printf("col:%d", a:cmdline.getpos()))
+        "redraw
+        " throw 'vital-over excetion'
     elseif s:search.line.length() >=  s:num_strokes
         call s:search.exit()
     endif
@@ -184,7 +197,7 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
     let input = s:search.get()
     if input == '' && ! s:search.exit_code()
         return a:prev
-    elseif s:search.exit_code() == 1 " cancelled
+    elseif s:search.exit_code() == 1 || s:search.exit_code() == -1
         call s:Cancell()
         return ''
     else
@@ -243,6 +256,7 @@ function! s:off_screen_search(re) "{{{
             keepjumps call setpos('.', s:orig_pos)
         endif
     endif
+    " redraw
 endfunction "}}}
 function! s:adjust_screen() "{{{
     if s:save_direction != 'b'
