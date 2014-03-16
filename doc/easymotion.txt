@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:24 Feb 2014.
+*easymotion.txt*	Version 2.0  Last change:16 Mar 2014.
 
 
             ______                  __  ___       __  _
@@ -930,8 +930,8 @@ EasyMotion_add_search_history                 *g:EasyMotion_add_search_history*
     inputted pattern to vim default search history. If you want to disable
     this feature, set this value to 0.
 >
-    let g:EasyMotion_add_search_history = 0 
-< 
+    let g:EasyMotion_add_search_history = 0
+<
     Default: 1
 
 EasyMotion_off_screen_search                   *g:EasyMotion_off_screen_search*
