@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 03 Mar 2014.
+" Last Change: 17 Mar 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -349,7 +349,9 @@ function! s:SaveValue() "{{{
     call EasyMotion#helper#VarReset('&readonly', 0)
     call EasyMotion#helper#VarReset('&spell', 0)
     call EasyMotion#helper#VarReset('&virtualedit', '')
-    call EasyMotion#helper#VarReset('&foldmethod', 'manual')
+    if &foldmethod !=# 'expr'
+        call EasyMotion#helper#VarReset('&foldmethod', 'manual')
+    endif
 endfunction "}}}
 function! s:RestoreValue() "{{{
     call EasyMotion#helper#VarReset('&scrolloff')
@@ -358,7 +360,9 @@ function! s:RestoreValue() "{{{
     call EasyMotion#helper#VarReset('&readonly')
     call EasyMotion#helper#VarReset('&spell')
     call EasyMotion#helper#VarReset('&virtualedit')
-    call EasyMotion#helper#VarReset('&foldmethod')
+    if &foldmethod !=# 'expr'
+        call EasyMotion#helper#VarReset('&foldmethod')
+    endif
 endfunction "}}}
 function! s:turn_off_hl_error() "{{{
     let s:error_hl = EasyMotion#highlight#capture('Error')
