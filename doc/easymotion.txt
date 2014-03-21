@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.0  Last change:16 Mar 2014.
+*easymotion.txt*	Version 2.0  Last change:21 Mar 2014.
 
 
             ______                  __  ___       __  _
@@ -303,8 +303,8 @@ Repeat ~
             nmap <Leader>; <Plug>(easymotion-next)
             nmap <Leader>, <Plug>(easymotion-prev)
 <
-        This feature is partly inspired by and based on vim-sneak. vim-sneak
-        can be downloaded here: https://github.com/justinmk/vim-sneak
+        This feature is inspired by and based on vim-sneak. vim-sneak can be
+        downloaded here: https://github.com/justinmk/vim-sneak
 
 EasyMotion dot repeat~
                                     *easymotion-dotrepeat* *easymotion-textobjct*
