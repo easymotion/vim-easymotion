@@ -142,6 +142,8 @@ function! s:search.on_enter(cmdline) "{{{
             call EasyMotion#highlight#add_highlight('\_.*',
                                                 \ g:EasyMotion_hl_group_shade)
         endif
+    endif
+    if g:EasyMotion_cursor_highlight
         call EasyMotion#highlight#add_highlight('\%#',
                                               \ g:EasyMotion_hl_inc_cursor)
     endif

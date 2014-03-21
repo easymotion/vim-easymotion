@@ -3,7 +3,7 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 20 Feb 2014.
+" Last Change: 21 Mar 2014.
 " == Script initialization {{{
 if expand("%:p") ==# expand("<sfile>:p")
   unlet! g:EasyMotion_loaded
@@ -38,7 +38,7 @@ let g:EasyMotion_space_jump_first   = get(g: , 'EasyMotion_space_jump_first'   ,
 let g:EasyMotion_inc_highlight      = get(g: , 'EasyMotion_inc_highlight'      , 1)
 let g:EasyMotion_move_highlight     = get(g: , 'EasyMotion_move_highlight'     , 1)
 let g:EasyMotion_landing_highlight  = get(g: , 'EasyMotion_landing_highlight'  , 0)
-let g:EasyMotion_cursor_highlight   = get(g: , 'EasyMotion_cursor_highlight'   , 0)
+let g:EasyMotion_cursor_highlight   = get(g: , 'EasyMotion_cursor_highlight'   , 1)
 let g:EasyMotion_use_regexp         = get(g: , 'EasyMotion_use_regexp'         , 1)
 let g:EasyMotion_add_search_history = get(g: , 'EasyMotion_add_search_history' , 1)
 let g:EasyMotion_off_screen_search  = get(g: , 'EasyMotion_off_screen_search'  , 1)
