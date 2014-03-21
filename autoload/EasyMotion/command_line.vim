@@ -2,7 +2,7 @@
 " FILE: autoload/EasyMotion/command_line.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/osyo-manga/vim-over
-" Last Change: 15 Mar 2014.
+" Last Change: 21 Mar 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -144,8 +144,6 @@ function! s:search.on_enter(cmdline) "{{{
         endif
         call EasyMotion#highlight#add_highlight('\%#',
                                               \ g:EasyMotion_hl_inc_cursor)
-        call a:cmdline.set_suffix(printf("col:%d", a:cmdline.getpos()))
-        " redraw
     endif
 endfunction "}}}
 function! s:search.on_leave(cmdline) "{{{
@@ -168,9 +166,6 @@ function! s:search.on_char(cmdline) "{{{
         if g:EasyMotion_off_screen_search
             call s:off_screen_search(re)
         endif
-        call a:cmdline.set_suffix(printf("col:%d", a:cmdline.getpos()))
-        "redraw
-        " throw 'vital-over excetion'
     elseif s:search.line.length() >=  s:num_strokes
         call s:search.exit()
     endif
