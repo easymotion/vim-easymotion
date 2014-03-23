@@ -7,8 +7,10 @@ Vim motion on speed!
 About the authors
 =====
 
-- Kim Silkebækken (https://github.com/Lokaltog)
-- haya14busa (https://github.com/haya14busa) (since version 2.0)
+| Authors          |                               |
+|------------------|-------------------------------|
+| Kim Silkebækken | https://github.com/Lokaltog   |
+| haya14busa       | https://github.com/haya14busa |
 
 The EasyMotion project, revived!
 ======
