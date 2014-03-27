@@ -25,7 +25,7 @@ EasyMotion is now completely
 - **Well-behaved**: It's consistent with the default motions of Vim and works
   well in all modes. And it now supports repeating with the dot operator.
 - **Configurable**: You can easily configure its behavior and map it to any key
-- **Sofisticated**: Provide flawless, smooth and fast motions with minimal keystrokes
+- **Sophisticated**: Provide flawless, smooth and fast motions with minimal keystrokes
 
 Even though some default behaviors were modified and many new features were
 added, I carefully considered backward compatibility. So those of you updating
@@ -280,7 +280,7 @@ Minimal Configuration Tutorial
 ------------------------------
 **I recommend to configure and map keys by yourself if you are true Vimmer.**
 
-**Please do not be satisfied with just installing vim-easymotion, configuring it yourself boost your productibity more and more!**
+**Please do not be satisfied with just installing vim-easymotion, configuring it yourself boost your productivity more and more!**
 
 Default `<Leader><Leader>` prefix isn't easy to press, and I leave them just for backwards compatibility.
 You should at least change prefix key like this `map <Leader> <Plug>(easymotion-prefix)`
