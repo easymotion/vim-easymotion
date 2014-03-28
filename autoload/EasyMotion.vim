@@ -611,7 +611,8 @@ endfunction "}}}
 function! s:should_use_wundo() "{{{
     " wundu cannot use in command-line window and
     " unless undolist is not empty
-    return ! s:is_cmdwin() && undotree().seq_last != 0
+    " return ! s:is_cmdwin() && undotree().seq_last != 0
+    return 0
 endfunction "}}}
 function! EasyMotion#attach_active_autocmd() "{{{
     " Reference: https://github.com/justinmk/vim-sneak
