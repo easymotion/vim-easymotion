@@ -27,9 +27,9 @@
 " Test for `smartsign` feature for find motions
 
 " Avoid source test files {{{
-" if expand("%:p") ==# expand("<sfile>:p")
-"   finish
-" endif
+if expand("%:p") ==# expand("<sfile>:p")
+  finish
+endif
 "}}}
 
 " Setup {{{

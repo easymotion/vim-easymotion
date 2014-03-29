@@ -28,9 +28,9 @@
 "=============================================================================
 
 " Avoid source test files {{{
-" if expand("%:p") ==# expand("<sfile>:p")
-"   finish
-" endif
+if expand("%:p") ==# expand("<sfile>:p")
+  finish
+endif
 "}}}
 
 let s:root_dir = matchstr(system('git rev-parse --show-cdup'), '[^\n]\+')
