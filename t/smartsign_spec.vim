@@ -27,9 +27,9 @@
 " Test for `smartsign` feature for find motions
 
 " Avoid source test files {{{
-if expand("%:p") ==# expand("<sfile>:p")
-  finish
-endif
+" if expand("%:p") ==# expand("<sfile>:p")
+"   finish
+" endif
 "}}}
 
 " Setup {{{
@@ -50,21 +50,14 @@ endfunction
 
 " Smartsign configulation {{{
 describe 'Smartsign configulation'
-    before
-        new
-    end
-
-    after
-        close!
-    end
-
     it 'provide default dictionary'
         let smartdict_us = g:EasyMotion#sticky_table#us
         let smartdict_jp = g:EasyMotion#sticky_table#jp
         Expect smartdict_us !=# {}
         Expect smartdict_jp !=# {}
     end
-end "}}}
+end
+"}}}
 
 " Basic Smartsign feature with 1-key findmotions with US layout {{{
 describe 'Basic Smartsign feature with 1-key findmotions with US layout'
@@ -390,7 +383,8 @@ describe 'Basic Smartsign feature with 1-key findmotions with US layout'
         Expect CursorPos() == [l+2,1,' ']
         normal! 0
     end
-end "}}}
+end
+"}}}
 
 " Smartsign with 2-key find motions with JP layout {{{
 describe 'Smartsign with 2-key find motions with JP layout'
@@ -398,8 +392,11 @@ describe 'Smartsign with 2-key find motions with JP layout'
         new
         let g:EasyMotion_keys = '123456789'
         let g:EasyMotion_use_smartsign_jp = 1
-        map s2 <Plug>(easymotion-s2)
+        map s <Plug>(easymotion-s2)
         call EasyMotion#init()
+        call AddLine(' -= ^~ ;+ :* [{ ]} @` \|')
+        call AddLine(' 1! 2" 3# 4$ 5% 6& 7'' 8( 9) 0_')
+        call AddLine(' ,< .> /?')
         call AddLine(' -= ^~ ;+ :* [{ ]} @` \|')
         call AddLine(' 1! 2" 3# 4$ 5% 6& 7'' 8( 9) 0_')
         call AddLine(' ,< .> /?')
@@ -427,13 +424,11 @@ describe 'Smartsign with 2-key find motions with JP layout'
         normal s,,1
         Expect CursorPos() == [l,2,',']
         normal! 0
-        normal s,,2
+        Expect CursorPos() == [l,1,' ']
+        normal s,,3
         Expect CursorPos() == [l,1,' ']
         normal! 0
-        normal s ,1
-        Expect CursorPos() == [l,1,' ']
-        normal! 0
-        normal s, 2
+        normal s, 1
         Expect CursorPos() == [l,3,'<']
         normal! 0
         normal s<<1
@@ -446,7 +441,16 @@ describe 'Smartsign with 2-key find motions with JP layout'
         Expect CursorPos() == [l,1,' ']
         normal! 0
     end
-end "}}}
+    it ': s,,3'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,' ']
+        normal s,,3
+        Expect CursorPos() == [l,1,' ']
+        normal! 0
+    end
+end
+"}}}
 
 " Smartsign with n-key find search motions {{{
 describe 'Smartsign with n-key find search motions'
@@ -454,8 +458,11 @@ describe 'Smartsign with n-key find search motions'
         new
         let g:EasyMotion_keys = '123456789'
         let g:EasyMotion_use_smartsign_jp = 1
-        map s2 <Plug>(easymotion-s2)
+        map / <Plug>(easymotion-sn)
         call EasyMotion#init()
+        call AddLine(' -= ^~ ;+ :* [{ ]} @` \|')
+        call AddLine(' 1! 2" 3# 4$ 5% 6& 7'' 8( 9) 0_')
+        call AddLine(' ,< .> /?')
         call AddLine(' -= ^~ ;+ :* [{ ]} @` \|')
         call AddLine(' 1! 2" 3# 4$ 5% 6& 7'' 8( 9) 0_')
         call AddLine(' ,< .> /?')
@@ -472,14 +479,15 @@ describe 'Smartsign with n-key find search motions'
         Expect CursorPos() == [l,1,' ']
 
         " ,<
-        normal s,,1
-        Expect CursorPos() != [l,2,',']
+        normal /,,1
+        Expect CursorPos() == [l,1,' ']
         normal! 0
-        normal s,<1
-        Expect CursorPos() == [l,2,',']
+        normal /,<1
+        Expect CursorPos() == [l,1,' ']
         normal! 0
     end
-end "}}}
+end
+"}}}
 
 " __END__  {{{
 " vim: expandtab softtabstop=4 shiftwidth=4
