@@ -3,7 +3,6 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 17 Mar 2014.
 "=============================================================================
 " Saving 'cpoptions' {{{
 scriptencoding utf-8
@@ -436,7 +435,7 @@ function! s:convertRegep(input) "{{{
     " 2. migemo
     " 3. smartsign
     " 4. smartcase
-    let re = s:should_use_regexp() ? a:input : escape(a:input, '.$^~\[]')
+    let re = s:should_use_regexp() ? a:input : s:escape_regexp_char(a:input)
 
     " Convert space to match only start of spaces
     if re ==# ' '
@@ -473,15 +472,39 @@ function! s:convertMigemo(re) "{{{
     endif
     return re
 endfunction "}}}
-function! s:convertSmartsign(re, char) "{{{
+function! s:convertSmartsign(re, chars) "{{{
+    " Convert given chars to smartsign string
+    " Example: 12 -> [1!][2@]
+    "          a] -> a[]}]
+
+    " Load smartsign dictionary
     let smart_dict = s:load_smart_dict()
-    let upper_sign = escape(get(smart_dict, a:char, ''), '.$^~')
-    if upper_sign ==# ''
-        return a:re
-    else
-        let re = a:re . '\|' . upper_sign
-        return re
-    endif
+    " Prepare converted string
+    let converted_str = ''
+    " Get `upper_sign` for each given chars
+    " Split chars into list
+    for char in split(a:chars, '\zs')
+        let upper_sign = s:get_escaped_group_char(smart_dict, char)
+        if upper_sign ==# ''
+            let converted_str .= s:escape_regexp_char(char)
+        else
+            " [1!]
+            let converted_str .= '[' . char . upper_sign . ']'
+        endif
+    endfor
+    return converted_str
+endfunction "}}}
+function! s:get_escaped_group_char(dict, char) "{{{
+    " Get escaped char from given dictionary
+    " return '' if char is not find
+    " Used inside `[]`
+    return escape(get(a:dict, a:char, ''), '^')
+endfunction "}}}
+function! s:escape_regexp_char(char) "{{{
+    " Get escaped char from given dictionary
+    " return '' if char is not find
+    " Used inside `[]`
+    return escape(a:char, '.$^~\[]')
 endfunction "}}}
 function! s:convertSmartcase(re, char) "{{{
     let re = a:re
@@ -522,9 +545,13 @@ function! s:should_use_migemo(char) "{{{
     return 0
 endfunction "}}}
 function! s:should_use_smartsign(char) "{{{
+    " Smartsign Dictionary exists?
+    " \A: non-alphabetic character
+    " Do not use smartsign for n-key find search motions
     if (exists('g:EasyMotion_use_smartsign_us')  ||
     \   exists('g:EasyMotion_use_smartsign_jp')) &&
-    \  match(a:char, '\A') != -1
+    \  match(a:char, '\A') != -1 &&
+    \ exists('s:current.is_search') && s:current.is_search == 0
         return 1
     else
         return 0
