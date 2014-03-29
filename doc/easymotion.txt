@@ -152,7 +152,7 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-jumptoanywhere) | See |<Plug>(easymotion-jumptoanywhere)|
     <Plug>(easymotion-repeat)         | See |<Plug>(easymotion-repeat)|
     <Plug>(easymotion-next)           | See |<Plug>(easymotion-next)|
-    <Plug>(easymotion-previous)       | See |<Plug>(easymotion-previous)|
+    <Plug>(easymotion-prev)           | See |<Plug>(easymotion-prev)|
     <Plug>(easymotion-sol-j)          | See |<Plug>(easymotion-sol-j)|
     <Plug>(easymotion-sol-k)          | See |<Plug>(easymotion-sol-k)|
     <Plug>(easymotion-eol-j)          | See |<Plug>(easymotion-eol-j)|
