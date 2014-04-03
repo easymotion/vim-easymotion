@@ -29,6 +29,10 @@ let s:save_cpo = &cpo
 set cpo&vim
 " }}}
 
+function! EasyMotion#helper#load()
+    " load
+endfunction
+
 function! EasyMotion#helper#mode(flag) "{{{
     return mode(a:flag) == "\<C-v>" ? "C-v" : mode(a:flag)
 endfunction "}}}

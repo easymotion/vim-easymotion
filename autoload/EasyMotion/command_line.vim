@@ -30,6 +30,10 @@ let s:save_cpo = &cpo
 set cpo&vim
 " }}}
 
+function! EasyMotion#command_line#load()
+    " load
+endfunction
+
 " CommandLine:
 let s:V = vital#of('easymotion')
 let s:cmdline = s:V.import('Over.Commandline.Base')

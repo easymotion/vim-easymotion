@@ -9,6 +9,12 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 " }}}
+function! EasyMotion#preload()
+    " Preload autoload files
+    call EasyMotion#command_line#load()
+    call EasyMotion#helper#load()
+endfunction
+
 " Init: {{{
 function! EasyMotion#init()
     call EasyMotion#highlight#load()
