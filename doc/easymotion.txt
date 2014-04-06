@@ -508,7 +508,9 @@ keymapping,
 
     <Leader>s{char}{char}{char}...<CR>
 
-    You can use <C-h> to delete while typing.
+    You can use <C-h> to delete while typing, and Vim's default |n| & |N|
+    keymappings works after this motion(|<Plug>(easymotion-sn)|) to move next or
+    previous matches.
 
     Note: the 'n' key motion provides incremental highlighting. If you don't
           want to highlight incrementally, set |g:EasyMotion_inc_highlight|
