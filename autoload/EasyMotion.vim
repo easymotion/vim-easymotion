@@ -58,6 +58,7 @@ function! EasyMotion#reset()
         \ 'regexp' : 0,
         \ 'bd_t' : 0,
         \ 'find_bd' : 0,
+        \ 'linewise' : 0,
         \ }
         " regexp: -> regular expression
         "   This value is used when multi input find motion. If this values is
@@ -187,7 +188,8 @@ endfunction " }}}
 " -- JK Motion ---------------------------
 function! EasyMotion#JK(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    "FIXME: support exclusive
+    let s:flag.linewise = 1
+
     if g:EasyMotion_startofline
         call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', 0)
     else
@@ -198,10 +200,12 @@ function! EasyMotion#JK(visualmode, direction) " {{{
 endfunction " }}}
 function! EasyMotion#Sol(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
+    let s:flag.linewise = 1
     call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#Eol(visualmode, direction) " {{{
+    let s:flag.linewise = 1
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     call s:EasyMotion('\(\w\|\s*\zs\|.\|^\)$', a:direction, a:visualmode ? visualmode() : '', '')
     return s:EasyMotion_is_cancelled
@@ -1370,6 +1374,12 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
                 " See: h: o_v }}}
                 normal! v
             endif " }}}
+
+            if s:current.is_operator && s:flag.linewise
+                " TODO: Is there better solution?
+                " Maike it linewise
+                normal! V
+            endif
 
             " Adjust screen especially for visual scroll & offscreen search {{{
             " Otherwise, cursor line will move middle line of window
