@@ -151,6 +151,7 @@ endfunction " }}}
 " -- Word Motion -------------------------
 function! EasyMotion#WB(visualmode, direction) " {{{
     "FIXME: inconsistent with default vim motion
+    "FIXED: -> EasyMotion#WBK()
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     call s:EasyMotion('\(\<.\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
     return s:EasyMotion_is_cancelled
@@ -201,7 +202,7 @@ endfunction " }}}
 function! EasyMotion#Sol(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let s:flag.linewise = 1
-    call s:EasyMotion('^\(\w\|\s*\zs\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
+    call s:EasyMotion('^\(.\|$\)', a:direction, a:visualmode ? visualmode() : '', '')
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#Eol(visualmode, direction) " {{{
