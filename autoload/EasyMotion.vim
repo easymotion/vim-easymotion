@@ -353,9 +353,9 @@ function! s:SaveValue() "{{{
     call EasyMotion#helper#VarReset('&readonly', 0)
     call EasyMotion#helper#VarReset('&spell', 0)
     call EasyMotion#helper#VarReset('&virtualedit', '')
-    if &foldmethod !=# 'expr'
+    " if &foldmethod !=# 'expr'
         call EasyMotion#helper#VarReset('&foldmethod', 'manual')
-    endif
+    " endif
 endfunction "}}}
 function! s:RestoreValue() "{{{
     call EasyMotion#helper#VarReset('&scrolloff')
@@ -364,9 +364,9 @@ function! s:RestoreValue() "{{{
     call EasyMotion#helper#VarReset('&readonly')
     call EasyMotion#helper#VarReset('&spell')
     call EasyMotion#helper#VarReset('&virtualedit')
-    if &foldmethod !=# 'expr'
+    " if &foldmethod !=# 'expr'
         call EasyMotion#helper#VarReset('&foldmethod')
-    endif
+    " endif
 endfunction "}}}
 function! s:turn_off_hl_error() "{{{
     let s:error_hl = EasyMotion#highlight#capture('Error')
