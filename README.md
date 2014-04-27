@@ -175,10 +175,10 @@ EasyMotion can be configured to avoid repetitive use of the `h` `j` `k` and
 
 ```vim
 " Gif config
-map <Leader>h <Plug>(easymotion-lineforward)
+map <Leader>l <Plug>(easymotion-lineforward)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
-map <Leader>l <Plug>(easymotion-linebackward)
+map <Leader>h <Plug>(easymotion-linebackward)
 
 let g:EasyMotion_startofline = 0 " keep cursor colum when JK motion
 ```
