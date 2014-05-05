@@ -452,7 +452,7 @@ function! s:convertRegep(input) "{{{
     endif
 
     if s:should_use_smartsign(a:input)
-        let re = s:convertSmartsign(re, a:input)
+        let re = s:convertSmartsign(a:input)
     endif
 
     let case_flag = EasyMotion#helper#should_case_sensitive(
@@ -477,7 +477,7 @@ function! s:convertMigemo(re) "{{{
     endif
     return re
 endfunction "}}}
-function! s:convertSmartsign(re, chars) "{{{
+function! s:convertSmartsign(chars) "{{{
     " Convert given chars to smartsign string
     " Example: 12 -> [1!][2@]
     "          a] -> a[]}]
@@ -519,8 +519,8 @@ endfunction "}}}
 function! s:should_use_regexp() "{{{
     return g:EasyMotion_use_regexp == 1 && s:flag.regexp == 1
 endfunction "}}}
-function! s:should_use_migemo(char) "{{{
-    if ! g:EasyMotion_use_migemo || match(a:char, '\A') != -1
+function! s:should_use_migemo(chars) "{{{
+    if ! g:EasyMotion_use_migemo || match(a:chars, '\A') != -1
         return 0
     endif
 
@@ -546,13 +546,13 @@ function! s:should_use_migemo(char) "{{{
 
     return 0
 endfunction "}}}
-function! s:should_use_smartsign(char) "{{{
+function! s:should_use_smartsign(chars) "{{{
     " Smartsign Dictionary exists?
     " \A: non-alphabetic character
     " Do not use smartsign for n-key find search motions
     if (exists('g:EasyMotion_use_smartsign_us')  ||
     \   exists('g:EasyMotion_use_smartsign_jp')) &&
-    \  match(a:char, '\A') != -1 &&
+    \  match(a:chars, '\A') != -1 &&
     \ exists('s:current.is_search') && s:current.is_search == 0
         return 1
     else
