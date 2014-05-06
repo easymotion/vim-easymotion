@@ -506,9 +506,6 @@ function! s:get_escaped_group_char(dict, char) "{{{
     return escape(get(a:dict, a:char, ''), '^')
 endfunction "}}}
 function! s:escape_regexp_char(char) "{{{
-    " Get escaped char from given dictionary
-    " return '' if char is not find
-    " Used inside `[]`
     return escape(a:char, '.$^~\[]*')
 endfunction "}}}
 function! s:convertSmartcase(re, char) "{{{
