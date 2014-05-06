@@ -440,6 +440,7 @@ function! s:convertRegep(input) "{{{
     " 2. migemo
     " 3. smartsign
     " 4. smartcase
+    " 5. user defined dict
     let re = s:should_use_regexp() ? a:input : s:escape_regexp_char(a:input)
 
     " Convert space to match only start of spaces
@@ -453,6 +454,10 @@ function! s:convertRegep(input) "{{{
 
     if s:should_use_smartsign(a:input)
         let re = s:convertSmartsign(a:input)
+    endif
+
+    if s:should_use_userdict(a:input)
+        let re = printf('%s\|%s', re, g:EasyMotion_userdict[a:input])
     endif
 
     let case_flag = EasyMotion#helper#should_case_sensitive(
@@ -559,13 +564,19 @@ function! s:should_use_smartsign(chars) "{{{
         return 0
     endif
 endfunction "}}}
-function! s:convert_t_regexp(re, direction)
+function! s:should_use_userdict(chars) "{{{
+    return    exists('g:EasyMotion_userdict')
+        \  && exists('s:current.is_search') && s:current.is_search == 0
+        \  && type(g:EasyMotion_userdict) == type({})
+        \  && has_key(g:EasyMotion_userdict, a:chars)
+endfunction "}}}
+function! s:convert_t_regexp(re, direction) "{{{
     if a:direction == 0 "forward
         return '\_.\ze\('.a:re.'\)'
     elseif a:direction == 1 "backward
         return '\('.a:re.'\)\@<=\_.'
     endif
-endfunction
+endfunction "}}}
 
 function! s:handleEmpty(input, visualmode) "{{{
     " if empty, reselect and return 1
