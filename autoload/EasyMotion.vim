@@ -1172,7 +1172,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
             " Skip folded lines {{{
             if EasyMotion#helper#is_folded(pos[0])
                 if search_direction ==# 'b'
-                    keepjumps call cursor(foldclosed(pos[0]-1), 0)
+                    " FIXME: Hmm... I should use filter()
+                    " keepjumps call cursor(foldclosed(pos[0]), 0)
                 else
                     keepjumps call cursor(foldclosedend(pos[0]+1), 0)
                 endif
