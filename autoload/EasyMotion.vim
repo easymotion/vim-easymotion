@@ -509,7 +509,7 @@ function! s:escape_regexp_char(char) "{{{
     " Get escaped char from given dictionary
     " return '' if char is not find
     " Used inside `[]`
-    return escape(a:char, '.$^~\[]')
+    return escape(a:char, '.$^~\[]*')
 endfunction "}}}
 function! s:convertSmartcase(re, char) "{{{
     let re = a:re
