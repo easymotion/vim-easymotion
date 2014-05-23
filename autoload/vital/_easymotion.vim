@@ -59,6 +59,19 @@ function! s:unload()
   let s:loaded = {}
 endfunction
 
+function! s:exists(name)
+  return s:_get_module_path(a:name) !=# ''
+endfunction
+
+function! s:search(pattern)
+  let target = substitute(a:pattern, '\.', '/', 'g')
+  let tailpath = printf('autoload/vital/%s/%s.vim', s:self_version, target)
+
+  let paths = s:_runtime_files(tailpath)
+  let modules = sort(map(paths, 's:_file2module(v:val)'))
+  return s:_uniq(modules)
+endfunction
+
 function! s:_import(name)
   if type(a:name) == type(0)
     return s:_build_module(a:name)
@@ -89,19 +102,16 @@ function! s:_get_module_path(name)
   if a:name ==# ''
     let tailpath = printf('autoload/vital/%s.vim', s:self_version)
   elseif a:name =~# '\v^\u\w*%(\.\u\w*)*$'
-    let target = '/' . substitute(a:name, '\W\+', '/', 'g')
-    let tailpath = printf('autoload/vital/%s%s.vim', s:self_version, target)
+    let target = substitute(a:name, '\W\+', '/', 'g')
+    let tailpath = printf('autoload/vital/%s/%s.vim', s:self_version, target)
   else
     throw 'vital: Invalid module name: ' . a:name
   endif
 
-  if s:globpath_third_arg
-    let paths = split(globpath(&runtimepath, tailpath, 1), "\n")
-  else
-    let paths = split(globpath(&runtimepath, tailpath), "\n")
-  endif
+  let paths = s:_runtime_files(tailpath)
   call filter(paths, 'filereadable(v:val)')
-  return s:_unify_path(get(paths, 0, ''))
+  let path = get(paths, 0, '')
+  return path !=# '' ? s:_unify_path(path) : ''
 endfunction
 
 function! s:_scripts()
@@ -116,6 +126,12 @@ function! s:_scripts()
   return scripts
 endfunction
 
+function! s:_file2module(file)
+  let filename = s:_unify_path(a:file)
+  let tail = matchstr(filename, 'autoload/vital/_\w\+/\zs.*\ze\.vim$')
+  return join(split(tail, '[\\/]\+'), '.')
+endfunction
+
 if filereadable(expand('<sfile>:r') . '.VIM')
   function! s:_unify_path(path)
     " Note: On windows, vim can't expand path names from 8.3 formats.
@@ -127,6 +143,16 @@ if filereadable(expand('<sfile>:r') . '.VIM')
 else
   function! s:_unify_path(path)
     return resolve(fnamemodify(a:path, ':p:gs?[\\/]\+?/?'))
+  endfunction
+endif
+
+if s:globpath_third_arg
+  function! s:_runtime_files(path)
+    return split(globpath(&runtimepath, a:path, 1), "\n")
+  endfunction
+else
+  function! s:_runtime_files(path)
+    return split(globpath(&runtimepath, a:path), "\n")
   endfunction
 endif
 
@@ -185,6 +211,25 @@ else
     return map(filter(split(funcs, "\n"),
     \          'stridx(v:val, prefix) > 0 && v:val =~# filter_pat'),
     \          'matchstr(v:val, map_pat)')
+  endfunction
+endif
+
+if exists('*uniq')
+  function! s:_uniq(list)
+    return uniq(a:list)
+  endfunction
+else
+  function! s:_uniq(list)
+    let i = len(a:list) - 1
+    while 0 < i
+      if a:list[i] ==# a:list[i - 1]
+        call remove(a:list, i)
+        let i -= 2
+      else
+        let i -= 1
+      endif
+    endwhile
+    return a:list
   endfunction
 endif
 

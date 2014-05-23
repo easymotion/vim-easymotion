@@ -29,13 +29,8 @@ function! s:conj(xs, x)
 endfunction
 
 " Removes duplicates from a list.
-function! s:uniq(list, ...)
-  if a:0
-    echomsg "Vital.Data.List.uniq() with 2 arguments is deprecated! Please use uniq_by() instead, if you still want to use the 2nd argument."
-    return s:uniq_by(a:list, a:1)
-  else
-    return s:uniq_by(a:list, 'v:val')
-  endif
+function! s:uniq(list)
+  return s:uniq_by(a:list, 'v:val')
 endfunction
 
 " Removes duplicates from a list.
@@ -201,6 +196,18 @@ endfunction
 " similar to Haskell's Prelude.or
 function! s:or(xs)
   return s:any('v:val', a:xs)
+endfunction
+
+function! s:map_accum(expr, xs, init)
+  let memo = []
+  let init = a:init
+  for x in a:xs
+    let expr = substitute(a:expr, 'v:memo', init, 'g')
+    let expr = substitute(expr, 'v:val', x, 'g')
+    let [tmp, init] = eval(expr)
+    call add(memo, tmp)
+  endfor
+  return memo
 endfunction
 
 " similar to Haskell's Prelude.foldl
