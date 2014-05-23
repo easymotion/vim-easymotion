@@ -66,7 +66,7 @@ endfunction
 
 
 function! s:_as_echon(str)
-	return "echon " . string(a:str)
+	return "echon " . strtrans(string(a:str))
 endfunction
 
 
