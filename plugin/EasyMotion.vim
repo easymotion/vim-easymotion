@@ -3,7 +3,6 @@
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
 " Source: https://github.com/Lokaltog/vim-easymotion
-" Last Change: 21 Mar 2014.
 " == Script initialization {{{
 if expand("%:p") ==# expand("<sfile>:p")
   unlet! g:EasyMotion_loaded
@@ -42,7 +41,7 @@ let g:EasyMotion_cursor_highlight   = get(g: , 'EasyMotion_cursor_highlight'   ,
 let g:EasyMotion_use_regexp         = get(g: , 'EasyMotion_use_regexp'         , 1)
 let g:EasyMotion_add_search_history = get(g: , 'EasyMotion_add_search_history' , 1)
 let g:EasyMotion_off_screen_search  = get(g: , 'EasyMotion_off_screen_search'  , 1)
-let g:EasyMotion_force_csapprox     = get(g: , 'EasyMotion_force_csapprox'    , 0)
+let g:EasyMotion_force_csapprox     = get(g: , 'EasyMotion_force_csapprox'     , 0)
 let g:EasyMotion_show_prompt        = get(g: , 'EasyMotion_show_prompt'        , 1)
 let g:EasyMotion_prompt             =
     \ get(g: , 'EasyMotion_prompt' , 'Search for {n} character(s): ')
@@ -60,7 +59,7 @@ let g:EasyMotion_disable_two_key_combo     =
 "       l is short for (within) line
 
 function! s:find_motion_map_helper(motions) "{{{
-	for [name, dict] in items(a:motions)
+    for [name, dict] in items(a:motions)
         silent exec 'noremap  <silent><Plug>(easymotion-'.name.')' .
             \ '      :<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',0,'. dict.direction .')<CR>'
         silent exec 'xnoremap <silent><Plug>(easymotion-'.name.')' .
@@ -72,50 +71,50 @@ function! s:find_motion_map_helper(motions) "{{{
 endfunction "}}}
 " Find Motion: {{{
 call s:find_motion_map_helper({
-    \ 'f'   : {'fnc': 'S' , 'cnt': 1, 'direction': 0},
-    \ 'F'   : {'fnc': 'S' , 'cnt': 1, 'direction': 1},
-    \ 's'   : {'fnc': 'S' , 'cnt': 1, 'direction': 2},
-    \ 'bd-f'   : {'fnc': 'S' , 'cnt': 1, 'direction': 2},
-    \ 't'   : {'fnc': 'T' , 'cnt': 1, 'direction': 0},
-    \ 'T'   : {'fnc': 'T' , 'cnt': 1, 'direction': 1},
-    \ 'bd-t'  : {'fnc': 'T', 'cnt': 1, 'direction': 2},
-    \ 'fl'  : {'fnc': 'SL', 'cnt': 1, 'direction': 0},
-    \ 'Fl'  : {'fnc': 'SL', 'cnt': 1, 'direction': 1},
-    \ 'sl'  : {'fnc': 'SL', 'cnt': 1, 'direction': 2},
-    \ 'bd-fl'  : {'fnc': 'SL', 'cnt': 1, 'direction': 2},
-    \ 'tl'  : {'fnc': 'TL', 'cnt': 1, 'direction': 0},
-    \ 'Tl'  : {'fnc': 'TL', 'cnt': 1, 'direction': 1},
-    \ 'bd-tl'  : {'fnc': 'TL', 'cnt': 1, 'direction': 2},
+    \ 'f'      : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 0},
+    \ 'F'      : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 1},
+    \ 's'      : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 2},
+    \ 'bd-f'   : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 2},
+    \ 't'      : {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 0},
+    \ 'T'      : {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 1},
+    \ 'bd-t'   : {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 2},
+    \ 'fl'     : {'fnc' : 'SL', 'cnt' : 1, 'direction'  : 0},
+    \ 'Fl'     : {'fnc' : 'SL', 'cnt' : 1, 'direction'  : 1},
+    \ 'sl'     : {'fnc' : 'SL', 'cnt' : 1, 'direction'  : 2},
+    \ 'bd-fl'  : {'fnc' : 'SL', 'cnt' : 1, 'direction'  : 2},
+    \ 'tl'     : {'fnc' : 'TL', 'cnt' : 1, 'direction'  : 0},
+    \ 'Tl'     : {'fnc' : 'TL', 'cnt' : 1, 'direction'  : 1},
+    \ 'bd-tl'  : {'fnc' : 'TL', 'cnt' : 1, 'direction'  : 2},
     \
-    \ 'f2'  : {'fnc': 'S' , 'cnt': 2, 'direction': 0},
-    \ 'F2'  : {'fnc': 'S' , 'cnt': 2, 'direction': 1},
-    \ 's2'  : {'fnc': 'S' , 'cnt': 2, 'direction': 2},
-    \ 'bd-f2'  : {'fnc': 'S' , 'cnt': 2, 'direction': 2},
-    \ 't2'  : {'fnc': 'T' , 'cnt': 2, 'direction': 0},
-    \ 'T2'  : {'fnc': 'T' , 'cnt': 2, 'direction': 1},
-    \ 'bd-t2'  : {'fnc': 'T', 'cnt': 2, 'direction': 2},
-    \ 'fl2' : {'fnc': 'SL', 'cnt': 2, 'direction': 0},
-    \ 'Fl2' : {'fnc': 'SL', 'cnt': 2, 'direction': 1},
-    \ 'sl2' : {'fnc': 'SL', 'cnt': 2, 'direction': 2},
-    \ 'bd-fl2' : {'fnc': 'SL', 'cnt': 2, 'direction': 2},
-    \ 'tl2' : {'fnc': 'TL', 'cnt': 2, 'direction': 0},
-    \ 'Tl2' : {'fnc': 'TL', 'cnt': 2, 'direction': 1},
-    \ 'bd-tl2'  : {'fnc': 'TL', 'cnt': 2, 'direction': 2},
+    \ 'f2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 0},
+    \ 'F2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 1},
+    \ 's2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 2},
+    \ 'bd-f2'  : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 2},
+    \ 't2'     : {'fnc' : 'T' , 'cnt' : 2, 'direction'  : 0},
+    \ 'T2'     : {'fnc' : 'T' , 'cnt' : 2, 'direction'  : 1},
+    \ 'bd-t2'  : {'fnc' : 'T' , 'cnt' : 2, 'direction'  : 2},
+    \ 'fl2'    : {'fnc' : 'SL', 'cnt' : 2, 'direction'  : 0},
+    \ 'Fl2'    : {'fnc' : 'SL', 'cnt' : 2, 'direction'  : 1},
+    \ 'sl2'    : {'fnc' : 'SL', 'cnt' : 2, 'direction'  : 2},
+    \ 'bd-fl2' : {'fnc' : 'SL', 'cnt' : 2, 'direction'  : 2},
+    \ 'tl2'    : {'fnc' : 'TL', 'cnt' : 2, 'direction'  : 0},
+    \ 'Tl2'    : {'fnc' : 'TL', 'cnt' : 2, 'direction'  : 1},
+    \ 'bd-tl2' : {'fnc' : 'TL', 'cnt' : 2, 'direction'  : 2},
     \
-    \ 'fn'  : {'fnc': 'S' , 'cnt': -1, 'direction': 0},
-    \ 'Fn'  : {'fnc': 'S' , 'cnt': -1, 'direction': 1},
-    \ 'sn'  : {'fnc': 'S' , 'cnt': -1, 'direction': 2},
-    \ 'bd-fn'  : {'fnc': 'S' , 'cnt': -1, 'direction': 2},
-    \ 'tn'  : {'fnc': 'T' , 'cnt': -1, 'direction': 0},
-    \ 'Tn'  : {'fnc': 'T' , 'cnt': -1, 'direction': 1},
-    \ 'bd-tn'  : {'fnc': 'T', 'cnt': -1, 'direction': 2},
-    \ 'fln' : {'fnc': 'SL', 'cnt': -1, 'direction': 0},
-    \ 'Fln' : {'fnc': 'SL', 'cnt': -1, 'direction': 1},
-    \ 'sln' : {'fnc': 'SL', 'cnt': -1, 'direction': 2},
-    \ 'bd-fln' : {'fnc': 'SL', 'cnt': -1, 'direction': 2},
-    \ 'tln' : {'fnc': 'TL', 'cnt': -1, 'direction': 0},
-    \ 'Tln' : {'fnc': 'TL', 'cnt': -1, 'direction': 1},
-    \ 'bd-tln'  : {'fnc': 'TL', 'cnt': -1, 'direction': 2},
+    \ 'fn'     : {'fnc' : 'S' , 'cnt' : -1, 'direction' : 0},
+    \ 'Fn'     : {'fnc' : 'S' , 'cnt' : -1, 'direction' : 1},
+    \ 'sn'     : {'fnc' : 'S' , 'cnt' : -1, 'direction' : 2},
+    \ 'bd-fn'  : {'fnc' : 'S' , 'cnt' : -1, 'direction' : 2},
+    \ 'tn'     : {'fnc' : 'T' , 'cnt' : -1, 'direction' : 0},
+    \ 'Tn'     : {'fnc' : 'T' , 'cnt' : -1, 'direction' : 1},
+    \ 'bd-tn'  : {'fnc' : 'T' , 'cnt' : -1, 'direction' : 2},
+    \ 'fln'    : {'fnc' : 'SL', 'cnt' : -1, 'direction' : 0},
+    \ 'Fln'    : {'fnc' : 'SL', 'cnt' : -1, 'direction' : 1},
+    \ 'sln'    : {'fnc' : 'SL', 'cnt' : -1, 'direction' : 2},
+    \ 'bd-fln' : {'fnc' : 'SL', 'cnt' : -1, 'direction' : 2},
+    \ 'tln'    : {'fnc' : 'TL', 'cnt' : -1, 'direction' : 0},
+    \ 'Tln'    : {'fnc' : 'TL', 'cnt' : -1, 'direction' : 1},
+    \ 'bd-tln' : {'fnc' : 'TL', 'cnt' : -1, 'direction' : 2},
     \ })
 "}}}
 
@@ -325,13 +324,13 @@ endif "}}}
 
 " == CommandLine Mapping {{{
 command! -nargs=*
-\	EMCommandLineNoreMap
+\   EMCommandLineNoreMap
 \   call EasyMotion#command_line#cnoremap([<f-args>])
 command! -nargs=*
-\	EMCommandLineMap
+\   EMCommandLineMap
 \   call EasyMotion#command_line#cmap([<f-args>])
 command! -nargs=1
-\	EMCommandLineUnMap
+\   EMCommandLineUnMap
 \   call EasyMotion#command_line#cunmap(<f-args>)
 "}}}
 
