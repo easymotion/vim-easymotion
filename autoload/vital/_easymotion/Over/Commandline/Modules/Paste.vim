@@ -9,8 +9,7 @@ let s:module = {
 
 function! s:module.on_char_pre(cmdline)
 	if a:cmdline.is_input("<Over>(paste)")
-		let register = v:register == "" ? '"' : v:register
-		call a:cmdline.insert(tr(getreg("*"), "\n", "\r"))
+		call a:cmdline.insert(@*)
 		call a:cmdline.setchar('')
 	endif
 endfunction

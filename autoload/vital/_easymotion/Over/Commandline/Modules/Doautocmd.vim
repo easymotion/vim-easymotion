@@ -29,12 +29,10 @@ let s:hooks = [
 \	"leave",
 \	"char",
 \	"char_pre",
-\	"draw",
-\	"draw_pre",
 \	"execute_pre",
 \	"execute_failed",
 \	"execute",
-\	"exception",
+\	"cancel"
 \]
 
 let s:hooks_camel = [
@@ -42,12 +40,10 @@ let s:hooks_camel = [
 \	"Leave",
 \	"Char",
 \	"CharPre",
-\	"Draw",
-\	"DrawPre",
 \	"ExecutePre",
 \	"ExecuteFailed",
 \	"Execute",
-\	"Exception",
+\	"Cancel"
 \]
 
 
