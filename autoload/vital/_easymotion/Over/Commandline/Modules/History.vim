@@ -12,7 +12,7 @@ function! s:module.histories()
 endfunction
 
 
-function! s:module.enter(...)
+function! s:module.on_enter(...)
 	let s:cmdhist = []
 	let s:count = 0
 endfunction

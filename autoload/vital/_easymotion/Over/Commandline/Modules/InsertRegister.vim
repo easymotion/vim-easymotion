@@ -51,9 +51,9 @@ function! s:module.on_char_pre(cmdline)
 		call a:cmdline.setline(self.old_line)
 		call a:cmdline.setpos(self.old_pos)
 		let char = a:cmdline.input_key()
-		if char =~ '^[0-9a-zA-z.%#:/"\-*]$'
- 			execute "let regist = @" . char
-			call a:cmdline.setchar(regist)
+		if char =~ '^[0-9a-zA-z.%#:/"\-*+]$'
+			let register = tr(getreg(char), "\n", "\r")
+			call a:cmdline.setchar(register)
 		elseif char == "="
 			call a:cmdline.setchar(s:input(a:cmdline))
 		elseif char == "\<C-w>"
@@ -87,10 +87,12 @@ endfunction
 function! s:module.on_char(cmdline)
 	if a:cmdline.is_input("\<C-r>")
 		call a:cmdline.tap_keyinput(self.prefix_key)
+		call a:cmdline.disable_keymapping()
 		call a:cmdline.setpos(a:cmdline.getpos()-1)
 	else
 		if exists("self.prefix_key")
 			call a:cmdline.untap_keyinput(self.prefix_key)
+			call a:cmdline.enable_keymapping()
 			unlet! self.prefix_key
 		endif
 	endif
