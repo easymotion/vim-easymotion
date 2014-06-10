@@ -77,6 +77,7 @@ function! EasyMotion#reset()
         \ 'dot_repeat_target_cnt' : 0,
         \ 'dot_prompt_user_cnt' : 0,
         \ 'changedtick' : 0,
+        \ 'v_count1' : 0,
         \ }
         " \ 'start_position' : [],
         " \ 'cursor_position' : [],
@@ -115,6 +116,8 @@ endfunction "}}}
 "   1 -> backward
 "   2 -> bi-direction (handle forward & backward at the same time) }}}
 function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
+    let s:current.v_count1 = v:count1
+
     if a:direction == 1
         let is_inclusive = 0
     else
@@ -1019,7 +1022,8 @@ function! s:PromptUser(groups, ...) "{{{
         if s:flag.flash
             " Always jump to the first match
             " let char = '#'
-            let char = '0'
+            " let char = '0'
+            let char = string(s:current.v_count1 - 1)
             let pauseTime = g:EasyMotion_flash_time_ms
             while pauseTime > 0
                 " Stop the pause early if we detect a key has been pressed
