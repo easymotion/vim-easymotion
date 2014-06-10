@@ -1292,7 +1292,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         " Attach specific key as marker to gathered matched coordinates
         let GroupingFn = function('s:GroupingAlgorithm' . s:grouping_algorithms[g:EasyMotion_grouping])
         if ! flash
-            let groups = GroupingFn(targets, split(motion_keys, '\zs'))
+            let groups = GroupingFn(targets, split(g:EasyMotion_keys, '\zs'))
         else
             let groups = {}
             if ! exists('targets1')
