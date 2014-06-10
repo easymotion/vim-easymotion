@@ -849,6 +849,7 @@ endfunction
 " }}}
 " Core Functions: {{{
 function! s:PromptUser(groups, ...) "{{{
+    let flash = 0
     if a:0 > 0
         let flash = a:1
     endif
@@ -993,7 +994,8 @@ function! s:PromptUser(groups, ...) "{{{
         " If a flash was requested, flash the possible matches
         if flash
             " Always jump to the first match
-            let char = '#'
+            " let char = '#'
+            let char = '0'
             let pauseTime = g:EasyMotion_flash_time_ms
             while pauseTime > 0
                 " Stop the pause early if we detect a key has been pressed
@@ -1070,12 +1072,16 @@ function! s:PromptUser(groups, ...) "{{{
     endif
     " }}}
     " -- Check if the input char is valid ---- {{{
-    if ! has_key(a:groups, char)
+    if ! has_key(a:groups, char) && ! flash
         throw 'Invalid target'
     endif
     " }}}
 
     let target = a:groups[char]
+
+    if flash
+        return target
+    endif
 
     if type(target) == type([])
         " Return target coordinates
@@ -1271,6 +1277,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
                     let t1 += 1
                 endif
             endwhile
+            let targets1 = targets
             let targets = targets3
             "}}}
         endif
@@ -1284,11 +1291,33 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
 
         " Attach specific key as marker to gathered matched coordinates
         let GroupingFn = function('s:GroupingAlgorithm' . s:grouping_algorithms[g:EasyMotion_grouping])
-        let motion_keys = g:EasyMotion_keys
-        if flash
-            let motion_keys = "#;23456789"
+        if ! flash
+            let groups = GroupingFn(targets, split(motion_keys, '\zs'))
+        else
+            let groups = {}
+            if ! exists('targets1')
+                let targets1 = targets
+            endif
+            let i = 1
+            for target in targets1
+                " let groups[i] = {'1' : target}
+                let groups[i] = target
+                let i += 1
+            endfor
+            if a:direction == 2
+                let i = 0
+                for target in targets2 " forword
+                    " let groups[i] = extend(groups[i], {'2' : target})
+                    if exists('groups[' . i . ']')
+                        " let groups[i] = {'0': groups[i], '1': target}
+                        let groups[i] = {' ': groups[i], '  ': target}
+                    else
+                        let groups[i] = target
+                    endif
+                    let i += 1
+                endfor
+            endif
         endif
-        let groups = GroupingFn(targets, split(motion_keys, '\zs'))
 
         " -- Shade inactive source --------------- {{{
         if g:EasyMotion_do_shade && targets_len != 1 && s:flag.dot_repeat != 1
@@ -1332,6 +1361,14 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         " -- Prompt user for target group/character, or just flash matches {{{
         if s:flag.dot_repeat != 1
             let coords = s:PromptUser(groups,flash)
+            if flash && type(coords) == type({})
+                let tmp = coords['  ']
+                unlet coords
+                let coords = tmp
+            endif
+            if exists('s:previous_target_coord')
+                unlet s:previous_target_coord
+            endif
             let s:previous_target_coord = coords
         else
             let coords = s:DotPromptUser(groups,flash)
@@ -1474,7 +1511,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
 
         " Show exception message
         if g:EasyMotion_ignore_exception != 1
-            call s:Message(v:exception)
+            call s:Message(v:exception . ' : ' . v:throwpoint)
         endif
 
         " -- Restore original cursor position/selection {{{

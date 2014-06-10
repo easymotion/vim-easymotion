@@ -98,10 +98,12 @@ call s:find_motion_map_helper({
     \ 'Tl'     : {'fnc' : 'TL', 'cnt' : 1, 'direction'  : 1},
     \ 'bd-tl'  : {'fnc' : 'TL', 'cnt' : 1, 'direction'  : 2},
     \
+    \ 'flash-f2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 0, 'flash' : 1},
     \ 'f2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 0},
     \ 'F2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 1},
     \ 's2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 2},
     \ 'bd-f2'  : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 2},
+    \ 'flash-bd-f2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 2, 'flash' : 1},
     \ 't2'     : {'fnc' : 'T' , 'cnt' : 2, 'direction'  : 0},
     \ 'T2'     : {'fnc' : 'T' , 'cnt' : 2, 'direction'  : 1},
     \ 'bd-t2'  : {'fnc' : 'T' , 'cnt' : 2, 'direction'  : 2},
