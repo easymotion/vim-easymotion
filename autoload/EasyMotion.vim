@@ -113,7 +113,11 @@ endfunction "}}}
 "   0 -> forward
 "   1 -> backward
 "   2 -> bi-direction (handle forward & backward at the same time) }}}
-function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
+function! EasyMotion#S(num_strokes, visualmode, direction, ...) " {{{
+    let flash = 0
+    if a:0 > 0
+        let flash = a:1
+    endif
     if a:direction == 1
         let is_inclusive = 0
     else
@@ -124,7 +128,7 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
     let s:flag.find_bd = a:direction == 2 ? 1 : 0
     let re = s:findMotion(a:num_strokes, a:direction)
     if s:handleEmpty(re, a:visualmode) | return | endif
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive, flash)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
@@ -840,7 +844,10 @@ endfunction
 " }}}
 " }}}
 " Core Functions: {{{
-function! s:PromptUser(groups) "{{{
+function! s:PromptUser(groups, ...) "{{{
+    if a:0 > 0
+        let flash = a:1
+    endif
     " Recursive
     let group_values = values(a:groups)
 
@@ -979,22 +986,37 @@ function! s:PromptUser(groups) "{{{
         call s:SetLines(lines_items, 'marker')
         redraw "}}}
 
-        " Get target character {{{
-        call s:Prompt('Target key')
-        let char = s:GetChar()
+        " If a flash was requested, flash the possible matches
+        if flash
+            " Always jump to the first match
+            let char = '#'
+            let pauseTime = g:EasyMotion_flash_time_ms
+            while pauseTime > 0
+                " Stop the pause early if we detect a key has been pressed
+                if getchar(1)
+                    break
+                endif
+                sleep 10m
+                let pauseTime -= 10
+            endwhile
+        else
+            " Get target character {{{
+            call s:Prompt('Target key')
+            let char = s:GetChar()
+
+            " Convert uppercase {{{
+            if g:EasyMotion_use_upper == 1 && match(g:EasyMotion_keys, '\l') == -1
+                let char = toupper(char)
+            endif "}}}
+
+            " Jump first target when Enter or Space key is pressed "{{{
+            if (char ==# "\<CR>" && g:EasyMotion_enter_jump_first == 1) ||
+            \  (char ==# "\<Space>" && g:EasyMotion_space_jump_first == 1)
+                " NOTE: matchstr() is multibyte aware.
+                let char = matchstr(g:EasyMotion_keys, '^.')
+            endif "}}}
+        endif
         "}}}
-
-        " Convert uppercase {{{
-        if g:EasyMotion_use_upper == 1 && match(g:EasyMotion_keys, '\l') == -1
-            let char = toupper(char)
-        endif "}}}
-
-        " Jump first target when Enter or Space key is pressed "{{{
-        if (char ==# "\<CR>" && g:EasyMotion_enter_jump_first == 1) ||
-        \  (char ==# "\<Space>" && g:EasyMotion_space_jump_first == 1)
-            " NOTE: matchstr() is multibyte aware.
-            let char = matchstr(g:EasyMotion_keys, '^.')
-        endif "}}}
 
         " For dot repeat {{{
         if mode(1) ==# 'no'
@@ -1060,7 +1082,11 @@ function! s:PromptUser(groups) "{{{
         return s:PromptUser(target)
     endif
 endfunction "}}}
-function! s:DotPromptUser(groups) "{{{
+function! s:DotPromptUser(groups, ...) "{{{
+    let flash = 0
+    if a:0 > 0
+        let flash = a:1
+    endif
     " Get char from previous target
     let char = s:dot_repeat.target[s:current.dot_repeat_target_cnt]
     " For dot repeat target chars
@@ -1073,10 +1099,14 @@ function! s:DotPromptUser(groups) "{{{
         return target
     else
         " Prompt for new target character
-        return s:PromptUser(target)
+        return s:PromptUser(target, flash)
     endif
 endfunction "}}}
-function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
+function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
+    let flash = 0
+    if a:0 > 0
+        let flash = a:1
+    endif
     " Store s:current original_position & cursor_position {{{
     " current cursor pos.
     let s:current.cursor_position = [line('.'), col('.')]
@@ -1250,7 +1280,11 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
 
         " Attach specific key as marker to gathered matched coordinates
         let GroupingFn = function('s:GroupingAlgorithm' . s:grouping_algorithms[g:EasyMotion_grouping])
-        let groups = GroupingFn(targets, split(g:EasyMotion_keys, '\zs'))
+        let motion_keys = g:EasyMotion_keys
+        if flash
+            let motion_keys = "#;23456789"
+        endif
+        let groups = GroupingFn(targets, split(motion_keys, '\zs'))
 
         " -- Shade inactive source --------------- {{{
         if g:EasyMotion_do_shade && targets_len != 1 && s:flag.dot_repeat != 1
@@ -1291,12 +1325,12 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         endif
         "}}}
 
-        " -- Prompt user for target group/character {{{
+        " -- Prompt user for target group/character, or just flash matches {{{
         if s:flag.dot_repeat != 1
-            let coords = s:PromptUser(groups)
+            let coords = s:PromptUser(groups,flash)
             let s:previous_target_coord = coords
         else
-            let coords = s:DotPromptUser(groups)
+            let coords = s:DotPromptUser(groups,flash)
         endif
         "}}}
 

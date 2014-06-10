@@ -52,6 +52,7 @@ let g:EasyMotion_command_line_key_mappings =
     \ get(g: , 'EasyMotion_command_line_key_mappings' , {})
 let g:EasyMotion_disable_two_key_combo     =
     \ get(g: , 'EasyMotion_disable_two_key_combo' , 0)
+let g:EasyMotion_flash_time_ms      = get(g: , 'EasyMotion_flash_time_ms'      , 300)
 
 "}}}
 
@@ -63,10 +64,14 @@ let g:EasyMotion_disable_two_key_combo     =
 
 function! s:find_motion_map_helper(motions) "{{{
     for [name, dict] in items(a:motions)
+        let flash = 0
+        if has_key(dict, 'flash')
+            let flash = dict.flash
+        endif
         silent exec 'noremap  <silent><Plug>(easymotion-'.name.')' .
-            \ '      :<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',0,'. dict.direction .')<CR>'
+            \ '      :<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',0,'. dict.direction .','.flash.')<CR>'
         silent exec 'xnoremap <silent><Plug>(easymotion-'.name.')' .
-            \ ' <Esc>:<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',1,'. dict.direction .')<CR>'
+            \ ' <Esc>:<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',1,'. dict.direction .','.flash.')<CR>'
     " Example:
     " noremap  <silent><Plug>(easymotion-f2) :<C-u>call EasyMotion#S(2,1,0)<CR>
     " xnoremap <silent><Plug>(easymotion-f2) <Esc>:<C-u>call EasyMotion#S(2,1,0)<CR>
@@ -76,6 +81,8 @@ endfunction "}}}
 call s:find_motion_map_helper({
     \ 'f'      : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 0},
     \ 'F'      : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 1},
+    \ 'flash-f': {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 0, 'flash' : 1},
+    \ 'flash-F': {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 1, 'flash' : 1},
     \ 's'      : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 2},
     \ 'bd-f'   : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 2},
     \ 't'      : {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 0},

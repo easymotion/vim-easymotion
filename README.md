@@ -262,6 +262,27 @@ let g:EasyMotion_smartcase = 1
 let g:EasyMotion_use_smartsign_us = 1
 ```
 
+#### Enhance `f` and `F` with flashing
+
+EasyMotion can make `f` and `F` motions flash the numbers of later possible matches which could be reached by `<n>;` and `<n>,`.  To try this mode, use the following mappings:
+
+```vim
+map f <Plug>(easymotion-flash-f)
+map F <Plug>(easymotion-flash-F)
+map ; <Plug>(easymotion-next)
+map , <Plug>(easymotion-prev)
+```
+
+This mode is under construction.  BUGs and TODOs are:
+
+- It shows numbers 1-9 fine, but it makes a mess of 10 and beyond.
+- After an `F` motion, `;` should continue in the same (backwards) direction, but it goes the wrong way because it is bound to `-next`.
+- It flashes and then jumps.  Ideally it would jump before flashing.
+- Similar bindings for `t` and `T`.
+- Bi-directional modes would be nice.
+- Similar flashing for other motions?
+
+
 
 Installation
 ------------
