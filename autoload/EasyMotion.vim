@@ -131,7 +131,11 @@ function! EasyMotion#S(num_strokes, visualmode, direction, ...) " {{{
     call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive, flash)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
-function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
+function! EasyMotion#T(num_strokes, visualmode, direction, ...) " {{{
+    let flash = 0
+    if a:0 > 0
+        let flash = a:1
+    endif
     if a:direction == 1
         let is_inclusive = 0
     else
@@ -149,7 +153,7 @@ function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
     else
         let re = s:convert_t_regexp(re, 0) " forward
     endif
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive, flash)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- Word Motion -------------------------

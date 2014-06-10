@@ -87,6 +87,8 @@ call s:find_motion_map_helper({
     \ 'bd-f'   : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 2},
     \ 't'      : {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 0},
     \ 'T'      : {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 1},
+    \ 'flash-t': {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 0, 'flash' : 1},
+    \ 'flash-T': {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 1, 'flash' : 1},
     \ 'bd-t'   : {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 2},
     \ 'fl'     : {'fnc' : 'SL', 'cnt' : 1, 'direction'  : 0},
     \ 'Fl'     : {'fnc' : 'SL', 'cnt' : 1, 'direction'  : 1},
