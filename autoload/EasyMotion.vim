@@ -59,6 +59,7 @@ function! EasyMotion#reset()
         \ 'bd_t' : 0,
         \ 'find_bd' : 0,
         \ 'linewise' : 0,
+        \ 'flash' : 0,
         \ }
         " regexp: -> regular expression
         "   This value is used when multi input find motion. If this values is
@@ -113,11 +114,7 @@ endfunction "}}}
 "   0 -> forward
 "   1 -> backward
 "   2 -> bi-direction (handle forward & backward at the same time) }}}
-function! EasyMotion#S(num_strokes, visualmode, direction, ...) " {{{
-    let flash = 0
-    if a:0 > 0
-        let flash = a:1
-    endif
+function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
     if a:direction == 1
         let is_inclusive = 0
     else
@@ -128,14 +125,10 @@ function! EasyMotion#S(num_strokes, visualmode, direction, ...) " {{{
     let s:flag.find_bd = a:direction == 2 ? 1 : 0
     let re = s:findMotion(a:num_strokes, a:direction)
     if s:handleEmpty(re, a:visualmode) | return | endif
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive, flash)
+    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
-function! EasyMotion#T(num_strokes, visualmode, direction, ...) " {{{
-    let flash = 0
-    if a:0 > 0
-        let flash = a:1
-    endif
+function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
     if a:direction == 1
         let is_inclusive = 0
     else
@@ -153,7 +146,7 @@ function! EasyMotion#T(num_strokes, visualmode, direction, ...) " {{{
     else
         let re = s:convert_t_regexp(re, 0) " forward
     endif
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive, flash)
+    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- Word Motion -------------------------
@@ -257,6 +250,27 @@ function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let re = g:EasyMotion_re_line_anywhere
     call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', 0)
+    return s:EasyMotion_is_cancelled
+endfunction " }}}
+" -- Flash Motion ------------------------
+function! EasyMotion#FlashS(num_strokes, visualmode, direction) " {{{
+    let s:flag.flash = 1
+    call EasyMotion#S(a:num_strokes, a:visualmode, a:direction)
+    return s:EasyMotion_is_cancelled
+endfunction " }}}
+function! EasyMotion#FlashT(num_strokes, visualmode, direction) " {{{
+    let s:flag.flash = 1
+    call EasyMotion#T(a:num_strokes, a:visualmode, a:direction)
+    return s:EasyMotion_is_cancelled
+endfunction " }}}
+function! EasyMotion#FlashWB(visualmode, direction) " {{{
+    let s:flag.flash = 1
+    call EasyMotion#FlashWBK(a:visualmode, a:direction)
+    return s:EasyMotion_is_cancelled
+endfunction " }}}
+function! EasyMotion#FlashE(visualmode, direction) " {{{
+    let s:flag.flash = 1
+    call EasyMotion#EK(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- User Motion -------------------------
@@ -850,10 +864,6 @@ endfunction
 " }}}
 " Core Functions: {{{
 function! s:PromptUser(groups, ...) "{{{
-    let flash = 0
-    if a:0 > 0
-        let flash = a:1
-    endif
     " Recursive
     let group_values = values(a:groups)
 
@@ -993,7 +1003,7 @@ function! s:PromptUser(groups, ...) "{{{
         redraw "}}}
 
         " If a flash was requested, flash the possible matches
-        if flash
+        if s:flag.flash
             " Always jump to the first match
             " let char = '#'
             let char = '0'
@@ -1080,7 +1090,8 @@ function! s:PromptUser(groups, ...) "{{{
 
     let target = a:groups[char]
 
-    if flash
+    " Do not call recursively for flash motions
+    if s:flag.flash
         return target
     endif
 
@@ -1094,10 +1105,6 @@ function! s:PromptUser(groups, ...) "{{{
     endif
 endfunction "}}}
 function! s:DotPromptUser(groups, ...) "{{{
-    let flash = 0
-    if a:0 > 0
-        let flash = a:1
-    endif
     " Get char from previous target
     let char = s:dot_repeat.target[s:current.dot_repeat_target_cnt]
     " For dot repeat target chars
@@ -1110,14 +1117,10 @@ function! s:DotPromptUser(groups, ...) "{{{
         return target
     else
         " Prompt for new target character
-        return s:PromptUser(target, flash)
+        return s:PromptUser(target)
     endif
 endfunction "}}}
 function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
-    let flash = 0
-    if a:0 > 0
-        let flash = a:1
-    endif
     " Store s:current original_position & cursor_position {{{
     " current cursor pos.
     let s:current.cursor_position = [line('.'), col('.')]
@@ -1291,10 +1294,11 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         "}}}
 
         " Attach specific key as marker to gathered matched coordinates
-        let GroupingFn = function('s:GroupingAlgorithm' . s:grouping_algorithms[g:EasyMotion_grouping])
-        if ! flash
+        if ! s:flag.flash
+            let GroupingFn = function('s:GroupingAlgorithm' . s:grouping_algorithms[g:EasyMotion_grouping])
             let groups = GroupingFn(targets, split(g:EasyMotion_keys, '\zs'))
         else
+            " flash motions
             let groups = {}
             if ! exists('targets1')
                 let targets1 = targets
@@ -1361,8 +1365,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
 
         " -- Prompt user for target group/character, or just flash matches {{{
         if s:flag.dot_repeat != 1
-            let coords = s:PromptUser(groups,flash)
-            if flash && type(coords) == type({})
+            let coords = s:PromptUser(groups)
+            if s:flag.flash && type(coords) == type({})
                 let tmp = coords['  ']
                 unlet coords
                 let coords = tmp
@@ -1372,7 +1376,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             endif
             let s:previous_target_coord = coords
         else
-            let coords = s:DotPromptUser(groups,flash)
+            let coords = s:DotPromptUser(groups)
         endif
         "}}}
 

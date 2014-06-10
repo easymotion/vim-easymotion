@@ -69,9 +69,9 @@ function! s:find_motion_map_helper(motions) "{{{
             let flash = dict.flash
         endif
         silent exec 'noremap  <silent><Plug>(easymotion-'.name.')' .
-            \ '      :<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',0,'. dict.direction .','.flash.')<CR>'
+            \ '      :<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',0,'. dict.direction . ')<CR>'
         silent exec 'xnoremap <silent><Plug>(easymotion-'.name.')' .
-            \ ' <Esc>:<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',1,'. dict.direction .','.flash.')<CR>'
+            \ ' <Esc>:<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',1,'. dict.direction . ')<CR>'
     " Example:
     " noremap  <silent><Plug>(easymotion-f2) :<C-u>call EasyMotion#S(2,1,0)<CR>
     " xnoremap <silent><Plug>(easymotion-f2) <Esc>:<C-u>call EasyMotion#S(2,1,0)<CR>
@@ -81,14 +81,10 @@ endfunction "}}}
 call s:find_motion_map_helper({
     \ 'f'      : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 0},
     \ 'F'      : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 1},
-    \ 'flash-f': {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 0, 'flash' : 1},
-    \ 'flash-F': {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 1, 'flash' : 1},
     \ 's'      : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 2},
     \ 'bd-f'   : {'fnc' : 'S' , 'cnt' : 1, 'direction'  : 2},
     \ 't'      : {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 0},
     \ 'T'      : {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 1},
-    \ 'flash-t': {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 0, 'flash' : 1},
-    \ 'flash-T': {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 1, 'flash' : 1},
     \ 'bd-t'   : {'fnc' : 'T' , 'cnt' : 1, 'direction'  : 2},
     \ 'fl'     : {'fnc' : 'SL', 'cnt' : 1, 'direction'  : 0},
     \ 'Fl'     : {'fnc' : 'SL', 'cnt' : 1, 'direction'  : 1},
@@ -98,12 +94,10 @@ call s:find_motion_map_helper({
     \ 'Tl'     : {'fnc' : 'TL', 'cnt' : 1, 'direction'  : 1},
     \ 'bd-tl'  : {'fnc' : 'TL', 'cnt' : 1, 'direction'  : 2},
     \
-    \ 'flash-f2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 0, 'flash' : 1},
     \ 'f2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 0},
     \ 'F2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 1},
     \ 's2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 2},
     \ 'bd-f2'  : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 2},
-    \ 'flash-bd-f2'     : {'fnc' : 'S' , 'cnt' : 2, 'direction'  : 2, 'flash' : 1},
     \ 't2'     : {'fnc' : 'T' , 'cnt' : 2, 'direction'  : 0},
     \ 'T2'     : {'fnc' : 'T' , 'cnt' : 2, 'direction'  : 1},
     \ 'bd-t2'  : {'fnc' : 'T' , 'cnt' : 2, 'direction'  : 2},
@@ -129,6 +123,19 @@ call s:find_motion_map_helper({
     \ 'tln'    : {'fnc' : 'TL', 'cnt' : -1, 'direction' : 0},
     \ 'Tln'    : {'fnc' : 'TL', 'cnt' : -1, 'direction' : 1},
     \ 'bd-tln' : {'fnc' : 'TL', 'cnt' : -1, 'direction' : 2},
+    \
+    \ 'flash-f'     : {'fnc' : 'FlashS' , 'cnt' : 1, 'direction' : 0},
+    \ 'flash-F'     : {'fnc' : 'FlashS' , 'cnt' : 1, 'direction' : 1},
+    \ 'flash-bd-f'  : {'fnc' : 'FlashS' , 'cnt' : 1, 'direction' : 2},
+    \ 'flash-t'     : {'fnc' : 'FlashT' , 'cnt' : 1, 'direction' : 0},
+    \ 'flash-T'     : {'fnc' : 'FlashT' , 'cnt' : 1, 'direction' : 1},
+    \ 'flash-bd-t'  : {'fnc' : 'FlashT' , 'cnt' : 1, 'direction' : 2},
+    \ 'flash-f2'    : {'fnc' : 'FlashS' , 'cnt' : 2, 'direction' : 0},
+    \ 'flash-F2'    : {'fnc' : 'FlashS' , 'cnt' : 2, 'direction' : 1},
+    \ 'flash-bd-f2' : {'fnc' : 'FlashS' , 'cnt' : 2, 'direction' : 2},
+    \ 'flash-t2'    : {'fnc' : 'FlashT' , 'cnt' : 2, 'direction' : 0},
+    \ 'flash-T2'    : {'fnc' : 'FlashT' , 'cnt' : 2, 'direction' : 1},
+    \ 'flash-bd-t2' : {'fnc' : 'FlashT' , 'cnt' : 2, 'direction' : 2},
     \ })
 "}}}
 
