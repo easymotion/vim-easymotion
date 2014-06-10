@@ -1316,7 +1316,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             if ! exists('targets1')
                 let targets1 = targets
             endif
-            let i = 1
+            let i = a:direction == 2 ? 1 : 0
             for target in targets1
                 " let groups[i] = {'1' : target}
                 let groups[i] = target
