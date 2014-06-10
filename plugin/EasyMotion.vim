@@ -301,6 +301,46 @@ xnoremap <silent><Plug>(easymotion-lineanywhere)
 "}}}
 "}}}
 
+" -- Flash Motion {{{
+" Word Flash: {{{
+noremap  <silent><Plug>(easymotion-flash-w)         :<C-u>call EasyMotion#FlashWB(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-flash-w)    <Esc>:<C-u>call EasyMotion#FlashWB(1,0)<CR>
+noremap  <silent><Plug>(easymotion-flash-b)         :<C-u>call EasyMotion#FlashWB(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-flash-b)    <Esc>:<C-u>call EasyMotion#FlashWB(1,1)<CR>
+noremap  <silent><Plug>(easymotion-flash-bd-w)      :<C-u>call EasyMotion#FlashWB(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-flash-bd-w) <Esc>:<C-u>call EasyMotion#FlashWB(1,2)<CR>
+"}}}
+
+" WORD Flash: {{{
+noremap  <silent><Plug>(easymotion-flash-W)         :<C-u>call EasyMotion#FlashWBW(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-flash-W)    <Esc>:<C-u>call EasyMotion#FlashWBW(1,0)<CR>
+noremap  <silent><Plug>(easymotion-flash-B)         :<C-u>call EasyMotion#FlashWBW(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-flash-B)    <Esc>:<C-u>call EasyMotion#FlashWBW(1,1)<CR>
+noremap  <silent><Plug>(easymotion-flash-bd-W)      :<C-u>call EasyMotion#FlashWBW(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-flash-bd-W) <Esc>:<C-u>call EasyMotion#FlashWBW(1,2)<CR>
+"}}}
+
+
+" End Word Flash: {{{
+noremap  <silent><Plug>(easymotion-flash-e)         :<C-u>call EasyMotion#FlashE(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-flash-e)    <Esc>:<C-u>call EasyMotion#FlashE(1,0)<CR>
+noremap  <silent><Plug>(easymotion-flash-ge)        :<C-u>call EasyMotion#FlashE(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-flash-ge)   <Esc>:<C-u>call EasyMotion#FlashE(1,1)<CR>
+noremap  <silent><Plug>(easymotion-flash-bd-e)      :<C-u>call EasyMotion#FlashE(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-flash-bd-e) <Esc>:<C-u>call EasyMotion#FlashE(1,2)<CR>
+"}}}
+
+" END Word Flash: {{{
+noremap  <silent><Plug>(easymotion-flash-E)         :<C-u>call EasyMotion#FlashEW(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-flash-E)    <Esc>:<C-u>call EasyMotion#FlashEW(1,0)<CR>
+noremap  <silent><Plug>(easymotion-flash-gE)        :<C-u>call EasyMotion#FlashEW(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-flash-gE)   <Esc>:<C-u>call EasyMotion#FlashEW(1,1)<CR>
+noremap  <silent><Plug>(easymotion-flash-bd-E)      :<C-u>call EasyMotion#FlashEW(0,2)<CR>
+xnoremap <silent><Plug>(easymotion-flash-bd-e) <Esc>:<C-u>call EasyMotion#FlashEW(1,2)<CR>
+"}}}
+
+"}}}
+
 noremap  <silent><Plug>(easymotion-activate) :<C-u>call EasyMotion#activate(0)<CR>
 xnoremap <silent><Plug>(easymotion-activate) :<C-u>call EasyMotion#activate(1)<CR>
 

@@ -265,12 +265,22 @@ function! EasyMotion#FlashT(num_strokes, visualmode, direction) " {{{
 endfunction " }}}
 function! EasyMotion#FlashWB(visualmode, direction) " {{{
     let s:flag.flash = 1
-    call EasyMotion#FlashWBK(a:visualmode, a:direction)
+    call EasyMotion#WBK(a:visualmode, a:direction)
+    return s:EasyMotion_is_cancelled
+endfunction " }}}
+function! EasyMotion#FlashWBW(visualmode, direction) " {{{
+    let s:flag.flash = 1
+    call EasyMotion#WBW(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#FlashE(visualmode, direction) " {{{
     let s:flag.flash = 1
     call EasyMotion#EK(a:visualmode, a:direction)
+    return s:EasyMotion_is_cancelled
+endfunction " }}}
+function! EasyMotion#FlashEW(visualmode, direction) " {{{
+    let s:flag.flash = 1
+    call EasyMotion#EW(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- User Motion -------------------------
