@@ -372,14 +372,14 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-next)', 'o')
             \ ==# ':<C-U>call EasyMotion#NextPrevious(0,0)<CR>'
         Expect maparg('<Plug>(easymotion-next)', 'v')
-            \ ==# '<Esc>:<C-U>call EasyMotion#NextPrevious(1,0)<CR>'
+            \ ==# ':<C-U>call EasyMotion#NextPrevious(1,0)<CR>'
 
         Expect maparg('<Plug>(easymotion-prev)', 'n')
             \ ==# ':<C-U>call EasyMotion#NextPrevious(0,1)<CR>'
         Expect maparg('<Plug>(easymotion-prev)', 'o')
             \ ==# ':<C-U>call EasyMotion#NextPrevious(0,1)<CR>'
         Expect maparg('<Plug>(easymotion-prev)', 'v')
-            \ ==# '<Esc>:<C-U>call EasyMotion#NextPrevious(1,1)<CR>'
+            \ ==# ':<C-U>call EasyMotion#NextPrevious(1,1)<CR>'
         " }}}
 
         " Line Motion: {{{
