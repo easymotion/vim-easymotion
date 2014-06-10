@@ -943,6 +943,9 @@ function! s:PromptUser(groups, ...) "{{{
         " Disable two-key-combo feature?
         let marker_max_length = g:EasyMotion_disable_two_key_combo == 1
                                 \ ? 1 : 2
+        if s:flag.flash
+            let marker_max_length = 3
+        endif
         for i in range(min([marker_chars_len, marker_max_length]))
             let marker_char = split(marker_chars, '\zs')[i]
             " EOL {{{
