@@ -237,12 +237,12 @@ xnoremap <silent><Plug>(easymotion-dotrepeat)
 noremap  <silent><Plug>(easymotion-next)
     \      :<C-u>call EasyMotion#NextPrevious(0,0)<CR>
 xnoremap <silent><Plug>(easymotion-next)
-    \ <Esc>:<C-u>call EasyMotion#NextPrevious(1,0)<CR>
+    \      :<C-u>call EasyMotion#NextPrevious(1,0)<CR>
 
 noremap  <silent><Plug>(easymotion-prev)
     \      :<C-u>call EasyMotion#NextPrevious(0,1)<CR>
 xnoremap <silent><Plug>(easymotion-prev)
-    \ <Esc>:<C-u>call EasyMotion#NextPrevious(1,1)<CR>
+    \      :<C-u>call EasyMotion#NextPrevious(1,1)<CR>
 "}}}
 
 " -- Line Motion {{{
