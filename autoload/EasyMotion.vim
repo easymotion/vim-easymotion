@@ -1073,7 +1073,7 @@ function! s:PromptUser(groups, ...) "{{{
     endif
     " }}}
     " -- Check if the input char is valid ---- {{{
-    if ! has_key(a:groups, char) && ! flash
+    if ! has_key(a:groups, char)
         throw 'Invalid target'
     endif
     " }}}
@@ -1512,7 +1512,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
 
         " Show exception message
         if g:EasyMotion_ignore_exception != 1
-            call s:Message(v:exception . ' : ' . v:throwpoint)
+            " call s:Message(v:exception . ' : ' . v:throwpoint)
+            call s:Message(v:exception)
         endif
 
         " -- Restore original cursor position/selection {{{
