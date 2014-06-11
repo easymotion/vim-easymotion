@@ -132,6 +132,8 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
+    let s:current.v_count1 = v:count1
+
     if a:direction == 1
         let is_inclusive = 0
     else
