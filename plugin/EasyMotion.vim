@@ -226,6 +226,10 @@ noremap  <silent><Plug>(easymotion-N)         :<C-u>call EasyMotion#Search(0,1)<
 xnoremap <silent><Plug>(easymotion-N)    <Esc>:<C-u>call EasyMotion#Search(1,1)<CR>
 noremap  <silent><Plug>(easymotion-bd-n)      :<C-u>call EasyMotion#Search(0,2)<CR>
 xnoremap <silent><Plug>(easymotion-bd-n) <Esc>:<C-u>call EasyMotion#Search(1,2)<CR>
+noremap  <silent><Plug>(easymotion-flash-n)      :<C-u>call EasyMotion#SearchFlash(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-flash-n) <Esc>:<C-u>call EasyMotion#SearchFlash(1,0)<CR>
+noremap  <silent><Plug>(easymotion-flash-N)      :<C-u>call EasyMotion#SearchFlash(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-flash-N) <Esc>:<C-u>call EasyMotion#SearchFlash(1,1)<CR>
 "}}}
 
 " -- Jump To Anywhere Motion {{{

@@ -225,6 +225,14 @@ function! EasyMotion#Search(visualmode, direction) " {{{
     call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', 0)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
+" -- Search Motion with Flash ------------
+function! EasyMotion#SearchFlash(visualmode, direction) " {{{
+    let s:current.v_count1 = v:count1
+    let s:flag.flash = 1
+    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
+    call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', 0)
+    return s:EasyMotion_is_cancelled
+endfunction " }}}
 " -- JumpToAnywhere Motion ---------------
 function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
