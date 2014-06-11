@@ -1042,7 +1042,9 @@ function! s:PromptUser(groups, ...) "{{{
             " Always jump to the first match
             " let char = '#'
             " let char = '0'
-            let char = string(s:current.v_count1 - 1)
+            "let char = string(s:current.v_count1 - 1)
+            " If we want to jump-to-first, but the user provided a count, then we will label the char we jump to as '0'.
+            let char = '0'
             let pauseTime = g:EasyMotion_flash_time_ms
             while pauseTime > 0
                 " Stop the pause early if we detect a key has been pressed
@@ -1340,20 +1342,34 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
                 let targets1 = targets
             endif
             let i = a:direction == 2 ? 1 : 0
+            " For f,t,F,T,n,N flash modes v_count1 was set if a count was given, otherwise it defaults to 1.
+            " We default to 1 because I want jump-to-first-match behaviour for those modes.
+            " But if the user has specified a count (e.g. 3) then we should skip the first two targets, and number the rest of the targets (3rd and beyond) starting from '0'.
+            " '0' is the target we will jump to now.  '1' is the target the user could jump to next.
+            let i += 1 - s:current.v_count1
             for target in targets1
-                " let groups[i] = {'1' : target}
-                let groups[i] = target
+                if i >= 0
+                    " let groups[i] = {'1' : target}
+                    let groups[i] = target
+                endif
                 let i += 1
             endfor
             if a:direction == 2
                 let i = 0
+                " In future we might default the count to 1, but right now for modes like bd-W and bd-b it is not set!
+                " I'm not sure if hayabusa wants these to move (in which case we should store v_count1 in the functions above) or if he just wants them to flash a preview.
+                if s:current.v_count1
+                    let i += 1 - s:current.v_count1
+                endif
                 for target in targets2 " forword
-                    " let groups[i] = extend(groups[i], {'2' : target})
-                    if exists('groups[' . i . ']')
-                        " let groups[i] = {'0': groups[i], '1': target}
-                        let groups[i] = {' ': groups[i], '  ': target}
-                    else
-                        let groups[i] = target
+                    if i >= 0
+                        " let groups[i] = extend(groups[i], {'2' : target})
+                        if exists('groups[' . i . ']')
+                            " let groups[i] = {'0': groups[i], '1': target}
+                            let groups[i] = {' ': groups[i], '  ': target}
+                        else
+                            let groups[i] = target
+                        endif
                     endif
                     let i += 1
                 endfor
