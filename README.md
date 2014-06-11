@@ -264,7 +264,7 @@ let g:EasyMotion_use_smartsign_us = 1
 
 #### Add helpful hinting to `f` and `t` motions
 
-EasyMotion can enhance Vim's `f`, `F`, `t`, and `T` keys to show possible future locations which could be reached by `<n>;` and `<n>,`.  To try it out use the following mappings:
+EasyMotion can enhance Vim's `f`, `F`, `t`, and `T` keys to show possible future locations which could be reached by `[count];` and `[count],`.  To try it out use the following mappings:
 
 ```vim
 map f <Plug>(easymotion-flash-f)
