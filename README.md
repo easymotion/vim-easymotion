@@ -271,8 +271,8 @@ map f <Plug>(easymotion-flash-f)
 map F <Plug>(easymotion-flash-F)
 map t <Plug>(easymotion-flash-t)
 map T <Plug>(easymotion-flash-T)
-map ; <Plug>(easymotion-next)
-map , <Plug>(easymotion-prev)
+map ; <Plug>(easymotion-next-in-dir)
+map , <Plug>(easymotion-prev-in-dir)
 ```
 
 This mode is under construction.  BUGs and TODOs are:

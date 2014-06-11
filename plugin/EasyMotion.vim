@@ -248,6 +248,7 @@ xnoremap <silent><Plug>(easymotion-dotrepeat)
 "}}}
 
 " -- Next,Previous Motion {{{
+" -- In absolute direction {{{
 noremap  <silent><Plug>(easymotion-next)
     \      :<C-u>call EasyMotion#NextPrevious(0,0)<CR>
 xnoremap <silent><Plug>(easymotion-next)
@@ -257,6 +258,18 @@ noremap  <silent><Plug>(easymotion-prev)
     \      :<C-u>call EasyMotion#NextPrevious(0,1)<CR>
 xnoremap <silent><Plug>(easymotion-prev)
     \      :<C-u>call EasyMotion#NextPrevious(1,1)<CR>
+"}}}
+" -- In same direction as last motion {{{
+noremap  <silent><Plug>(easymotion-next-in-dir)
+    \      :<C-u>call EasyMotion#NextPreviousInDir(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-next-in-dir)
+    \      :<C-u>call EasyMotion#NextPreviousInDir(1,0)<CR>
+
+noremap  <silent><Plug>(easymotion-prev-in-dir)
+    \      :<C-u>call EasyMotion#NextPreviousInDir(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-prev-in-dir)
+    \      :<C-u>call EasyMotion#NextPreviousInDir(1,1)<CR>
+"}}}
 "}}}
 
 " -- Line Motion {{{

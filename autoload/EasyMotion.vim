@@ -13,7 +13,9 @@ set cpo&vim
 function! EasyMotion#init()
     call EasyMotion#highlight#load()
     " Store previous motion info
-    let s:previous = {}
+    let s:previous = {
+        \ 'direction' : 0,
+        \ }
     " Store previous operator-pending motion info for '.' repeat
     let s:dot_repeat = {}
     " Prepare 1-key Migemo Dictionary
@@ -370,6 +372,13 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
     call EasyMotion#attach_active_autocmd() "}}}
     return s:EasyMotion_is_cancelled
 endfunction " }}}
+function! EasyMotion#NextPreviousInDir(visualmode, direction) " {{{
+    if s:previous.direction
+        return EasyMotion#NextPrevious(a:visualmode, 1-a:direction)
+    else
+        return EasyMotion#NextPrevious(a:visualmode, a:direction)
+    endif
+endfunction
 " }}}
 " Helper Functions: {{{
 " -- Message -----------------------------
