@@ -1537,6 +1537,14 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             call s:Message(v:exception)
         endif
 
+        " Support bidirectional flash motions
+        if s:flag.flash
+            let s:previous['regexp'] = a:regexp
+            " -- Activate EasyMotion ----------------- {{{
+            let s:EasyMotion_is_active = 1
+            call EasyMotion#attach_active_autocmd() "}}}
+        endif
+
         " -- Restore original cursor position/selection {{{
         if ! empty(a:visualmode)
             silent exec 'normal! gv'
