@@ -64,10 +64,6 @@ let g:EasyMotion_flash_time_ms      = get(g: , 'EasyMotion_flash_time_ms'      ,
 
 function! s:find_motion_map_helper(motions) "{{{
     for [name, dict] in items(a:motions)
-        let flash = 0
-        if has_key(dict, 'flash')
-            let flash = dict.flash
-        endif
         silent exec 'noremap  <silent><Plug>(easymotion-'.name.')' .
             \ '      :<C-u>call EasyMotion#'. dict.fnc .'('. dict.cnt .',0,'. dict.direction . ')<CR>'
         silent exec 'xnoremap <silent><Plug>(easymotion-'.name.')' .
