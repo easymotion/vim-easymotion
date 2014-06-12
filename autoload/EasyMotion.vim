@@ -959,9 +959,9 @@ function! s:PromptUser(groups) "{{{
                 let lines[line_num]['marker'] .= ' '
             endif "}}}
 
-            let target_col = '\%' . (col_num + col_add) . 'c.'
+            let target_col_regexp = '\%' . (col_num + col_add) . 'c.'
             let target_char = matchstr(lines[line_num]['marker'],
-                                      \ target_col)
+                                      \ target_col_regexp)
             let space_len = strdisplaywidth(target_char)
                         \ - strdisplaywidth(marker_char)
             " Substitute marker character
@@ -969,7 +969,7 @@ function! s:PromptUser(groups) "{{{
 
             let lines[line_num]['marker'] = substitute(
                 \ lines[line_num]['marker'],
-                \ target_col,
+                \ target_col_regexp,
                 \ escape(substitute_expr,'&'),
                 \ '')
 
@@ -982,7 +982,7 @@ function! s:PromptUser(groups) "{{{
                 let _hl_group = g:EasyMotion_hl2_second_group_target
             endif
             call EasyMotion#highlight#add_highlight(
-                \ '\%' . line_num . 'l' . target_col,
+                \ '\%' . line_num . 'l' . target_col_regexp,
                 \ _hl_group)
             "}}}
 
@@ -1120,6 +1120,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
     let win_first_line = line('w0') " visible first line num
     let win_last_line  = line('w$') " visible last line num
 
+    " Store the target positions list
+    " e.g. targets = [ [line, col], [line2, col2], ...]
     let targets = []
 
     " Store info for Repeat motion {{{
