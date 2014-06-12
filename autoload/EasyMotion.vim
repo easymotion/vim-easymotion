@@ -366,10 +366,22 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
         " FIXME: blink highlight
         silent exec 'normal! gv'
     endif
+
+    " Mark jump-list
+    if cnt > 1
+        " Consider Next/Previous motions as jump motion :h jump-motion
+        " Note: It should add jumplist even if the count isn't given
+        "       considering vim's default behavior of `n` & `N`, but just
+        "       I don't want to do it without the count. Should I add a
+        "       option?
+        normal! m`
+    endif
+
+    " Jump
     for i in range(cnt)
-        " Do not treat this motion as 'jump' motion
         keepjumps call searchpos(re, search_direction)
     endfor
+
     call EasyMotion#reset()
     " -- Activate EasyMotion ----------------- {{{
     let s:EasyMotion_is_active = 1
