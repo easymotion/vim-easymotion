@@ -1445,8 +1445,10 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         " First, jump back cursor to original position
         keepjumps call cursor(s:current.original_position)
 
-        " Consider EasyMotion as jump motion :h jump-motion
-        normal! m`
+        if ! s:flag.flash
+            " Consider EasyMotion as jump motion :h jump-motion
+            normal! m`
+        endif
 
         " Update selection for visual mode {{{
         if ! empty(a:visualmode)
