@@ -262,36 +262,42 @@ endfunction " }}}
 " -- Flash Motion ------------------------
 function! EasyMotion#FlashS(num_strokes, visualmode, direction) " {{{
     let s:current.v_count1 = v:count1
+    let s:previous.v_count1 = v:count1
     let s:flag.flash = 1
     call EasyMotion#S(a:num_strokes, a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#FlashT(num_strokes, visualmode, direction) " {{{
     let s:current.v_count1 = v:count1
+    let s:previous.v_count1 = v:count1
     let s:flag.flash = 1
     call EasyMotion#T(a:num_strokes, a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#FlashWB(visualmode, direction) " {{{
     let s:current.v_count1 = v:count1
+    let s:previous.v_count1 = v:count1
     let s:flag.flash = 1
     call EasyMotion#WBK(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#FlashWBW(visualmode, direction) " {{{
     let s:current.v_count1 = v:count1
+    let s:previous.v_count1 = v:count1
     let s:flag.flash = 1
     call EasyMotion#WBW(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#FlashE(visualmode, direction) " {{{
     let s:current.v_count1 = v:count1
+    let s:previous.v_count1 = v:count1
     let s:flag.flash = 1
     call EasyMotion#EK(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#FlashEW(visualmode, direction) " {{{
     let s:current.v_count1 = v:count1
+    let s:previous.v_count1 = v:count1
     let s:flag.flash = 1
     call EasyMotion#EW(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
@@ -338,6 +344,7 @@ function! EasyMotion#DotRepeat(visualmode) " {{{
     let is_inclusive = s:dot_repeat.is_inclusive
     let s:flag.within_line = s:dot_repeat.line_flag
     let s:flag.bd_t = s:dot_repeat.bd_t_flag
+    let s:flag.flash = s:dot_repeat.flash_flag
 
     let s:current.is_operator = 1
     let i = 0
@@ -1439,7 +1446,11 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             endif
             let s:previous_target_coord = coords
         else
-            let coords = s:DotPromptUser(groups)
+            if ! s:flag.flash
+                let coords = s:DotPromptUser(groups)
+            else
+                let coords = groups[s:previous.v_count1]
+            endif
         endif
         "}}}
 
@@ -1557,6 +1568,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             let s:dot_repeat.operator = v:operator
             let s:dot_repeat.bd_t_flag = s:flag.bd_t " Bidirectional t motion
             let s:dot_repeat.true_direction = true_direction " Check inclusive
+
+            let s:dot_repeat.flash_flag = s:flag.flash
             "}}}
             silent! call repeat#set("\<Plug>(easymotion-dotrepeat)")
         endif "}}}
