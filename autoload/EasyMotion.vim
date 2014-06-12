@@ -759,6 +759,8 @@ function! s:restore_cursor_state(visualmode) "{{{
     if ! empty(a:visualmode)
         silent exec 'normal! gv'
         keepjumps call cursor(s:current.cursor_position)
+    elseif s:flag.flash
+        keepjumps call cursor(s:current.cursor_position)
     else
         keepjumps call cursor(s:current.original_position)
     endif
