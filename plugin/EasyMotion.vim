@@ -132,6 +132,8 @@ call s:find_motion_map_helper({
     \ 'flash-t2'    : {'fnc' : 'FlashT' , 'cnt' : 2, 'direction' : 0},
     \ 'flash-T2'    : {'fnc' : 'FlashT' , 'cnt' : 2, 'direction' : 1},
     \ 'flash-bd-t2' : {'fnc' : 'FlashT' , 'cnt' : 2, 'direction' : 2},
+    \
+    \ 'flash-sn'    : {'fnc' : 'FlashS' , 'cnt' : -1, 'direction' : 2},
     \ })
 "}}}
 
