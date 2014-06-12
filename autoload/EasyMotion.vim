@@ -763,6 +763,13 @@ function! s:restore_cursor_state(visualmode) "{{{
         keepjumps call cursor(s:current.original_position)
     endif
 endfunction " }}}
+function! s:repetitive_jump(regexp, direction, cnt) "{{{
+    for _ in range(a:cnt)
+        " call searchpos(a:regexp, a:direction)
+        call search(a:regexp, a:direction)
+    endfor
+endfunction "}}}
+
 " Grouping Algorithms: {{{
 let s:grouping_algorithms = {
 \   1: 'SCTree'
@@ -939,7 +946,7 @@ function! s:PromptUser(groups, ...) "{{{
     let group_values = values(a:groups)
 
     " -- If only one possible match, jump directly to it {{{
-    if len(group_values) == 1
+    if len(group_values) == 1 && ! s:flag.flash
         if mode(1) ==# 'no'
             " Consider jump to first match
             " NOTE: matchstr() handles multibyte characters.
@@ -1041,11 +1048,7 @@ function! s:PromptUser(groups, ...) "{{{
 
             " Highlight targets {{{
             if marker_chars_len == 1
-                if s:flag.flash && marker_char == '0'
-                    let _hl_group = g:EasyMotion_hl_inc_cursor
-                else
-                    let _hl_group = g:EasyMotion_hl_group_target
-                endif
+                let _hl_group = g:EasyMotion_hl_group_target
             elseif i == 0
                 let _hl_group = g:EasyMotion_hl2_first_group_target
             else
@@ -1080,14 +1083,9 @@ function! s:PromptUser(groups, ...) "{{{
         call s:SetLines(lines_items, 'marker')
         redraw "}}}
 
+        " flash motions: early return {{{
         " If a flash was requested, flash the possible matches
         if s:flag.flash
-            " Always jump to the first match
-            " let char = '#'
-            " let char = '0'
-            "let char = string(s:current.v_count1 - 1)
-            " If we want to jump-to-first, but the user provided a count, then we will label the char we jump to as '0'.
-            let char = '0'
             let pauseTime = g:EasyMotion_flash_time_ms
             while pauseTime > 0
                 " Stop the pause early if we detect a key has been pressed
@@ -1097,23 +1095,25 @@ function! s:PromptUser(groups, ...) "{{{
                 sleep 10m
                 let pauseTime -= 10
             endwhile
-        else
-            " Get target character {{{
-            call s:Prompt('Target key')
-            let char = s:GetChar()
-
-            " Convert uppercase {{{
-            if g:EasyMotion_use_upper == 1 && match(g:EasyMotion_keys, '\l') == -1
-                let char = toupper(char)
-            endif "}}}
-
-            " Jump first target when Enter or Space key is pressed "{{{
-            if (char ==# "\<CR>" && g:EasyMotion_enter_jump_first == 1) ||
-            \  (char ==# "\<Space>" && g:EasyMotion_space_jump_first == 1)
-                " NOTE: matchstr() is multibyte aware.
-                let char = matchstr(g:EasyMotion_keys, '^.')
-            endif "}}}
+            return [line('.'), col('.')] " do not jump
         endif
+        "}}}
+
+        " Get target character {{{
+        call s:Prompt('Target key')
+        let char = s:GetChar()
+
+        " Convert uppercase {{{
+        if g:EasyMotion_use_upper == 1 && match(g:EasyMotion_keys, '\l') == -1
+            let char = toupper(char)
+        endif "}}}
+
+        " Jump first target when Enter or Space key is pressed "{{{
+        if (char ==# "\<CR>" && g:EasyMotion_enter_jump_first == 1) ||
+        \  (char ==# "\<Space>" && g:EasyMotion_space_jump_first == 1)
+            " NOTE: matchstr() is multibyte aware.
+            let char = matchstr(g:EasyMotion_keys, '^.')
+        endif "}}}
         "}}}
 
         " For dot repeat {{{
@@ -1201,7 +1201,14 @@ function! s:DotPromptUser(groups, ...) "{{{
         return s:PromptUser(target)
     endif
 endfunction "}}}
+
 function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
+    " Jump to first match
+    if s:flag.flash
+        let search_direction = (a:direction == 1 ? 'b' : '') " XXX: DRY
+        call s:repetitive_jump(a:regexp, search_direction, s:current.v_count1)
+    endif
+
     " Store s:current original_position & cursor_position {{{
     " current cursor pos.
     let s:current.cursor_position = [line('.'), col('.')]
@@ -1386,37 +1393,19 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             if ! exists('targets1')
                 let targets1 = targets
             endif
-            let i = a:direction == 2 ? 1 : 0
-            " For f,t,F,T,n,N flash modes v_count1 was set if a count was given, otherwise it defaults to 1.
-            " We default to 1 because I want jump-to-first-match behaviour for those modes.
-            " But if the user has specified a count (e.g. 3) then we should skip the first two targets, and number the rest of the targets (3rd and beyond) starting from '0'.
-            " '0' is the target we will jump to now.  '1' is the target the user could jump to next.
-            let i += 1 - s:current.v_count1
             for target in targets1
-                if i >= 0
-                    " let groups[i] = {'1' : target}
-                    let groups[i] = target
-                endif
-                let i += 1
+                let groups[index(targets1, target) + 1] = target
             endfor
-            if a:direction == 2
-                let i = 0
-                " In future we might default the count to 1, but right now for modes like bd-W and bd-b it is not set!
-                " I'm not sure if hayabusa wants these to move (in which case we should store v_count1 in the functions above) or if he just wants them to flash a preview.
-                if s:current.v_count1
-                    let i += 1 - s:current.v_count1
-                endif
+            if a:direction == 2 " bidirection
                 for target in targets2 " forword
-                    if i >= 0
-                        " let groups[i] = extend(groups[i], {'2' : target})
-                        if exists('groups[' . i . ']')
-                            " let groups[i] = {'0': groups[i], '1': target}
-                            let groups[i] = {' ': groups[i], '  ': target}
-                        else
-                            let groups[i] = target
-                        endif
+                    let index_1 = index(targets2, target) + 1 " 1 origin index
+                    if exists('groups[' . index_1 . ']')
+                        " XXX: It's a workaround to show **same** labels for
+                        "      the different 2 targets.
+                        let groups[index_1] = {' ': groups[index_1], '  ': target}
+                    else
+                        let groups[index_1] = target
                     endif
-                    let i += 1
                 endfor
             endif
         endif
@@ -1464,11 +1453,6 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         " -- Prompt user for target group/character, or just flash matches {{{
         if s:flag.dot_repeat != 1
             let coords = s:PromptUser(groups)
-            if s:flag.flash && type(coords) == type({})
-                let tmp = coords['  ']
-                unlet coords
-                let coords = tmp
-            endif
         else
             if ! s:flag.flash
                 let coords = s:DotPromptUser(groups)
@@ -1482,7 +1466,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         " First, jump back cursor to original position
         keepjumps call cursor(s:current.original_position)
 
-        if ! s:flag.flash
+        if ! s:flag.flash || s:current.v_count1 > 1
             " Consider EasyMotion as jump motion :h jump-motion
             normal! m`
         endif
