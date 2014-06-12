@@ -322,6 +322,7 @@ function! EasyMotion#Repeat(visualmode) " {{{
     let direction = s:previous.direction
     let s:flag.within_line = s:previous.line_flag
     let s:flag.bd_t = s:previous.bd_t_flag
+    let s:flag.flash = s:previous.flash_flag
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     " FIXME: is_inclusive value is inappropriate but handling this value is
     " difficult and priorities is low because this motion maybe used usually
@@ -1210,6 +1211,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         " For special motion flag
         let s:previous['line_flag'] = s:flag.within_line
         let s:previous['bd_t_flag'] = s:flag.bd_t " bi-directional t motion
+
+        let s:previous['flash_flag'] = s:flag.flash " flash motions
     endif "}}}
 
     " To avoid side effect of overwriting buffer for tpope/repeat
