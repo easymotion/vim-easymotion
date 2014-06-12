@@ -1462,7 +1462,9 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             if ! s:flag.flash
                 let coords = s:DotPromptUser(groups)
             else
-                let coords = groups[s:previous.v_count1]
+                let _coords = groups[s:previous.v_count1]
+                let coords = type(_coords) == type({}) ?
+                            \ _coords['  '] : _coords
             endif
         endif
         "}}}
@@ -1620,6 +1622,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         call s:restore_cursor_state(a:visualmode)
         let s:EasyMotion_is_cancelled = 1 " Cancel
     catch
+        redraw
         call s:Message(v:exception . ' : ' . v:throwpoint)
         call s:restore_cursor_state(a:visualmode)
         let s:EasyMotion_is_cancelled = 1 " Cancel
