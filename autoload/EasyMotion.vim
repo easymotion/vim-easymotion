@@ -227,9 +227,7 @@ endfunction " }}}
 function! EasyMotion#SearchFlash(visualmode, direction) " {{{
     let s:current.v_count1 = v:count1
     let s:flag.flash = 1
-    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', 0)
-    return s:EasyMotion_is_cancelled
+    return EasyMotion#Search(a:visualmode, a:direction)
 endfunction " }}}
 " -- JumpToAnywhere Motion ---------------
 function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
