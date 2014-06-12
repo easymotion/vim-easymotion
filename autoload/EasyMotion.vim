@@ -358,6 +358,9 @@ function! s:Prompt(message) " {{{
     echo a:message . ': '
     echohl None
 endfunction " }}}
+function! s:Throw(message)
+    throw 'EasyMotion: ' . a:message
+endfunction
 " -- Save & Restore values ---------------
 function! s:SaveValue() "{{{
     if ! s:current.is_search
@@ -417,6 +420,7 @@ function! s:GetChar() " {{{
     endif
     return nr2char(char)
 endfunction " }}}
+
 " -- Find Motion Helper ------------------
 function! s:findMotion(num_strokes, direction) "{{{
     " Find Motion: S,F,T
@@ -606,7 +610,7 @@ endfunction "}}}
 function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
     let vmode = mode(1)
     if vmode !~# "^[Vv\<C-v>]"
-        throw 'Unkown visual mode:'.vmode
+        call s:Throw('Unkown visual mode:'.vmode)
     endif
 
     if vmode ==# 'V' "line-wise Visual
@@ -617,7 +621,7 @@ function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
             elseif a:search_direction == 'b'
                 return a:v_end
             else
-                throw 'Unkown search_direction'
+                call s:throw('Unkown search_direction')
             endif
         else
             if a:c_pos[0] == a:v_start[0]
@@ -684,6 +688,15 @@ function! EasyMotion#activate(is_visual) "{{{
     endif
 endfunction "}}}
 "}}}
+function! s:restore_cursor_state(visualmode) "{{{
+    " -- Restore original cursor position/selection
+    if ! empty(a:visualmode)
+        silent exec 'normal! gv'
+        keepjumps call cursor(s:current.cursor_position)
+    else
+        keepjumps call cursor(s:current.original_position)
+    endif
+endfunction " }}}
 " Grouping Algorithms: {{{
 let s:grouping_algorithms = {
 \   1: 'SCTree'
@@ -1055,12 +1068,12 @@ function! s:PromptUser(groups) "{{{
 
     " -- Check if we have an input char ------ {{{
     if empty(char)
-        throw 'Cancelled'
+        call s:Throw('Cancelled')
     endif
     " }}}
     " -- Check if the input char is valid ---- {{{
     if ! has_key(a:groups, char)
-        throw 'Invalid target'
+        call s:Throw('Invalid target')
     endif
     " }}}
 
@@ -1259,7 +1272,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         " Handle no match"{{{
         let targets_len = len(targets)
         if targets_len == 0
-            throw 'No matches'
+            call s:Throw('No matches')
         endif
         "}}}
 
@@ -1444,23 +1457,24 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
         let s:EasyMotion_is_cancelled = 0 " Success
         "}}}
-
-    catch
+    catch /^EasyMotion:.*/
         redraw
 
         " Show exception message
         if g:EasyMotion_ignore_exception != 1
-            call s:Message(v:exception)
+            echo v:exception
         endif
 
-        " -- Restore original cursor position/selection {{{
-        if ! empty(a:visualmode)
-            silent exec 'normal! gv'
-            keepjumps call cursor(s:current.cursor_position)
-        else
-            keepjumps call cursor(s:current.original_position)
-        endif
-        " }}}
+        let s:previous['regexp'] = a:regexp
+        " -- Activate EasyMotion ----------------- {{{
+        let s:EasyMotion_is_active = 1
+        call EasyMotion#attach_active_autocmd() "}}}
+
+        call s:restore_cursor_state(a:visualmode)
+        let s:EasyMotion_is_cancelled = 1 " Cancel
+    catch
+        call s:Message(v:exception . ' : ' . v:throwpoint)
+        call s:restore_cursor_state(a:visualmode)
         let s:EasyMotion_is_cancelled = 1 " Cancel
     finally
         " -- Restore properties ------------------ {{{
