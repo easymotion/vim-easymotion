@@ -264,25 +264,25 @@ let g:EasyMotion_use_smartsign_us = 1
 
 #### Add helpful hinting to `f` and `t` motions
 
-EasyMotion can enhance Vim's `f`, `F`, `t`, and `T` keys to show possible future locations which could be reached by `<n>;` and `<n>,`.  To try it out use the following mappings:
+EasyMotion can enhance Vim's `f`, `F`, `t`, and `T` keys to show possible future locations which could be reached by `[count];` and `[count],`.  To try it out use the following mappings:
 
 ```vim
 map f <Plug>(easymotion-flash-f)
 map F <Plug>(easymotion-flash-F)
 map t <Plug>(easymotion-flash-t)
 map T <Plug>(easymotion-flash-T)
-map ; <Plug>(easymotion-next)
-map , <Plug>(easymotion-prev)
+map ; <Plug>(easymotion-next-in-dir)
+map , <Plug>(easymotion-prev-in-dir)
 ```
 
-This mode is under construction.  BUGs and TODOs are:
+Note: Because `;` is now mapped to `(easymotion-next-in-dir)`, if you perform a different easymotion then using `;` afterwards will repeat that easymotion (not your previous `f` or `t` motion like Vim would usually do).  But if the easymotion you performed was bi-directional, the direction of your last `f` or `t` will still be used!
 
-- It shows numbers 1-9 fine, but it would be nice to make it work nicely for 10 and beyond!
-- After an `F` motion, `;` should continue in the same (backwards) direction, but it goes the wrong way because it is bound to `-next`.  I should make `-next-in-dir` or something.
-- It flashes and then jumps.  Ideally it would jump before flashing.  (Then we wouldn't need the `#` label.)
-- Bi-directional modes would be nice.
-- Are there any other motions which this flashing mode could be useful for?
+We can also flash the counts of future `n` motions when performing `[count]n` with the following mappings:
 
+```vim
+map n <Plug>(easymotion-flash-n)
+map N <Plug>(easymotion-flash-N)
+```
 
 
 Installation
