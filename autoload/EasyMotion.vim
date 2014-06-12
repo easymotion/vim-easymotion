@@ -1025,7 +1025,11 @@ function! s:PromptUser(groups, ...) "{{{
 
             " Highlight targets {{{
             if marker_chars_len == 1
-                let _hl_group = g:EasyMotion_hl_group_target
+                if s:flag.flash && marker_char == '0'
+                    let _hl_group = g:EasyMotion_hl_inc_cursor
+                else
+                    let _hl_group = g:EasyMotion_hl_group_target
+                endif
             elseif i == 0
                 let _hl_group = g:EasyMotion_hl2_first_group_target
             else
@@ -1419,13 +1423,17 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
 
             call EasyMotion#highlight#add_highlight(
                 \ shade_hl_re, g:EasyMotion_hl_group_shade)
-            if g:EasyMotion_cursor_highlight
+            if g:EasyMotion_cursor_highlight && ! s:flag.flash
                 let cursor_hl_re = '\%#'
                 call EasyMotion#highlight#add_highlight(cursor_hl_re,
                     \ g:EasyMotion_hl_inc_cursor)
             endif
         endif
         " }}}
+
+        if s:flag.flash
+            call EasyMotion#highlight#delete_highlight(g:EasyMotion_hl_inc_cursor)
+        endif
 
         " -- Jump back before prompt for visual scroll {{{
         " Because searchpos() change current cursor position and
