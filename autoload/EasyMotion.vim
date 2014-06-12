@@ -305,6 +305,7 @@ function! EasyMotion#DotRepeat(visualmode) " {{{
 endfunction " }}}
 function! EasyMotion#NextPrevious(visualmode, direction) " {{{
     " Move next/previous destination using previous motion regexp
+    let cnt = v:count1 " avoid overwriting
     if !has_key(s:previous, 'regexp')
         call s:Message("Previous targets doesn't exist")
         let s:EasyMotion_is_cancelled = 1
@@ -322,10 +323,22 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
         " FIXME: blink highlight
         silent exec 'normal! gv'
     endif
-    for i in range(v:count1)
-        " Do not treat this motion as 'jump' motion
+
+    " Mark jump-list
+    if cnt > 1
+        " Consider Next/Previous motions as jump motion :h jump-motion
+        " Note: It should add jumplist even if the count isn't given
+        "       considering vim's default behavior of `n` & `N`, but just
+        "       I don't want to do it without the count. Should I add a
+        "       option?
+        normal! m`
+    endif
+
+    " Jump
+    for i in range(cnt)
         keepjumps call searchpos(re, search_direction)
     endfor
+
     call EasyMotion#reset()
     " -- Activate EasyMotion ----------------- {{{
     let s:EasyMotion_is_active = 1
