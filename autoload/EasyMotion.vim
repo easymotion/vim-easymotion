@@ -1441,10 +1441,6 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
                 unlet coords
                 let coords = tmp
             endif
-            if exists('s:previous_target_coord')
-                unlet s:previous_target_coord
-            endif
-            let s:previous_target_coord = coords
         else
             if ! s:flag.flash
                 let coords = s:DotPromptUser(groups)
