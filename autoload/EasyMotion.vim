@@ -116,8 +116,6 @@ endfunction "}}}
 "   1 -> backward
 "   2 -> bi-direction (handle forward & backward at the same time) }}}
 function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
-    let s:current.v_count1 = v:count1
-
     if a:direction == 1
         let is_inclusive = 0
     else
@@ -132,8 +130,6 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
-    let s:current.v_count1 = v:count1
-
     if a:direction == 1
         let is_inclusive = 0
     else
@@ -265,31 +261,37 @@ function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
 endfunction " }}}
 " -- Flash Motion ------------------------
 function! EasyMotion#FlashS(num_strokes, visualmode, direction) " {{{
+    let s:current.v_count1 = v:count1
     let s:flag.flash = 1
     call EasyMotion#S(a:num_strokes, a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#FlashT(num_strokes, visualmode, direction) " {{{
+    let s:current.v_count1 = v:count1
     let s:flag.flash = 1
     call EasyMotion#T(a:num_strokes, a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#FlashWB(visualmode, direction) " {{{
+    let s:current.v_count1 = v:count1
     let s:flag.flash = 1
     call EasyMotion#WBK(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#FlashWBW(visualmode, direction) " {{{
+    let s:current.v_count1 = v:count1
     let s:flag.flash = 1
     call EasyMotion#WBW(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#FlashE(visualmode, direction) " {{{
+    let s:current.v_count1 = v:count1
     let s:flag.flash = 1
     call EasyMotion#EK(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#FlashEW(visualmode, direction) " {{{
+    let s:current.v_count1 = v:count1
     let s:flag.flash = 1
     call EasyMotion#EW(a:visualmode, a:direction)
     return s:EasyMotion_is_cancelled
