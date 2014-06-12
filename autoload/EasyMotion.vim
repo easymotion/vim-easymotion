@@ -1095,7 +1095,7 @@ function! s:PromptUser(groups, ...) "{{{
                 sleep 10m
                 let pauseTime -= 10
             endwhile
-            return [line('.'), col('.')] " do not jump
+            return s:current.cursor_position " do not jump
         endif
         "}}}
 
@@ -1205,6 +1205,9 @@ endfunction "}}}
 function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
     " Jump to first match
     if s:flag.flash
+        if ! empty(a:visualmode)
+            normal! gv
+        endif
         let search_direction = (a:direction == 1 ? 'b' : '') " XXX: DRY
         call s:repetitive_jump(a:regexp, search_direction, s:current.v_count1)
     endif
