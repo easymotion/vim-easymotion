@@ -358,6 +358,10 @@ function! s:Prompt(message) " {{{
     echo a:message . ': '
     echohl None
 endfunction " }}}
+function! s:Throw(message) "{{{
+    throw 'EasyMotion: ' . a:message
+endfunction "}}}
+
 " -- Save & Restore values ---------------
 function! s:SaveValue() "{{{
     if ! s:current.is_search
@@ -400,12 +404,14 @@ function! s:turn_on_hl_error() "{{{
         unlet s:matchparen_hl
     endif
 endfunction "}}}
+
 " -- Draw --------------------------------
 function! s:SetLines(lines, key) " {{{
     for [line_num, line] in a:lines
         keepjumps call setline(line_num, line[a:key])
     endfor
 endfunction " }}}
+
 " -- Get characters from user input ------
 function! s:GetChar() " {{{
     let char = getchar()
@@ -417,6 +423,7 @@ function! s:GetChar() " {{{
     endif
     return nr2char(char)
 endfunction " }}}
+
 " -- Find Motion Helper ------------------
 function! s:findMotion(num_strokes, direction) "{{{
     " Find Motion: S,F,T
@@ -574,39 +581,19 @@ function! s:should_use_smartsign(char) "{{{
         return 0
     endif
 endfunction "}}}
-function! s:convert_t_regexp(re, direction)
+function! s:convert_t_regexp(re, direction) "{{{
     if a:direction == 0 "forward
         return '\_.\ze\('.a:re.'\)'
     elseif a:direction == 1 "backward
         return '\('.a:re.'\)\@<=\_.'
     endif
-endfunction
+endfunction "}}}
 
-function! s:handleEmpty(input, visualmode) "{{{
-    " if empty, reselect and return 1
-    if empty(a:input)
-        if ! empty(a:visualmode)
-            silent exec 'normal! gv'
-        endif
-        let s:EasyMotion_is_cancelled = 1 " Cancel
-        return 1
-    endif
-    return 0
-endfunction "}}}
-function! s:load_smart_dict() "{{{
-    if exists('g:EasyMotion_use_smartsign_us')
-        return g:EasyMotion#sticky_table#us
-    elseif exists('g:EasyMotion_use_smartsign_jp')
-        return g:EasyMotion#sticky_table#jp
-    else
-        return {}
-    endif
-endfunction "}}}
 " -- Handle Visual Mode ------------------
 function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
     let vmode = mode(1)
     if vmode !~# "^[Vv\<C-v>]"
-        throw 'Unkown visual mode:'.vmode
+        call s:Throw('Unkown visual mode:'.vmode)
     endif
 
     if vmode ==# 'V' "line-wise Visual
@@ -617,7 +604,7 @@ function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
             elseif a:search_direction == 'b'
                 return a:v_end
             else
-                throw 'Unkown search_direction'
+                call s:throw('Unkown search_direction')
             endif
         else
             if a:c_pos[0] == a:v_start[0]
@@ -648,6 +635,7 @@ function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
         "}}}
     endif
 endfunction "}}}
+
 " -- Others ------------------------------
 function! s:is_cmdwin() "{{{
   return bufname('%') ==# '[Command Line]'
@@ -656,6 +644,26 @@ function! s:should_use_wundo() "{{{
     " wundu cannot use in command-line window and
     " unless undolist is not empty
     return ! s:is_cmdwin() && undotree().seq_last != 0
+endfunction "}}}
+function! s:handleEmpty(input, visualmode) "{{{
+    " if empty, reselect and return 1
+    if empty(a:input)
+        if ! empty(a:visualmode)
+            silent exec 'normal! gv'
+        endif
+        let s:EasyMotion_is_cancelled = 1 " Cancel
+        return 1
+    endif
+    return 0
+endfunction "}}}
+function! s:load_smart_dict() "{{{
+    if exists('g:EasyMotion_use_smartsign_us')
+        return g:EasyMotion#sticky_table#us
+    elseif exists('g:EasyMotion_use_smartsign_jp')
+        return g:EasyMotion#sticky_table#jp
+    else
+        return {}
+    endif
 endfunction "}}}
 function! EasyMotion#attach_active_autocmd() "{{{
     " Reference: https://github.com/justinmk/vim-sneak
@@ -683,7 +691,15 @@ function! EasyMotion#activate(is_visual) "{{{
         normal! gv
     endif
 endfunction "}}}
-"}}}
+function! s:restore_cursor_state(visualmode) "{{{
+    " -- Restore original cursor position/selection
+    if ! empty(a:visualmode)
+        silent exec 'normal! gv'
+        keepjumps call cursor(s:current.cursor_position)
+    else
+        keepjumps call cursor(s:current.original_position)
+    endif
+endfunction " }}}
 " Grouping Algorithms: {{{
 let s:grouping_algorithms = {
 \   1: 'SCTree'
@@ -1055,12 +1071,12 @@ function! s:PromptUser(groups) "{{{
 
     " -- Check if we have an input char ------ {{{
     if empty(char)
-        throw 'Cancelled'
+        call s:Throw('Cancelled')
     endif
     " }}}
     " -- Check if the input char is valid ---- {{{
     if ! has_key(a:groups, char)
-        throw 'Invalid target'
+        call s:Throw('Invalid target')
     endif
     " }}}
 
@@ -1259,7 +1275,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         " Handle no match"{{{
         let targets_len = len(targets)
         if targets_len == 0
-            throw 'No matches'
+            call s:Throw('No matches')
         endif
         "}}}
 
@@ -1444,23 +1460,24 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
         let s:EasyMotion_is_cancelled = 0 " Success
         "}}}
-
-    catch
+    catch /^EasyMotion:.*/
         redraw
 
         " Show exception message
         if g:EasyMotion_ignore_exception != 1
-            call s:Message(v:exception)
+            echo v:exception
         endif
 
-        " -- Restore original cursor position/selection {{{
-        if ! empty(a:visualmode)
-            silent exec 'normal! gv'
-            keepjumps call cursor(s:current.cursor_position)
-        else
-            keepjumps call cursor(s:current.original_position)
-        endif
-        " }}}
+        let s:previous['regexp'] = a:regexp
+        " -- Activate EasyMotion ----------------- {{{
+        let s:EasyMotion_is_active = 1
+        call EasyMotion#attach_active_autocmd() "}}}
+
+        call s:restore_cursor_state(a:visualmode)
+        let s:EasyMotion_is_cancelled = 1 " Cancel
+    catch
+        call s:Message(v:exception . ' : ' . v:throwpoint)
+        call s:restore_cursor_state(a:visualmode)
         let s:EasyMotion_is_cancelled = 1 " Cancel
     finally
         " -- Restore properties ------------------ {{{
