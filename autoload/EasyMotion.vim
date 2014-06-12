@@ -1307,7 +1307,6 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         " -- Prompt user for target group/character {{{
         if s:flag.dot_repeat != 1
             let coords = s:PromptUser(groups)
-            let s:previous_target_coord = coords
         else
             let coords = s:DotPromptUser(groups)
         endif
