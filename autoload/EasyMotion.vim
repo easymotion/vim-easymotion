@@ -345,11 +345,14 @@ function! EasyMotion#DotRepeat(visualmode) " {{{
     let direction = s:dot_repeat.direction
     let is_inclusive = s:dot_repeat.is_inclusive
 
+    " FIXME: if the target char is repeated like `ll`, the repeat doesn't work
+    "        correctly
     for i in range(cnt)
         " s:EasyMotion() always call reset s:flag & s:current
         let s:flag.dot_repeat = 1
         let s:flag.within_line = s:dot_repeat.line_flag
         let s:flag.bd_t = s:dot_repeat.bd_t_flag
+        let s:flag.flash = s:dot_repeat.flash_flag
         let s:current.is_operator = 1
 
         silent call s:EasyMotion(re, direction, 0, is_inclusive)
