@@ -33,6 +33,17 @@ function! EasyMotion#helper#mode(flag) "{{{
     return mode(a:flag) == "\<C-v>" ? "C-v" : mode(a:flag)
 endfunction "}}}
 
+function! EasyMotion#helper#get_char_by_coord(coord) "{{{
+    " @param coord: [lnum, col] or [bufnum, lnum, col, off]
+    if len(a:coord) == 4
+        let [line_num, col_num] = [a:coord[1], a:coord[2]]
+    else
+        let [line_num, col_num] = a:coord
+    endif
+    let target_col_regexp = '\%' . (col_num) . 'c.'
+    return matchstr(getline(line_num), target_col_regexp)
+endfunction "}}}
+
 function! EasyMotion#helper#is_greater_coords(coords1, coords2) "{{{
     " [line_num, col_num] < [line_num, col_num]
     "

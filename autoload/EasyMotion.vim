@@ -59,6 +59,7 @@ function! EasyMotion#reset()
         \ 'bd_t' : 0,
         \ 'find_bd' : 0,
         \ 'linewise' : 0,
+        \ 'count_dot_repeat' : 0,
         \ }
         " regexp: -> regular expression
         "   This value is used when multi input find motion. If this values is
@@ -70,6 +71,8 @@ function! EasyMotion#reset()
         "   This value is used to recheck the motion is inclusive or exclusive
         "   because 'f' & 't' forward find motion is inclusive, but 'F' & 'T'
         "   backward find motion is exclusive
+        " count_dot_repeat: -> dot repeat with count
+        "   https://github.com/Lokaltog/vim-easymotion/issues/164
     let s:current = {
         \ 'is_operator' : 0,
         \ 'is_search' : 0,
@@ -301,6 +304,7 @@ function! EasyMotion#DotRepeat(visualmode) " {{{
         let s:flag.bd_t = s:dot_repeat.bd_t_flag
         let s:current.is_operator = 1
 
+        let s:flag.count_dot_repeat = (i > 0 ? 1 : 0)
         silent call s:EasyMotion(re, direction, 0, is_inclusive)
     endfor
     return s:EasyMotion_is_cancelled
@@ -959,9 +963,9 @@ function! s:PromptUser(groups) "{{{
                 let lines[line_num]['marker'] .= ' '
             endif "}}}
 
-            let target_col = '\%' . (col_num + col_add) . 'c.'
+            let target_col_regexp = '\%' . (col_num + col_add) . 'c.'
             let target_char = matchstr(lines[line_num]['marker'],
-                                      \ target_col)
+                                      \ target_col_regexp)
             let space_len = strdisplaywidth(target_char)
                         \ - strdisplaywidth(marker_char)
             " Substitute marker character
@@ -969,7 +973,7 @@ function! s:PromptUser(groups) "{{{
 
             let lines[line_num]['marker'] = substitute(
                 \ lines[line_num]['marker'],
-                \ target_col,
+                \ target_col_regexp,
                 \ escape(substitute_expr,'&'),
                 \ '')
 
@@ -982,7 +986,7 @@ function! s:PromptUser(groups) "{{{
                 let _hl_group = g:EasyMotion_hl2_second_group_target
             endif
             call EasyMotion#highlight#add_highlight(
-                \ '\%' . line_num . 'l' . target_col,
+                \ '\%' . line_num . 'l' . target_col_regexp,
                 \ _hl_group)
             "}}}
 
@@ -1120,6 +1124,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
     let win_first_line = line('w0') " visible first line num
     let win_last_line  = line('w$') " visible last line num
 
+    " Store the target positions list
+    " e.g. targets = [ [line, col], [line2, col2], ...]
     let targets = []
 
     " Store info for Repeat motion {{{
@@ -1186,6 +1192,14 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
             let regexp = a:regexp
         endif
         "}}}
+
+        " Handle dot repeat with count
+        if s:flag.count_dot_repeat
+            let cursor_char = EasyMotion#helper#get_char_by_coord(s:current.cursor_position)
+            if cursor_char =~# regexp
+                call add(targets, s:current.cursor_position)
+            endif
+        endif
 
         " Construct match dict {{{
         while 1
