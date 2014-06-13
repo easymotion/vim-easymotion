@@ -1214,6 +1214,9 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         endif
         let search_direction = (a:direction == 1 ? 'b' : '') " XXX: DRY
         call s:repetitive_jump(a:regexp, search_direction, s:current.v_count1)
+        if exists("*g:SexyScroller_ScrollToCursor")
+            call g:SexyScroller_ScrollToCursor()
+        endif
         redraw " Show the cursor movement now, to give the user some immediate feedback.  If there are a lot of matches, displaying the labels below may take some time!
     endif
 
