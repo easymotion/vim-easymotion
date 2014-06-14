@@ -388,6 +388,10 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
         "       considering vim's default behavior of `n` & `N`, but just
         "       I don't want to do it without the count. Should I add a
         "       option?
+        " joeytwiddle: I think you should act like Vim's default `n` and `N`,
+        "              providing principle of least astonishment for the user,
+        "              but add an option to disable it when count is 1, since
+        "              that is the behaviour you want.
         normal! m`
     endif
 
