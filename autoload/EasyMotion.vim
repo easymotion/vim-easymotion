@@ -961,6 +961,13 @@ function! s:PromptUser(groups, ...) "{{{
     endif
     " }}}
 
+    " Do not flash if there are pending keys.
+    " (Ideally we would do this even earlier, before even searching for targets, but we do need to ensure that state is preserved.)
+    " Given that it takes a little time to search targets, we could check the buffer earlier *and* here!  Before and after targets are calculated.
+    if s:flag.flash && getchar(1)
+        return s:current.cursor_position
+    endif
+
     " -- Prepare marker lines ---------------- {{{
     let lines = {}
 
@@ -1229,6 +1236,12 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         if exists("*g:SexyScroller_ScrollToCursor")
             call g:SexyScroller_ScrollToCursor(0)
         endif
+
+        " TODO: Another thing we should do early (before the flashing animation/pause begins) is to restore visual mode.
+        "       If Visual mode is not restored while the flashing is ongoing, it is not clear to the user than he is still in Visual state (although that is the case/intention).
+        "       There may be other things we should do to restore state before/during the flash, which should not be done until after the jump in non-flashing mode.  These things should really be refactored into functions so that both flashing and non-flashing modes can call them, but at different times.
+        " TODO: When the user has executed a movement in operator-pending mode, ideally we would show the results of that movement before flashing begins.
+        "       For example when the user does `dt;` or `ct;` we would remove the chars before flashing, so that it at least looks responsive to the user.  This might be easier for `d` than for `c`.  In the meantime, I am binding to `f` and `t` in N and V mode only, not in operator-pending mode.
 
     endif
 
