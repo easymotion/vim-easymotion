@@ -29,6 +29,7 @@ let g:EasyMotion_keys               = get(g:,
     " \ 'EasyMotion_keys', 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 let g:EasyMotion_do_mapping         = get(g: , 'EasyMotion_do_mapping'         , 1)
 let g:EasyMotion_do_shade           = get(g: , 'EasyMotion_do_shade'           , 1)
+let g:EasyMotion_do_shade_for_flash = get(g: , 'EasyMotion_do_shade_for_flash' , 0)
 let g:EasyMotion_grouping           = get(g: , 'EasyMotion_grouping'           , 1)
 let g:EasyMotion_startofline        = get(g: , 'EasyMotion_startofline'        , 1)
 let g:EasyMotion_smartcase          = get(g: , 'EasyMotion_smartcase'          , 0)
