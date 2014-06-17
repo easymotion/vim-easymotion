@@ -388,6 +388,10 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
         "       considering vim's default behavior of `n` & `N`, but just
         "       I don't want to do it without the count. Should I add a
         "       option?
+        " joeytwiddle: I think you should act like Vim's default `n` and `N`,
+        "              providing principle of least astonishment for the user,
+        "              but add an option to disable it when count is 1, since
+        "              that is the behaviour you want.
         normal! m`
     endif
 
@@ -404,11 +408,9 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
 endfunction " }}}
 function! EasyMotion#NextPreviousInDir(visualmode, direction) " {{{
     let previous_direction = get(s:previous, 'direction', 0)
-    if previous_direction == 1 " backward
-        return EasyMotion#NextPrevious(a:visualmode, 1-a:direction)
-    else
-        return EasyMotion#NextPrevious(a:visualmode, a:direction)
-    endif
+    " If previous direction was backwards (not bidirectional), reverse requested direction (which is never bidirectional)
+    let search_direction = previous_direction == 1 ? 1-a:direction : a:direction
+    return EasyMotion#NextPrevious(a:visualmode, search_direction)
 endfunction
 " }}}
 " Helper Functions: {{{
