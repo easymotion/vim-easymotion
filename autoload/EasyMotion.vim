@@ -1216,7 +1216,22 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         endif
         let search_direction = (a:direction == 1 ? 'b' : '') " XXX: DRY
         call s:repetitive_jump(a:regexp, search_direction, s:current.v_count1)
-        redraw " Show the cursor movement now, to give the user some immediate feedback.  If there are a lot of matches, displaying the labels below may take some time!
+
+        " We are about to move the cursor.  Some plugins might display that a pretty way.  One is supported here:
+        if exists("*g:SexyScroller_ScrollToCursor")
+            call g:SexyScroller_ScrollToCursor()
+        endif
+
+        " Show the cursor movement now, to give the user some immediate feedback.  If there are a lot of matches, displaying the labels below may take some time!
+        redraw
+
+        " The above works fine for flash-next/prev-in-dir, but when doing flash-n/N SexyScroller fires a second time, after the flash, performing an ugly scroll from the wrong location!  (Somewhere near to but not quite at the target.)
+        " It can most easily be reproduced when search wraps around in reverse (with N).  This behaviour is probably caused by the call to feedkeys below.  We can observe that the scroll occurs more rapid than it should (jumps to target prematurely), even with the fix below.
+        " The following prevents that by forcing SexyScroller to store the target location.  But the premature jumping still occurs.
+        if exists("*g:SexyScroller_ScrollToCursor")
+            call g:SexyScroller_ScrollToCursor(0)
+        endif
+
     endif
 
     " Store s:current original_position & cursor_position {{{
