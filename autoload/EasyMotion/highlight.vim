@@ -173,6 +173,9 @@ endfunction "}}}
 function! EasyMotion#highlight#add_highlight(re, group) "{{{
     call add(s:h.ids[a:group], matchadd(a:group, a:re, s:priorities[a:group]))
 endfunction "}}}
+function! EasyMotion#highlight#add_pos_highlight(line_num, col_num, group) "{{{
+    call add(s:h.ids[a:group], matchaddpos(a:group, [[a:line_num, a:col_num]], s:priorities[a:group]))
+endfunction "}}}
 function! EasyMotion#highlight#attach_autocmd() "{{{
     " Reference: https://github.com/justinmk/vim-sneak
     augroup plugin-easymotion

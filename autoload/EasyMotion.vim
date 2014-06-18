@@ -985,9 +985,14 @@ function! s:PromptUser(groups) "{{{
             else
                 let _hl_group = g:EasyMotion_hl2_second_group_target
             endif
-            call EasyMotion#highlight#add_highlight(
-                \ '\%' . line_num . 'l' . target_col_regexp,
-                \ _hl_group)
+            if exists('*matchaddpos')
+                call EasyMotion#highlight#add_pos_highlight(
+                            \ line_num, col_num, _hl_group)
+            else
+                call EasyMotion#highlight#add_highlight(
+                    \ '\%' . line_num . 'l' . target_col_regexp,
+                    \ _hl_group)
+            endif
             "}}}
 
             " Add marker/target length difference for multibyte compensation
