@@ -978,16 +978,14 @@ function! s:PromptUser(groups) "{{{
                 \ '')
 
             " Highlight targets {{{
-            if marker_chars_len == 1
-                let _hl_group = g:EasyMotion_hl_group_target
-            elseif i == 0
-                let _hl_group = g:EasyMotion_hl2_first_group_target
-            else
-                let _hl_group = g:EasyMotion_hl2_second_group_target
-            endif
+            let _hl_group =
+            \   (marker_chars_len == 1) ? g:EasyMotion_hl_group_target
+            \   : (i == 0) ? g:EasyMotion_hl2_first_group_target
+            \   : g:EasyMotion_hl2_second_group_target
+
             if exists('*matchaddpos')
                 call EasyMotion#highlight#add_pos_highlight(
-                            \ line_num, col_num, _hl_group)
+                            \ line_num, col_num + col_add, _hl_group)
             else
                 call EasyMotion#highlight#add_highlight(
                     \ '\%' . line_num . 'l' . target_col_regexp,
