@@ -985,7 +985,7 @@ function! s:PromptUser(groups) "{{{
 
             if exists('*matchaddpos')
                 call EasyMotion#highlight#add_pos_highlight(
-                            \ line_num, col_num, _hl_group)
+                            \ line_num, col_num + col_add, _hl_group)
             else
                 call EasyMotion#highlight#add_highlight(
                     \ '\%' . line_num . 'l' . target_col_regexp,
