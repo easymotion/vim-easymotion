@@ -216,7 +216,9 @@ endfunction " }}}
 " -- Search Motion -----------------------
 function! EasyMotion#Search(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', 0)
+    " Respect the search direction of the previous / ? * #
+    let search_direction = a:direction == 1 ? v:searchforward : 1-v:searchforward
+    call s:EasyMotion(@/, search_direction, a:visualmode ? visualmode() : '', 0)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- Search Motion with Flash ------------
@@ -388,6 +390,10 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
         "       considering vim's default behavior of `n` & `N`, but just
         "       I don't want to do it without the count. Should I add a
         "       option?
+        " joeytwiddle: I think you should act like Vim's default `n` and `N`,
+        "              providing principle of least astonishment for the user,
+        "              but add an option to disable it when count is 1, since
+        "              that is the behaviour you want.
         normal! m`
     endif
 
@@ -404,11 +410,9 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
 endfunction " }}}
 function! EasyMotion#NextPreviousInDir(visualmode, direction) " {{{
     let previous_direction = get(s:previous, 'direction', 0)
-    if previous_direction == 1 " backward
-        return EasyMotion#NextPrevious(a:visualmode, 1-a:direction)
-    else
-        return EasyMotion#NextPrevious(a:visualmode, a:direction)
-    endif
+    " If previous direction was backwards (not bidirectional), reverse requested direction (which is never bidirectional)
+    let search_direction = previous_direction == 1 ? 1-a:direction : a:direction
+    return EasyMotion#NextPrevious(a:visualmode, search_direction)
 endfunction
 " }}}
 " Helper Functions: {{{
@@ -959,6 +963,13 @@ function! s:PromptUser(groups, ...) "{{{
     endif
     " }}}
 
+    " Do not flash if there are pending keys.
+    " (Ideally we would do this even earlier, before even searching for targets, but we do need to ensure that state is preserved.)
+    " Given that it takes a little time to search targets, we could check the buffer earlier *and* here!  Before and after targets are calculated.
+    if s:flag.flash && getchar(1)
+        return s:current.cursor_position
+    endif
+
     " -- Prepare marker lines ---------------- {{{
     let lines = {}
 
@@ -1212,6 +1223,28 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         endif
         let search_direction = (a:direction == 1 ? 'b' : '') " XXX: DRY
         call s:repetitive_jump(a:regexp, search_direction, s:current.v_count1)
+
+        " We are about to move the cursor.  Some plugins might display that a pretty way.  One is supported here:
+        if exists("*g:SexyScroller_ScrollToCursor")
+            call g:SexyScroller_ScrollToCursor()
+        endif
+
+        " Show the cursor movement now, to give the user some immediate feedback.  If there are a lot of matches, displaying the labels below may take some time!
+        redraw
+
+        " The above works fine for flash-next/prev-in-dir, but when doing flash-n/N SexyScroller fires a second time, after the flash, performing an ugly scroll from the wrong location!  (Somewhere near to but not quite at the target.)
+        " It can most easily be reproduced when search wraps around in reverse (with N).  This behaviour is probably caused by the call to feedkeys below.  We can observe that the scroll occurs more rapid than it should (jumps to target prematurely), even with the fix below.
+        " The following prevents that by forcing SexyScroller to store the target location.  But the premature jumping still occurs.
+        if exists("*g:SexyScroller_ScrollToCursor")
+            call g:SexyScroller_ScrollToCursor(0)
+        endif
+
+        " TODO: Another thing we should do early (before the flashing animation/pause begins) is to restore visual mode.
+        "       If Visual mode is not restored while the flashing is ongoing, it is not clear to the user than he is still in Visual state (although that is the case/intention).
+        "       There may be other things we should do to restore state before/during the flash, which should not be done until after the jump in non-flashing mode.  These things should really be refactored into functions so that both flashing and non-flashing modes can call them, but at different times.
+        " TODO: When the user has executed a movement in operator-pending mode, ideally we would show the results of that movement before flashing begins.
+        "       For example when the user does `dt;` or `ct;` we would remove the chars before flashing, so that it at least looks responsive to the user.  This might be easier for `d` than for `c`.  In the meantime, I am binding to `f` and `t` in N and V mode only, not in operator-pending mode.
+
     endif
 
     " Store s:current original_position & cursor_position {{{
@@ -1416,7 +1449,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         endif
 
         " -- Shade inactive source --------------- {{{
-        if g:EasyMotion_do_shade && targets_len != 1 && s:flag.dot_repeat != 1
+        let do_shading = s:flag.flash ? g:EasyMotion_do_shade_for_flash : g:EasyMotion_do_shade
+        if do_shading && targets_len != 1 && s:flag.dot_repeat != 1
             if a:direction == 1 " Backward
                 let shade_hl_re = s:flag.within_line
                                 \ ? '^.*\%#'
