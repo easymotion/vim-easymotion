@@ -206,12 +206,18 @@ xnoremap <silent><Plug>(easymotion-eol-bd-jk) <Esc>:<C-u>call EasyMotion#Eol(1,2
 "}}}
 
 " -- Search Motion {{{
-noremap  <silent><Plug>(easymotion-n)         :<C-u>call EasyMotion#Search(0,0)<CR>
-xnoremap <silent><Plug>(easymotion-n)    <Esc>:<C-u>call EasyMotion#Search(1,0)<CR>
-noremap  <silent><Plug>(easymotion-N)         :<C-u>call EasyMotion#Search(0,1)<CR>
-xnoremap <silent><Plug>(easymotion-N)    <Esc>:<C-u>call EasyMotion#Search(1,1)<CR>
-noremap  <silent><Plug>(easymotion-bd-n)      :<C-u>call EasyMotion#Search(0,2)<CR>
-xnoremap <silent><Plug>(easymotion-bd-n) <Esc>:<C-u>call EasyMotion#Search(1,2)<CR>
+noremap  <silent><Plug>(easymotion-n)         :<C-u>call EasyMotion#Search(0,0,0)<CR>
+xnoremap <silent><Plug>(easymotion-n)    <Esc>:<C-u>call EasyMotion#Search(1,0,0)<CR>
+noremap  <silent><Plug>(easymotion-N)         :<C-u>call EasyMotion#Search(0,1,0)<CR>
+xnoremap <silent><Plug>(easymotion-N)    <Esc>:<C-u>call EasyMotion#Search(1,1,0)<CR>
+
+noremap  <silent><Plug>(easymotion-vim-n)      :<C-u>call EasyMotion#Search(0,0,1)<CR>
+xnoremap <silent><Plug>(easymotion-vim-n) <Esc>:<C-u>call EasyMotion#Search(1,0,1)<CR>
+noremap  <silent><Plug>(easymotion-vim-N)      :<C-u>call EasyMotion#Search(0,1,1)<CR>
+xnoremap <silent><Plug>(easymotion-vim-N) <Esc>:<C-u>call EasyMotion#Search(1,1,1)<CR>
+
+noremap  <silent><Plug>(easymotion-bd-n)      :<C-u>call EasyMotion#Search(0,2,0)<CR>
+xnoremap <silent><Plug>(easymotion-bd-n) <Esc>:<C-u>call EasyMotion#Search(1,2,0)<CR>
 "}}}
 
 " -- Jump To Anywhere Motion {{{

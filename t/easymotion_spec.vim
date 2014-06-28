@@ -330,15 +330,23 @@ describe 'Default settings'
         " }}}
 
         " Search Motion: {{{
-        Expect maparg('<Plug>(easymotion-n)', 'n') ==# ':<C-U>call EasyMotion#Search(0,0)<CR>'
-        Expect maparg('<Plug>(easymotion-n)', 'o') ==# ':<C-U>call EasyMotion#Search(0,0)<CR>'
-        Expect maparg('<Plug>(easymotion-n)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,0)<CR>'
-        Expect maparg('<Plug>(easymotion-N)', 'n') ==# ':<C-U>call EasyMotion#Search(0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-N)', 'o') ==# ':<C-U>call EasyMotion#Search(0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-N)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,1)<CR>'
-        Expect maparg('<Plug>(easymotion-bd-n)', 'n') ==# ':<C-U>call EasyMotion#Search(0,2)<CR>'
-        Expect maparg('<Plug>(easymotion-bd-n)', 'o') ==# ':<C-U>call EasyMotion#Search(0,2)<CR>'
-        Expect maparg('<Plug>(easymotion-bd-n)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,2)<CR>'
+        Expect maparg('<Plug>(easymotion-n)', 'n') ==# ':<C-U>call EasyMotion#Search(0,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-n)', 'o') ==# ':<C-U>call EasyMotion#Search(0,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-n)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-N)', 'n') ==# ':<C-U>call EasyMotion#Search(0,1,0)<CR>'
+        Expect maparg('<Plug>(easymotion-N)', 'o') ==# ':<C-U>call EasyMotion#Search(0,1,0)<CR>'
+        Expect maparg('<Plug>(easymotion-N)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,1,0)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-n)', 'n') ==# ':<C-U>call EasyMotion#Search(0,2,0)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-n)', 'o') ==# ':<C-U>call EasyMotion#Search(0,2,0)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-n)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,2,0)<CR>'
+
+        " respect previous direction
+        Expect maparg('<Plug>(easymotion-vim-n)', 'n') ==# ':<C-U>call EasyMotion#Search(0,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-vim-n)', 'o') ==# ':<C-U>call EasyMotion#Search(0,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-vim-n)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-vim-N)', 'n') ==# ':<C-U>call EasyMotion#Search(0,1,1)<CR>'
+        Expect maparg('<Plug>(easymotion-vim-N)', 'o') ==# ':<C-U>call EasyMotion#Search(0,1,1)<CR>'
+        Expect maparg('<Plug>(easymotion-vim-N)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,1,1)<CR>'
         " }}}
 
         " JumpToAnywhere Motion: {{{

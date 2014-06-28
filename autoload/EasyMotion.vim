@@ -215,9 +215,12 @@ function! EasyMotion#Eol(visualmode, direction) " {{{
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- Search Motion -----------------------
-function! EasyMotion#Search(visualmode, direction) " {{{
+function! EasyMotion#Search(visualmode, direction, respect_direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    call s:EasyMotion(@/, a:direction, a:visualmode ? visualmode() : '', 0)
+    let search_direction = a:respect_direction ?
+    \   (a:direction == 1 ? v:searchforward : 1-v:searchforward) :
+    \   (a:direction)
+    call s:EasyMotion(@/, search_direction, a:visualmode ? visualmode() : '', 0)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- JumpToAnywhere Motion ---------------
