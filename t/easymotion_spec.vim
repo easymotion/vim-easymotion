@@ -367,11 +367,11 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-repeat)', 'v')
             \ ==# '<Esc>:<C-U>call EasyMotion#Repeat(1)<CR>'
         Expect maparg('<Plug>(easymotion-dotrepeat)', 'n')
-            \ ==# ':<C-U>call EasyMotion#DotRepeat(0)<CR>'
+            \ ==# ':<C-U>call EasyMotion#DotRepeat()<CR>'
         Expect maparg('<Plug>(easymotion-dotrepeat)', 'o')
-            \ ==# ':<C-U>call EasyMotion#DotRepeat(0)<CR>'
+            \ ==# ':<C-U>call EasyMotion#DotRepeat()<CR>'
         Expect maparg('<Plug>(easymotion-dotrepeat)', 'v')
-            \ ==# '<Esc>:<C-U>call EasyMotion#DotRepeat(1)<CR>'
+            \ ==# ':<C-U>call EasyMotion#DotRepeat()<CR>'
         " }}}
 
         " Next, Previous motion {{{

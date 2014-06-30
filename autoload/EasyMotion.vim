@@ -1,3 +1,4 @@
+scriptencoding utf-8
 " EasyMotion - Vim motions on speed!
 "
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
@@ -5,7 +6,6 @@
 " Source: https://github.com/Lokaltog/vim-easymotion
 "=============================================================================
 " Saving 'cpoptions' {{{
-scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 " }}}
@@ -286,7 +286,7 @@ function! EasyMotion#Repeat(visualmode) " {{{
     call s:EasyMotion(re, direction, a:visualmode ? visualmode() : '', is_inclusive)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
-function! EasyMotion#DotRepeat(visualmode) " {{{
+function! EasyMotion#DotRepeat() " {{{
     let cnt = v:count1 " avoid overwriting
 
     " Repeat previous '.' motion with previous targets and operator
