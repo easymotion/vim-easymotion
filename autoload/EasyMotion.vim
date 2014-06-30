@@ -344,7 +344,8 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
     endif
 
     " Jump
-    for i in range(cnt)
+    " @vimlint(EVL102, 1, l:_)
+    for _ in range(cnt)
         keepjumps call searchpos(re, search_direction)
     endfor
 
@@ -481,7 +482,7 @@ function! s:convertRegep(input) "{{{
     endif
 
     if s:should_use_smartsign(a:input)
-        let re = s:convertSmartsign(re, a:input)
+        let re = s:convertSmartsign(a:input)
     endif
 
     let case_flag = EasyMotion#helper#should_case_sensitive(
@@ -506,7 +507,7 @@ function! s:convertMigemo(re) "{{{
     endif
     return re
 endfunction "}}}
-function! s:convertSmartsign(re, chars) "{{{
+function! s:convertSmartsign(chars) "{{{
     " Convert given chars to smartsign string
     " Example: 12 -> [1!][2@]
     "          a] -> a[]}]
@@ -899,6 +900,7 @@ function! s:PromptUser(groups) "{{{
 
     let coord_key_dict = s:CreateCoordKeyDict(a:groups)
 
+    let prev_col_num = 0
     for dict_key in sort(coord_key_dict[0])
         " NOTE: {{{
         " let g:EasyMotion_keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -949,8 +951,6 @@ function! s:PromptUser(groups) "{{{
         " Prepare marker characters {{{
         let marker_chars = coord_key_dict[1][dict_key]
         let marker_chars_len = EasyMotion#helper#strchars(marker_chars)
-        let marker_chars_first_byte_len = strlen(matchstr(marker_chars,
-                                                        \ '^.'))
         "}}}
 
         " Replace {target} with {marker} & Highlight {{{
