@@ -7,11 +7,11 @@
 if expand("%:p") ==# expand("<sfile>:p")
   unlet! g:EasyMotion_loaded
 endif
-if exists('g:EasyMotion_loaded') || &compatible
+if exists('g:EasyMotion_loaded') || &compatible || version < 703
     finish
-elseif version < 703
-    echomsg "This version of EasyMotion requires Vim 7.3 or later"
-    finish
+" elseif version < 703
+"     echomsg "This version of EasyMotion requires Vim 7.3 or later"
+"     finish
 endif
 
 let g:EasyMotion_loaded = 1
