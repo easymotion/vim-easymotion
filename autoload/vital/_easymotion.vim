@@ -128,7 +128,7 @@ function! s:_get_module_path(name)
     throw 'vital: Invalid module name: ' . a:name
   endif
 
-  call filter(paths, 'filereadable(expand(v:val))')
+  call filter(paths, 'filereadable(expand(v:val, 1))')
   let path = get(paths, 0, '')
   return path !=# '' ? path : ''
 endfunction
