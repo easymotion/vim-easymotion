@@ -356,6 +356,7 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " }}}
+" }}}
 " Helper Functions: {{{
 " -- Message -----------------------------
 function! s:Message(message) " {{{
@@ -1064,6 +1065,7 @@ function! s:PromptUser(groups) "{{{
         " Restore undo tree {{{
         if s:should_use_wundo() && filereadable(s:undo_file)
             silent execute "rundo" s:undo_file
+            call delete(s:undo_file)
             unlet s:undo_file
         else
             " Break undo history (undobreak)
