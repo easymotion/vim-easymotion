@@ -526,9 +526,9 @@ keymapping,
     Note: the 'n' key motion provides incremental highlighting. If you don't
           want to highlight incrementally, set |g:EasyMotion_inc_highlight|
           to 0.
-
+>
     let g:EasyMotion_inc_highlight = 0
-
+<
 All Find motions (s,f,F,t,T,sl,fl,Fl,tl,Tl, see below) support this feature!
 (|l| means within line motion)
 
@@ -639,7 +639,7 @@ Default: 0
     {operator}<Leader>p  | Select, yank, paste, delete, or other operation of
                          | phrase. See |<Plug>(easymotion-special-p)|.
 
-or you can map them yourself
+Or you can map them yourself
 
     <Plug> Mapping Table         | Details
     -----------------------------|--------------------------------------
@@ -959,7 +959,7 @@ EasyMotion_off_screen_search                   *g:EasyMotion_off_screen_search*
 
 EasyMotion_disable_two_key_combo           *g:EasyMotion_disable_two_key_combo*
 
-    If you set this option to 1, you can disable two key combo feature.
+    If you set this option to 1, you can disable the two key combo feature.
 >
     let g:EasyMotion_disable_two_key_combo = 1
 <
