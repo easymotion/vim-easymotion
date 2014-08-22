@@ -272,7 +272,7 @@ git clone https://github.com/Lokaltog/vim-easymotion ~/.vim/bundle/vim-easymotio
 
 ### Vundle (https://github.com/gmarik/vundle)
 ```
-Bundle 'Lokaltog/vim-easymotion'
+Plugin 'Lokaltog/vim-easymotion'
 ```
 
 ### NeoBundle (https://github.com/Shougo/neobundle.vim)
