@@ -35,7 +35,7 @@ endfunction
 
 
 function! s:make_plain()
-	return deepcpy(s:base)
+	return deepcopy(s:base)
 endfunction
 
 
@@ -396,6 +396,9 @@ function! s:base._main(...)
 " 				call self._input(s:_getchar(0))
 " 				call self.draw()
 				call self._input(s:_getchar())
+				if self._is_exit()
+					break
+				endif
 				call self.draw()
 			catch
 				call self.callevent("on_exception")
@@ -466,8 +469,13 @@ endfunction
 
 
 function! s:_getchar(...)
-	let char = call("getchar", a:000)
-	return type(char) == type(0) ? nr2char(char) : char
+	while 1
+		let char = call("getchar", a:000)
+		" Workaround for the <expr> mappings
+		if char !=# "\x80\xfd`"
+			return type(char) == type(0) ? nr2char(char) : char
+		endif
+	endwhile
 endfunction
 
 

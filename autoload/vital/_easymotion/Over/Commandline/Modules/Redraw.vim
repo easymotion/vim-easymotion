@@ -37,7 +37,11 @@ endfunction
 
 function! s:module.redraw(cmdline)
 	redraw
-	normal! :
+	" Workaround for the :set cedit=<C-c>
+	" https://github.com/osyo-manga/vital-over/issues/52
+	if &cedit != "<C-c>"
+		normal! :
+	endif
 endfunction
 
 function! s:make()
