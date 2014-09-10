@@ -1,3 +1,4 @@
+scriptencoding utf-8
 " EasyMotion - Vim motions on speed!
 "
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
@@ -9,9 +10,6 @@ if expand("%:p") ==# expand("<sfile>:p")
 endif
 if exists('g:EasyMotion_loaded') || &compatible || version < 703
     finish
-" elseif version < 703
-"     echomsg "This version of EasyMotion requires Vim 7.3 or later"
-"     finish
 endif
 
 let g:EasyMotion_loaded = 1

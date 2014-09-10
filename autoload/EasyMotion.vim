@@ -49,7 +49,8 @@ function! EasyMotion#init()
     " 1 -> Cancel
     let g:EasyMotion_ignore_exception = 0
     return ""
-endfunction "}}}
+endfunction
+"}}}
 " Reset: {{{
 function! EasyMotion#reset()
     let s:flag = {
@@ -103,6 +104,7 @@ function! EasyMotion#reset()
         "   visualmode and 'n' key motion, this value could be different.
     return ""
 endfunction "}}}
+
 " Motion Functions: {{{
 " -- Find Motion -------------------------
 " Note: {{{
@@ -355,7 +357,6 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
     call EasyMotion#attach_active_autocmd() "}}}
     return s:EasyMotion_is_cancelled
 endfunction " }}}
-" }}}
 " }}}
 " Helper Functions: {{{
 " -- Message -----------------------------
@@ -879,6 +880,7 @@ function! s:CreateCoordKeyDict(groups, ...)
 endfunction
 " }}}
 " }}}
+"}}}
 " Core Functions: {{{
 function! s:PromptUser(groups) "{{{
     " Recursive
@@ -1523,9 +1525,9 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
     endtry
 endfunction " }}}
 "}}}
-" Call Init: {{{
+" }}}
+
 call EasyMotion#init()
-"}}}
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
 unlet s:save_cpo

@@ -1,7 +1,6 @@
 "=============================================================================
 " FILE: t/smartsign_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 29-03-2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
