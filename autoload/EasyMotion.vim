@@ -351,6 +351,8 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
         keepjumps call searchpos(re, search_direction)
     endfor
 
+    normal! zv
+
     call EasyMotion#reset()
     " -- Activate EasyMotion ----------------- {{{
     let s:EasyMotion_is_active = 1
