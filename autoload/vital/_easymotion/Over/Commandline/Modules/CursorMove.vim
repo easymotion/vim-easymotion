@@ -21,6 +21,15 @@ function! s:module.on_char_pre(cmdline)
 \		|| a:cmdline.is_input("\<End>")
 		call a:cmdline.setline(a:cmdline.line.length())
 		call a:cmdline.setchar('')
+	elseif a:cmdline.is_input("\<C-Left>")
+\		|| a:cmdline.is_input("\<S-Left>")
+		call a:cmdline.setline(strridx(a:cmdline.backward()[:-2], ' ') + 1)
+		call a:cmdline.setchar('')
+	elseif a:cmdline.is_input("\<C-Right>")
+\		|| a:cmdline.is_input("\<S-Right>")
+		let p = stridx(a:cmdline.forward()[1:], ' ')
+		call a:cmdline.setline(p != -1 ? a:cmdline.line.pos() + p + 2 : a:cmdline.line.length())
+		call a:cmdline.setchar('')
 	endif
 endfunction
 

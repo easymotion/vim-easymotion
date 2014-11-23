@@ -42,7 +42,7 @@ function! s:_redraw(cmdline)
 	let left = a:cmdline.get_prompt() . a:cmdline.getline() . (empty(a:cmdline.line.pos_word()) ? " " : "")
 	let width = len(left) + 1
 
-	if	a:cmdline.get_suffix() != ""
+	if a:cmdline.get_suffix() != ""
 		let width += len(s:suffix(left, a:cmdline.get_suffix())) - 1
 	endif
 
