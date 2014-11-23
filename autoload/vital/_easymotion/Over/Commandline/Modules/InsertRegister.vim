@@ -3,6 +3,18 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 
+function! s:_vital_loaded(V)
+	let s:V = a:V
+	let s:String  = s:V.import("Over.String")
+endfunction
+
+
+function! s:_vital_depends()
+	return [
+\		"Over.String",
+\	]
+endfunction
+
 
 function! s:to_string(expr)
 	return type(a:expr) == type("") ? a:expr : string(a:expr)
@@ -10,10 +22,24 @@ endfunction
 
 
 function! s:input(cmdline)
+	let CR_index = index(a:cmdline.input_key_stack(), "\<CR>")
+	if CR_index != -1
+		let input = a:cmdline.input_key_stack_string()
+		let input = input[ : CR_index-1]
+		call a:cmdline.set_input_key_stack(a:cmdline.input_key_stack()[CR_index+1 : ])
+		return eval(input)
+	endif
+
+	let input_text = ""
+	if !empty(a:cmdline.input_key_stack())
+		let input_text = a:cmdline.input_key_stack_string()
+		call a:cmdline.set_input_key_stack([])
+	endif
+
 	call a:cmdline.hl_cursor_on()
 	try
 		redraw
-		let input = input("=", "", "expression")
+		let input = input("=", input_text, "expression")
 		if !empty(input)
 			let input = s:to_string(eval(input))
 		endif
@@ -31,11 +57,26 @@ let s:module = {
 \}
 
 
-function! s:module.on_enter(...)
+
+function! s:module.reset()
 	let self.cword = expand("<cword>")
 	let self.cWORD = expand("<cWORD>")
 	let self.cfile = expand("<cfile>")
+endfunction
+
+function! s:module.on_enter(...)
+	call self.reset()
 " 	let self.prefix_key = ""
+endfunction
+
+
+function! s:get_cmdline_cword(backward, cword)
+" 	let backward = matchstr(a:backward, '.\{-}\zs\k\+$')
+	let backward = a:backward
+	if &incsearch == 0 || a:cword == "" || a:backward == "" || s:String.index(a:cword, backward) != 0
+		return a:cword
+	endif
+	return a:cword[len(backward) : ]
 endfunction
 
 
@@ -57,7 +98,7 @@ function! s:module.on_char_pre(cmdline)
 		elseif char == "="
 			call a:cmdline.setchar(s:input(a:cmdline))
 		elseif char == "\<C-w>"
-			call a:cmdline.setchar(self.cword)
+			call a:cmdline.setchar(s:get_cmdline_cword(a:cmdline.backward_word(), self.cword))
 		elseif char == "\<C-a>"
 			call a:cmdline.setchar(self.cWORD)
 		elseif char == "\<C-f>"
