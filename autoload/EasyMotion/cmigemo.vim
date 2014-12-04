@@ -98,7 +98,7 @@ function! EasyMotion#cmigemo#getMigemoPattern(input) "{{{
         return EasyMotion#cmigemo#system('cmigemo -v -w "'.a:input.'" -d "'.s:migemodict.'"')
     else
         " Not supported
-        return input
+        return a:input
     endif
 endfunction "}}}
 

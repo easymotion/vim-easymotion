@@ -152,7 +152,7 @@ if exists('*strchars')
     endfunction
 else
     function! EasyMotion#helper#strchars(str)
-        return strlen(substitute(str, ".", "x", "g"))
+        return strlen(substitute(a:str, ".", "x", "g"))
     endfunction
 endif "}}}
 function! EasyMotion#helper#include_multibyte_char(str) "{{{
