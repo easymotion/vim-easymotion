@@ -155,9 +155,10 @@ let s:priorities = {
     \  g:EasyMotion_hl_inc_cursor : 2,
     \  g:EasyMotion_hl_move : 0,
     \ }
-for group in keys(s:priorities)
-    let s:h.ids[group] = []
+for s:group in keys(s:priorities)
+    let s:h.ids[s:group] = []
 endfor
+unlet s:group
 "}}}
 
 function! EasyMotion#highlight#delete_highlight(...) "{{{
