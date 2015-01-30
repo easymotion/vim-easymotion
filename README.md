@@ -303,7 +303,7 @@ nmap s <Plug>(easymotion-s)
 " Need one more keystroke, but on average, it may be more comfortable.
 nmap s <Plug>(easymotion-s2)
 
-" Turn on case sensitive feature
+" Turn on case insensitive feature
 let g:EasyMotion_smartcase = 1
 
 " JK motions: Line motions
