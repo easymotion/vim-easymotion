@@ -622,33 +622,6 @@ Find Motion Command Line~
     __EXPERIMENTAL__. They could be changed in the near future. However, they
     work well and are very useful, so I've released them anyway for now.
 
-------------------------------------------------------------------------------
-2.3 Special mappings                              *easymotion-special-mappings*
-
-The default configuration defines the following mappings in visual and
-operator-pending mode if |g:EasyMotion_do_special_mapping| is on:
->
-        let g:EasyMotion_do_special_mapping = 1
-<
-Default: 0
-
-    Special Mapping      | Details
-    ---------------------|----------------------------------------------
-    {operator}<Leader>l  | Select, yank, paste, delete, or other operation of
-                         | lines. See |<Plug>(easymotion-special-l)|.
-    {operator}<Leader>p  | Select, yank, paste, delete, or other operation of
-                         | phrase. See |<Plug>(easymotion-special-p)|.
-
-Or you can map them yourself
-
-    <Plug> Mapping Table         | Details
-    -----------------------------|--------------------------------------
-    <Plug>(easymotion-special-l) | See |<Plug>(easymotion-special-l)|
-    <Plug>(easymotion-special-p) | See |<Plug>(easymotion-special-p)|
-
-
-See |easymotion-leader-key| and |mapleader| for details about the leader key.
-
 ==============================================================================
 Requirements                                          *easymotion-requirements*
 
