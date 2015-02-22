@@ -717,6 +717,7 @@ endfunction " }}}
 let s:grouping_algorithms = {
 \   1: 'SCTree'
 \ , 2: 'Original'
+\ , 3: 'FirstChar'
 \ }
 " -- Single-key/closest target priority tree {{{
 " This algorithm tries to assign one-key jumps to all the targets closest to the cursor.
@@ -830,6 +831,43 @@ function! s:GroupingAlgorithmOriginal(targets, keys)
             endfor
 
             let root_group += 1
+        endwhile
+    catch | endtry
+
+    " Flatten the group array
+    if len(groups) == 1
+        let groups = groups[a:keys[0]]
+    endif
+
+    return groups
+endfunction
+" }}}
+" -- First char grouping algorithm {{{
+function! s:GroupingAlgorithmFirstChar(targets, keys)
+    " Split targets into groups (1 level)
+    let targets_len = len(a:targets)
+
+    let groups = {}
+
+    let i = 0
+    try
+        while i<targets_len
+            let cursor_char = tolower(EasyMotion#helper#get_char_by_coord(a:targets[i]))
+            if len(cursor_char) == 0
+                let cursor_char = '0'
+            endif
+            if has_key(groups, cursor_char)
+                for key in a:keys
+                    if !has_key(groups[cursor_char], key)
+                        let groups[cursor_char][key] = a:targets[i]
+                        break
+                    endif
+                endfor
+            else
+                let groups[cursor_char] = {}
+                let groups[cursor_char][a:keys[0]] = a:targets[i]
+            endif
+            let i+= 1
         endwhile
     catch | endtry
 
