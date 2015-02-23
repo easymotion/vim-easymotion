@@ -1,4 +1,5 @@
 let s:self_version = expand('<sfile>:t:r')
+let s:self_file = expand('<sfile>')
 
 " Note: The extra argument to globpath() was added in Patch 7.2.051.
 let s:globpath_third_arg = v:version > 702 || v:version == 702 && has('patch51')
@@ -300,5 +301,3 @@ endfunction
 function! vital#{s:self_version}#new() abort
   return s:_import('')
 endfunction
-
-let s:self_file = s:_unify_path(expand('<sfile>'))

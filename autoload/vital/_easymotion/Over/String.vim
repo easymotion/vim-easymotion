@@ -46,7 +46,7 @@ function! s:base.forward()
 	return join(self.list[self.col+1 : ], '')
 endfunction
 
-function! s:base.pos_word()
+function! s:base.pos_char()
 	return get(self.list, self.col, "")
 endfunction
 
@@ -270,6 +270,11 @@ function! s:index(haystack, needle, ...)
 	else
 		return stridx(a:haystack, a:needle, start)
 	endif
+endfunction
+
+
+function! s:length(str)
+	return len(s:split_by_keys(a:str))
 endfunction
 
 

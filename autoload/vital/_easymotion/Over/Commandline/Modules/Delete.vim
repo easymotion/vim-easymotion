@@ -21,11 +21,11 @@ function! s:module.on_char_pre(cmdline)
 	elseif a:cmdline.is_input("\<C-w>")
 		let word = a:cmdline.backward_word()
 		let backward = a:cmdline.backward()[ : -strlen(word)-1 ]
-		call a:cmdline.setline(backward . a:cmdline.line.pos_word() . a:cmdline.forward())
+		call a:cmdline.setline(backward . a:cmdline.line.pos_char() . a:cmdline.forward())
 		call a:cmdline.setline(strchars(backward))
 		call a:cmdline.setchar('')
 	elseif a:cmdline.is_input("\<C-u>")
-		call a:cmdline.setline(a:cmdline.line.pos_word() . a:cmdline.forward())
+		call a:cmdline.setline(a:cmdline.line.pos_char() . a:cmdline.forward())
 		call a:cmdline.setline(0)
 		call a:cmdline.setchar('')
 	endif
