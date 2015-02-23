@@ -101,10 +101,14 @@ endfunction
 
 function! s:module.on_char_pre(cmdline)
 	if a:cmdline.is_input("<Over>(buffer-complete)")
+\		|| a:cmdline.is_input("<Over>(buffer-complete-prev)")
 		if self.complete(a:cmdline) == -1
 			call s:_finish()
 			call a:cmdline.setchar('')
 			return
+		endif
+		if a:cmdline.is_input("<Over>(buffer-complete-prev)")
+			let s:count = len(s:complete_list) - 1
 		endif
 		call a:cmdline.setchar('')
 		call a:cmdline.tap_keyinput("Completion")
@@ -116,7 +120,8 @@ function! s:module.on_char_pre(cmdline)
 		if s:count >= len(s:complete_list)
 			let s:count = 0
 		endif
-	elseif a:cmdline.is_input("\<Left>", "Completion")
+	elseif a:cmdline.is_input("<Over>(buffer-complete-prev)", "Completion")
+\		|| a:cmdline.is_input("\<Left>", "Completion")
 		call a:cmdline.setchar('')
 		let s:count -= 1
 		if s:count < 0

@@ -4,13 +4,13 @@ set cpo&vim
 
 
 function! s:_vital_loaded(V)
-	let s:Keymapping = a:V.import("Over.Keymapping")
+	let s:Keymapping = a:V.import("Palette.Keymapping")
 endfunction
 
 
 function! s:_vital_depends()
 	return [
-\		"Over.Keymapping",
+\		"Palette.Keymapping",
 \	]
 endfunction
 
@@ -87,12 +87,13 @@ let s:vim_cmdline_mapping = {
 
 function! s:_auto_cmap()
 	let cmaps = {}
-	let cmap_info = s:Keymapping.cmap_rhss(0, 1)
-	" vital-over currently doesn't support <expr> nor <buffer> mappings
-	for c in filter(cmap_info, "v:val['expr'] ==# 0 && v:val['buffer'] ==# 0")
-		let cmaps[s:Keymapping.escape_key(c['lhs'])] = {
+	let cmap_info = s:Keymapping.rhs_key_list("c", 0, 1)
+	" vital-over currently doesn't support <buffer> mappings
+	for c in filter(cmap_info, "v:val['buffer'] ==# 0")
+		let cmaps[s:Keymapping.escape_special_key(c['lhs'])] = {
 		\   'noremap' : c['noremap'],
-		\   'key' : s:Keymapping.escape_key(c['rhs']),
+		\   'key'  : s:Keymapping.escape_special_key(c['rhs']),
+		\   'expr' : s:Keymapping.escape_special_key(c['expr']),
 		\ }
 	endfor
 	return cmaps
@@ -107,6 +108,7 @@ endfunction
 function! s:vim_cmdline_mapping.keymapping(cmdline)
 	return self._cmaps
 endfunction
+
 
 function! s:make_vim_cmdline_mapping()
 	return deepcopy(s:vim_cmdline_mapping)
