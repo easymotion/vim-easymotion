@@ -173,11 +173,11 @@ call s:motion_map_helper({
 
 " -- Search Motion {{{
 call s:motion_map_helper({
-    \ 'n'               : {'fnc' : 'Search', 'direction': 0, 'respectdirection': 0},
-    \ 'N'               : {'fnc' : 'Search', 'direction': 1, 'respectdirection': 0},
-    \ 'bd-n'            : {'fnc' : 'Search', 'direction': 2, 'respectdirection': 0},
-    \ 'vim-n'           : {'fnc' : 'Search', 'direction': 0, 'respectdirection': 1},
-    \ 'vim-N'           : {'fnc' : 'Search', 'direction': 1, 'respectdirection': 1},
+    \ 'n'               : {'fnc' : 'Search', 'direction': 0, 'respect_direction': 0},
+    \ 'N'               : {'fnc' : 'Search', 'direction': 1, 'respect_direction': 0},
+    \ 'bd-n'            : {'fnc' : 'Search', 'direction': 2, 'respect_direction': 0},
+    \ 'vim-n'           : {'fnc' : 'Search', 'direction': 0, 'respect_direction': 1},
+    \ 'vim-N'           : {'fnc' : 'Search', 'direction': 1, 'respect_direction': 1},
     \ })
 "}}}
 
