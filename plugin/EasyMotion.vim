@@ -64,10 +64,13 @@ function! s:motion_map_helper(motions) "{{{
         let l:mapargs = []
         let l:xmapargs = []
         if dict.fnc ==# 'S' || dict.fnc ==# 'SL' || dict.fnc ==# 'T' || dict.fnc ==# 'TL'
-            let l:mapargs += [dict.cnt, 0, dict.direction]
+            let l:mapargs  += [dict.cnt, 0, dict.direction]
             let l:xmapargs += [dict.cnt, 1, dict.direction]
+        elseif dict.fnc ==# 'Search'
+            let l:mapargs  += [0, dict.direction, dict.respect_direction]
+            let l:xmapargs += [1, dict.direction, dict.respect_direction]
         else
-            let l:mapargs += [0, dict.direction]
+            let l:mapargs  += [0, dict.direction]
             let l:xmapargs += [1, dict.direction]
         endif
 
