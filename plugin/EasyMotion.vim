@@ -195,9 +195,9 @@ call s:motion_map_helper({
     \ 'el'              : {'fnc' : 'EL' , 'direction': 0},
     \ 'gel'             : {'fnc' : 'EL' , 'direction': 1},
     \ 'bd-el'           : {'fnc' : 'EL' , 'direction': 2},
-    \ 'lineforward'     : {'fnc' : 'WBL', 'direction': 0},
-    \ 'linebackward'    : {'fnc' : 'WBL', 'direction': 1},
-    \ 'lineanywhere'    : {'fnc' : 'WBL', 'direction': 2},
+    \ 'lineforward'     : {'fnc' : 'LineAnywhere', 'direction': 0},
+    \ 'linebackward'    : {'fnc' : 'LineAnywhere', 'direction': 1},
+    \ 'lineanywhere'    : {'fnc' : 'LineAnywhere', 'direction': 2},
     \ })
 "}}}
 
