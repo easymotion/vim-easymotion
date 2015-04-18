@@ -184,13 +184,6 @@ call s:motion_map_helper({
     \ })
 "}}}
 
-" -- Next, Previous Motion {{{
-call s:motion_map_helper({
-    \ 'next'            : {'fnc' : 'NextPrevious', 'direction': 0},
-    \ 'previous'        : {'fnc' : 'NextPrevious', 'direction': 1},
-    \ })
-"}}}
-
 " -- Line Motion {{{
 call s:motion_map_helper({
     \ 'wl'              : {'fnc' : 'WBL', 'direction': 0},
@@ -203,6 +196,18 @@ call s:motion_map_helper({
     \ 'linebackward'    : {'fnc' : 'WBL', 'direction': 1},
     \ 'lineanywhere'    : {'fnc' : 'WBL', 'direction': 2},
     \ })
+"}}}
+
+" -- Next, Previous Motion {{{
+noremap  <silent><Plug>(easymotion-next)
+    \      :<C-u>call EasyMotion#NextPrevious(0,0)<CR>
+xnoremap <silent><Plug>(easymotion-next)
+    \      :<C-u>call EasyMotion#NextPrevious(1,0)<CR>
+
+noremap  <silent><Plug>(easymotion-prev)
+    \      :<C-u>call EasyMotion#NextPrevious(0,1)<CR>
+xnoremap <silent><Plug>(easymotion-prev)
+    \      :<C-u>call EasyMotion#NextPrevious(1,1)<CR>
 "}}}
 
 " -- Repeat Motion {{{
