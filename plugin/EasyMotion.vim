@@ -61,17 +61,17 @@ let g:EasyMotion_disable_two_key_combo     =
 
 function! s:motion_map_helper(motions) "{{{
     for [name, dict] in items(a:motions)
-        let l:mapargs = []
-        let l:xmapargs = []
+        let mapargs = []
+        let xmapargs = []
         if dict.fnc ==# 'S' || dict.fnc ==# 'SL' || dict.fnc ==# 'T' || dict.fnc ==# 'TL'
-            let l:mapargs  += [dict.cnt, 0, dict.direction]
-            let l:xmapargs += [dict.cnt, 1, dict.direction]
+            let mapargs  += [dict.cnt, 0, dict.direction]
+            let xmapargs += [dict.cnt, 1, dict.direction]
         elseif dict.fnc ==# 'Search'
-            let l:mapargs  += [0, dict.direction, dict.respect_direction]
-            let l:xmapargs += [1, dict.direction, dict.respect_direction]
+            let mapargs  += [0, dict.direction, dict.respect_direction]
+            let xmapargs += [1, dict.direction, dict.respect_direction]
         else
-            let l:mapargs  += [0, dict.direction]
-            let l:xmapargs += [1, dict.direction]
+            let mapargs  += [0, dict.direction]
+            let xmapargs += [1, dict.direction]
         endif
 
         silent exec 'noremap  <silent><Plug>(easymotion-'.name.')' .
