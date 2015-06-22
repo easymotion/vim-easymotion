@@ -956,6 +956,11 @@ to groups with default values. The highlighting groups are:
     * EasyMotionShade
 
       Highlights shaded text, the default value is dark gray
+      
+    * EasyMotionMoveHL
+    
+      Highlights matched pattern of "/" command.
+      
 
 There are two ways to override the default colors:
 
@@ -972,6 +977,8 @@ There are two ways to override the default colors:
 
           hi EasyMotionTarget2First ctermbg=none ctermfg=red
           hi EasyMotionTarget2Second ctermbg=none ctermfg=lightred
+          
+          hi EasyMotionMoveHL ctermbg=green ctermfg=black
 <
    2) Set the highlighting in your vimrc
 
@@ -988,6 +995,8 @@ There are two ways to override the default colors:
 
           hi link EasyMotionTarget2First MatchParen
           hi link EasyMotionTarget2Second MatchParen
+          
+          hi link EasyMotionMoveHL Search
 <
 
 Use CSApprox                                        *EasyMotion_force_csapprox*
