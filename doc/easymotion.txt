@@ -634,7 +634,7 @@ Vi-compatible mode must be disabled.
 If your vim version is causing you problems with using this plugin, feel free
 to open an issue on github!
 
-Link: https://github.com/Lokaltog/vim-easymotion/issues
+Link: https://github.com/easymotion/vim-easymotion/issues
 
 ==============================================================================
 Configuration                                        *easymotion-configuration*
@@ -1075,7 +1075,7 @@ SOFTWARE.
 ==============================================================================
 Known bugs                                              *easymotion-known-bugs*
 
-See: https://github.com/Lokaltog/vim-easymotion/issues
+See: https://github.com/easymotion/vim-easymotion/issues
 
 Pull Requests are welcome! :)
 
@@ -1088,7 +1088,7 @@ have any code improvements.
 
 Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
         haya14busa <hayabusa1419@gmail.com> (since version 2.0)
-Source repository: https://github.com/Lokaltog/vim-easymotion
+Source repository: https://github.com/easymotion/vim-easymotion
 
 
 ==============================================================================
@@ -1107,7 +1107,7 @@ Credits                                                    *easymotion-credits*
 - mattn: fix multibyte handling
 - yuex: fix visual mode selection bug (o command)
 
-and more!: https://github.com/Lokaltog/vim-easymotion/graphs/contributors
+and more!: https://github.com/easymotion/vim-easymotion/graphs/contributors
 
 EasyMotion is based on Bartlomiej Podolak's great PreciseJump script, which
 can be downloaded here:

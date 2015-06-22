@@ -46,7 +46,7 @@ highlighted.
 
 EasyMotion is triggered by the provided mappings. This readme only covers the
 basics; please refer to
-[`:help easymotion.txt`](https://github.com/Lokaltog/vim-easymotion/blob/master/doc/easymotion.txt#L86)
+[`:help easymotion.txt`](https://github.com/easymotion/vim-easymotion/blob/master/doc/easymotion.txt#L86)
 to see all the available mappings.
 
 Important notes
@@ -267,17 +267,17 @@ Installation
 ------------
 ### Pathogen (https://github.com/tpope/vim-pathogen)
 ```
-git clone https://github.com/Lokaltog/vim-easymotion ~/.vim/bundle/vim-easymotion
+git clone https://github.com/easymotion/vim-easymotion ~/.vim/bundle/vim-easymotion
 ```
 
 ### Vundle (https://github.com/gmarik/vundle)
 ```
-Plugin 'Lokaltog/vim-easymotion'
+Plugin 'easymotion/vim-easymotion'
 ```
 
 ### NeoBundle (https://github.com/Shougo/neobundle.vim)
 ```
-NeoBundle 'Lokaltog/vim-easymotion'
+NeoBundle 'easymotion/vim-easymotion'
 ```
 
 Minimal Configuration Tutorial
@@ -318,4 +318,4 @@ Now, all you need to remember is `s` and JK motions bindings, and it's good enou
 
 Of course you can use any key you want instead of `s` such as `<Space>`, `<Leader>s`, etc...
 
-If you want to use more useful mappings, please see [:h easymotion.txt](https://github.com/Lokaltog/vim-easymotion/blob/master/doc/easymotion.txt) for more detail.
+If you want to use more useful mappings, please see [:h easymotion.txt](https://github.com/easymotion/vim-easymotion/blob/master/doc/easymotion.txt) for more detail.
