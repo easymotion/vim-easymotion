@@ -3,7 +3,7 @@ scriptencoding utf-8
 "
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
-" Source: https://github.com/Lokaltog/vim-easymotion
+" Source: https://github.com/easymotion/vim-easymotion
 "=============================================================================
 " Saving 'cpoptions' {{{
 let s:save_cpo = &cpo
@@ -73,7 +73,7 @@ function! EasyMotion#reset()
         "   because 'f' & 't' forward find motion is inclusive, but 'F' & 'T'
         "   backward find motion is exclusive
         " count_dot_repeat: -> dot repeat with count
-        "   https://github.com/Lokaltog/vim-easymotion/issues/164
+        "   https://github.com/easymotion/vim-easymotion/issues/164
     let s:current = {
         \ 'is_operator' : 0,
         \ 'is_search' : 0,

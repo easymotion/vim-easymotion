@@ -3,7 +3,7 @@ scriptencoding utf-8
 "
 " Author: Kim Silkebækken <kim.silkebaekken+vim@gmail.com>
 "         haya14busa <hayabusa1419@gmail.com>
-" Source: https://github.com/Lokaltog/vim-easymotion
+" Source: https://github.com/easymotion/vim-easymotion
 " == Script initialization {{{
 if expand("%:p") ==# expand("<sfile>:p")
   unlet! g:EasyMotion_loaded
