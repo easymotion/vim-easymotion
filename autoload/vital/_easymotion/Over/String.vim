@@ -80,13 +80,14 @@ endfunction
 
 function! s:base.remove(index)
 	if a:index < 0 || self.length() <= a:index
-		return self
+		return ""
 	endif
+	let result = self.list[a:index]
 	unlet self.list[a:index]
 	if a:index < self.col
 		call self.set(self.col - 1)
 	endif
-	return self
+	return result
 endfunction
 
 function! s:base.remove_pos()
@@ -109,158 +110,24 @@ function! s:make(...)
 	return result
 endfunction
 
-
-function! s:_split(str, pat)
-	let pat = (exists("+regexpengine") ? '\%#=2' : '') . a:pat
-	let list = split(a:str,  pat . '\zs')
-	return s:List.flatten(map(list, 'v:val == a:pat ? a:pat : v:val =~ pat . ''$'' ? split(v:val, pat) + [a:pat] : v:val'))
+" NOTE: old regexpengine has a bug with string which contains binary
+" :echo "\x80" =~ "\\%#=1\x80"   | " => 0
+" But it matches correctly with :h /collection
+" :echo "\x80" =~ "\\%#=1[\x80]" | " => 1
+" http://lingr.com/room/vim/archives/2015/02/13#message-21261450
+let s:_engine = exists("+regexpengine") ? '\%#=2' : ''
+" \<A-]> => Û\xfdQ
+" \<A-@> => À\xfeX
+let s:_regex = exists("+regexpengine")
+\	? "\\%(Û\xfdQ\\|À\xfeX\\|\x80\xfc.\\%(\x80..\\|.\\)\\|\x80..\\|.\\)\\zs"
+\	: "\\%(Û[\xfd]Q\\|À[\xfe]X\\|[\x80][\xfc].\\%([\x80]..\\|.\\)\\|[\x80]..\\|.\\)\\zs"
+function! s:_split_keystring(str, ...)
+	return split(a:str, s:_engine . '\m\%(' . get(a:, 1, '') . s:_regex . '\)')
 endfunction
 
-
-function! s:_split_keystring(str, pats, ...)
-	if a:str =~ '^<Over>(.\{-})$'
-\	|| a:str =~ "^\<Plug>(.\\{-})$"
-		return [a:str]
-	endif
-	let pats = a:pats
-	let index = get(a:, 1, 0)
-	if !exists("+regexpengine")
-\	|| index > len(pats)
-\	|| len(filter(copy(pats), 'a:str =~ ''\%#=2'' . v:val')) == 0
-		if len(filter(copy(pats), 'a:str ==# v:val')) == 0
-			return split(a:str, '\zs')
-		else
-			return [a:str]
-		endif
-	endif
-	if len(filter(copy(pats), 'a:str == v:val')) == 1
-		return [a:str]
-	endif
-
-	let result = []
-	let pat = pats[index]
-	let list = s:_split(a:str, pat)
-	let result += eval(join(map(list, "s:_split_keystring(v:val, pats, index+1)"), "+"))
-	return result
+function! s:split_by_keys(str)
+	return s:_split_keystring(a:str, "\\%(\<Plug>\\|<Over>\\)(.\\{-})\\zs\\|")
 endfunction
-
-
-let s:special_keys = [
-\	"\<BS>",
-\	"\<Down>",
-\	"\<Up>",
-\	"\<Left>",
-\	"\<Right>",
-\	"\<Home>",
-\	"\<End>",
-\	"\<Insert>",
-\	"\<Delete>",
-\	"\<PageUp>",
-\	"\<PageDown>",
-\	"\<F1>",
-\	"\<F2>",
-\	"\<F3>",
-\	"\<F4>",
-\	"\<F5>",
-\	"\<F6>",
-\	"\<F7>",
-\	"\<F8>",
-\	"\<F9>",
-\	"\<F10>",
-\	"\<F11>",
-\	"\<F12>",
-\	"\<A-BS>",
-\	"\<A-Down>",
-\	"\<A-Up>",
-\	"\<A-Left>",
-\	"\<A-Right>",
-\	"\<A-Home>",
-\	"\<A-End>",
-\	"\<A-Insert>",
-\	"\<A-Delete>",
-\	"\<A-PageUp>",
-\	"\<A-PageDown>",
-\	"\<A-F1>",
-\	"\<A-F2>",
-\	"\<A-F3>",
-\	"\<A-F4>",
-\	"\<A-F5>",
-\	"\<A-F6>",
-\	"\<A-F7>",
-\	"\<A-F8>",
-\	"\<A-F9>",
-\	"\<A-F10>",
-\	"\<A-F11>",
-\	"\<A-F12>",
-\	"\<A-Tab>",
-\	"\<C-BS>",
-\	"\<C-Down>",
-\	"\<C-Up>",
-\	"\<C-Left>",
-\	"\<C-Right>",
-\	"\<C-Home>",
-\	"\<C-End>",
-\	"\<C-Insert>",
-\	"\<C-Delete>",
-\	"\<C-PageUp>",
-\	"\<C-PageDown>",
-\	"\<C-Tab>",
-\	"\<C-F1>",
-\	"\<C-F2>",
-\	"\<C-F3>",
-\	"\<C-F4>",
-\	"\<C-F5>",
-\	"\<C-F6>",
-\	"\<C-F7>",
-\	"\<C-F8>",
-\	"\<C-F9>",
-\	"\<C-F10>",
-\	"\<C-F11>",
-\	"\<C-F12>",
-\	"\<S-Down>",
-\	"\<S-Up>",
-\	"\<S-Left>",
-\	"\<S-Right>",
-\	"\<S-Home>",
-\	"\<S-Insert>",
-\	"\<S-PageUp>",
-\	"\<S-PageDown>",
-\	"\<S-F1>",
-\	"\<S-F2>",
-\	"\<S-F3>",
-\	"\<S-F4>",
-\	"\<S-F5>",
-\	"\<S-F6>",
-\	"\<S-F7>",
-\	"\<S-F8>",
-\	"\<S-F9>",
-\	"\<S-F10>",
-\	"\<S-F11>",
-\	"\<S-F12>",
-\	"\<S-Tab>",
-\]
-" Issues #45
-" \	"\<S-End>",
-" \	"\<S-Delete>",
-
-
-" Workaround
-" https://github.com/osyo-manga/vital-over/pull/63
-" http://lingr.com/room/vim/archives/2014/10/29#message-20492403
-if exists("+regexpengine")
-	function! s:_split_keystring(str, ...)
-		return split(a:str, '\%#=2' . "\\m\\%(" . get(a:, 1, '') . "\x80\xfc.\\%(\x80..\\|.\\)\\zs\\|\x80..\\zs\\|.\\zs\\)")
-	endfunction
-
-	function! s:split_by_keys(str)
-		return s:_split_keystring(a:str, "\\%(\<Plug>\\|<Over>\\)(.\\{-})\\zs\\|")
-	endfunction
-else
-	function! s:split_by_keys(str)
-		return s:_split_keystring(a:str, s:special_keys)
-	endfunction
-endif
-
 
 function! s:index(haystack, needle, ...)
 	let start = get(a:, 1, 0)

@@ -268,7 +268,6 @@ function! s:with_index(list, ...) abort
 endfunction
 
 " similar to Ruby's detect or Haskell's find.
-" TODO spec and doc
 function! s:find(list, default, f) abort
   for x in a:list
     if eval(substitute(a:f, 'v:val', string(x), 'g'))
@@ -330,6 +329,17 @@ endfunction
 " Return zero otherwise.
 function! s:has_common_items(list1, list2) abort
   return !empty(filter(copy(a:list1), 'index(a:list2, v:val) isnot -1'))
+endfunction
+
+function! s:intersect(list1, list2) abort
+  let items = []
+  " for funcref
+  for X in a:list1
+    if index(a:list2, X) != -1 && index(items, X) == -1
+      let items += [X]
+    endif
+  endfor
+  return items
 endfunction
 
 " similar to Ruby's group_by.
