@@ -9,6 +9,13 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 " }}}
+
+let s:TRUE = !0
+let s:FALSE = 0
+let s:DIRECTION = { 'forward': 0, 'backward': 1, 'bidirection': 2}
+lockvar s:TRUE s:FALSE
+
+
 " Init: {{{
 function! EasyMotion#init()
     call EasyMotion#highlight#load()
@@ -261,6 +268,27 @@ function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- User Motion -------------------------
+let s:config = {
+\   'pattern': '',
+\   'visualmode': s:FALSE,
+\   'direction': s:DIRECTION.forward,
+\   'inclusive': s:FALSE,
+\   'accept_cursor_pos': s:FALSE
+\ }
+
+function! s:default_config() abort
+    let c = copy(s:config)
+    let m = mode(1)
+    let c.inclusive = m ==# 'no' ? s:TRUE : s:FALSE
+    return c
+endfunction
+
+function! EasyMotion#go(...) abort
+    let c = extend(s:default_config(), get(a:, 1, {}))
+    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
+    call s:EasyMotion(c.pattern, c.direction, c.visualmode ? visualmode() : '', c.inclusive, c)
+    return s:EasyMotion_is_cancelled
+endfunction
 function! EasyMotion#User(pattern, visualmode, direction, inclusive, ...) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let is_inclusive = mode(1) ==# 'no' ? a:inclusive : 0
@@ -1125,10 +1153,8 @@ function! s:DotPromptUser(groups) "{{{
     endif
 endfunction "}}}
 
-let s:default_config = {'c': 0}
-
 function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
-    let config = get(a:, 1, copy(s:default_config))
+    let config = extend(s:default_config(), get(a:, 1, {}))
     " Store s:current original_position & cursor_position {{{
     " current cursor pos.
     let s:current.cursor_position = [line('.'), col('.')]
@@ -1223,7 +1249,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         "       You can disable this side effect by add 'n' flags,
         "       but in this case, it's better to allows jump side effect
         "       to gathering matched targets coordinates.
-        let pos = searchpos(regexp, search_direction . (config.c ? 'c' : ''), search_stopline)
+        let pos = searchpos(regexp, search_direction . (config.accept_cursor_pos ? 'c' : ''), search_stopline)
         while 1
             " Reached end of search range
             if pos == [0, 0]
