@@ -13,7 +13,6 @@ set cpo&vim
 let s:TRUE = !0
 let s:FALSE = 0
 let s:DIRECTION = { 'forward': 0, 'backward': 1, 'bidirection': 2}
-lockvar s:TRUE s:FALSE
 
 
 " Init: {{{
@@ -1230,7 +1229,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
 
         " Handle bi-directional t motion {{{
         if s:flag.bd_t == 1
-            let regexp = s:convert_t_regexp(a:regexp, 1) "backward
+            let regexp = s:convert_t_regexp(a:regexp, 0) "forward
         else
             let regexp = a:regexp
         endif
@@ -1275,7 +1274,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         " Handle bidirection "{{{
         " For bi-directional t motion {{{
         if s:flag.bd_t == 1
-            let regexp = s:convert_t_regexp(a:regexp, 0) "forward
+            let regexp = s:convert_t_regexp(a:regexp, 1) "backward
         endif
         "}}}
         " Reconstruct match dict
