@@ -261,11 +261,11 @@ function! EasyMotion#LineAnywhere(visualmode, direction) " {{{
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- User Motion -------------------------
-function! EasyMotion#User(pattern, visualmode, direction, inclusive) " {{{
+function! EasyMotion#User(pattern, visualmode, direction, inclusive, ...) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let is_inclusive = mode(1) ==# 'no' ? a:inclusive : 0
     let re = a:pattern
-    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive, get(a:, 1, {}))
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- Repeat Motion -----------------------
@@ -324,7 +324,7 @@ function! EasyMotion#NextPrevious(visualmode, direction) " {{{
         return s:EasyMotion_is_cancelled
     endif
     let re = s:previous.regexp
-    let search_direction = (a:direction >= 1 ? 'b' : '')
+    let search_direction = (a:direction == 1 ? 'b' : '')
 
     if g:EasyMotion_move_highlight
         call EasyMotion#highlight#attach_autocmd()
@@ -1124,7 +1124,11 @@ function! s:DotPromptUser(groups) "{{{
         return s:PromptUser(target)
     endif
 endfunction "}}}
-function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
+
+let s:default_config = {'c': 0}
+
+function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
+    let config = get(a:, 1, copy(s:default_config))
     " Store s:current original_position & cursor_position {{{
     " current cursor pos.
     let s:current.cursor_position = [line('.'), col('.')]
@@ -1169,8 +1173,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         call s:turn_off_hl_error()
         " }}}
         " Setup searchpos args {{{
-        let search_direction = (a:direction >= 1 ? 'b' : '')
-        let search_stopline = a:direction >= 1 ? win_first_line : win_last_line
+        let search_direction = (a:direction == 1 ? 'b' : '')
+        let search_stopline = a:direction == 1 ? win_first_line : win_last_line
 
         if s:flag.within_line == 1
             let search_stopline = s:current.original_position[0]
@@ -1215,13 +1219,12 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         endif
 
         " Construct match dict {{{
+        " Note: searchpos() has side effect which jump cursor position.
+        "       You can disable this side effect by add 'n' flags,
+        "       but in this case, it's better to allows jump side effect
+        "       to gathering matched targets coordinates.
+        let pos = searchpos(regexp, search_direction . (config.c ? 'c' : ''), search_stopline)
         while 1
-            " Note: searchpos() has side effect which jump cursor position.
-            "       You can disable this side effect by add 'n' flags,
-            "       but in this case, it's better to allows jump side effect
-            "       to gathering matched targets coordinates.
-            let pos = searchpos(regexp, search_direction, search_stopline)
-
             " Reached end of search range
             if pos == [0, 0]
                 break
@@ -1239,6 +1242,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
             endif "}}}
 
             call add(targets, pos)
+            let pos = searchpos(regexp, search_direction, search_stopline)
         endwhile
         "}}}
 
@@ -1250,7 +1254,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
         "}}}
         " Reconstruct match dict
         if a:direction == 2
-            " Forward
+            " Backward
 
             " Jump back cursor_position
             keepjumps call cursor(s:current.cursor_position[0],
@@ -1258,13 +1262,13 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
 
             let targets2 = []
             if s:flag.within_line == 0
-                let search_stopline = win_last_line
+                let search_stopline = win_first_line
             else
                 let search_stopline = s:current.cursor_position[0]
             endif
             while 1
                 " TODO: refactoring
-                let pos = searchpos(regexp, '', search_stopline)
+                let pos = searchpos(regexp, 'b', search_stopline)
                 " Reached end of search range
                 if pos == [0, 0]
                     break
@@ -1281,18 +1285,18 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive) " {{{
                 call add(targets2, pos)
             endwhile
             " Merge match target dict"{{{
-            let t1 = 0 " backward
-            let t2 = 0 " forward
+            let t1 = 0 " forward
+            let t2 = 0 " backward
             let targets3 = []
             while t1 < len(targets) || t2 < len(targets2)
                 " Forward -> Backward -> F -> B -> ...
-                if t2 < len(targets2)
-                    call add(targets3, targets2[t2])
-                    let t2 += 1
-                endif
                 if t1 < len(targets)
                     call add(targets3, targets[t1])
                     let t1 += 1
+                endif
+                if t2 < len(targets2)
+                    call add(targets3, targets2[t2])
+                    let t2 += 1
                 endif
             endwhile
             let targets = targets3
