@@ -2,7 +2,6 @@
 " FILE: highlight.vim
 " AUTHOR: haya14busa
 " Reference: https://github.com/t9md/vim-smalls
-" Last Change: 12 Feb 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -83,17 +82,17 @@ let s:shade_hl_line_defaults = {
 
 let s:target_hl_inc = {
     \   'gui'     : ['NONE', '#7fbf00' , 'bold']
-    \ , 'cterm256': ['NONE', 'green'   , 'bold']
+    \ , 'cterm256': ['NONE', '40'   , 'bold']
     \ , 'cterm'   : ['NONE', 'green'   , 'bold']
     \ }
 let s:target_hl_inc_cursor = {
     \   'gui'     : ['#ACDBDA', '#121813' , 'bold']
-    \ , 'cterm256': ['cyan'   , 'black'   , 'bold']
+    \ , 'cterm256': ['cyan'   , '232'   , 'bold']
     \ , 'cterm'   : ['cyan'   , 'black'   , 'bold']
     \ }
 let s:target_hl_move = {
     \   'gui'     : ['#7fbf00', '#121813' , 'bold']
-    \ , 'cterm256': ['green'  , 'white'   , 'bold']
+    \ , 'cterm256': ['green'  , '15'   , 'bold']
     \ , 'cterm'   : ['green'  , 'white'   , 'bold']
     \ }
 " }}}
@@ -148,17 +147,18 @@ call EasyMotion#highlight#init()
 let s:h = {}
 let s:h.ids = {}
 let s:priorities = {
-    \  g:EasyMotion_hl_group_target : 1,
-    \  g:EasyMotion_hl2_first_group_target : 1,
-    \  g:EasyMotion_hl2_second_group_target : 1,
+    \  g:EasyMotion_hl_group_target : 100,
+    \  g:EasyMotion_hl2_first_group_target : 100,
+    \  g:EasyMotion_hl2_second_group_target : 100,
     \  g:EasyMotion_hl_group_shade : 0,
     \  g:EasyMotion_hl_inc_search : 1,
     \  g:EasyMotion_hl_inc_cursor : 2,
     \  g:EasyMotion_hl_move : 0,
     \ }
-for group in keys(s:priorities)
-    let s:h.ids[group] = []
+for s:group in keys(s:priorities)
+    let s:h.ids[s:group] = []
 endfor
+unlet s:group
 "}}}
 
 function! EasyMotion#highlight#delete_highlight(...) "{{{
@@ -172,6 +172,9 @@ function! EasyMotion#highlight#delete_highlight(...) "{{{
 endfunction "}}}
 function! EasyMotion#highlight#add_highlight(re, group) "{{{
     call add(s:h.ids[a:group], matchadd(a:group, a:re, s:priorities[a:group]))
+endfunction "}}}
+function! EasyMotion#highlight#add_pos_highlight(line_num, col_num, group) "{{{
+    call add(s:h.ids[a:group], matchaddpos(a:group, [[a:line_num, a:col_num]], s:priorities[a:group]))
 endfunction "}}}
 function! EasyMotion#highlight#attach_autocmd() "{{{
     " Reference: https://github.com/justinmk/vim-sneak

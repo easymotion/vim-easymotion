@@ -1,7 +1,6 @@
 "=============================================================================
 " FILE: t/easymotion_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 21 Mar 2014.
 " Test: https://github.com/kana/vim-vspec
 " Refer: https://github.com/rhysd/clever-f.vim
 " Description: EasyMotion test with vim-vspec
@@ -330,15 +329,23 @@ describe 'Default settings'
         " }}}
 
         " Search Motion: {{{
-        Expect maparg('<Plug>(easymotion-n)', 'n') ==# ':<C-U>call EasyMotion#Search(0,0)<CR>'
-        Expect maparg('<Plug>(easymotion-n)', 'o') ==# ':<C-U>call EasyMotion#Search(0,0)<CR>'
-        Expect maparg('<Plug>(easymotion-n)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,0)<CR>'
-        Expect maparg('<Plug>(easymotion-N)', 'n') ==# ':<C-U>call EasyMotion#Search(0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-N)', 'o') ==# ':<C-U>call EasyMotion#Search(0,1)<CR>'
-        Expect maparg('<Plug>(easymotion-N)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,1)<CR>'
-        Expect maparg('<Plug>(easymotion-bd-n)', 'n') ==# ':<C-U>call EasyMotion#Search(0,2)<CR>'
-        Expect maparg('<Plug>(easymotion-bd-n)', 'o') ==# ':<C-U>call EasyMotion#Search(0,2)<CR>'
-        Expect maparg('<Plug>(easymotion-bd-n)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,2)<CR>'
+        Expect maparg('<Plug>(easymotion-n)', 'n') ==# ':<C-U>call EasyMotion#Search(0,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-n)', 'o') ==# ':<C-U>call EasyMotion#Search(0,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-n)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,0,0)<CR>'
+        Expect maparg('<Plug>(easymotion-N)', 'n') ==# ':<C-U>call EasyMotion#Search(0,1,0)<CR>'
+        Expect maparg('<Plug>(easymotion-N)', 'o') ==# ':<C-U>call EasyMotion#Search(0,1,0)<CR>'
+        Expect maparg('<Plug>(easymotion-N)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,1,0)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-n)', 'n') ==# ':<C-U>call EasyMotion#Search(0,2,0)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-n)', 'o') ==# ':<C-U>call EasyMotion#Search(0,2,0)<CR>'
+        Expect maparg('<Plug>(easymotion-bd-n)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,2,0)<CR>'
+
+        " respect previous direction
+        Expect maparg('<Plug>(easymotion-vim-n)', 'n') ==# ':<C-U>call EasyMotion#Search(0,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-vim-n)', 'o') ==# ':<C-U>call EasyMotion#Search(0,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-vim-n)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,0,1)<CR>'
+        Expect maparg('<Plug>(easymotion-vim-N)', 'n') ==# ':<C-U>call EasyMotion#Search(0,1,1)<CR>'
+        Expect maparg('<Plug>(easymotion-vim-N)', 'o') ==# ':<C-U>call EasyMotion#Search(0,1,1)<CR>'
+        Expect maparg('<Plug>(easymotion-vim-N)', 'v') ==# '<Esc>:<C-U>call EasyMotion#Search(1,1,1)<CR>'
         " }}}
 
         " JumpToAnywhere Motion: {{{
@@ -359,11 +366,11 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-repeat)', 'v')
             \ ==# '<Esc>:<C-U>call EasyMotion#Repeat(1)<CR>'
         Expect maparg('<Plug>(easymotion-dotrepeat)', 'n')
-            \ ==# ':<C-U>call EasyMotion#DotRepeat(0)<CR>'
+            \ ==# ':<C-U>call EasyMotion#DotRepeat()<CR>'
         Expect maparg('<Plug>(easymotion-dotrepeat)', 'o')
-            \ ==# ':<C-U>call EasyMotion#DotRepeat(0)<CR>'
+            \ ==# ':<C-U>call EasyMotion#DotRepeat()<CR>'
         Expect maparg('<Plug>(easymotion-dotrepeat)', 'v')
-            \ ==# '<Esc>:<C-U>call EasyMotion#DotRepeat(1)<CR>'
+            \ ==# ':<C-U>call EasyMotion#DotRepeat()<CR>'
         " }}}
 
         " Next, Previous motion {{{
@@ -372,14 +379,14 @@ describe 'Default settings'
         Expect maparg('<Plug>(easymotion-next)', 'o')
             \ ==# ':<C-U>call EasyMotion#NextPrevious(0,0)<CR>'
         Expect maparg('<Plug>(easymotion-next)', 'v')
-            \ ==# '<Esc>:<C-U>call EasyMotion#NextPrevious(1,0)<CR>'
+            \ ==# ':<C-U>call EasyMotion#NextPrevious(1,0)<CR>'
 
         Expect maparg('<Plug>(easymotion-prev)', 'n')
             \ ==# ':<C-U>call EasyMotion#NextPrevious(0,1)<CR>'
         Expect maparg('<Plug>(easymotion-prev)', 'o')
             \ ==# ':<C-U>call EasyMotion#NextPrevious(0,1)<CR>'
         Expect maparg('<Plug>(easymotion-prev)', 'v')
-            \ ==# '<Esc>:<C-U>call EasyMotion#NextPrevious(1,1)<CR>'
+            \ ==# ':<C-U>call EasyMotion#NextPrevious(1,1)<CR>'
         " }}}
 
         " Line Motion: {{{

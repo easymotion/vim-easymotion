@@ -1,4 +1,4 @@
-function! vital#of(name)
+function! vital#of(name) abort
   let files = globpath(&runtimepath, 'autoload/vital/' . a:name . '.vital')
   let file = split(files, "\n")
   if empty(file)

@@ -1,7 +1,6 @@
 "=============================================================================
 " FILE: t/smartsign_spec.vim
 " AUTHOR: haya14busa
-" Last Change: 29-03-2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -381,6 +380,87 @@ describe 'Basic Smartsign feature with 1-key findmotions with US layout'
         normal! 0
         normal s\3
         Expect CursorPos() == [l+2,1,' ']
+        normal! 0
+    end
+end
+"}}}
+
+" Smartsign with 2-key find motions with US layout {{{
+describe 'Smartsign with 2-key find motions with US layout'
+    before
+        new
+        let g:EasyMotion_keys = '123456789'
+        let g:EasyMotion_use_smartsign_us = 1
+        map s <Plug>(easymotion-s2)
+        call EasyMotion#init()
+        call AddLine(' -_ =+ ;: [{ ]} `~ ''" \|')
+        call AddLine(' 1! 2@ 3# 4$ 5% 6^ 7& 8* 9( 0)')
+        call AddLine(' ,< .> /?')
+        call AddLine(' -_ =+ ;: [{ ]} `~ ''" \|')
+        call AddLine(' 1! 2@ 3# 4$ 5% 6^ 7& 8* 9( 0)')
+        call AddLine(' ,< .> /?')
+        "             123456789012345678901234567890
+        "                      1         2         3
+    end
+
+    after
+        close!
+    end
+
+    it 'works well'
+        " Default position
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,' ']
+
+        " ,<
+        normal s,,1
+        Expect CursorPos() == [l,2,',']
+        normal! 0
+        Expect CursorPos() == [l,1,' ']
+        normal s,,3
+        Expect CursorPos() == [l,1,' ']
+        normal! 0
+        normal s, 1
+        Expect CursorPos() == [l,3,'<']
+        normal! 0
+        normal s<<1
+        Expect CursorPos() == [l,1,' ']
+        normal! 0
+        normal s,<1
+        Expect CursorPos() == [l,2,',']
+        normal! 0
+        normal s<,1
+        Expect CursorPos() == [l,1,' ']
+        normal! 0
+    end
+    it ': s,,3'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,' ']
+        normal s,,3
+        Expect CursorPos() == [l,1,' ']
+        normal! 0
+    end
+
+    it 'escape * asterisc #151'
+        normal! 0
+        let l = line('.')
+        Expect CursorPos() == [l,1,' ']
+        normal s1*22
+        Expect CursorPos() == [l,1,' ']
+        normal! 0
+        normal s8*1
+        Expect CursorPos() == [l+1,23,'8']
+        normal! 0
+        normal s881
+        Expect CursorPos() == [l+1,23,'8']
+        normal! 0
+        normal s**1
+        Expect CursorPos() == [l+1,1,' ']
+        normal! 0
+        normal s*81
+        Expect CursorPos() == [l+1,1,' ']
         normal! 0
     end
 end

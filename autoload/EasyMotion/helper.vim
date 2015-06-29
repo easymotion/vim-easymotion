@@ -1,7 +1,6 @@
 "=============================================================================
 " FILE: autoload/EasyMotion/helper.vim
 " AUTHOR: haya14busa
-" Last Change: 17 Mar 2014.
 " License: MIT license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -35,6 +34,17 @@ endfunction
 
 function! EasyMotion#helper#mode(flag) "{{{
     return mode(a:flag) == "\<C-v>" ? "C-v" : mode(a:flag)
+endfunction "}}}
+
+function! EasyMotion#helper#get_char_by_coord(coord) "{{{
+    " @param coord: [lnum, col] or [bufnum, lnum, col, off]
+    if len(a:coord) == 4
+        let [line_num, col_num] = [a:coord[1], a:coord[2]]
+    else
+        let [line_num, col_num] = a:coord
+    endif
+    let target_col_regexp = '\%' . (col_num) . 'c.'
+    return matchstr(getline(line_num), target_col_regexp)
 endfunction "}}}
 
 function! EasyMotion#helper#is_greater_coords(coords1, coords2) "{{{
@@ -146,7 +156,7 @@ if exists('*strchars')
     endfunction
 else
     function! EasyMotion#helper#strchars(str)
-        return strlen(substitute(str, ".", "x", "g"))
+        return strlen(substitute(a:str, ".", "x", "g"))
     endfunction
 endif "}}}
 function! EasyMotion#helper#include_multibyte_char(str) "{{{

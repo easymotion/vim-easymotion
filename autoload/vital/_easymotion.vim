@@ -1,11 +1,18 @@
 let s:self_version = expand('<sfile>:t:r')
+let s:self_file = expand('<sfile>')
 
 " Note: The extra argument to globpath() was added in Patch 7.2.051.
 let s:globpath_third_arg = v:version > 702 || v:version == 702 && has('patch51')
 
 let s:loaded = {}
+let s:cache_module_path = {}
+let s:cache_sid = {}
 
-function! s:import(name, ...)
+let s:_vital_files_cache_runtimepath = ''
+let s:_vital_files_cache = []
+let s:_unify_path_cache = {}
+
+function! s:import(name, ...) abort
   let target = {}
   let functions = []
   for a in a:000
@@ -29,17 +36,18 @@ function! s:import(name, ...)
   return target
 endfunction
 
-function! s:load(...) dict
+function! s:load(...) dict abort
   for arg in a:000
     let [name; as] = type(arg) == type([]) ? arg[: 1] : [arg, arg]
     let target = split(join(as, ''), '\W\+')
     let dict = self
-    while 1 <= len(target)
+    let dict_type = type({})
+    while !empty(target)
       let ns = remove(target, 0)
       if !has_key(dict, ns)
         let dict[ns] = {}
       endif
-      if type(dict[ns]) == type({})
+      if type(dict[ns]) == dict_type
         let dict = dict[ns]
       else
         unlet dict
@@ -55,11 +63,47 @@ function! s:load(...) dict
   return self
 endfunction
 
-function! s:unload()
+function! s:unload() abort
   let s:loaded = {}
+  let s:cache_sid = {}
+  let s:cache_module_path = {}
 endfunction
 
-function! s:_import(name)
+function! s:exists(name) abort
+  return s:_get_module_path(a:name) !=# ''
+endfunction
+
+function! s:search(pattern) abort
+  let paths = s:_vital_files(a:pattern)
+  let modules = sort(map(paths, 's:_file2module(v:val)'))
+  return s:_uniq(modules)
+endfunction
+
+function! s:expand_modules(entry, all) abort
+  if type(a:entry) == type([])
+    let candidates = s:_concat(map(copy(a:entry), 's:search(v:val)'))
+    if empty(candidates)
+      throw printf('vital: Any of module %s is not found', string(a:entry))
+    endif
+    if eval(join(map(copy(candidates), 'has_key(a:all, v:val)'), '+'))
+      let modules = []
+    else
+      let modules = [candidates[0]]
+    endif
+  else
+    let modules = s:search(a:entry)
+    if empty(modules)
+      throw printf('vital: Module %s is not found', a:entry)
+    endif
+  endif
+  call filter(modules, '!has_key(a:all, v:val)')
+  for module in modules
+    let a:all[module] = 1
+  endfor
+  return modules
+endfunction
+
+function! s:_import(name) abort
   if type(a:name) == type(0)
     return s:_build_module(a:name)
   endif
@@ -67,7 +111,7 @@ function! s:_import(name)
   if path ==# ''
     throw 'vital: module not found: ' . a:name
   endif
-  let sid = get(s:_scripts(), path, 0)
+  let sid = s:_get_sid_by_script(path)
   if !sid
     try
       execute 'source' fnameescape(path)
@@ -77,71 +121,112 @@ function! s:_import(name)
       " Ignore.
     endtry
 
-    let sid = s:_scripts()[path]
+    let sid = s:_get_sid_by_script(path)
   endif
   return s:_build_module(sid)
 endfunction
 
-function! s:_get_module_path(name)
+function! s:_get_module_path(name) abort
+  let key = a:name . '_'
+  if has_key(s:cache_module_path, key)
+    return s:cache_module_path[key]
+  endif
   if s:_is_absolute_path(a:name) && filereadable(a:name)
-    return s:_unify_path(a:name)
+    return a:name
   endif
   if a:name ==# ''
-    let tailpath = printf('autoload/vital/%s.vim', s:self_version)
+    let paths = [s:self_file]
   elseif a:name =~# '\v^\u\w*%(\.\u\w*)*$'
-    let target = '/' . substitute(a:name, '\W\+', '/', 'g')
-    let tailpath = printf('autoload/vital/%s%s.vim', s:self_version, target)
+    let paths = s:_vital_files(a:name)
   else
     throw 'vital: Invalid module name: ' . a:name
   endif
 
-  if s:globpath_third_arg
-    let paths = split(globpath(&runtimepath, tailpath, 1), "\n")
-  else
-    let paths = split(globpath(&runtimepath, tailpath), "\n")
-  endif
-  call filter(paths, 'filereadable(v:val)')
-  return s:_unify_path(get(paths, 0, ''))
+  call filter(paths, 'filereadable(expand(v:val, 1))')
+  let path = get(paths, 0, '')
+  let s:cache_module_path[key] = path
+  return path
 endfunction
 
-function! s:_scripts()
-  let scripts = {}
+function! s:_get_sid_by_script(path) abort
+  if has_key(s:cache_sid, a:path)
+    return s:cache_sid[a:path]
+  endif
+
+  let path = s:_unify_path(a:path)
   for line in filter(split(s:_redir('scriptnames'), "\n"),
   \                  'stridx(v:val, s:self_version) > 0')
     let list = matchlist(line, '^\s*\(\d\+\):\s\+\(.\+\)\s*$')
-    if !empty(list)
-      let scripts[s:_unify_path(list[2])] = list[1] - 0
+    if !empty(list) && s:_unify_path(list[2]) ==# path
+      let s:cache_sid[a:path] = list[1] - 0
+      return s:cache_sid[a:path]
     endif
   endfor
-  return scripts
+  return 0
+endfunction
+
+function! s:_file2module(file) abort
+  let filename = fnamemodify(a:file, ':p:gs?[\\/]?/?')
+  let tail = matchstr(filename, 'autoload/vital/_\w\+/\zs.*\ze\.vim$')
+  return join(split(tail, '[\\/]\+'), '.')
 endfunction
 
 if filereadable(expand('<sfile>:r') . '.VIM')
-  function! s:_unify_path(path)
-    " Note: On windows, vim can't expand path names from 8.3 formats.
-    " So if getting full path via <sfile> and $HOME was set as 8.3 format,
-    " vital load duplicated scripts. Below's :~ avoid this issue.
-    return tolower(fnamemodify(resolve(fnamemodify(
-    \              a:path, ':p:gs?[\\/]\+?/?')), ':~'))
+  " resolve() is slow, so we cache results.
+  " Note: On windows, vim can't expand path names from 8.3 formats.
+  " So if getting full path via <sfile> and $HOME was set as 8.3 format,
+  " vital load duplicated scripts. Below's :~ avoid this issue.
+  function! s:_unify_path(path) abort
+    if has_key(s:_unify_path_cache, a:path)
+      return s:_unify_path_cache[a:path]
+    endif
+    let value = tolower(fnamemodify(resolve(fnamemodify(
+    \                   a:path, ':p')), ':~:gs?[\\/]?/?'))
+    let s:_unify_path_cache[a:path] = value
+    return value
   endfunction
 else
-  function! s:_unify_path(path)
-    return resolve(fnamemodify(a:path, ':p:gs?[\\/]\+?/?'))
+  function! s:_unify_path(path) abort
+    return resolve(fnamemodify(a:path, ':p:gs?[\\/]?/?'))
   endfunction
 endif
 
+if s:globpath_third_arg
+  function! s:_runtime_files(path) abort
+    return split(globpath(&runtimepath, a:path, 1), "\n")
+  endfunction
+else
+  function! s:_runtime_files(path) abort
+    return split(globpath(&runtimepath, a:path), "\n")
+  endfunction
+endif
+
+function! s:_vital_files(pattern) abort
+  if s:_vital_files_cache_runtimepath !=# &runtimepath
+    let path = printf('autoload/vital/%s/**/*.vim', s:self_version)
+    let s:_vital_files_cache = s:_runtime_files(path)
+    let mod = ':p:gs?[\\/]\+?/?'
+    call map(s:_vital_files_cache, 'fnamemodify(v:val, mod)')
+    let s:_vital_files_cache_runtimepath = &runtimepath
+  endif
+  let target = substitute(a:pattern, '\.', '/', 'g')
+  let target = substitute(target, '\*', '[^/]*', 'g')
+  let regexp = printf('autoload/vital/%s/%s.vim', s:self_version, target)
+  return filter(copy(s:_vital_files_cache), 'v:val =~# regexp')
+endfunction
+
 " Copy from System.Filepath
 if has('win16') || has('win32') || has('win64')
-  function! s:_is_absolute_path(path)
+  function! s:_is_absolute_path(path) abort
     return a:path =~? '^[a-z]:[/\\]'
   endfunction
 else
-  function! s:_is_absolute_path(path)
+  function! s:_is_absolute_path(path) abort
     return a:path[0] ==# '/'
   endfunction
 endif
 
-function! s:_build_module(sid)
+function! s:_build_module(sid) abort
   if has_key(s:loaded, a:sid)
     return copy(s:loaded[a:sid])
   endif
@@ -155,7 +240,11 @@ function! s:_build_module(sid)
   if has_key(module, '_vital_loaded')
     let V = vital#{s:self_version}#new()
     if has_key(module, '_vital_depends')
-      call call(V.load, module._vital_depends(), V)
+      let all = {}
+      let modules =
+      \     s:_concat(map(module._vital_depends(),
+      \                   's:expand_modules(v:val, all)'))
+      call call(V.load, modules, V)
     endif
     try
       call module._vital_loaded(V)
@@ -171,13 +260,13 @@ function! s:_build_module(sid)
 endfunction
 
 if exists('+regexpengine')
-  function! s:_get_functions(sid)
+  function! s:_get_functions(sid) abort
     let funcs = s:_redir(printf("function /\\%%#=2^\<SNR>%d_", a:sid))
     let map_pat = '<SNR>' . a:sid . '_\zs\w\+'
     return map(split(funcs, "\n"), 'matchstr(v:val, map_pat)')
   endfunction
 else
-  function! s:_get_functions(sid)
+  function! s:_get_functions(sid) abort
     let prefix = '<SNR>' . a:sid . '_'
     let funcs = s:_redir('function')
     let filter_pat = '^\s*function ' . prefix
@@ -188,7 +277,34 @@ else
   endfunction
 endif
 
-function! s:_redir(cmd)
+if exists('*uniq')
+  function! s:_uniq(list) abort
+    return uniq(a:list)
+  endfunction
+else
+  function! s:_uniq(list) abort
+    let i = len(a:list) - 1
+    while 0 < i
+      if a:list[i] ==# a:list[i - 1]
+        call remove(a:list, i)
+        let i -= 2
+      else
+        let i -= 1
+      endif
+    endwhile
+    return a:list
+  endfunction
+endif
+
+function! s:_concat(lists) abort
+  let result_list = []
+  for list in a:lists
+    let result_list += list
+  endfor
+  return result_list
+endfunction
+
+function! s:_redir(cmd) abort
   let [save_verbose, save_verbosefile] = [&verbose, &verbosefile]
   set verbose=0 verbosefile=
   redir => res
@@ -198,6 +314,6 @@ function! s:_redir(cmd)
   return res
 endfunction
 
-function! vital#{s:self_version}#new()
+function! vital#{s:self_version}#new() abort
   return s:_import('')
 endfunction
