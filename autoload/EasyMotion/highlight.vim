@@ -147,9 +147,9 @@ call EasyMotion#highlight#init()
 let s:h = {}
 let s:h.ids = {}
 let s:priorities = {
-    \  g:EasyMotion_hl_group_target : 1,
-    \  g:EasyMotion_hl2_first_group_target : 1,
-    \  g:EasyMotion_hl2_second_group_target : 1,
+    \  g:EasyMotion_hl_group_target : 100,
+    \  g:EasyMotion_hl2_first_group_target : 100,
+    \  g:EasyMotion_hl2_second_group_target : 100,
     \  g:EasyMotion_hl_group_shade : 0,
     \  g:EasyMotion_hl_inc_search : 1,
     \  g:EasyMotion_hl_inc_cursor : 2,
