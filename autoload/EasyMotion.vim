@@ -1263,10 +1263,10 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
                 else
                     keepjumps call cursor(foldclosedend(pos[0]+1), 0)
                 endif
-                continue
-            endif "}}}
-
-            call add(targets, pos)
+            else
+                call add(targets, pos)
+            endif
+            "}}}
             let pos = searchpos(regexp, search_direction, search_stopline)
         endwhile
         "}}}
@@ -1301,8 +1301,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
 
                 " Skip folded lines {{{
                 if EasyMotion#helper#is_folded(pos[0])
-                    " Always forward
-                    keepjumps call cursor(foldclosedend(pos[0]+1), 0)
+                    " keepjumps call cursor(foldclosedend(pos[0]+1), 0)
                     continue
                 endif
                 "}}}
