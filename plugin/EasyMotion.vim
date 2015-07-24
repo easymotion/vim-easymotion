@@ -44,6 +44,8 @@ let g:EasyMotion_add_search_history = get(g: , 'EasyMotion_add_search_history' ,
 let g:EasyMotion_off_screen_search  = get(g: , 'EasyMotion_off_screen_search'  , 1)
 let g:EasyMotion_force_csapprox     = get(g: , 'EasyMotion_force_csapprox'     , 0)
 let g:EasyMotion_show_prompt        = get(g: , 'EasyMotion_show_prompt'        , 1)
+let g:EasyMotion_display_jump_message =
+    \ get(g: , 'EasyMotion_display_jump_message', 1)
 let g:EasyMotion_prompt             =
     \ get(g: , 'EasyMotion_prompt' , 'Search for {n} character(s): ')
 let g:EasyMotion_command_line_key_mappings =
