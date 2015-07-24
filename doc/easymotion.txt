@@ -309,7 +309,7 @@ Repeat ~
         downloaded here: https://github.com/justinmk/vim-sneak
 
 EasyMotion dot repeat~
-                                    *easymotion-dotrepeat* *easymotion-textobjct*
+                                    *easymotion-dotrepeat* *easymotion-textobject*
 
         This feature requires tpope/vim-repeat
         https://github.com/tpope/vim-repeat
