@@ -391,7 +391,13 @@ endfunction " }}}
 " Helper Functions: {{{
 " -- Message -----------------------------
 function! s:Message(message) " {{{
-    echo 'EasyMotion: ' . a:message
+    if g:EasyMotion_verbose
+        echo 'EasyMotion: ' . a:message
+    else
+        " Make the current message dissapear
+        echo ''
+        " redraw
+    endif
 endfunction " }}}
 function! s:Prompt(message) " {{{
     echohl Question
@@ -399,7 +405,11 @@ function! s:Prompt(message) " {{{
     echohl None
 endfunction " }}}
 function! s:Throw(message) "{{{
-    throw 'EasyMotion: ' . a:message
+    if g:EasyMotion_verbose
+        throw 'EasyMotion: ' . a:message
+    else
+        throw
+    endif
 endfunction "}}}
 
 " -- Save & Restore values ---------------
