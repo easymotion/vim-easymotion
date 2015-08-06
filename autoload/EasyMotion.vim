@@ -1500,7 +1500,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         endif "}}}
 
         " Highlight all the matches by n-key find motions {{{
-        if s:current.is_search == 1 && s:current.is_operator == 0
+        if s:current.is_search == 1 && s:current.is_operator == 0 && g:EasyMotion_add_search_history
             " It seems let &hlsearch=&hlsearch doesn't work when called
             " in script, so use :h feedkeys() instead.
             " Ref: :h v:hlsearch
