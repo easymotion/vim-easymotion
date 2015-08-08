@@ -33,6 +33,7 @@ CONTENTS                                                 *easymotion-contents*
        EasyMotion_add_search_history ... |EasyMotion_add_search_history|
        EasyMotion_off_screen_search .... |EasyMotion_off_screen_search|
        EasyMotion_disable_two_key_combo. |EasyMotion_disable_two_key_combo|
+       EasyMotion_verbose .............. |EasyMotion_verbose|
        Custom highlighting ............. |easymotion-custom-hl|
        Custom mappings ................. |easymotion-custom-mappings|
            Leader key .................. |easymotion-leader-key|
@@ -937,6 +938,16 @@ EasyMotion_disable_two_key_combo           *g:EasyMotion_disable_two_key_combo*
     let g:EasyMotion_disable_two_key_combo = 1
 <
     Default: 0
+
+EasyMotion_verbose                       *g:EasyMotion_verbose*
+
+    If you set this option to 0, you can disable all the messages the plugin
+    creates, such as "EasyMotion: Jumping to [l,c]" and "EasyMotion:
+    Cancelled".
+>
+    let g:EasyMotion_verbose = 0
+<
+    Default: 1
 
 ------------------------------------------------------------------------------
 Custom highlighting                                      *easymotion-custom-hl*
