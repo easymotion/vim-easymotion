@@ -53,7 +53,6 @@ function! EasyMotion#init()
     let s:EasyMotion_is_cancelled = 0
     " 0 -> Success
     " 1 -> Cancel
-    let g:EasyMotion_ignore_exception = 0
     return ""
 endfunction
 "}}}
@@ -405,11 +404,7 @@ function! s:Prompt(message) " {{{
     echohl None
 endfunction " }}}
 function! s:Throw(message) "{{{
-    if g:EasyMotion_verbose
-        throw 'EasyMotion: ' . a:message
-    else
-        throw
-    endif
+    throw 'EasyMotion: ' . a:message
 endfunction "}}}
 
 " -- Save & Restore values ---------------
@@ -1527,7 +1522,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         redraw
 
         " Show exception message
-        if g:EasyMotion_ignore_exception != 1
+        if g:EasyMotion_verbose == 1
             echo v:exception
         endif
 
