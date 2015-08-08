@@ -1432,6 +1432,40 @@ describe 'Word motion'
     end
     "}}}
 end
+
+describe 'Verbose'
+    before
+        new
+        map s <Plug>(easymotion-s)
+        map f <Plug>(easymotion-f)
+        map F <Plug>(easymotion-F)
+        map t <Plug>(easymotion-t)
+        map T <Plug>(easymotion-T)
+        call EasyMotion#init()
+        call AddLine('some words in the sentence')
+    end
+
+    after
+        close!
+    end
+
+    it 'Verbose global variable'
+        Expect g:EasyMotion_verbose ==# 1
+    end
+
+    it 'Turned On'
+        let g:EasyMotion_verbose = 1
+        let &verbosefile = tempname()
+        normal sa
+        " TODO: l:tmp_name_verbose should have one line
+    end
+    it 'Turned Off'
+        let g:EasyMotion_verbose = 0
+        let &verbosefile = &verbosefile
+        normal s_
+        " TODO: l:tmp_name_not_verbose should have no lines
+    end
+end
 "}}}
 
 " vim: fdm=marker:et:ts=4:sw=4:sts=4
