@@ -53,6 +53,7 @@ function! EasyMotion#init()
     let s:EasyMotion_is_cancelled = 0
     " 0 -> Success
     " 1 -> Cancel
+    let g:EasyMotion_ignore_exception = 0
     return ""
 endfunction
 "}}}
@@ -1522,7 +1523,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         redraw
 
         " Show exception message
-        if g:EasyMotion_verbose == 1
+        " The verbose option will take precedence
+        if g:EasyMotion_verbose == 1 && g:EasyMotion_ignore_exception != 1
             echo v:exception
         endif
 
