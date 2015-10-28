@@ -20,7 +20,7 @@ taking over the project from [Lokaltog](https://github.com/Lokaltog). He's
 improved the default motions, implemented many useful new features, and fixed
 some bugs.
 
-EasyMotion is now completely
+EasyMotion is now completely:
 
 - **Well-behaved**: It's consistent with the default motions of Vim and works
   well in all modes. And it now supports repeating with the dot operator.
@@ -29,7 +29,7 @@ EasyMotion is now completely
 
 Even though some default behaviors were modified and many new features were
 added, I carefully considered backward compatibility. So those of you updating
-from older versions can do so without worry and start benefitting immediately
+from older versions can do so without worry and start benefiting immediately
 from all the new features!
 
 Introduction
@@ -108,7 +108,7 @@ New features in version 2.0
 ### Two key highlighting
 
 When EasyMotion runs out of single characters to highlight movement targets, it
-now shows you immediately the keys you have to press.
+immediately shows you the keys you have to press.
 
 In previous versions you could not see the next character you would need to
 press until you entered the first one. This made movement over long distances
@@ -137,9 +137,9 @@ nmap t <Plug>(easymotion-t2)
 
 ### n-character search motion
 
-You can also search for `n` characters, which basically can be used to replace the default search of Vim.
+You can also search for `n` characters, which can be used to replace the default search of Vim.
 It supports incremental highlighting and you can use `<Tab>` and `<S-Tab>` to scroll down/up a page. If you press
-`<CR>` you get the usual EasyMotion highlighting and can jump to any matching target destination with a
+`<CR>`, you get the usual EasyMotion highlighting and can jump to any matching target destination with a
 single keystroke.
 
 What sounds complicated should become clear if you look at the following examples.
@@ -287,7 +287,7 @@ Minimal Configuration Tutorial
 **Please do not be satisfied with just installing vim-easymotion, configuring it yourself boost your productivity more and more!**
 
 Default `<Leader><Leader>` prefix isn't easy to press, and I leave them just for backwards compatibility.
-You should at least change prefix key like this `map <Leader> <Plug>(easymotion-prefix)`
+You should at least change the prefix key like this `map <Leader> <Plug>(easymotion-prefix)`
 
 Minimal but useful vimrc example:
 
