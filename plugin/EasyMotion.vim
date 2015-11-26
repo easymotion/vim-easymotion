@@ -198,6 +198,8 @@ call s:motion_map_helper({
     \ 'lineforward'     : {'fnc' : 'LineAnywhere', 'direction': 0},
     \ 'linebackward'    : {'fnc' : 'LineAnywhere', 'direction': 1},
     \ 'lineanywhere'    : {'fnc' : 'LineAnywhere', 'direction': 2},
+    \ 'h'               : {'fnc' : 'HL', 'direction': 1},
+    \ 'l'               : {'fnc' : 'HL', 'direction': 0},
     \ })
 "}}}
 
@@ -261,6 +263,7 @@ if g:EasyMotion_do_mapping == 1
     call s:default_mapping(
         \ ['f', 'F', 's', 't', 'T',
         \  'w', 'W', 'b', 'B', 'e', 'E', 'ge', 'gE',
+        \  'h', 'l',
         \  'j', 'k', 'n', 'N'], g:EasyMotion_do_mapping)
 endif "}}}
 
