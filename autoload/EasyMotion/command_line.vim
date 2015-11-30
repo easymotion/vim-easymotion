@@ -150,6 +150,7 @@ endfunction "}}}
 function! s:search.on_leave(cmdline) "{{{
     if s:num_strokes == -1
         call EasyMotion#highlight#delete_highlight(g:EasyMotion_hl_inc_search)
+        call EasyMotion#helper#VarReset('&scrolloff')
     endif
 endfunction "}}}
 function! s:search.on_char(cmdline) "{{{
