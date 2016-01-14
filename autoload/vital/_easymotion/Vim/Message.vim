@@ -3,6 +3,15 @@ set cpo&vim
 
 
 
+function! s:echo(hl, msg) abort
+  execute 'echohl' a:hl
+  try
+    echo a:msg
+  finally
+    echohl None
+  endtry
+endfunction
+
 function! s:echomsg(hl, msg) abort
   execute 'echohl' a:hl
   try

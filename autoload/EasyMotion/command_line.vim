@@ -150,6 +150,12 @@ endfunction "}}}
 function! s:search.on_leave(cmdline) "{{{
     if s:num_strokes == -1
         call EasyMotion#highlight#delete_highlight(g:EasyMotion_hl_inc_search)
+        if g:EasyMotion_do_shade
+            call EasyMotion#highlight#delete_highlight(g:EasyMotion_hl_group_shade)
+        endif
+    endif
+    if g:EasyMotion_cursor_highlight
+        call EasyMotion#highlight#delete_highlight(g:EasyMotion_hl_inc_cursor)
     endif
 endfunction "}}}
 function! s:search.on_char(cmdline) "{{{

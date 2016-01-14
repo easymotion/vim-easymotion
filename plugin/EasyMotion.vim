@@ -130,7 +130,11 @@ call s:motion_map_helper({
     \ 'tln'             : {'fnc' : 'TL' , 'cnt' : -1, 'direction' : 0},
     \ 'Tln'             : {'fnc' : 'TL' , 'cnt' : -1, 'direction' : 1},
     \ 'bd-tln'          : {'fnc' : 'TL' , 'cnt' : -1, 'direction' : 2},
-    \ }) 
+    \ })
+
+nnoremap <silent> <Plug>(easymotion-overwin-f) :<C-u>call EasyMotion#OverwinF(1)<CR>
+nnoremap <silent> <Plug>(easymotion-overwin-f2) :<C-u>call EasyMotion#OverwinF(2)<CR>
+
 "}}}
 
 " -- Word Motion {{{

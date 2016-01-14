@@ -138,6 +138,10 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
     call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
+function! EasyMotion#OverwinF(num_strokes) " {{{
+    let re = s:findMotion(a:num_strokes, s:DIRECTION.bidirection)
+    return EasyMotion#overwin#move(re)
+endfunction "}}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
     if a:direction == 1
         let is_inclusive = 0
