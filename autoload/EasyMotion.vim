@@ -391,7 +391,13 @@ endfunction " }}}
 " Helper Functions: {{{
 " -- Message -----------------------------
 function! s:Message(message) " {{{
-    echo 'EasyMotion: ' . a:message
+    if g:EasyMotion_verbose
+        echo 'EasyMotion: ' . a:message
+    else
+        " Make the current message dissapear
+        echo ''
+        " redraw
+    endif
 endfunction " }}}
 function! s:Prompt(message) " {{{
     echohl Question
@@ -1517,7 +1523,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         redraw
 
         " Show exception message
-        if g:EasyMotion_ignore_exception != 1
+        " The verbose option will take precedence
+        if g:EasyMotion_verbose == 1 && g:EasyMotion_ignore_exception != 1
             echo v:exception
         endif
 
