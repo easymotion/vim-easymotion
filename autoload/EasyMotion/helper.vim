@@ -158,6 +158,24 @@ endif "}}}
 function! EasyMotion#helper#include_multibyte_char(str) "{{{
     return strlen(a:str) != EasyMotion#helper#strchars(a:str)
 endfunction "}}}
+
+function! EasyMotion#helper#vcol(expr) abort
+    let col_num = col(a:expr)
+    let line = getline(a:expr)
+    let before_line = col_num > 2 ? line[: col_num - 2]
+    \   : col_num is# 2 ? line[0]
+    \   : ''
+    let vcol_num = 1
+    for c in split(before_line, '\zs')
+        let vcol_num += c is# "\t" ? s:_virtual_tab2spacelen(vcol_num) : len(c)
+    endfor
+    return vcol_num
+endfunction
+
+function! s:_virtual_tab2spacelen(col_num) abort
+    return &tabstop - ((a:col_num - 1) % &tabstop)
+endfunction
+
 "}}}
 
 " Restore 'cpoptions' {{{
