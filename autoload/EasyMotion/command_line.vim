@@ -80,28 +80,9 @@ call s:search.connect(s:module)
 "}}}
 
 " CommandLine Keymap: {{{
+" .keymapping() won't be remapped by user defined KeyMappings.
 function! s:search.keymapping() "{{{
     return {
-\       "\<C-l>" : {
-\           "key" : "<Over>(buffer-complete)",
-\           "noremap" : 1,
-\       },
-\       "\<Tab>"   : {
-\           "key" : "<Over>(em-scroll-f)",
-\           "noremap" : 1,
-\       },
-\       "\<S-Tab>" : {
-\           "key" : "<Over>(em-scroll-b)",
-\           "noremap" : 1,
-\       },
-\       "\<C-o>"   : {
-\           "key" : "<Over>(em-jumpback)",
-\           "noremap" : 1,
-\       },
-\       "\<C-z>"   : {
-\           "key" : "<Over>(em-openallfold)",
-\           "noremap" : 1,
-\       },
 \       "\<CR>"   : {
 \           "key" : "<Over>(exit)",
 \           "noremap" : 1,
@@ -109,6 +90,12 @@ function! s:search.keymapping() "{{{
 \       },
 \   }
 endfunction "}}}
+
+call s:search.cnoremap("\<C-l>", '<Over>(buffer-complete)')
+call s:search.cnoremap("\<Tab>", '<Over>(em-scroll-f)')
+call s:search.cnoremap("\<S-Tab>", '<Over>(em-scroll-b)')
+call s:search.cnoremap("\<C-o>", '<Over>(em-jumpback)')
+call s:search.cnoremap("\<C-z>", '<Over>(em-openallfold)')
 
 " Fins Motion CommandLine Mapping Command: {{{
 function! EasyMotion#command_line#cmap(args)
