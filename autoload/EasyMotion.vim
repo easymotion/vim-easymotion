@@ -1375,7 +1375,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         " if you just use cursor(s:current.cursor_position) to jump back,
         " current line will become middle of line window
         if ! empty(a:visualmode)
-            keepjumps call winrestview({'lnum' : win_first_line, 'topline' : win_first_line})
+            keepjumps call winrestview({'lnum' : s:current.cursor_position[0], 'topline' : win_first_line})
         else
             " for adjusting cursorline
             keepjumps call cursor(s:current.cursor_position)
