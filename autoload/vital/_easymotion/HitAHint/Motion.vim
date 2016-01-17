@@ -47,7 +47,8 @@ endfunction
 let s:overwin = {
 \   'config': {
 \     'keys': 'asdghklqwertyuiopzxcvbnmfj;',
-\     'user_upper': s:FALSE,
+\     'use_upper': s:FALSE,
+\     'auto_land': s:TRUE,
 \     'highlight': {
 \       'shade': 'HitAHintShade',
 \       'target': 'HitAHintTarget',
@@ -57,9 +58,7 @@ let s:overwin = {
 
 function! s:_init_hl() abort
   highlight HitAHintShade ctermfg=242 guifg=#777777
-  " highlight HitAHintTarget cterm=bold ctermfg=196 gui=bold guifg=#ff0000
-  " highlight HitAHintTarget term=standout ctermfg=81 gui=bold guifg=#66D9EF
-  highlight HitAHintTarget ctermfg=81 gui=bold guifg=#66D9EF
+  highlight HitAHintTarget ctermfg=81 guifg=#66D9EF
 endfunction
 
 call s:_init_hl()
@@ -92,13 +91,11 @@ function! s:overwin.pattern(pattern) abort
 endfunction
 
 function! s:overwin.select_winpos(winnr2poses, keys) abort
-  return self.choose_prompt(s:create_hint_dict(a:winnr2poses, a:keys))
-endfunction
-
-function! s:create_hint_dict(winnr2poses, keys) abort
   let wposes = s:winnr2poses_to_list(a:winnr2poses)
-  let hint_dict = s:Hint.create(wposes, a:keys)
-  return hint_dict
+  if self.config.auto_land && len(wposes) is# 1
+    return wposes[0]
+  endif
+  return self.choose_prompt(s:Hint.create(wposes, a:keys))
 endfunction
 
 " s:wpos_to_hint() returns dict whose key is position with window and whose
@@ -174,9 +171,12 @@ function! s:overwin.choose_prompt(hint_dict) abort
     redraw
     echo 'Target key: '
     let c = s:getchar()
-    if self.config.user_upper
+    if self.config.use_upper
       let c = toupper(c)
     endif
+  catch
+    echo v:exception
+    return -1
   finally
     call hinter.after()
   endtry
@@ -207,11 +207,10 @@ let s:Hinter = {
 \   'save_modified': {},
 \   'save_modifiable': {},
 \   'save_readonly': {},
+\   'save_undo': {},
 \   'highlight_ids': {},
 \ }
 
-" @param {{winnr: {string: list<char>}}}
-" function! s:Hinter.new(win2pos2hint) abort
 function! s:Hinter.new(hint_dict, config) abort
   let s = deepcopy(self)
   let s.config = a:config
@@ -229,9 +228,9 @@ function! s:Hinter.before() abort
 endfunction
 
 function! s:Hinter.after() abort
+  call self.restore_lines()
   call self.restore_env()
   call self.restore_conceal_in_other_win()
-  call self.restore_lines()
 endfunction
 
 function! s:Hinter._save_lines() abort
@@ -256,9 +255,7 @@ function! s:Hinter.restore_lines() abort
     for [winnr, lnum2line] in items(self.save_lines)
       call s:move_to_win(winnr)
       for [lnum, line] in items(lnum2line)
-        if line isnot# getline(lnum)
-          call setline(lnum, line)
-        endif
+        call s:setline(lnum, line)
       endfor
     endfor
   finally
@@ -272,6 +269,7 @@ function! s:Hinter.modify_env() abort
     let self.highlight_id_cursor = matchadd('Cursor', '\%#', 1000001)
     for winnr in self.winnrs
       call s:move_to_win(winnr)
+      let self.save_conceal = s:PHighlight.get('Conceal')
       let self.save_syntax[winnr] = &syntax
       let self.save_conceallevel[winnr] = &l:conceallevel
       let self.save_concealcursor[winnr] = &l:concealcursor
@@ -279,10 +277,10 @@ function! s:Hinter.modify_env() abort
       let self.save_modifiable[winnr] = &l:modifiable
       let self.save_readonly[winnr] = &l:readonly
 
+      let self.save_undo[winnr] = s:undo_lock.save()
+
       setlocal modifiable
       setlocal noreadonly
-
-      let self.save_conceal = s:PHighlight.get('Conceal')
 
       ownsyntax overwin
       syntax clear
@@ -293,6 +291,8 @@ function! s:Hinter.modify_env() abort
       let self.highlight_ids[winnr] = get(self.highlight_ids, winnr, [])
       let self.highlight_ids[winnr] += [matchadd(self.config.highlight.shade, '\_.*', 100)]
     endfor
+  catch
+    call s:throw(v:throwpoint . ' ' . v:exception)
   finally
     call s:move_to_win(nr)
   endtry
@@ -304,15 +304,15 @@ function! s:Hinter.restore_env() abort
     call matchdelete(self.highlight_id_cursor)
     for winnr in self.winnrs
       call s:move_to_win(winnr)
+      " Clear syntax defined by Hit-A-Hint motion before restoring syntax.
+      syntax clear HitAHintTarget
       let &syntax = self.save_syntax[winnr]
       call s:PHighlight.set('Conceal', self.save_conceal)
       let &l:conceallevel = self.save_conceallevel[winnr]
       let &l:concealcursor = self.save_concealcursor[winnr]
 
-      " Turn off &l:modified before restoring thie value so that restore undo
-      " state. It's important to turn off this option after manipulating
-      " buffer text.
-      let &l:modified = 0
+      call self.save_undo[winnr].restore()
+
       let &l:modified = self.save_modified[winnr]
       let &l:modifiable = self.save_modifiable[winnr]
       let &l:readonly = self.save_readonly[winnr]
@@ -321,9 +321,56 @@ function! s:Hinter.restore_env() abort
         call matchdelete(id)
       endfor
     endfor
+  catch
+    call s:throw(v:throwpoint . ' ' . v:exception)
   finally
     call s:move_to_win(nr)
   endtry
+endfunction
+
+let s:undo_lock = {}
+
+function! s:undo_lock.save() abort
+  let undo = deepcopy(self)
+  call undo._save()
+  return undo
+endfunction
+
+function! s:undo_lock._save() abort
+  if undotree().seq_last == 0
+    " if there are no undo history, disable undo feature by setting
+    " 'undolevels' to -1 and restore it.
+    let self.save_undolevels = &l:undolevels
+    let &l:undolevels = -1
+  elseif !s:Buffer.is_cmdwin()
+    " command line window doesn't support :wundo.
+    let self.undofile = tempname()
+    execute 'wundo!' self.undofile
+  else
+    let self.is_cmdwin = s:TRUE
+  endif
+endfunction
+
+function! s:undo_lock.restore() abort
+  if has_key(self, 'save_undolevels')
+    let &l:undolevels = self.save_undolevels
+  endif
+  if has_key(self, 'undofile') && filereadable(self.undofile)
+    silent execute 'rundo' self.undofile
+    call delete(self.undofile)
+  endif
+  if has_key(self, 'is_cmdwin')
+    " XXX: it breaks undo history. AFAIK, there are no way to save and restore
+    " undo history in commandline window.
+    call self.undobreak()
+  endif
+endfunction
+
+function! s:undo_lock.undobreak() abort
+  let old_undolevels = &l:undolevels
+  setlocal undolevels=-1
+  keepjumps call setline('.', getline('.'))
+  let &l:undolevels = old_undolevels
 endfunction
 
 function! s:Hinter.disable_conceal_in_other_win() abort
@@ -391,7 +438,6 @@ function! s:Hinter._show_hint_for_line(winnr, lnum, col2hint) abort
     let col_num = cnum + col_offset
 
     let is_consecutive = cnum is# prev_cnum + 1
-    " if cnum isnot# prev_cnum + 1
     if !is_consecutive
       let col_num += next_offset
     else
@@ -412,6 +458,7 @@ function! s:Hinter._show_hint_for_line(winnr, lnum, col2hint) abort
 
     let prev_cnum = cnum
   endfor
+  call s:setline(a:lnum, line)
 endfunction
 
 " ._replace_line_for_hint() replaces line to show hints.
@@ -431,7 +478,6 @@ function! s:Hinter._replace_line_for_hint(lnum, col_num, line, hint) abort
   if target is# ''
     let hintwidth = strdisplaywidth(join(a:hint[:1], ''))
     let line .= repeat(' ', hintwidth)
-    call setline(a:lnum, line)
     return [line, hintwidth, 0]
   endif
 
@@ -461,7 +507,6 @@ endfunction
 function! s:Hinter._replace_text_to_space(line, lnum, col_num, len) abort
   let target = printf('\%%%dc.', a:col_num)
   let line = substitute(a:line, target, repeat(' ', a:len), '')
-  call setline(a:lnum, line)
   return line
 endfunction
 
@@ -572,7 +617,7 @@ function! s:is_in_fold(lnum) abort
   return foldclosed(a:lnum) != -1
 endfunction
 
-function! s:getchar(...)
+function! s:getchar(...) abort
   let mode = get(a:, 1, 0)
   while 1
     let char = call('getchar', a:000)
@@ -620,4 +665,14 @@ function! s:deepextend(expr1, expr2) abort
     unlet V
   endfor
   return extend(a:expr1, expr2)
+endfunction
+
+function! s:setline(lnum, text) abort
+  if getline(a:lnum) isnot# a:text
+    call setline(a:lnum, a:text)
+  endif
+endfunction
+
+function! s:throw(message) abort
+  throw 'vital: HitAHint.Motion: ' . a:message
 endfunction
