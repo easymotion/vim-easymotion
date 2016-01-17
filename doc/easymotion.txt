@@ -32,6 +32,7 @@ CONTENTS                                                 *easymotion-contents*
        EasyMotion_highlight ............ |EasyMotion_highlight|
        EasyMotion_add_search_history ... |EasyMotion_add_search_history|
        EasyMotion_off_screen_search .... |EasyMotion_off_screen_search|
+       EasyMotion_display_jump_message . |EasyMotion_display_jump_message|
        EasyMotion_disable_two_key_combo. |EasyMotion_disable_two_key_combo|
        Custom highlighting ............. |easymotion-custom-hl|
        Custom mappings ................. |easymotion-custom-mappings|
@@ -927,6 +928,15 @@ EasyMotion_off_screen_search                   *g:EasyMotion_off_screen_search*
     feature, set this value to 0.
 >
     let g:EasyMotion_off_screen_search = 0
+<
+    Default: 1
+
+EasyMotion_display_jump_message            *g:EasyMotion_display_jump_message*
+
+    If you set this option to 0, you can silence jump messages that display
+    after a successful EasyMotion command.
+>
+    let g:EasyMotion_display_jump_message = 0
 <
     Default: 1
 

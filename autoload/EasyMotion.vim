@@ -1510,7 +1510,12 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
                                     \ 'hlsearch', 'n')
         endif "}}}
 
-        call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
+        if g:EasyMotion_display_jump_message
+            call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
+        else
+            redraw!
+        endif
+
         let s:EasyMotion_is_cancelled = 0 " Success
         "}}}
     catch /^EasyMotion:.*/
