@@ -217,6 +217,12 @@ EasyMotion <Plug> table                                *easymotion-plug-table*
     <Plug>(easymotion-Tln)            | See |<Plug>(easymotion-Tln)|
     <Plug>(easymotion-bd-tln)         | See |<Plug>(easymotion-bd-tln)|
 
+    Over Window Motion                | (No assignment by default)
+    ----------------------------------|---------------------------------
+    <Plug>(easymotion-overwin-f)      | See |<Plug>(easymotion-overwin-f)|
+    <Plug>(easymotion-overwin-f2)     | See |<Plug>(easymotion-overwin-f2)|
+    <Plug>(easymotion-overwin-line)   | See |<Plug>(easymotion-overwin-line)|
+    <Plug>(easymotion-overwin-w)      | See |<Plug>(easymotion-overwin-w)|
 
 ------------------------------------------------------------------------------
 More mappings                                        *easymotion-more-mappings*
@@ -253,6 +259,74 @@ Bidirection ~
 <Plug>(easymotion-bd-n)                               *<Plug>(easymotion-bd-n)*
                 Jump to latest "/" or "?" forward. See |n| & |N|.
 
+                                                *easymotion-overwindow-motions*
+Overwindow Motions~
+
+Overwindow motions supports moving cursor across/over |window|. Since it
+doesn't make sense that moving cursor to other window while |Visual| or
+|Operator-pending| mode, overwin motions only provides mappings for |Normal|
+mode.  Please use |nmap| to use overwin motions. Overwindow motions only
+supports bi-directional motions.
+
+<Plug>(easymotion-overwin-f){char}          *n_<Plug>(easymotion-overwin-f)*
+                Like |<Plug>(easymotion-s)| or |<Plug>(easymotion-bd-f)|, but
+                supports moving cursor to other window. >
+                nmap <Leader>f <Plug>(easymotion-overwin-f)
+                xmap <Leader>f <Plug>(easymotion-bd-f)
+                omap <Leader>f <Plug>(easymotion-bd-f)
+<
+<Plug>(easymotion-overwin-f2){char}{char}   *n_<Plug>(easymotion-overwin-f2)*
+                Like |<Plug>(easymotion-s2)| or |<Plug>(easymotion-bd-f2)|,
+                but supports moving cursor to other window. >
+                nmap <Leader>s <Plug>(easymotion-overwin-f2)
+                xmap <Leader>s <Plug>(easymotion-bd-f2)
+                omap <Leader>s <Plug>(easymotion-bd-f2)
+<
+<Plug>(easymotion-overwin-line)           *n_<Plug>(easymotion-overwin-line)*
+                Like |<Plug>(easymotion-bd-jk)| but supports moving cursor to
+                other window. >
+                nmap <Leader>L <Plug>(easymotion-overwin-line)
+                xmap <Leader>L <Plug>(easymotion-bd-jk)
+                omap <Leader>L <Plug>(easymotion-bd-jk)
+<
+<Plug>(easymotion-overwin-w)              *n_<Plug>(easymotion-overwin-w)*
+                Like |<Plug>(easymotion-bd-w)| but supports moving cursor to
+                other window. >
+                nmap <Leader>w <Plug>(easymotion-overwin-w)
+                xmap <Leader>w <Plug>(easymotion-bd-w)
+                omap <Leader>w <Plug>(easymotion-bd-w)
+<
+For ovrewin n-character find motions~
+                          *easymotion-do-not-support-overwin-n-char-motions*
+                Ovrewin n-character find motions is equivalent to
+                *<Plug>(easymotion-overwin-sn)* (doesn't exist. It's like
+                |<Plug>(easymotion-sn)| but supports moving cursor to other
+                window).
+                EasyMotion itself doesn't support this mapping, but with
+                |incsearch.vim|[1] and incsearch-easymotion.vim[2], you can get
+                equivalent mappings. incsearch.vim is more compatible with
+                Vim's default search and it works with EasyMotion.
+
+                [1] https://github.com/haya14busa/incsearch.vim
+                [2] https://github.com/haya14busa/incsearch-easymotion.vim
+>
+  " You can use other keymappings like <C-l> instead of <CR> if you want to
+  " use these mappings as default search and somtimes want to move cursor with
+  " EasyMotion.
+  function! s:incsearch_config(...) abort
+    return incsearch#util#deepextend(deepcopy({
+    \   'modules': [incsearch#config#easymotion#module({'overwin': 1)],
+    \   'keymap': {
+    \     "\<CR>": '<Over>(easymotion)'
+    \   },
+    \   'is_expr': 0
+    \ }), get(a:, 1, {}))
+  endfunction
+
+  noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
+  noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
+  noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
+<
 Jump To Anywhere ~
 
 <Plug>(easymotion-jumptoanywhere)           *<Plug>(easymotion-jumptoanywhere)*
@@ -490,11 +564,21 @@ Within line motion ~
         \       '(\l)\zs(\u)' . '|' .
 
 Multi Input Find Motion!~
-                                                       *easymotion-multi-input*
-                                                           *easymotion-two-key*
-                                                           *easymotion-{find}n*
-                                                   *<Plug>(easymotion-{find}n)*
-                                                   *<Plug>(easymotion-{find}2)*
+All Find motions (s,f,F,t,T,sl,fl,Fl,tl,Tl, see below) support this feature!
+(|l| means within line motion)
+    *easymotion-multi-input* *easymotion-two-key* *easymotion-{find}n*
+    *<Plug>(easymotion-{find}n)* *<Plug>(easymotion-{find}2)*
+    *<Plug>(easymotion-s2)* *<Plug>(easymotion-f2)* *<Plug>(easymotion-F2)*
+    *<Plug>(easymotion-t2)* *<Plug>(easymotion-T2)*
+    *<Plug>(easymotion-bd-f2)* *<Plug>(easymotion-bd-t2)*
+    *<Plug>(easymotion-sl2)* *<Plug>(easymotion-fl2)* *<Plug>(easymotion-Fl2)*
+    *<Plug>(easymotion-tl2)* *<Plug>(easymotion-Tl2)*
+    *<Plug>(easymotion-bd-fl2)* *<Plug>(easymotion-bd-tl2)*
+
+    *<Plug>(easymotion-sn)* *<Plug>(easymotion-fn)* *<Plug>(easymotion-Fn)*
+    *<Plug>(easymotion-tn)* *<Plug>(easymotion-Tn)* *<Plug>(easymotion-bd-tn)*
+    *<Plug>(easymotion-sln)* *<Plug>(easymotion-fln)* *<Plug>(easymotion-Fln)*
+    *<Plug>(easymotion-tln)* *<Plug>(easymotion-Tln)* *<Plug>(easymotion-bd-tln)*
 
 EasyMotion provide another find motion by multi input target.
 
@@ -529,19 +613,6 @@ keymapping,
 >
     let g:EasyMotion_inc_highlight = 0
 <
-All Find motions (s,f,F,t,T,sl,fl,Fl,tl,Tl, see below) support this feature!
-(|l| means within line motion)
-
-    *<Plug>(easymotion-sn)* *<Plug>(easymotion-fn)* *<Plug>(easymotion-Fn)*
-    *<Plug>(easymotion-tn)* *<Plug>(easymotion-Tn)* *<Plug>(easymotion-bd-tn)*
-    *<Plug>(easymotion-sln)* *<Plug>(easymotion-fln)* *<Plug>(easymotion-Fln)*
-    *<Plug>(easymotion-tln)* *<Plug>(easymotion-Tln)* *<Plug>(easymotion-bd-tln)*
-
-
-    *<Plug>(easymotion-s2)* *<Plug>(easymotion-f2)* *<Plug>(easymotion-F2)*
-    *<Plug>(easymotion-t2)* *<Plug>(easymotion-T2)* *<Plug>(easymotion-bd-t2)*
-    *<Plug>(easymotion-sl2)* *<Plug>(easymotion-fl2)* *<Plug>(easymotion-Fl2)*
-    *<Plug>(easymotion-tl2)* *<Plug>(easymotion-Tl2)* *<Plug>(easymotion-bd-tl2)*
 
 Find Motion Command Line~
                                                       *easymotion-command-line*
