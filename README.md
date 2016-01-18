@@ -133,6 +133,8 @@ nmap <Leader>w <Plug>(easymotion-overwin-w)
 ```
 
 #### Integration with incsearch.vim
+- [haya14busa/incsearch.vim](https://github.com/haya14busa/incsearch.vim)
+- [haya14busa/incsearch-easymotion.vim](https://github.com/haya14busa/incsearch-easymotion.vim)
 
 ```vim
 " You can use other keymappings like <C-l> instead of <CR> if you want to
@@ -151,6 +153,27 @@ endfunction
 noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
 noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
 noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
+```
+
+### Bonus fuzzy-search with EasyMotion
+
+![](https://raw.githubusercontent.com/haya14busa/i/eab1d12a8bd322223d551956a4fd8a21d5c4bfe9/easymotion/fuzzy-incsearch-easymotion.gif)
+
+- [haya14busa/incsearch.vim](https://github.com/haya14busa/incsearch.vim)
+- [haya14busa/incsearch-fuzzy.vim](https://github.com/haya14busa/incsearch-fuzzy.vim)
+
+```vim
+function! s:config_easyfuzzymotion(...) abort
+  return extend(copy({
+  \   'converters': [incsearch#config#fuzzyword#converter()],
+  \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
+  \   'keymap': {"\<CR>": '<Over>(easymotion)'},
+  \   'is_expr': 0,
+  \   'is_stay': 1
+  \ }), get(a:, 1, {}))
+endfunction
+
+noremap <silent><expr> <Space>/ incsearch#go(<SID>config_easyfuzzymotion())
 ```
 
 New features in version 2.0
