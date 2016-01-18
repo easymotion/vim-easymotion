@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 2.1
+*easymotion.txt*	Version 3.0
 
 
             ______                  __  ___       __  _
