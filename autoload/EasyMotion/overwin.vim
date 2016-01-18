@@ -9,6 +9,9 @@ function! EasyMotion#overwin#move(pattern) abort
   \     'shade': g:EasyMotion_hl_group_shade,
   \     'target': g:EasyMotion_hl_group_target,
   \   },
+  \   'jump_first_target_keys':
+  \     (g:EasyMotion_enter_jump_first ? ["\<CR>"] : []) +
+  \     (g:EasyMotion_space_jump_first ? ["\<Space>"] : [])
   \ })
 endfunction
 
