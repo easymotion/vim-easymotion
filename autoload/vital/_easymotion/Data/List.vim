@@ -225,7 +225,7 @@ endfunction
 " similar to Haskell's Prelude.foldl1
 function! s:foldl1(f, xs) abort
   if len(a:xs) == 0
-    throw 'foldl1'
+    throw 'vital: Data.List: foldl1'
   endif
   return s:foldl(a:f, a:xs[0], a:xs[1:])
 endfunction
@@ -238,7 +238,7 @@ endfunction
 " similar to Haskell's Prelude.fold11
 function! s:foldr1(f, xs) abort
   if len(a:xs) == 0
-    throw 'foldr1'
+    throw 'vital: Data.List: foldr1'
   endif
   return s:foldr(a:f, a:xs[-1], a:xs[0:-2])
 endfunction
@@ -264,7 +264,7 @@ endfunction
 " Inspired by Ruby's with_index method.
 function! s:with_index(list, ...) abort
   let base = a:0 > 0 ? a:1 : 0
-  return s:zip(a:list, range(base, len(a:list)+base-1))
+  return map(copy(a:list), '[v:val, v:key + base]')
 endfunction
 
 " similar to Ruby's detect or Haskell's find.

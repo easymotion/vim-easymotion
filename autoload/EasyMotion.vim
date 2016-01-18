@@ -138,6 +138,10 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
     call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
+function! EasyMotion#OverwinF(num_strokes) " {{{
+    let re = s:findMotion(a:num_strokes, s:DIRECTION.bidirection)
+    return EasyMotion#overwin#move(re)
+endfunction "}}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
     if a:direction == 1
         let is_inclusive = 0
@@ -272,7 +276,8 @@ let s:config = {
 \   'visualmode': s:FALSE,
 \   'direction': s:DIRECTION.forward,
 \   'inclusive': s:FALSE,
-\   'accept_cursor_pos': s:FALSE
+\   'accept_cursor_pos': s:FALSE,
+\   'overwin': s:FALSE
 \ }
 
 function! s:default_config() abort
@@ -284,9 +289,13 @@ endfunction
 
 function! EasyMotion#go(...) abort
     let c = extend(s:default_config(), get(a:, 1, {}))
-    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    call s:EasyMotion(c.pattern, c.direction, c.visualmode ? visualmode() : '', c.inclusive, c)
-    return s:EasyMotion_is_cancelled
+    if c.overwin
+        return EasyMotion#overwin#move(c.pattern)
+    else
+        let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
+        call s:EasyMotion(c.pattern, c.direction, c.visualmode ? visualmode() : '', c.inclusive, c)
+        return s:EasyMotion_is_cancelled
+    endif
 endfunction
 function! EasyMotion#User(pattern, visualmode, direction, inclusive, ...) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0

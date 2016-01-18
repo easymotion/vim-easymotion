@@ -237,26 +237,16 @@ function! s:_build_module(sid) abort
   for func in functions
     let module[func] = function(prefix . func)
   endfor
+  if has_key(module, '_vital_created')
+    call module._vital_created(module)
+  endif
+  let export_module = filter(copy(module), 'v:key =~# "^\\a"')
+  let s:loaded[a:sid] = get(g:, 'vital_debug', 0) ? module : export_module
   if has_key(module, '_vital_loaded')
     let V = vital#{s:self_version}#new()
-    if has_key(module, '_vital_depends')
-      let all = {}
-      let modules =
-      \     s:_concat(map(module._vital_depends(),
-      \                   's:expand_modules(v:val, all)'))
-      call call(V.load, modules, V)
-    endif
-    try
-      call module._vital_loaded(V)
-    catch
-      " FIXME: Show an error message for debug.
-    endtry
+    call module._vital_loaded(V)
   endif
-  if !get(g:, 'vital_debug', 0)
-    call filter(module, 'v:key =~# "^\\a"')
-  endif
-  let s:loaded[a:sid] = module
-  return copy(module)
+  return copy(s:loaded[a:sid])
 endfunction
 
 if exists('+regexpengine')
