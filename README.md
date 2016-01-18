@@ -101,6 +101,57 @@ Jeffrey Way of Nettuts+ has also [written
 a tutorial](http://net.tutsplus.com/tutorials/other/vim-essential-plugin-easymotion/)
 about EasyMotion.
 
+New features in version 3.0
+====
+
+### Overwin motions
+![](https://raw.githubusercontent.com/haya14busa/i/2753bd4dd1dfdf5962dbdbffabf24244e4e14243/easymotion/overwin-motions.gif)
+
+EasyMotion now supports moving cursor across/over window.
+Since it doesn't make sense that moving cursor to other window while Visual or
+Operator-pending mode, overwin motions only provides mappings for Normal
+mode.  Please use `nmap` to use overwin motions. Overwin motions only
+supports bi-directional motions.
+
+#### Example configuration
+
+```vim
+" <Leader>f{char} to move to {char}
+map  <Leader>f <Plug>(easymotion-bd-f)
+nmap <Leader>f <Plug>(easymotion-overwin-f)
+
+" s{char}{char} to move to {char}{char}
+nmap s <Plug>(easymotion-overwin-f2)
+
+" Move to line
+map <Leader>L <Plug>(easymotion-bd-jk)
+nmap <Leader>L <Plug>(easymotion-overwin-line)
+
+" Move to word
+map  <Leader>w <Plug>(easymotion-bd-w)
+nmap <Leader>w <Plug>(easymotion-overwin-w)
+```
+
+#### Integration with incsearch.vim
+
+```vim
+" You can use other keymappings like <C-l> instead of <CR> if you want to
+" use these mappings as default search and somtimes want to move cursor with
+" EasyMotion.
+function! s:incsearch_config(...) abort
+  return incsearch#util#deepextend(deepcopy({
+  \   'modules': [incsearch#config#easymotion#module({'overwin': 1)],
+  \   'keymap': {
+  \     "\<CR>": '<Over>(easymotion)'
+  \   },
+  \   'is_expr': 0
+  \ }), get(a:, 1, {}))
+endfunction
+
+noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
+noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
+noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
+```
 
 New features in version 2.0
 ====

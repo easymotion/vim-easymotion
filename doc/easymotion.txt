@@ -259,13 +259,13 @@ Bidirection ~
 <Plug>(easymotion-bd-n)                               *<Plug>(easymotion-bd-n)*
                 Jump to latest "/" or "?" forward. See |n| & |N|.
 
-                                                *easymotion-overwindow-motions*
-Overwindow Motions~
+                                                *easymotion-overwin-motions*
+Overwin Motions~
 
-Overwindow motions supports moving cursor across/over |window|. Since it
+Overwin motions supports moving cursor across/over |window|. Since it
 doesn't make sense that moving cursor to other window while |Visual| or
 |Operator-pending| mode, overwin motions only provides mappings for |Normal|
-mode.  Please use |nmap| to use overwin motions. Overwindow motions only
+mode.  Please use |nmap| to use overwin motions. overwin motions only
 supports bi-directional motions.
 
 <Plug>(easymotion-overwin-f){char}          *n_<Plug>(easymotion-overwin-f)*
@@ -327,6 +327,15 @@ For ovrewin n-character find motions~
   noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
   noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
 <
+                                                *easymotion-overwin-limitation*
+Since archtecture of overwin motions is different from other easymotion
+motions, there are some limitations.
+
+    1. |EasyMotion_do_shade| by default and currently you cannot turned off
+       this option.
+    2. Highlight for target is always EasyMotionTarget (|EasyMotion_highlight|)
+       even for two key targets.
+
 Jump To Anywhere ~
 
 <Plug>(easymotion-jumptoanywhere)           *<Plug>(easymotion-jumptoanywhere)*
