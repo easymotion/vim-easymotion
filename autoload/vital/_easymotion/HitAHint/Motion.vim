@@ -80,14 +80,24 @@ function! s:overwin.pattern(pattern) abort
   let winpos = self.select_winpos(self.gather_poses_overwin(a:pattern), self.config.keys)
   if winpos is# -1
   else
-    let [winnr_str, pos] = winpos
-    let winnr = str2nr(winnr_str)
-    if winnr is# winnr()
-      normal! m`
-    else
-      call s:move_to_win(winnr)
-    endif
-    call cursor(pos)
+    call s:move_to_winpos(winpos)
+  endif
+endfunction
+
+" @param {{winnr: [lnum, cnum]}}
+function! s:move_to_winpos(winpos) abort
+  let [winnr_str, pos] = a:winpos
+  let winnr = str2nr(winnr_str)
+  let is_win_moved = !(winnr is# winnr())
+  if is_win_moved
+    doautocmd WinLeave *
+    call s:move_to_win(winnr)
+  else
+    normal! m`
+  endif
+  call cursor(pos)
+  if is_win_moved
+    doautocmd WinEnter *
   endif
 endfunction
 
@@ -560,7 +570,7 @@ endfunction
 " @param {number} winnr
 function! s:move_to_win(winnr) abort
   if a:winnr !=# winnr()
-    execute a:winnr . 'wincmd w'
+    execute 'noautocmd' a:winnr . 'wincmd w'
   endif
 endfunction
 
