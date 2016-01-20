@@ -299,13 +299,14 @@ function! s:Hinter.modify_env() abort
       setlocal noreadonly
 
       ownsyntax overwin
-      syntax clear
+      syntax enable
+      " syntax clear
       setlocal conceallevel=2
       setlocal concealcursor=ncv
       execute 'highlight! link Conceal' self.config.highlight.target
 
       let self.highlight_ids[winnr] = get(self.highlight_ids, winnr, [])
-      let self.highlight_ids[winnr] += [matchadd(self.config.highlight.shade, '\_.*', 100)]
+      " let self.highlight_ids[winnr] += [matchadd(self.config.highlight.shade, '\_.*', 100)]
     endfor
   catch
     call s:throw(v:throwpoint . ' ' . v:exception)
@@ -469,7 +470,8 @@ function! s:Hinter._show_hint_for_line(winnr, lnum, col2hint) abort
 
     call s:show_hint_pos(a:lnum, col_num, hint[0])
     if len(hint) > 1
-      call s:show_hint_pos(a:lnum, col_num + 1, hint[1])
+      " call s:show_hint_pos(a:lnum, col_num + 1, hint[1])
+      call s:show_hint_pos(a:lnum, col_num + len(nr2char(8233)), hint[1])
     endif
 
     let prev_cnum = cnum
@@ -503,6 +505,13 @@ function! s:Hinter._replace_line_for_hint(lnum, col_num, line, hint) abort
   elseif strdisplaywidth(target) > 1
     let line = self._replace_text_to_space(line, a:lnum, col_num, strdisplaywidth(target))
     let offset = strdisplaywidth(target) - len(target)
+  else
+    " let line = substitute(line, '\%' . col_num . 'c.', ' ', '')
+    " 8233
+    " let space = ' '
+    let space = nr2char(8233)
+    let line = substitute(line, '\%' . col_num . 'c.', space, '')
+    let offset = len(space) - len(target)
   endif
 
   let next_offset = 0
@@ -667,7 +676,7 @@ endfunction
 
 function! s:show_hint_pos(lnum, cnum, char) abort
   let p = '\%'. a:lnum . 'l\%'. a:cnum . 'c.'
-  exec "syntax match HitAHintTarget '". p . "' conceal cchar=". a:char
+  exec "syntax match HitAHintTarget '". p . "' contains=NONE containedin=.* conceal cchar=". a:char
 endfunction
 
 " deepextend (nest: 1)
