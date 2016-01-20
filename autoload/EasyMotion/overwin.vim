@@ -11,7 +11,8 @@ function! EasyMotion#overwin#move(pattern) abort
   \   },
   \   'jump_first_target_keys':
   \     (g:EasyMotion_enter_jump_first ? ["\<CR>"] : []) +
-  \     (g:EasyMotion_space_jump_first ? ["\<Space>"] : [])
+  \     (g:EasyMotion_space_jump_first ? ["\<Space>"] : []),
+  \   'do_shade': g:EasyMotion_do_shade,
   \ })
 endfunction
 
