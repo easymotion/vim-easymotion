@@ -4,6 +4,7 @@ function! s:_vital_loaded(V) abort
   let s:Buffer = a:V.import('Vim.Buffer')
   let s:Prelude = a:V.import('Prelude')
   let s:Set = a:V.import('Data.Set')
+  let s:Input = a:V.import('Over.Input')
 endfunction
 
 function! s:_vital_depends() abort
@@ -13,6 +14,7 @@ function! s:_vital_depends() abort
   \   'Vim.Buffer',
   \   'Prelude',
   \   'Data.Set',
+  \   'Over.Input',
   \ ]
 endfunction
 
@@ -45,16 +47,16 @@ endfunction
 
 function! s:move_f(...) abort
   echo 'Target: '
-  let c = s:getchar()
+  let c = s:Input.getchar()
   return s:move(c, get(a:, 1, {}))
 endfunction
 
 function! s:move_f2() abort
   echo 'Target: '
-  let c = s:getchar()
+  let c = s:Input.getchar()
   redraw
   echo 'Target: ' . c
-  let c2 = s:getchar()
+  let c2 = s:Input.getchar()
   return s:move(s:Prelude.escape_pattern(c . c2), get(a:, 1, {}))
 endfunction
 
@@ -219,7 +221,7 @@ function! s:overwin.choose_prompt(hint_dict) abort
     call hinter.show_hint()
     redraw
     echo 'Target key: '
-    let c = s:getchar()
+    let c = s:Input.getchar()
     if self.config.use_upper
       let c = toupper(c)
     endif
@@ -732,18 +734,6 @@ endfunction
 " @param {number} lnum line number
 function! s:is_in_fold(lnum) abort
   return foldclosed(a:lnum) != -1
-endfunction
-
-function! s:getchar(...) abort
-  let mode = get(a:, 1, 0)
-  while 1
-    let char = call('getchar', a:000)
-    " Workaround for the <expr> mappings
-    if string(char) !~# "\x80\xfd`"
-      return mode == 1 ? !!char
-      \   : type(char) == type(0) ? nr2char(char) : char
-    endif
-  endwhile
 endfunction
 
 " @param {funcref} func
