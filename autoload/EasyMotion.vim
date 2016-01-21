@@ -473,8 +473,8 @@ endfunction " }}}
 " -- Get characters from user input ------
 function! s:GetChar() " {{{
     let char = getchar()
-    if char == 27
-        " Escape key pressed
+    if char == 27 || char == 3
+        " Escape or <C-c> key pressed
         redraw
         call s:Message('Cancelled')
         return ''
