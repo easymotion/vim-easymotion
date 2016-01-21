@@ -332,9 +332,7 @@ For ovrewin n-character find motions~
 Since archtecture of overwin motions is different from other easymotion
 motions, there are some limitations.
 
-    1. |EasyMotion_do_shade| by default and currently you cannot turned off
-       this option.
-    2. Highlight for target is always EasyMotionTarget (|EasyMotion_highlight|)
+    1. Highlight for target is always EasyMotionTarget (|EasyMotion_highlight|)
        even for two key targets.
 
 Jump To Anywhere ~
