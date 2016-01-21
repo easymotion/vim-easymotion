@@ -140,6 +140,7 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
 endfunction " }}}
 function! EasyMotion#OverwinF(num_strokes) " {{{
     let re = s:findMotion(a:num_strokes, s:DIRECTION.bidirection)
+    call EasyMotion#reset()
     return EasyMotion#overwin#move(re)
 endfunction "}}}
 function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
