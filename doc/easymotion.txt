@@ -297,9 +297,9 @@ supports bi-directional motions.
                 xmap <Leader>w <Plug>(easymotion-bd-w)
                 omap <Leader>w <Plug>(easymotion-bd-w)
 <
-For ovrewin n-character find motions~
+For overwin n-character find motions~
                           *easymotion-do-not-support-overwin-n-char-motions*
-                Ovrewin n-character find motions is equivalent to
+                Overwin n-character find motions is equivalent to
                 *<Plug>(easymotion-overwin-sn)* (doesn't exist. It's like
                 |<Plug>(easymotion-sn)| but supports moving cursor to other
                 window).
