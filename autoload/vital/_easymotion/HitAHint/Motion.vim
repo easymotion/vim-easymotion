@@ -20,6 +20,21 @@ let s:TRUE = !0
 let s:FALSE = 0
 let s:DIRECTION = {'forward': 0, 'backward': 1}
 
+" Check Vim version
+function! s:has_patch(major, minor, patch) abort
+  let l:version = (a:major * 100 + a:minor)
+  return has('patch-' . a:major . '.' . a:minor . '.' . a:patch) ||
+    \ (v:version > l:version) ||
+    \ (v:version == l:version && 'patch' . a:patch)
+endfunction
+
+" matchadd('Conceal', {pattern}, {priority}, -1, {'conceal': {char}}}) can
+" highlight pattern and conceal target correctly even if the target is keyword
+" characters.
+" - http://ftp.vim.org/vim/patches/7.4/7.4.792
+" - https://groups.google.com/forum/#!searchin/vim_dev/matchadd$20conceal/vim_dev/8bKa98GhHdk/VOzIBhd1m8YJ
+let s:can_preserve_syntax = s:has_patch(7, 4, 792)
+
 " s:move() moves cursor over/accross window with Hit-A-Hint feature like
 " vim-easymotion
 " @param {dict} config
@@ -251,12 +266,20 @@ let s:Hinter = {
 function! s:Hinter.new(hint_dict, config) abort
   let s = deepcopy(self)
   let s.config = a:config
-  let win2pos2hint = s:create_win2pos2hint(a:hint_dict)
-  let s.winnrs = sort(map(keys(win2pos2hint), 'str2nr(v:val)'))
-  let s.win2pos2hint = win2pos2hint
-  let s.w2l2c2h = s:win2pos2hint_to_w2l2c2h(win2pos2hint)
-  call s._save_lines()
+  call s.init(a:hint_dict)
   return s
+endfunction
+
+function! s:Hinter.init(hint_dict) abort
+  let win2pos2hint = s:create_win2pos2hint(a:hint_dict)
+  let self.winnrs = sort(map(keys(win2pos2hint), 'str2nr(v:val)'))
+  let self.win2pos2hint = win2pos2hint
+  let self.w2l2c2h = s:win2pos2hint_to_w2l2c2h(win2pos2hint)
+  let self.hl_target_ids = {}
+  for winnr in self.winnrs
+    let self.hl_target_ids[winnr] = []
+  endfor
+  call self._save_lines()
 endfunction
 
 function! s:Hinter.before() abort
@@ -322,28 +345,32 @@ function! s:Hinter.modify_env_for_win(winnr) abort
   setlocal modifiable
   setlocal noreadonly
 
-  ownsyntax overwin
+  if !s:can_preserve_syntax
+    ownsyntax overwin
+  endif
+
   setlocal conceallevel=2
   setlocal concealcursor=ncv
 
   let self.highlight_ids[a:winnr] = get(self.highlight_ids, a:winnr, [])
   if self.config.do_shade
-    syntax clear
+    if !s:can_preserve_syntax
+      syntax clear
+    endif
     let self.highlight_ids[a:winnr] += [matchadd(self.config.highlight.shade, '\_.*', 100)]
   endif
 endfunction
 
 function! s:Hinter.restore_env() abort
-  syntax clear HitAHintTarget
   call s:PHighlight.set('Conceal', self.save_conceal)
   let nr = winnr()
   try
     for winnr in self.winnrs
       call s:move_to_win(winnr)
       call self.restore_lines_for_win(winnr)
-      " Clear syntax defined by Hit-A-Hint motion before restoring syntax.
-      syntax clear HitAHintTarget
-      if self.config.do_shade
+      call self.remove_hints(winnr)
+
+      if !s:can_preserve_syntax && self.config.do_shade
         let &syntax = self.save_syntax[winnr]
       endif
 
@@ -470,7 +497,7 @@ function! s:Hinter._show_hint_for_win(winnr) abort
   endif
   execute 'highlight! link Conceal' self.config.highlight.target
   for [lnum, cnum, char] in hints
-    call s:show_hint_pos(lnum, cnum, char)
+    call self.show_hint_pos(lnum, cnum, char, a:winnr)
   endfor
 endfunction
 
@@ -520,11 +547,12 @@ endfunction
 function! s:Hinter._replace_line_for_hint(lnum, col_num, line, hint) abort
   let line = a:line
   let col_num = a:col_num
+  let do_replace_target = !(self.config.do_shade || s:can_preserve_syntax)
   let target = matchstr(line, '\%' . col_num .'c.')
   " Append one space for empty line or match at end of line
   if target is# ''
     let hintwidth = strdisplaywidth(join(a:hint[:1], ''))
-    let char = self.config.do_shade ? ' ' : '.'
+    let char = do_replace_target ? ' ' : '.'
     let line .= repeat(char, hintwidth)
     return [line, hintwidth, 0]
   endif
@@ -536,7 +564,7 @@ function! s:Hinter._replace_line_for_hint(lnum, col_num, line, hint) abort
     let line = self._replace_text_to_space(line, a:lnum, col_num, strdisplaywidth(target))
     let offset = strdisplaywidth(target) - len(target)
   else
-    if !self.config.do_shade
+    if do_replace_target
       " The priority of :syn-cchar is always under the priority of keywords.
       " So, Hit-A-Hint replaces targets character with '.'.
       let space = '.'
@@ -564,6 +592,26 @@ function! s:Hinter._replace_text_to_space(line, lnum, col_num, len) abort
   let target = printf('\%%%dc.', a:col_num)
   let line = substitute(a:line, target, repeat(' ', a:len), '')
   return line
+endfunction
+
+function! s:Hinter.show_hint_pos(lnum, cnum, char, winnr) abort
+  let p = '\%'. a:lnum . 'l\%'. a:cnum . 'c.'
+  if s:can_preserve_syntax
+    let self.hl_target_ids[a:winnr] += [matchadd('Conceal', p, 101, -1, {'conceal': a:char})]
+  else
+    exec "syntax match HitAHintTarget '". p . "' contains=NONE containedin=.* conceal cchar=". a:char
+  endif
+endfunction
+
+function! s:Hinter.remove_hints(winnr) abort
+  if s:can_preserve_syntax
+    for id in self.hl_target_ids[a:winnr]
+      call matchdelete(id)
+    endfor
+  else
+    " Clear syntax defined by Hit-A-Hint motion before restoring syntax.
+    syntax clear HitAHintTarget
+  endif
 endfunction
 
 " @param {number} col_num col_num is 1 origin like col()
@@ -703,11 +751,6 @@ function! s:wincall(func, arglist, ...) abort
     noautocmd wincmd w
   endwhile
   return r
-endfunction
-
-function! s:show_hint_pos(lnum, cnum, char) abort
-  let p = '\%'. a:lnum . 'l\%'. a:cnum . 'c.'
-  exec "syntax match HitAHintTarget '". p . "' contains=NONE containedin=.* conceal cchar=". a:char
 endfunction
 
 " deepextend (nest: 1)
