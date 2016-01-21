@@ -20,6 +20,21 @@ let s:TRUE = !0
 let s:FALSE = 0
 let s:DIRECTION = {'forward': 0, 'backward': 1}
 
+" Check Vim version
+function! s:has_patch(major, minor, patch) abort
+  let l:version = (a:major * 100 + a:minor)
+  return has('patch-' . a:major . '.' . a:minor . '.' . a:patch) ||
+    \ (v:version > l:version) ||
+    \ (v:version == l:version && 'patch' . a:patch)
+endfunction
+
+" matchadd('Conceal', {pattern}, {priority}, -1, {'conceal': {char}}}) can
+" highlight pattern and conceal target correctly even if the target is keyword
+" characters.
+" - http://ftp.vim.org/vim/patches/7.4/7.4.792
+" - https://groups.google.com/forum/#!searchin/vim_dev/matchadd$20conceal/vim_dev/8bKa98GhHdk/VOzIBhd1m8YJ
+let s:can_preserve_syntax = s:has_patch(7, 4, 792)
+
 " s:move() moves cursor over/accross window with Hit-A-Hint feature like
 " vim-easymotion
 " @param {dict} config
@@ -54,6 +69,7 @@ let s:overwin = {
 \       'target': 'HitAHintTarget',
 \     },
 \     'jump_first_target_keys': [],
+\     'do_shade': s:TRUE,
 \   }
 \ }
 
@@ -106,7 +122,27 @@ function! s:overwin.select_winpos(winnr2poses, keys) abort
   if self.config.auto_land && len(wposes) is# 1
     return wposes[0]
   endif
-  return self.choose_prompt(s:Hint.create(wposes, a:keys))
+  call self.set_options()
+  try
+    return self.choose_prompt(s:Hint.create(wposes, a:keys))
+  finally
+    call self.restore_options()
+  endtry
+endfunction
+
+function! s:overwin.set_options() abort
+  " s:move_to_win() takes long time if 'foldmethod' == 'syntax' or 'expr'
+  let self.save_foldmethod = {}
+  for winnr in range(1, winnr('$'))
+    let self.save_foldmethod[winnr] = getwinvar(winnr, '&foldmethod')
+    call setwinvar(winnr, '&foldmethod', 'manual')
+  endfor
+endfunction
+
+function! s:overwin.restore_options() abort
+  for winnr in range(1, winnr('$'))
+    call setwinvar(winnr, '&foldmethod', self.save_foldmethod[winnr])
+  endfor
 endfunction
 
 " s:wpos_to_hint() returns dict whose key is position with window and whose
@@ -186,7 +222,7 @@ function! s:overwin.choose_prompt(hint_dict) abort
       let c = toupper(c)
     endif
   catch
-    echo v:exception
+    echo v:throwpoint . ':' . v:exception
     return -1
   finally
     call hinter.after()
@@ -230,21 +266,30 @@ let s:Hinter = {
 function! s:Hinter.new(hint_dict, config) abort
   let s = deepcopy(self)
   let s.config = a:config
-  let win2pos2hint = s:create_win2pos2hint(a:hint_dict)
-  let s.winnrs = map(keys(win2pos2hint), 'str2nr(v:val)')
-  let s.win2pos2hint = win2pos2hint
-  let s.w2l2c2h = s:win2pos2hint_to_w2l2c2h(win2pos2hint)
-  call s._save_lines()
+  call s.init(a:hint_dict)
   return s
 endfunction
 
+function! s:Hinter.init(hint_dict) abort
+  let win2pos2hint = s:create_win2pos2hint(a:hint_dict)
+  let self.winnrs = sort(map(keys(win2pos2hint), 'str2nr(v:val)'))
+  let self.win2pos2hint = win2pos2hint
+  let self.w2l2c2h = s:win2pos2hint_to_w2l2c2h(win2pos2hint)
+  let self.hl_target_ids = {}
+  for winnr in self.winnrs
+    let self.hl_target_ids[winnr] = []
+  endfor
+  call self._save_lines()
+endfunction
+
 function! s:Hinter.before() abort
-  call self.modify_env()
+  let self.highlight_id_cursor = matchadd('Cursor', '\%#', 101)
+  call self.save_options()
   call self.disable_conceal_in_other_win()
 endfunction
 
 function! s:Hinter.after() abort
-  call self.restore_lines()
+  call matchdelete(self.highlight_id_cursor)
   call self.restore_env()
   call self.restore_conceal_in_other_win()
 endfunction
@@ -265,83 +310,94 @@ function! s:Hinter._save_lines() abort
   endtry
 endfunction
 
-function! s:Hinter.restore_lines() abort
-  let nr = winnr()
-  try
-    for [winnr, lnum2line] in items(self.save_lines)
-      call s:move_to_win(winnr)
-      for [lnum, line] in items(lnum2line)
-        call s:setline(lnum, line)
-      endfor
-    endfor
-  finally
-    call s:move_to_win(nr)
-  endtry
+function! s:Hinter.restore_lines_for_win(winnr) abort
+  let lnum2line = self.save_lines[a:winnr]
+  for [lnum, line] in items(lnum2line)
+    call s:setline(lnum, line)
+  endfor
 endfunction
 
-function! s:Hinter.modify_env() abort
-  let nr = winnr()
-  try
-    let self.highlight_id_cursor = matchadd('Cursor', '\%#', 1000001)
-    for winnr in self.winnrs
-      call s:move_to_win(winnr)
-      let self.save_conceal = s:PHighlight.get('Conceal')
-      let self.save_syntax[winnr] = &syntax
-      let self.save_conceallevel[winnr] = &l:conceallevel
-      let self.save_concealcursor[winnr] = &l:concealcursor
-      let self.save_modified[winnr] = &l:modified
-      let self.save_modifiable[winnr] = &l:modifiable
-      let self.save_readonly[winnr] = &l:readonly
+function! s:Hinter.save_options() abort
+  for winnr in self.winnrs
+    let self.save_syntax[winnr] = getwinvar(winnr, '&syntax')
+    let self.save_conceallevel[winnr] = getwinvar(winnr, '&conceallevel')
+    let self.save_concealcursor[winnr] = getwinvar(winnr, '&concealcursor')
+    let self.save_modified[winnr] = getwinvar(winnr, '&modified')
+    let self.save_modifiable[winnr] = getwinvar(winnr, '&modifiable')
+    let self.save_readonly[winnr] = getwinvar(winnr, '&readonly')
+  endfor
+endfunction
 
-      let self.save_undo[winnr] = s:undo_lock.save()
+function! s:Hinter.restore_options() abort
+  for winnr in self.winnrs
+    call setwinvar(winnr, '&conceallevel', self.save_conceallevel[winnr])
+    call setwinvar(winnr, '&concealcursor', self.save_concealcursor[winnr])
+    call setwinvar(winnr, '&modified', self.save_modified[winnr])
+    call setwinvar(winnr, '&modifiable', self.save_modifiable[winnr])
+    call setwinvar(winnr, '&readonly', self.save_readonly[winnr])
+  endfor
+endfunction
 
-      setlocal modifiable
-      setlocal noreadonly
+function! s:Hinter.modify_env_for_win(winnr) abort
+  let self.save_conceal = s:PHighlight.get('Conceal')
+  let self.save_undo[a:winnr] = s:undo_lock.save()
 
-      ownsyntax overwin
+  setlocal modifiable
+  setlocal noreadonly
+
+  if !s:can_preserve_syntax
+    ownsyntax overwin
+  endif
+
+  setlocal conceallevel=2
+  setlocal concealcursor=ncv
+
+  let self.highlight_ids[a:winnr] = get(self.highlight_ids, a:winnr, [])
+  if self.config.do_shade
+    if !s:can_preserve_syntax
       syntax clear
-      setlocal conceallevel=2
-      setlocal concealcursor=ncv
-      execute 'highlight! link Conceal' self.config.highlight.target
+    endif
+    let self.highlight_ids[a:winnr] += [matchadd(self.config.highlight.shade, '\_.*', 100)]
+  endif
 
-      let self.highlight_ids[winnr] = get(self.highlight_ids, winnr, [])
-      let self.highlight_ids[winnr] += [matchadd(self.config.highlight.shade, '\_.*', 100)]
-    endfor
-  catch
-    call s:throw(v:throwpoint . ' ' . v:exception)
-  finally
-    call s:move_to_win(nr)
-  endtry
+  " XXX: other plugins specific handling
+  if getbufvar('%', 'indentLine_enabled', 0)
+    silent! syntax clear IndentLine
+  endif
 endfunction
 
 function! s:Hinter.restore_env() abort
+  call s:PHighlight.set('Conceal', self.save_conceal)
   let nr = winnr()
   try
-    call matchdelete(self.highlight_id_cursor)
     for winnr in self.winnrs
       call s:move_to_win(winnr)
-      " Clear syntax defined by Hit-A-Hint motion before restoring syntax.
-      syntax clear HitAHintTarget
-      let &syntax = self.save_syntax[winnr]
-      call s:PHighlight.set('Conceal', self.save_conceal)
-      let &l:conceallevel = self.save_conceallevel[winnr]
-      let &l:concealcursor = self.save_concealcursor[winnr]
+      call self.restore_lines_for_win(winnr)
+      call self.remove_hints(winnr)
+
+      if !s:can_preserve_syntax && self.config.do_shade
+        let &syntax = self.save_syntax[winnr]
+      endif
 
       call self.save_undo[winnr].restore()
-
-      let &l:modified = self.save_modified[winnr]
-      let &l:modifiable = self.save_modifiable[winnr]
-      let &l:readonly = self.save_readonly[winnr]
 
       for id in self.highlight_ids[winnr]
         call matchdelete(id)
       endfor
+
+      " XXX: other plugins specific handling
+      if getbufvar('%', 'indentLine_enabled', 0) && exists(':IndentLinesEnable') is# 2
+        call setbufvar('%', 'indentLine_enabled', 0)
+        :IndentLinesEnable
+      endif
     endfor
   catch
     call s:throw(v:throwpoint . ' ' . v:exception)
   finally
     call s:move_to_win(nr)
   endtry
+
+  call self.restore_options()
 endfunction
 
 let s:undo_lock = {}
@@ -440,12 +496,24 @@ function! s:Hinter.show_hint() abort
 endfunction
 
 function! s:Hinter._show_hint_for_win(winnr) abort
+  call self.modify_env_for_win(a:winnr)
+
+  let hints = []
   for [lnum, col2hint] in items(self.w2l2c2h[a:winnr])
-    call self._show_hint_for_line(a:winnr, lnum, col2hint)
+    let hints += self._show_hint_for_line(a:winnr, lnum, col2hint)
+  endfor
+  " Restore syntax and show hints after replacing all lines for performance.
+  if !self.config.do_shade
+    let &l:syntax = self.save_syntax[a:winnr]
+  endif
+  execute 'highlight! link Conceal' self.config.highlight.target
+  for [lnum, cnum, char] in hints
+    call self.show_hint_pos(lnum, cnum, char, a:winnr)
   endfor
 endfunction
 
 function! s:Hinter._show_hint_for_line(winnr, lnum, col2hint) abort
+  let hints = [] " [lnum, cnum, char]
   let line = self.save_lines[a:winnr][a:lnum]
   let col_offset = 0
   let prev_cnum = -1
@@ -467,14 +535,15 @@ function! s:Hinter._show_hint_for_line(winnr, lnum, col2hint) abort
     endif
     let col_offset += offset
 
-    call s:show_hint_pos(a:lnum, col_num, hint[0])
+    let hints = [[a:lnum, col_num, hint[0]]] + hints
     if len(hint) > 1
-      call s:show_hint_pos(a:lnum, col_num + 1, hint[1])
+      let hints = [[a:lnum, col_num + 1, hint[1]]] + hints
     endif
 
     let prev_cnum = cnum
   endfor
   call s:setline(a:lnum, line)
+  return hints
 endfunction
 
 " ._replace_line_for_hint() replaces line to show hints.
@@ -489,11 +558,13 @@ endfunction
 function! s:Hinter._replace_line_for_hint(lnum, col_num, line, hint) abort
   let line = a:line
   let col_num = a:col_num
+  let do_replace_target = !(self.config.do_shade || s:can_preserve_syntax)
   let target = matchstr(line, '\%' . col_num .'c.')
   " Append one space for empty line or match at end of line
   if target is# ''
     let hintwidth = strdisplaywidth(join(a:hint[:1], ''))
-    let line .= repeat(' ', hintwidth)
+    let char = do_replace_target ? ' ' : '.'
+    let line .= repeat(char, hintwidth)
     return [line, hintwidth, 0]
   endif
 
@@ -503,12 +574,20 @@ function! s:Hinter._replace_line_for_hint(lnum, col_num, line, hint) abort
   elseif strdisplaywidth(target) > 1
     let line = self._replace_text_to_space(line, a:lnum, col_num, strdisplaywidth(target))
     let offset = strdisplaywidth(target) - len(target)
+  else
+    if do_replace_target
+      " The priority of :syn-cchar is always under the priority of keywords.
+      " So, Hit-A-Hint replaces targets character with '.'.
+      let space = '.'
+      let line = substitute(line, '\%' . col_num . 'c.', space, '')
+      let offset = len(space) - len(target)
+    endif
   endif
 
   let next_offset = 0
-  if len(a:hint) > 1
-    " pass [] as hint to stop recursion.
-    let [line, next_offset, _] = self._replace_line_for_hint(a:lnum, col_num + offset + 1, line, [])
+  if len(a:hint) > 1 && target isnot# "\t"
+    " pass [' '] as hint to stop recursion.
+    let [line, next_offset, _] = self._replace_line_for_hint(a:lnum, col_num + offset + 1, line, [' '])
   endif
   return [line, offset, next_offset]
 endfunction
@@ -524,6 +603,26 @@ function! s:Hinter._replace_text_to_space(line, lnum, col_num, len) abort
   let target = printf('\%%%dc.', a:col_num)
   let line = substitute(a:line, target, repeat(' ', a:len), '')
   return line
+endfunction
+
+function! s:Hinter.show_hint_pos(lnum, cnum, char, winnr) abort
+  let p = '\%'. a:lnum . 'l\%'. a:cnum . 'c.'
+  if s:can_preserve_syntax
+    let self.hl_target_ids[a:winnr] += [matchadd('Conceal', p, 101, -1, {'conceal': a:char})]
+  else
+    exec "syntax match HitAHintTarget '". p . "' contains=NONE containedin=.* conceal cchar=". a:char
+  endif
+endfunction
+
+function! s:Hinter.remove_hints(winnr) abort
+  if s:can_preserve_syntax
+    for id in self.hl_target_ids[a:winnr]
+      call matchdelete(id)
+    endfor
+  else
+    " Clear syntax defined by Hit-A-Hint motion before restoring syntax.
+    syntax clear HitAHintTarget
+  endif
 endfunction
 
 " @param {number} col_num col_num is 1 origin like col()
@@ -663,11 +762,6 @@ function! s:wincall(func, arglist, ...) abort
     noautocmd wincmd w
   endwhile
   return r
-endfunction
-
-function! s:show_hint_pos(lnum, cnum, char) abort
-  let p = '\%'. a:lnum . 'l\%'. a:cnum . 'c.'
-  exec "syntax match HitAHintTarget '". p . "' conceal cchar=". a:char
 endfunction
 
 " deepextend (nest: 1)
