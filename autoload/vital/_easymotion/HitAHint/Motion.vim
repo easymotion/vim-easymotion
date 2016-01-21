@@ -359,6 +359,11 @@ function! s:Hinter.modify_env_for_win(winnr) abort
     endif
     let self.highlight_ids[a:winnr] += [matchadd(self.config.highlight.shade, '\_.*', 100)]
   endif
+
+  " XXX: other plugins specific handling
+  if getbufvar('%', 'indentLine_enabled', 0)
+    silent! syntax clear IndentLine
+  endif
 endfunction
 
 function! s:Hinter.restore_env() abort
@@ -379,6 +384,12 @@ function! s:Hinter.restore_env() abort
       for id in self.highlight_ids[winnr]
         call matchdelete(id)
       endfor
+
+      " XXX: other plugins specific handling
+      if getbufvar('%', 'indentLine_enabled', 0) && exists(':IndentLinesEnable') is# 2
+        call setbufvar('%', 'indentLine_enabled', 0)
+        :IndentLinesEnable
+      endif
     endfor
   catch
     call s:throw(v:throwpoint . ' ' . v:exception)
