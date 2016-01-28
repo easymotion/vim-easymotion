@@ -1,6 +1,8 @@
 let s:V = vital#of('easymotion')
 let s:HitAHintMotion = s:V.import('HitAHint.Motion')
 
+call EasyMotion#init()
+
 function! EasyMotion#overwin#move(pattern) abort
   return s:HitAHintMotion.move(a:pattern, {
   \   'keys': g:EasyMotion_keys,

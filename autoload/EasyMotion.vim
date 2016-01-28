@@ -16,7 +16,12 @@ let s:DIRECTION = { 'forward': 0, 'backward': 1, 'bidirection': 2}
 
 
 " Init: {{{
+let s:loaded = s:FALSE
 function! EasyMotion#init()
+    if s:loaded
+        return
+    endif
+    let s:loaded = s:TRUE
     call EasyMotion#highlight#load()
     " Store previous motion info
     let s:previous = {}
