@@ -217,7 +217,7 @@ describe 'Default settings'
         "}}}
     end
 
-    it 'provide default <Plug> mappings for regrex motion'
+    it 'provide default <Plug> mappings for regex motion'
         "(is_visual, direction)
         " direction:
         "   - 0: forward
@@ -1411,8 +1411,8 @@ describe 'Word motion'
         close!
     end
 
-    " Default word motion {{
-    it 'Default word motion'
+    " Word motion {{
+    it 'Word motion'
         normal! 0
         let l = line('.')
         Expect CursorPos() == [l,1,'p']
@@ -1430,7 +1430,7 @@ describe 'Word motion'
         normal bh
         Expect CursorPos() == [l,1,'p']
     end
-    "}}}
+    "}}
 end
 
 describe 'Verbose'

@@ -187,7 +187,12 @@ endfunction " }}}
 function! EasyMotion#WBK(visualmode, direction) " {{{
     " vim's iskeyword style word motion
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    call s:EasyMotion('\(\(\<\|\>\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
+    " Note: Previous regex for all directions was '\(\(\<\|\>\|\s\)\@<=\S\|^$\)'
+    let l:regex_without_file_ends = '\v<|^\S|\s\zs\S|>\zs\S|^$'
+    let l:regex = l:regex_without_file_ends
+                \ . (a:direction == 1 ? '' : '|%$')
+                \ . (a:direction == 0 ? '' : '|%^')
+    call s:EasyMotion(l:regex, a:direction, a:visualmode ? visualmode() : '', 0)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#E(visualmode, direction) " {{{
