@@ -27,13 +27,19 @@
 
 " Setup {{{
 let s:root_dir = matchstr(system('git rev-parse --show-cdup'), '[^\n]\+')
+
+" The consumed time depends from the length of the text and could be really high
+" on vimdoc pages. (See it 'Loop through Vim help buffer and compare movements')
+" Reduce this value to stop CompareMovements(...) before it reached the end of the
+" buffer.
+let s:maximal_number_of_compared_movments = 10000
 execute 'set' 'rtp +=./'.s:root_dir
 runtime! plugin/EasyMotion.vim
 " }}}
 
 " Functions for Test {{{
 function! AddLine(str)
-    put! =a:str
+    put =a:str
 endfunction
 
 function! CursorPos()
@@ -46,6 +52,7 @@ function TryNormal(str)
         exec 'normal ' . a:str
     catch /^Vim\%((\a\+)\)\=:E21/
     endtry
+    return 0
 endfunction
 
 let s:to_cursor = {}
@@ -55,7 +62,6 @@ endfunction
 
 " Add metadata about failure.
 function! s:to_cursor.failure_message_for_should(actual, expected)
-    return ''
     Expect a:actual[0] > 0
     Expect a:expected[0] > 0
     Expect a:actual[0] <= getpos('$')[1]
@@ -72,8 +78,10 @@ function! s:to_cursor.failure_message_for_should(actual, expected)
     let line2 = strpart(l:line2, 0, a:expected[1]-1)
                 \ . '█'
                 \ . strpart(l:line2, a:expected[1])
+    " Separation of both cases with \n would be nice, but
+    " vim-vspec allow oneliners as return string, only.
     let l:msg = 'Line ' . string(a:actual[0]) . ": '" . l:line1
-                \ . "', Line " . string(a:expected[0]) . ": '" . l:line2 . "'"
+                \ . "',\x09\x09 Line " . string(a:expected[0]) . ": '" . l:line2 . "'\x0a"
     return l:msg
 endfunction
 
@@ -86,36 +94,37 @@ function! CompareMovements(movement1, movement2, backward)
     " Loop through current buffer in both variants {{
     for [l:handler, l:list] in l:jumpmarks
         if a:backward == 1
-            call cursor(getpos('$')[1:2])
+            let l:last_line = line('$')
+            let l:last_char = len(getline(l:last_line))
+            call cursor(l:last_line, l:last_char)
         else
             call cursor([1,1])
         endif
 
         let l:lastpos = [0,0]
 
+        " Centralize line. Otherwise, Easymotion functions aborts
+        " at the end of the (virtual) window.
+        call TryNormal('zz')
         call TryNormal(l:handler)
         let l:curpos = getpos(".")[1:2]
 
         while l:lastpos != l:curpos 
             let l:list += [l:curpos]
             let l:lastpos = l:curpos
+            call TryNormal('zz')
             call TryNormal(l:handler)
             let l:curpos = getpos(".")[1:2]
+            " Abort after a fixed number of steps.
+            if len(l:list) > s:maximal_number_of_compared_movments
+                break
+            endif
         endwhile
     endfor
     " }}
 
     " The resulting lists are stored in l:jumpmarks[*][1], now.
     let [l:cursor_positions1, l:cursor_positions2] = [ l:jumpmarks[0][1], l:jumpmarks[1][1] ]
-
-    " Debug output for this script
-    let g:dbg_msg = printf("(CompareMovements) '%s' vs '%s'\<CR>Length of both lists: %d, %d\r Content of lists:\r%s\r\r%s",
-                \ string(l:jumpmarks[0][0]),
-                \ string(l:jumpmarks[1][0]),
-                \ len(l:cursor_positions1), len(l:cursor_positions2),
-                \ string(l:cursor_positions1),
-                \ string(l:cursor_positions2))
-    Expect g:dbg_msg == v:errmsg
 
     if l:cursor_positions1 == l:cursor_positions2
         return 0
@@ -129,30 +138,61 @@ function! CompareMovements(movement1, movement2, backward)
         let l:index += 1
     endwhile
 
-    " Collision with begin or end of file 
+    " Collision with begin or end of file or while loop aborts to early.
     if a:backward == 1
-        Expect join(['File begin reached after ', len(l:cursor_positions2), ' steps.'])
-                    \ == join(['File begin reached after ', len(l:cursor_positions1), ' steps.'])
+        Expect join([a:movement2, ': File begin reached after ', len(l:cursor_positions2), ' steps.'])
+                    \ == join([a:movement1, ': File begin reached after ', len(l:cursor_positions1), ' steps.'])
     else
-        Expect join(['File end reached after ', len(l:cursor_positions2), ' steps.'])
-                    \ == join(['File end reached after ', len(l:cursor_positions1), ' steps.'])
+        Expect l:cursor_positions2[l:index-1] to_cursor l:cursor_positions1[l:index]
+        Expect join([a:movement2, ': File end reached after ', len(l:cursor_positions2), ' steps.'])
+                    \ == join([a:movement1, ': File end reached after ', len(l:cursor_positions1), ' steps.'])
     endif
     " }}
 
     return -1
 endfunction
+
+" Hand crafted text with rare cases
+function! InsertTestText1()
+
+    " Blanks at document begin
+    call AddLine('')
+    call AddLine(' ')
+    call AddLine('')
+
+    call AddLine('scriptencoding utf-8')
+    
+    " '^\s*[not-\k]'-case
+    call AddLine('!foo')
+    call AddLine('   !bar')
+
+    call AddLine('<!{}>s!  ')
+
+    " Blanks at document end
+    call AddLine('')
+    call AddLine(' ')
+    call AddLine('')
+endfunction
+
 "}}}
 
 "Keyword word motion {{{
 describe 'Keyword word motion'
     before
         new
+        resize 10
         nmap a <Nop>
         let g:EasyMotion_keys = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        let g:EasyMotion_maximal_jumpmarks  = 2 " Error for value 1 unanalyzed. 
         nmap <Leader>w <Plug>(easymotion-iskeyword-w)
         nmap <Leader>b <Plug>(easymotion-iskeyword-b)
+        nmap <Leader>e <Plug>(easymotion-iskeyword-e)
+        nmap <Leader>ge <Plug>(easymotion-iskeyword-ge)
+        nmap <Leader>W <Plug>(easymotion-W)
+        nmap <Leader>B <Plug>(easymotion-B)
+        nmap <Leader>E <Plug>(easymotion-E)
+        nmap <Leader>gE <Plug>(easymotion-gE)
         call EasyMotion#init()
-
         call vspec#customize_matcher('to_cursor', s:to_cursor)
     end
 
@@ -161,25 +201,67 @@ describe 'Keyword word motion'
     end
 
     it 'Simple test to check setup of this test'
+        normal aa\<Esc>
+        Expect getline(1) == ''
         call AddLine('word')
+        Expect CompareMovements('w', 'w', 0) == 0
         Expect CompareMovements('w', '\wa', 0) == 0
-        "Expect CompareMovements('b', '\ba', 1) == 0
+        Expect CompareMovements('b', '\ba', 1) == 0
+        Expect CompareMovements('e', '\ea', 0) == 0
+        Expect CompareMovements('ge', '\gea', 1) == 0
+        Expect CompareMovements('W', '\Wa', 0) == 0
+        Expect CompareMovements('B', '\Ba', 1) == 0
+        Expect CompareMovements('E', '\Ea', 0) == 0
+        Expect CompareMovements('gE', '\gEa', 1) == 0
     end
 
-    "it 'Loop through hand crafted text with rare cases'
-    "    " Hand crafted text with rare cases
-    "    call AddLine('scriptencoding utf-8')
-    "    call AddLine('Test case [ ')
-    "    call AddLine('<!{}>s!  ')
-    "    Expect CompareMovements('w', '\wa', 0) == 0
-    "    Expect CompareMovements('b', '\ba', 1) == 0
-    "end
+    it 'w'
+        call InsertTestText1()
+        Expect CompareMovements('w', '\wa', 0) == 0
+    end
 
+    it 'b'
+        call InsertTestText1()
+        Expect CompareMovements('b', '\ba', 1) == 0
+    end
+
+    it 'e'
+        call InsertTestText1()
+        Expect CompareMovements('e', '\ea', 0) == 0
+    end
+
+    it 'ge'
+        call InsertTestText1()
+        Expect CompareMovements('ge', '\gea', 1) == 0
+    end
+
+    it 'W'
+        call InsertTestText1()
+        Expect CompareMovements('W', 'W', 0) == 0
+    end
+
+    it 'B'
+        call InsertTestText1()
+        Expect CompareMovements('B', 'B', 1) == 0
+    end
+
+    it 'E'
+        call InsertTestText1()
+        Expect CompareMovements('E', 'E', 0) == 0
+    end
+
+    it 'gE'
+        call InsertTestText1()
+        Expect CompareMovements('gE', 'gE', 1) == 0
+    end
+
+    " Really time consuming test...
     "it 'Loop through Vim help buffer and compare movements'
     "    help motion.txt
     "    Expect expand('%:t') ==# 'motion.txt'
-    "    "Expect CompareMovements('w', '\wa', 0) == 0
-    "    "Expect CompareMovements('b', '\ba', 1) == 0
+    "    "Optional: Copy text into editable buffer
+    "    exec "normal! Gygg\<C-W>cP"
+    "    Expect CompareMovements('w', '\wa', 0) == 0
     "end
 
 end

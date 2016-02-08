@@ -181,7 +181,12 @@ function! EasyMotion#WB(visualmode, direction) " {{{
 endfunction " }}}
 function! EasyMotion#WBW(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
+    " Note: Previous regex for all directions was '\(\(^\|\s\)\@<=\S\|^$\)'
+    let l:regex_without_file_ends = '\v(^|\s)\zs\S|^$'
+    let l:regex = l:regex_without_file_ends
+                \ . (a:direction == 1 ? '' : '|%$')
+                \ . (a:direction == 0 ? '' : '|%^')
+    call s:EasyMotion(l:regex, a:direction, a:visualmode ? visualmode() : '', 0)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#WBK(visualmode, direction) " {{{
@@ -204,14 +209,32 @@ endfunction " }}}
 function! EasyMotion#EW(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let is_inclusive = mode(1) ==# 'no' ? 1 : 0
-    call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    " Note: Previous regex for all directions was '\(\S\(\s\|$\)\|^$\)'
+    " Note: The stopping positions for 'E' and 'gE' differs. Thus, the regex
+    " for direction==2 cannot be the same in both directions. This will be
+    " ignored.
+    let l:regex_stub = '\v\S(\s|$)'
+    let l:regex = l:regex_stub
+                \ . (a:direction == 0 ? '' : '|^$|%^')
+                \ . (a:direction == 1 ? '' : '|%$')
+    call s:EasyMotion(l:regex, a:direction, a:visualmode ? visualmode() : '', 0)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#EK(visualmode, direction) " {{{
     " vim's iskeyword style word motion
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let is_inclusive = mode(1) ==# 'no' ? 1 : 0
-    call s:EasyMotion('\(\S\(\>\|\<\|\s\)\@=\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    " Note: Previous regex for all directions was '\(\S\(\>\|\<\|\s\)\@=\|^$\)'
+    " Note: The stopping positions for 'e' and 'ge' differs. Thus, the regex
+    " for direction==2 cannot be the same in both directions. This will be
+    " ignored.
+    let l:regex_stub = '\v.\ze>|\S\ze\s*$|\S\ze\s|\k\zs>\S\ze|\S<'
+    let l:regex = l:regex_stub
+                \ . (a:direction == 0 ? '' : '|^$|%^')
+                \ . (a:direction == 1 ? '' : '|%$')
+    call s:EasyMotion(l:regex, a:direction, a:visualmode ? visualmode() : '', 0)
+
+
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- JK Motion ---------------------------
@@ -1289,7 +1312,8 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         "       but in this case, it's better to allows jump side effect
         "       to gathering matched targets coordinates.
         let pos = searchpos(regexp, search_direction . (config.accept_cursor_pos ? 'c' : ''), search_stopline)
-        while 1
+        let num_jumpmarks = 0
+        while l:num_jumpmarks < g:EasyMotion_maximal_jumpmarks
             " Reached end of search range
             if pos == [0, 0]
                 break
@@ -1308,6 +1332,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             endif
             "}}}
             let pos = searchpos(regexp, search_direction, search_stopline)
+            let l:num_jumpmarks += 1
         endwhile
         "}}}
 
@@ -1325,15 +1350,17 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             keepjumps call cursor(s:current.cursor_position[0],
                                 \ s:current.cursor_position[1])
 
+            let l:num_jumpmarks = 0
             let targets2 = []
             if s:flag.within_line == 0
                 let search_stopline = win_first_line
             else
                 let search_stopline = s:current.cursor_position[0]
             endif
-            while 1
+            while l:num_jumpmarks < g:EasyMotion_maximal_jumpmarks
                 " TODO: refactoring
                 let pos = searchpos(regexp, 'b', search_stopline)
+                let l:num_jumpmarks += 1
                 " Reached end of search range
                 if pos == [0, 0]
                     break

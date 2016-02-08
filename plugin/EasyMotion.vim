@@ -51,6 +51,7 @@ let g:EasyMotion_command_line_key_mappings =
     \ get(g: , 'EasyMotion_command_line_key_mappings' , {})
 let g:EasyMotion_disable_two_key_combo     =
     \ get(g: , 'EasyMotion_disable_two_key_combo' , 0)
+let g:EasyMotion_maximal_jumpmarks  = get(g: , 'EasyMotion_maximal_jumpmarks'  , 999)
 
 "}}}
 
