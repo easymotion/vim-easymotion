@@ -1,16 +1,29 @@
 let s:self_version = expand('<sfile>:t:r')
 let s:self_file = expand('<sfile>')
-
-" Note: The extra argument to globpath() was added in Patch 7.2.051.
-let s:globpath_third_arg = v:version > 702 || v:version == 702 && has('patch51')
+let s:base_dir = expand('<sfile>:h')
 
 let s:loaded = {}
 let s:cache_module_path = {}
 let s:cache_sid = {}
 
-let s:_vital_files_cache_runtimepath = ''
-let s:_vital_files_cache = []
 let s:_unify_path_cache = {}
+
+function! s:plugin_name() abort
+  let info_file = get(split(glob(s:base_dir . '/*.vital', 1), "\n"), 0, '')
+  return fnamemodify(info_file, ':t:r')
+endfunction
+
+function! s:vital_files() abort
+  if !exists('s:vital_files')
+    let s:vital_files =
+    \   map(
+    \     s:plugin_name() ==# 'vital'
+    \       ? s:_global_vital_files()
+    \       : s:_self_vital_files(),
+    \     'fnamemodify(v:val, ":p:gs?[\\\\/]?/?")')
+  endif
+  return copy(s:vital_files)
+endfunction
 
 function! s:import(name, ...) abort
   let target = {}
@@ -67,6 +80,7 @@ function! s:unload() abort
   let s:loaded = {}
   let s:cache_sid = {}
   let s:cache_module_path = {}
+  unlet! s:vital_files
 endfunction
 
 function! s:exists(name) abort
@@ -74,33 +88,9 @@ function! s:exists(name) abort
 endfunction
 
 function! s:search(pattern) abort
-  let paths = s:_vital_files(a:pattern)
+  let paths = s:_extract_files(a:pattern, s:vital_files())
   let modules = sort(map(paths, 's:_file2module(v:val)'))
   return s:_uniq(modules)
-endfunction
-
-function! s:expand_modules(entry, all) abort
-  if type(a:entry) == type([])
-    let candidates = s:_concat(map(copy(a:entry), 's:search(v:val)'))
-    if empty(candidates)
-      throw printf('vital: Any of module %s is not found', string(a:entry))
-    endif
-    if eval(join(map(copy(candidates), 'has_key(a:all, v:val)'), '+'))
-      let modules = []
-    else
-      let modules = [candidates[0]]
-    endif
-  else
-    let modules = s:search(a:entry)
-    if empty(modules)
-      throw printf('vital: Module %s is not found', a:entry)
-    endif
-  endif
-  call filter(modules, '!has_key(a:all, v:val)')
-  for module in modules
-    let a:all[module] = 1
-  endfor
-  return modules
 endfunction
 
 function! s:_import(name) abort
@@ -134,10 +124,8 @@ function! s:_get_module_path(name) abort
   if s:_is_absolute_path(a:name) && filereadable(a:name)
     return a:name
   endif
-  if a:name ==# ''
-    let paths = [s:self_file]
-  elseif a:name =~# '\v^\u\w*%(\.\u\w*)*$'
-    let paths = s:_vital_files(a:name)
+  if a:name =~# '\v^\u\w*%(\.\u\w*)*$'
+    let paths = s:_extract_files(a:name, s:vital_files())
   else
     throw 'vital: Invalid module name: ' . a:name
   endif
@@ -154,8 +142,8 @@ function! s:_get_sid_by_script(path) abort
   endif
 
   let path = s:_unify_path(a:path)
-  for line in filter(split(s:_redir('scriptnames'), "\n"),
-  \                  'stridx(v:val, s:self_version) > 0')
+  let p = 'stridx(v:val, s:self_version) > 0 || stridx(v:val, "__latest__") > 0'
+  for line in filter(split(s:_redir('scriptnames'), "\n"), p)
     let list = matchlist(line, '^\s*\(\d\+\):\s\+\(.\+\)\s*$')
     if !empty(list) && s:_unify_path(list[2]) ==# path
       let s:cache_sid[a:path] = list[1] - 0
@@ -191,28 +179,21 @@ else
   endfunction
 endif
 
-if s:globpath_third_arg
-  function! s:_runtime_files(path) abort
-    return split(globpath(&runtimepath, a:path, 1), "\n")
-  endfunction
-else
-  function! s:_runtime_files(path) abort
-    return split(globpath(&runtimepath, a:path), "\n")
-  endfunction
-endif
+function! s:_self_vital_files() abort
+  let base = s:base_dir . '/*/**/*.vim'
+  return split(glob(base, 1), "\n")
+endfunction
 
-function! s:_vital_files(pattern) abort
-  if s:_vital_files_cache_runtimepath !=# &runtimepath
-    let path = printf('autoload/vital/%s/**/*.vim', s:self_version)
-    let s:_vital_files_cache = s:_runtime_files(path)
-    let mod = ':p:gs?[\\/]\+?/?'
-    call map(s:_vital_files_cache, 'fnamemodify(v:val, mod)')
-    let s:_vital_files_cache_runtimepath = &runtimepath
-  endif
-  let target = substitute(a:pattern, '\.', '/', 'g')
-  let target = substitute(target, '\*', '[^/]*', 'g')
-  let regexp = printf('autoload/vital/%s/%s.vim', s:self_version, target)
-  return filter(copy(s:_vital_files_cache), 'v:val =~# regexp')
+function! s:_global_vital_files() abort
+  let pattern = 'autoload/vital/__latest__/**/*.vim'
+  return split(globpath(&runtimepath, pattern, 1), "\n")
+endfunction
+
+function! s:_extract_files(pattern, files) abort
+  let tr = {'.': '/', '*': '[^/]*', '**': '.*'}
+  let target = substitute(a:pattern, '\.\|\*\*\?', '\=tr[submatch(0)]', 'g')
+  let regexp = printf('autoload/vital/[^/]\+/%s.vim$', target)
+  return filter(a:files, 'v:val =~# regexp')
 endfunction
 
 " Copy from System.Filepath
@@ -241,10 +222,17 @@ function! s:_build_module(sid) abort
     call module._vital_created(module)
   endif
   let export_module = filter(copy(module), 'v:key =~# "^\\a"')
+  " Cache module before calling module.vital_debug() to avoid cyclic
+  " dependences but remove the cache if module._vital_loaded() fails.
   let s:loaded[a:sid] = get(g:, 'vital_debug', 0) ? module : export_module
   if has_key(module, '_vital_loaded')
-    let V = vital#{s:self_version}#new()
-    call module._vital_loaded(V)
+    try
+      let V = vital#{s:self_version}#new()
+      call module._vital_loaded(V)
+    catch
+      unlet s:loaded[a:sid]
+      throw 'vital: fail to call ._vital_loaded(): ' . v:exception
+    endtry
   endif
   return copy(s:loaded[a:sid])
 endfunction
@@ -286,14 +274,6 @@ else
   endfunction
 endif
 
-function! s:_concat(lists) abort
-  let result_list = []
-  for list in a:lists
-    let result_list += list
-  endfor
-  return result_list
-endfunction
-
 function! s:_redir(cmd) abort
   let [save_verbose, save_verbosefile] = [&verbose, &verbosefile]
   set verbose=0 verbosefile=
@@ -305,5 +285,6 @@ function! s:_redir(cmd) abort
 endfunction
 
 function! vital#{s:self_version}#new() abort
-  return s:_import('')
+  let sid = s:_get_sid_by_script(s:self_file)
+  return s:_build_module(sid)
 endfunction
