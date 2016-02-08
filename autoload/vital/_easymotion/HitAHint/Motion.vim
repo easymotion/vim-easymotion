@@ -507,7 +507,7 @@ function! s:Hinter._show_hint_for_win(winnr) abort
     let hints += self._show_hint_for_line(a:winnr, lnum, col2hint)
   endfor
   " Restore syntax and show hints after replacing all lines for performance.
-  if !self.config.do_shade
+  if !s:can_preserve_syntax && !self.config.do_shade
     let &l:syntax = self.save_syntax[a:winnr]
   endif
   execute 'highlight! link Conceal' self.config.highlight.target
@@ -778,3 +778,4 @@ endfunction
 function! s:throw(message) abort
   throw 'vital: HitAHint.Motion: ' . a:message
 endfunction
+
