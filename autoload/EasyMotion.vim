@@ -181,8 +181,8 @@ function! EasyMotion#WB(visualmode, direction) " {{{
 endfunction " }}}
 function! EasyMotion#WBW(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    let l:regex_without_file_ends = '\v(^|\s)\zs\S|^$'
-    let l:regex = l:regex_without_file_ends
+    let regex_without_file_ends = '\v(^|\s)\zs\S|^$'
+    let regex = l:regex_without_file_ends
                 \ . (a:direction == 1 ? '' : '|%$')
                 \ . (a:direction == 0 ? '' : '|%^')
     call s:EasyMotion(l:regex, a:direction, a:visualmode ? visualmode() : '', 0)
@@ -191,8 +191,8 @@ endfunction " }}}
 function! EasyMotion#WBK(visualmode, direction) " {{{
     " vim's iskeyword style word motion
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    let l:regex_without_file_ends = '\v<|^\S|\s\zs\S|>\zs\S|^$'
-    let l:regex = l:regex_without_file_ends
+    let regex_without_file_ends = '\v<|^\S|\s\zs\S|>\zs\S|^$'
+    let regex = l:regex_without_file_ends
                 \ . (a:direction == 1 ? '' : '|%$')
                 \ . (a:direction == 0 ? '' : '|%^')
     call s:EasyMotion(l:regex, a:direction, a:visualmode ? visualmode() : '', 0)
@@ -210,8 +210,8 @@ function! EasyMotion#EW(visualmode, direction) " {{{
     " Note: The stopping positions for 'E' and 'gE' differs. Thus, the regex
     " for direction==2 cannot be the same in both directions. This will be
     " ignored.
-    let l:regex_stub = '\v\S(\s|$)'
-    let l:regex = l:regex_stub
+    let regex_stub = '\v\S(\s|$)'
+    let regex = l:regex_stub
                 \ . (a:direction == 0 ? '' : '|^$|%^')
                 \ . (a:direction == 1 ? '' : '|%$')
     call s:EasyMotion(l:regex, a:direction, a:visualmode ? visualmode() : '', 0)
@@ -224,8 +224,8 @@ function! EasyMotion#EK(visualmode, direction) " {{{
     " Note: The stopping positions for 'e' and 'ge' differs. Thus, the regex
     " for direction==2 cannot be the same in both directions. This will be
     " ignored.
-    let l:regex_stub = '\v.\ze>|\S\ze\s*$|\S\ze\s|\k\zs>\S\ze|\S<'
-    let l:regex = l:regex_stub
+    let regex_stub = '\v.\ze>|\S\ze\s*$|\S\ze\s|\k\zs>\S\ze|\S<'
+    let regex = l:regex_stub
                 \ . (a:direction == 0 ? '' : '|^$|%^')
                 \ . (a:direction == 1 ? '' : '|%$')
     call s:EasyMotion(l:regex, a:direction, a:visualmode ? visualmode() : '', 0)

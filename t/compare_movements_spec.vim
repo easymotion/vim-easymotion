@@ -69,10 +69,10 @@ function! s:to_cursor.failure_message_for_should(actual, expected)
     Expect a:actual[1] > 0
     Expect a:expected[1] > 0
 
-    let l:line1 = getline(a:actual[0])
-    let l:line2 = getline(a:expected[0])
+    let line1 = getline(a:actual[0])
+    let line2 = getline(a:expected[0])
     " Change char on cursor to '█'. 
-    let l:line1 = strpart(l:line1, 0, a:actual[1]-1)
+    let line1 = strpart(l:line1, 0, a:actual[1]-1)
                 \ . '█'
                 \ . strpart(l:line1, a:actual[1])
     let line2 = strpart(l:line2, 0, a:expected[1]-1)
@@ -80,13 +80,13 @@ function! s:to_cursor.failure_message_for_should(actual, expected)
                 \ . strpart(l:line2, a:expected[1])
     " Separation of both cases with \n would be nice, but
     " vim-vspec allow oneliners as return string, only.
-    let l:msg = 'Line ' . string(a:actual[0]) . ": '" . l:line1
+    let msg = 'Line ' . string(a:actual[0]) . ": '" . l:line1
                 \ . "',\x09\x09 Line " . string(a:expected[0]) . ": '" . l:line2 . "'\x0a"
     return l:msg
 endfunction
 
 function! CompareMovements(movement1, movement2, backward)
-    let l:jumpmarks = [
+    let jumpmarks = [
                 \ [a:movement1, []],
                 \ [a:movement2, []],
                 \ ]
@@ -94,27 +94,27 @@ function! CompareMovements(movement1, movement2, backward)
     " Loop through current buffer in both variants {{
     for [l:handler, l:list] in l:jumpmarks
         if a:backward == 1
-            let l:last_line = line('$')
-            let l:last_char = len(getline(l:last_line))
+            let last_line = line('$')
+            let last_char = len(getline(l:last_line))
             call cursor(l:last_line, l:last_char)
         else
             call cursor([1,1])
         endif
 
-        let l:lastpos = [0,0]
+        let lastpos = [0,0]
 
         " Centralize line. Otherwise, Easymotion functions aborts
         " at the end of the (virtual) window.
         call TryNormal('zz')
         call TryNormal(l:handler)
-        let l:curpos = getpos(".")[1:2]
+        let curpos = getpos(".")[1:2]
 
         while l:lastpos != l:curpos 
-            let l:list += [l:curpos]
-            let l:lastpos = l:curpos
+            let list += [l:curpos]
+            let lastpos = l:curpos
             call TryNormal('zz')
             call TryNormal(l:handler)
-            let l:curpos = getpos(".")[1:2]
+            let curpos = getpos(".")[1:2]
             " Abort after a fixed number of steps.
             if len(l:list) > s:maximal_number_of_compared_movments
                 break
@@ -131,11 +131,11 @@ function! CompareMovements(movement1, movement2, backward)
     endif
 
     " Search for first unmatching position. {{
-    let l:index = 0
-    let l:len = min([len(l:cursor_positions2), len(l:cursor_positions1)]) 
+    let index = 0
+    let len = min([len(l:cursor_positions2), len(l:cursor_positions1)]) 
     while l:index < l:len
         Expect l:cursor_positions2[l:index] to_cursor l:cursor_positions1[l:index]
-        let l:index += 1
+        let index += 1
     endwhile
 
     " Collision with begin or end of file or while loop aborts to early.
