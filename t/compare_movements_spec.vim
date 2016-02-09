@@ -201,8 +201,10 @@ describe 'Keyword word motion'
     end
 
     it 'Simple test to check setup of this test'
+        " Check if a is remapped to <Nop> to avoid start of insert mode.
         normal aa\<Esc>
         Expect getline(1) == ''
+
         call AddLine('word')
         Expect CompareMovements('w', 'w', 0) == 0
         Expect CompareMovements('w', '\wa', 0) == 0

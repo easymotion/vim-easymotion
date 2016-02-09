@@ -1308,8 +1308,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         "       but in this case, it's better to allows jump side effect
         "       to gathering matched targets coordinates.
         let pos = searchpos(regexp, search_direction . (config.accept_cursor_pos ? 'c' : ''), search_stopline)
-        let num_jumpmarks = 0
-        while l:num_jumpmarks < g:EasyMotion_maximal_jumpmarks
+        while 1
             " Reached end of search range
             if pos == [0, 0]
                 break
@@ -1328,7 +1327,6 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             endif
             "}}}
             let pos = searchpos(regexp, search_direction, search_stopline)
-            let l:num_jumpmarks += 1
         endwhile
         "}}}
 
@@ -1346,17 +1344,15 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             keepjumps call cursor(s:current.cursor_position[0],
                                 \ s:current.cursor_position[1])
 
-            let l:num_jumpmarks = 0
             let targets2 = []
             if s:flag.within_line == 0
                 let search_stopline = win_first_line
             else
                 let search_stopline = s:current.cursor_position[0]
             endif
-            while l:num_jumpmarks < g:EasyMotion_maximal_jumpmarks
+            while 1
                 " TODO: refactoring
                 let pos = searchpos(regexp, 'b', search_stopline)
-                let l:num_jumpmarks += 1
                 " Reached end of search range
                 if pos == [0, 0]
                     break
