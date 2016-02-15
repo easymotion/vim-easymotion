@@ -181,13 +181,21 @@ function! EasyMotion#WB(visualmode, direction) " {{{
 endfunction " }}}
 function! EasyMotion#WBW(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    call s:EasyMotion('\(\(^\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
+    let regex_without_file_ends = '\v(^|\s)\zs\S|^$'
+    let regex = l:regex_without_file_ends
+                \ . (a:direction == 1 ? '' : '|%$')
+                \ . (a:direction == 0 ? '' : '|%^')
+    call s:EasyMotion(l:regex, a:direction, a:visualmode ? visualmode() : '', 0)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#WBK(visualmode, direction) " {{{
     " vim's iskeyword style word motion
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
-    call s:EasyMotion('\(\(\<\|\>\|\s\)\@<=\S\|^$\)', a:direction, a:visualmode ? visualmode() : '', 0)
+    let regex_without_file_ends = '\v<|^\S|\s\zs\S|>\zs\S|^$'
+    let regex = l:regex_without_file_ends
+                \ . (a:direction == 1 ? '' : '|%$')
+                \ . (a:direction == 0 ? '' : '|%^')
+    call s:EasyMotion(l:regex, a:direction, a:visualmode ? visualmode() : '', 0)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#E(visualmode, direction) " {{{
@@ -199,14 +207,30 @@ endfunction " }}}
 function! EasyMotion#EW(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let is_inclusive = mode(1) ==# 'no' ? 1 : 0
-    call s:EasyMotion('\(\S\(\s\|$\)\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    " Note: The stopping positions for 'E' and 'gE' differs. Thus, the regex
+    " for direction==2 cannot be the same in both directions. This will be
+    " ignored.
+    let regex_stub = '\v\S(\s|$)'
+    let regex = l:regex_stub
+                \ . (a:direction == 0 ? '' : '|^$|%^')
+                \ . (a:direction == 1 ? '' : '|%$')
+    call s:EasyMotion(l:regex, a:direction, a:visualmode ? visualmode() : '', 0)
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#EK(visualmode, direction) " {{{
     " vim's iskeyword style word motion
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let is_inclusive = mode(1) ==# 'no' ? 1 : 0
-    call s:EasyMotion('\(\S\(\>\|\<\|\s\)\@=\|^$\)', a:direction, a:visualmode ? visualmode() : '', is_inclusive)
+    " Note: The stopping positions for 'e' and 'ge' differs. Thus, the regex
+    " for direction==2 cannot be the same in both directions. This will be
+    " ignored.
+    let regex_stub = '\v.\ze>|\S\ze\s*$|\S\ze\s|\k\zs>\S\ze|\S<'
+    let regex = l:regex_stub
+                \ . (a:direction == 0 ? '' : '|^$|%^')
+                \ . (a:direction == 1 ? '' : '|%$')
+    call s:EasyMotion(l:regex, a:direction, a:visualmode ? visualmode() : '', 0)
+
+
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- JK Motion ---------------------------
