@@ -9,15 +9,14 @@ let s:cache_sid = {}
 let s:_unify_path_cache = {}
 
 function! s:plugin_name() abort
-  let info_file = get(split(glob(s:base_dir . '/*.vital', 1), "\n"), 0, '')
-  return fnamemodify(info_file, ':t:r')
+  return s:self_version[1 :]
 endfunction
 
 function! s:vital_files() abort
   if !exists('s:vital_files')
     let s:vital_files =
     \   map(
-    \     s:plugin_name() ==# 'vital'
+    \     s:plugin_name() ==# '_latest__'
     \       ? s:_global_vital_files()
     \       : s:_self_vital_files(),
     \     'fnamemodify(v:val, ":p:gs?[\\\\/]?/?")')
