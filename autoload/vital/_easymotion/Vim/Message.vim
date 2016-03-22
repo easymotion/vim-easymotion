@@ -80,7 +80,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'capture': s:___revitalizer_function___('s:capture'),'echomsg': s:___revitalizer_function___('s:echomsg'),'echo': s:___revitalizer_function___('s:echo'),'warn': s:___revitalizer_function___('s:warn'),'get_hit_enter_max_length': s:___revitalizer_function___('s:get_hit_enter_max_length'),'error': s:___revitalizer_function___('s:error')}
+let s:___revitalizer_functions___ = {'capture': s:___revitalizer_function___('s:capture'),'echo': s:___revitalizer_function___('s:echo'),'echomsg': s:___revitalizer_function___('s:echomsg'),'error': s:___revitalizer_function___('s:error'),'get_hit_enter_max_length': s:___revitalizer_function___('s:get_hit_enter_max_length'),'warn': s:___revitalizer_function___('s:warn')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

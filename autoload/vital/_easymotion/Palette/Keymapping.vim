@@ -121,7 +121,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'parse_lhs_list': s:___revitalizer_function___('s:parse_lhs_list'),'escape_special_key': s:___revitalizer_function___('s:escape_special_key'),'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'capture': s:___revitalizer_function___('s:capture'),'lhs_key_list': s:___revitalizer_function___('s:lhs_key_list'),'capture_list': s:___revitalizer_function___('s:capture_list'),'rhs_key_list': s:___revitalizer_function___('s:rhs_key_list'),'parse_lhs': s:___revitalizer_function___('s:parse_lhs'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded')}
+let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded'),'capture': s:___revitalizer_function___('s:capture'),'capture_list': s:___revitalizer_function___('s:capture_list'),'escape_special_key': s:___revitalizer_function___('s:escape_special_key'),'lhs_key_list': s:___revitalizer_function___('s:lhs_key_list'),'parse_lhs': s:___revitalizer_function___('s:parse_lhs'),'parse_lhs_list': s:___revitalizer_function___('s:parse_lhs_list'),'rhs_key_list': s:___revitalizer_function___('s:rhs_key_list')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

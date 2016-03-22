@@ -74,7 +74,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'extend': s:___revitalizer_function___('s:extend'),'command': s:___revitalizer_function___('s:command')}
+let s:___revitalizer_functions___ = {'command': s:___revitalizer_function___('s:command'),'extend': s:___revitalizer_function___('s:extend')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

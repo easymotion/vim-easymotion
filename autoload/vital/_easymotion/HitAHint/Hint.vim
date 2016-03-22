@@ -126,7 +126,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'create': s:___revitalizer_function___('s:create'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded')}
+let s:___revitalizer_functions___ = {'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded'),'create': s:___revitalizer_function___('s:create')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

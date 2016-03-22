@@ -606,7 +606,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'make_plain': s:___revitalizer_function___('s:make_plain'),'is_input_waiting': s:___revitalizer_function___('s:is_input_waiting'),'make': s:___revitalizer_function___('s:make'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded')}
+let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded'),'is_input_waiting': s:___revitalizer_function___('s:is_input_waiting'),'make': s:___revitalizer_function___('s:make'),'make_plain': s:___revitalizer_function___('s:make_plain')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

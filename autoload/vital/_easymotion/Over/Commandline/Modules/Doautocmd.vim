@@ -121,7 +121,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'doautocmd_user': s:___revitalizer_function___('s:doautocmd_user'),'get_cmdline': s:___revitalizer_function___('s:get_cmdline'),'make': s:___revitalizer_function___('s:make'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded')}
+let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded'),'doautocmd_user': s:___revitalizer_function___('s:doautocmd_user'),'get_cmdline': s:___revitalizer_function___('s:get_cmdline'),'make': s:___revitalizer_function___('s:make')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

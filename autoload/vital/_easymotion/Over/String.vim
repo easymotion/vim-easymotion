@@ -164,7 +164,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'length': s:___revitalizer_function___('s:length'),'index': s:___revitalizer_function___('s:index'),'split_by_keys': s:___revitalizer_function___('s:split_by_keys'),'make': s:___revitalizer_function___('s:make'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded')}
+let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded'),'index': s:___revitalizer_function___('s:index'),'length': s:___revitalizer_function___('s:length'),'make': s:___revitalizer_function___('s:make'),'split_by_keys': s:___revitalizer_function___('s:split_by_keys')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

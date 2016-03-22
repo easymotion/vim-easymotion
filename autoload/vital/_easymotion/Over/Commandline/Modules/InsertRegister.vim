@@ -164,7 +164,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'to_string': s:___revitalizer_function___('s:to_string'),'input': s:___revitalizer_function___('s:input'),'get_cmdline_cword': s:___revitalizer_function___('s:get_cmdline_cword'),'make': s:___revitalizer_function___('s:make'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded')}
+let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded'),'get_cmdline_cword': s:___revitalizer_function___('s:get_cmdline_cword'),'input': s:___revitalizer_function___('s:input'),'make': s:___revitalizer_function___('s:make'),'to_string': s:___revitalizer_function___('s:to_string')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

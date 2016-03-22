@@ -133,7 +133,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'capture': s:___revitalizer_function___('s:capture'),'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'parse': s:___revitalizer_function___('s:parse'),'group_list': s:___revitalizer_function___('s:group_list'),'set': s:___revitalizer_function___('s:set'),'parse_to_name': s:___revitalizer_function___('s:parse_to_name'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded'),'get': s:___revitalizer_function___('s:get'),'links_to': s:___revitalizer_function___('s:links_to')}
+let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded'),'capture': s:___revitalizer_function___('s:capture'),'get': s:___revitalizer_function___('s:get'),'group_list': s:___revitalizer_function___('s:group_list'),'links_to': s:___revitalizer_function___('s:links_to'),'parse': s:___revitalizer_function___('s:parse'),'parse_to_name': s:___revitalizer_function___('s:parse_to_name'),'set': s:___revitalizer_function___('s:set')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

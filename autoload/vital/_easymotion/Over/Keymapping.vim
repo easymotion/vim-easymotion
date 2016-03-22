@@ -95,7 +95,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'unmapping': s:___revitalizer_function___('s:unmapping'),'as_key_config': s:___revitalizer_function___('s:as_key_config'),'match_key': s:___revitalizer_function___('s:match_key'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded')}
+let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded'),'as_key_config': s:___revitalizer_function___('s:as_key_config'),'match_key': s:___revitalizer_function___('s:match_key'),'unmapping': s:___revitalizer_function___('s:unmapping')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

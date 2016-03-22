@@ -55,7 +55,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'make_special_chars': s:___revitalizer_function___('s:make_special_chars'),'make': s:___revitalizer_function___('s:make')}
+let s:___revitalizer_functions___ = {'make': s:___revitalizer_function___('s:make'),'make_special_chars': s:___revitalizer_function___('s:make_special_chars')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

@@ -46,7 +46,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'throw': s:___revitalizer_function___('s:throw'),'throw_cmd': s:___revitalizer_function___('s:throw_cmd'),'set_prefix': s:___revitalizer_function___('s:set_prefix'),'error': s:___revitalizer_function___('s:error')}
+let s:___revitalizer_functions___ = {'error': s:___revitalizer_function___('s:error'),'set_prefix': s:___revitalizer_function___('s:set_prefix'),'throw': s:___revitalizer_function___('s:throw'),'throw_cmd': s:___revitalizer_function___('s:throw_cmd')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

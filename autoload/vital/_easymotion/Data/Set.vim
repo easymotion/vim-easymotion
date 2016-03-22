@@ -284,7 +284,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'set': s:___revitalizer_function___('s:set'),'frozenset': s:___revitalizer_function___('s:frozenset')}
+let s:___revitalizer_functions___ = {'frozenset': s:___revitalizer_function___('s:frozenset'),'set': s:___revitalizer_function___('s:set')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

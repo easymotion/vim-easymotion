@@ -155,7 +155,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'suffix': s:___revitalizer_function___('s:suffix'),'make': s:___revitalizer_function___('s:make')}
+let s:___revitalizer_functions___ = {'make': s:___revitalizer_function___('s:make'),'suffix': s:___revitalizer_function___('s:suffix')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___

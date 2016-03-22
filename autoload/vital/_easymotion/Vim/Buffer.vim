@@ -160,7 +160,7 @@ else
   endfunction
 endif
 
-let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'read_content': s:___revitalizer_function___('s:read_content'),'get_selected_text': s:___revitalizer_function___('s:get_selected_text'),'is_cmdwin': s:___revitalizer_function___('s:is_cmdwin'),'edit_content': s:___revitalizer_function___('s:edit_content'),'open': s:___revitalizer_function___('s:open'),'get_last_selected': s:___revitalizer_function___('s:get_last_selected'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded')}
+let s:___revitalizer_functions___ = {'_vital_depends': s:___revitalizer_function___('s:_vital_depends'),'_vital_loaded': s:___revitalizer_function___('s:_vital_loaded'),'edit_content': s:___revitalizer_function___('s:edit_content'),'get_last_selected': s:___revitalizer_function___('s:get_last_selected'),'get_selected_text': s:___revitalizer_function___('s:get_selected_text'),'is_cmdwin': s:___revitalizer_function___('s:is_cmdwin'),'open': s:___revitalizer_function___('s:open'),'read_content': s:___revitalizer_function___('s:read_content')}
 
 unlet! s:___revitalizer_sid
 delfunction s:___revitalizer_function___
