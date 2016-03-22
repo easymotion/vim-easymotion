@@ -1,4 +1,4 @@
-let s:V = vital#of('easymotion')
+let s:V = vital#easymotion#of()
 let s:HitAHintMotion = s:V.import('HitAHint.Motion')
 
 call EasyMotion#init()
