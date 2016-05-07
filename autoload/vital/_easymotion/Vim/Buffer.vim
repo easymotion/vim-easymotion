@@ -140,7 +140,7 @@ function! s:edit_content(content, ...) abort
   let options = extend({
         \ 'edit': 1,
         \}, get(a:000, 0, {}))
-  let guard = s:G.store('&l:modifiable')
+  let guard = s:G.store(['&l:modifiable'])
   let saved_view = winsaveview()
   try
     let &l:modifiable=1

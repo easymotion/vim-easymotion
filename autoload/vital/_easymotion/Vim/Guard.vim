@@ -185,9 +185,9 @@ function! s:instance.restore() abort
 endfunction
 
 let s:guard = {}
-function! s:store(...) abort
+function! s:store(targets) abort
   let resources = []
-  for meta in a:000
+  for meta in a:targets
     if s:Prelude.is_list(meta)
       if len(meta) == 1
         call add(resources, s:_new_instance(meta[0]))

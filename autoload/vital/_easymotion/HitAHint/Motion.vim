@@ -87,7 +87,7 @@ let s:overwin = {
 \       'cursor': 'HitAHintCursor',
 \     },
 \     'jump_first_target_keys': [],
-\     'do_shade': s:FALSE,
+\     'do_shade': s:TRUE,
 \   }
 \ }
 
