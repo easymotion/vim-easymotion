@@ -116,7 +116,9 @@ function! EasyMotion#helper#VarReset(var, ...) "{{{
     if a:0 == 0 && has_key(s:var_reset, a:var)
         " Reset var to original value
         " setbufvar( or bufname): '' or '%' can be used for the current buffer
-        call setbufvar('%', a:var, s:var_reset[a:var])
+        if getbufvar('%', a:var) isnot s:var_reset[a:var]
+            call setbufvar('%', a:var, s:var_reset[a:var])
+        endif
     elseif a:0 == 1
         " Save original value and set new var value
 
