@@ -45,6 +45,7 @@ let g:EasyMotion_off_screen_search  = get(g: , 'EasyMotion_off_screen_search'  ,
 let g:EasyMotion_force_csapprox     = get(g: , 'EasyMotion_force_csapprox'     , 0)
 let g:EasyMotion_show_prompt        = get(g: , 'EasyMotion_show_prompt'        , 1)
 let g:EasyMotion_verbose            = get(g: , 'EasyMotion_verbose'            , 1)
+let g:EasyMotion_history_highlight  = get(g: , 'EasyMotion_history_highlight'  , 1)
 let g:EasyMotion_prompt             =
     \ get(g: , 'EasyMotion_prompt' , 'Search for {n} character(s): ')
 let g:EasyMotion_command_line_key_mappings =

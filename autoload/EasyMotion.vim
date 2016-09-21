@@ -1573,6 +1573,11 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             call EasyMotion#helper#silent_feedkeys(
                                     \ ":let &hlsearch=&hlsearch\<CR>",
                                     \ 'hlsearch', 'n')
+            if !g:EasyMotion_history_highlight
+                call EasyMotion#helper#silent_feedkeys(
+                                        \ ":noh\<CR>",
+                                        \ 'noh', 'n')
+            endif
         endif "}}}
 
         call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
