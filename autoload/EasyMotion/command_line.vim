@@ -140,10 +140,14 @@ function! s:search.on_leave(cmdline) "{{{
         if g:EasyMotion_do_shade
             call EasyMotion#highlight#delete_highlight(g:EasyMotion_hl_group_shade)
         endif
+        if s:timeout
+            call s:stop_timer()
+        endif
     endif
     if g:EasyMotion_cursor_highlight
         call EasyMotion#highlight#delete_highlight(g:EasyMotion_hl_inc_cursor)
     endif
+    noh
 endfunction "}}}
 function! s:search.on_char(cmdline) "{{{
     if s:num_strokes == -1
@@ -160,6 +164,9 @@ function! s:search.on_char(cmdline) "{{{
         if g:EasyMotion_off_screen_search
             call s:off_screen_search(re)
         endif
+        if s:timeout
+            call s:restart_timer()
+        endif
     elseif s:search.line.length() >=  s:num_strokes
         call s:search.exit()
     endif
@@ -167,8 +174,9 @@ endfunction "}}}
 "}}}
 
 " Main:
-function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
+function! EasyMotion#command_line#GetInput(num_strokes, prev, direction, timeout) "{{{
     let s:num_strokes = a:num_strokes
+    let s:timeout = a:timeout
 
     let s:prompt_base = s:getPromptMessage(a:num_strokes)
     call s:search.set_prompt(s:prompt_base)
@@ -273,6 +281,27 @@ function! s:inc_highlight(re) "{{{
     if s:search.line.length() > 0
         " Error occur when '\zs' without '!'
         silent! call EasyMotion#highlight#add_highlight(a:re, g:EasyMotion_hl_inc_search)
+    endif
+endfunction "}}}
+
+function! s:start_timer() "{{{
+    if version >= 800
+        let s:timer_id = timer_start(g:EasyMotion_timeout_len, {-> feedkeys("\<CR>")})
+    endif
+endfunction "}}}
+
+function! s:stop_timer() "{{{
+    if version >= 800
+        if exists('s:timer_id')
+            call timer_stop(s:timer_id)
+        endif
+    endif
+endfunction "}}}
+
+function! s:restart_timer() "{{{
+    if version >= 800
+        call s:stop_timer()
+        call s:start_timer()
     endif
 endfunction "}}}
 
