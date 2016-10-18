@@ -16,22 +16,27 @@ endif
 let s:save_cpo = &cpo
 set cpo&vim
 
-if v:version ># 703 ||
-\  (v:version is 703 && has('patch465'))
+if v:version > 703 ||
+\  (v:version == 703 && has('patch465'))
   function! s:glob(expr) abort
     return glob(a:expr, 1, 1)
   endfunction
 else
   function! s:glob(expr) abort
-    let R = glob(a:expr, 1)
-    return split(R, '\n')
+    return split(glob(a:expr, 1), '\n')
   endfunction
 endif
 
-function! s:globpath(path, expr) abort
-  let R = globpath(a:path, a:expr, 1)
-  return split(R, '\n')
-endfunction
+if v:version > 704 ||
+\  (v:version == 704 && has('patch279'))
+  function! s:globpath(path, expr) abort
+    return globpath(a:path, a:expr, 1, 1)
+  endfunction
+else
+  function! s:globpath(path, expr) abort
+    return split(globpath(a:path, a:expr, 1), '\n')
+  endfunction
+endif
 
 " Wrapper functions for type().
 let [

@@ -21,7 +21,7 @@ else
   endfunction
 endif
 
-function! vital#{s:plugin_name}#of() abort
+function! vital#{s:plugin_name}#new() abort
   return s:new(s:plugin_name)
 endfunction
 
@@ -170,7 +170,7 @@ function! s:_import(name) abort dict
   let s:loaded[a:name] = export_module
   if has_key(module, '_vital_loaded')
     try
-      call module._vital_loaded(vital#{s:plugin_name}#of())
+      call module._vital_loaded(vital#{s:plugin_name}#new())
     catch
       unlet s:loaded[a:name]
       throw 'vital: fail to call ._vital_loaded(): ' . v:exception

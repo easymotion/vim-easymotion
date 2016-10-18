@@ -30,7 +30,7 @@ set cpo&vim
 " }}}
 
 " CommandLine:
-let s:V = vital#easymotion#of()
+let s:V = vital#easymotion#new()
 let s:cmdline = s:V.import('Over.Commandline.Base')
 let s:modules = s:V.import("Over.Commandline.Modules")
 let s:search = s:cmdline.make()
