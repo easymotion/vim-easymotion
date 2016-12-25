@@ -135,7 +135,7 @@ function! s:move_to_winpos(winpos) abort
   let is_win_moved = !(winnr is# winnr())
   if is_win_moved
     if exists('#WinLeave')
-      doautocmd WinLeave
+      silent doautocmd WinLeave
     endif
     call s:move_to_win(winnr)
   else
@@ -143,7 +143,7 @@ function! s:move_to_winpos(winpos) abort
   endif
   call cursor(pos)
   if is_win_moved && exists('#WinEnter')
-    doautocmd WinEnter
+    silent doautocmd WinEnter
   endif
 endfunction
 
