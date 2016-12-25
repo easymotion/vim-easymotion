@@ -100,7 +100,12 @@ function! s:_new_register(name) abort
   return register
 endfunction
 function! s:register.restore() abort
-  call setreg(self.name, self.value, self.type)
+  " https://github.com/vim/vim/commit/5a50c2255c447838d08d3b4895a3be3a41cd8eda
+  if has('patch-7.4.243') || self.name !=# '='
+    call setreg(self.name, self.value, self.type)
+  else
+    let @= = self.value
+  endif
 endfunction
 
 let s:environment = {}

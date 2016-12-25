@@ -39,21 +39,37 @@ else
 endif
 
 " Wrapper functions for type().
-let [
-\   s:__TYPE_NUMBER,
-\   s:__TYPE_STRING,
-\   s:__TYPE_FUNCREF,
-\   s:__TYPE_LIST,
-\   s:__TYPE_DICT,
-\   s:__TYPE_FLOAT] = [
-      \   type(3),
-      \   type(''),
-      \   type(function('tr')),
-      \   type([]),
-      \   type({}),
-      \   has('float') ? type(str2float('0')) : -1]
-" __TYPE_FLOAT = -1 when -float
-" This doesn't match to anything.
+" NOTE: __TYPE_FLOAT = -1 when -float.
+" this doesn't match to anything.
+if has('patch-7.4.2071')
+  let [
+  \   s:__TYPE_NUMBER,
+  \   s:__TYPE_STRING,
+  \   s:__TYPE_FUNCREF,
+  \   s:__TYPE_LIST,
+  \   s:__TYPE_DICT,
+  \   s:__TYPE_FLOAT] = [
+        \   v:t_number,
+        \   v:t_string,
+        \   v:t_func,
+        \   v:t_list,
+        \   v:t_dict,
+        \   v:t_float]
+else
+  let [
+  \   s:__TYPE_NUMBER,
+  \   s:__TYPE_STRING,
+  \   s:__TYPE_FUNCREF,
+  \   s:__TYPE_LIST,
+  \   s:__TYPE_DICT,
+  \   s:__TYPE_FLOAT] = [
+        \   type(3),
+        \   type(''),
+        \   type(function('tr')),
+        \   type([]),
+        \   type({}),
+        \   has('float') ? type(str2float('0')) : -1]
+endif
 
 " Number or Float
 function! s:is_numeric(Value) abort
@@ -67,26 +83,31 @@ function! s:is_number(Value) abort
   return type(a:Value) ==# s:__TYPE_NUMBER
 endfunction
 
-" Float
-function! s:is_float(Value) abort
-  return type(a:Value) ==# s:__TYPE_FLOAT
-endfunction
 " String
 function! s:is_string(Value) abort
   return type(a:Value) ==# s:__TYPE_STRING
 endfunction
+
 " Funcref
 function! s:is_funcref(Value) abort
   return type(a:Value) ==# s:__TYPE_FUNCREF
 endfunction
+
 " List
 function! s:is_list(Value) abort
   return type(a:Value) ==# s:__TYPE_LIST
 endfunction
+
 " Dictionary
 function! s:is_dict(Value) abort
   return type(a:Value) ==# s:__TYPE_DICT
 endfunction
+
+" Float
+function! s:is_float(Value) abort
+  return type(a:Value) ==# s:__TYPE_FLOAT
+endfunction
+
 
 function! s:truncate_skipping(str, max, footer_width, separator) abort
   call s:_warn_deprecated('truncate_skipping', 'Data.String.truncate_skipping')
