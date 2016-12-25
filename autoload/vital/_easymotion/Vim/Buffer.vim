@@ -3,13 +3,13 @@
 " Do not mofidify the code nor insert new lines before '" ___vital___'
 if v:version > 703 || v:version == 703 && has('patch1170')
   function! vital#_easymotion#Vim#Buffer#import() abort
-    return map({'_vital_depends': '', 'read_content': '', 'get_selected_text': '', 'is_cmdwin': '', 'edit_content': '', 'open': '', 'get_last_selected': '', '_vital_loaded': ''},  'function("s:" . v:key)')
+    return map({'parse_cmdarg': '', '_vital_depends': '', 'read_content': '', 'get_selected_text': '', 'is_cmdwin': '', 'edit_content': '', 'open': '', 'get_last_selected': '', '_vital_loaded': ''},  'function("s:" . v:key)')
   endfunction
 else
   function! s:_SID() abort
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze__SID$')
   endfunction
-  execute join(['function! vital#_easymotion#Vim#Buffer#import() abort', printf("return map({'_vital_depends': '', 'read_content': '', 'get_selected_text': '', 'is_cmdwin': '', 'edit_content': '', 'open': '', 'get_last_selected': '', '_vital_loaded': ''}, \"function('<SNR>%s_' . v:key)\")", s:_SID()), 'endfunction'], "\n")
+  execute join(['function! vital#_easymotion#Vim#Buffer#import() abort', printf("return map({'parse_cmdarg': '', '_vital_depends': '', 'read_content': '', 'get_selected_text': '', 'is_cmdwin': '', 'edit_content': '', 'open': '', 'get_last_selected': '', '_vital_loaded': ''}, \"function('<SNR>%s_' . v:key)\")", s:_SID()), 'endfunction'], "\n")
   delfunction s:_SID
 endif
 " ___vital___
@@ -114,6 +114,7 @@ function! s:read_content(content, ...) abort
         \ 'nobinary': 0,
         \ 'bad': '',
         \ 'edit': 0,
+        \ 'line': '',
         \}, get(a:000, 0, {}))
   let tempfile = empty(options.tempfile) ? tempname() : options.tempfile
   let optnames = [
@@ -127,7 +128,8 @@ function! s:read_content(content, ...) abort
   let optname = join(filter(optnames, '!empty(v:val)'))
   try
     call writefile(a:content, tempfile)
-    execute printf('keepalt keepjumps read %s%s',
+    execute printf('keepalt keepjumps %sread %s%s',
+          \ options.line,
           \ empty(optname) ? '' : optname . ' ',
           \ fnameescape(tempfile),
           \)
@@ -153,6 +155,30 @@ function! s:edit_content(content, ...) abort
     call guard.restore()
   endtry
   setlocal nomodified
+endfunction
+
+function! s:parse_cmdarg(...) abort
+  let cmdarg = get(a:000, 0, v:cmdarg)
+  let options = {}
+  if cmdarg =~# '++enc='
+    let options.encoding = matchstr(cmdarg, '++enc=\zs[^ ]\+\ze')
+  endif
+  if cmdarg =~# '++ff='
+    let options.fileformat = matchstr(cmdarg, '++ff=\zs[^ ]\+\ze')
+  endif
+  if cmdarg =~# '++bad='
+    let options.bad = matchstr(cmdarg, '++bad=\zs[^ ]\+\ze')
+  endif
+  if cmdarg =~# '++bin'
+    let options.binary = 1
+  endif
+  if cmdarg =~# '++nobin'
+    let options.nobinary = 1
+  endif
+  if cmdarg =~# '++edit'
+    let options.edit = 1
+  endif
+  return options
 endfunction
 
 let &cpo = s:save_cpo
