@@ -161,6 +161,7 @@ noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
 
 - [haya14busa/incsearch.vim](https://github.com/haya14busa/incsearch.vim)
 - [haya14busa/incsearch-fuzzy.vim](https://github.com/haya14busa/incsearch-fuzzy.vim)
+- [haya14busa/incsearch-easymotion.vim](https://github.com/haya14busa/incsearch-easymotion.vim)
 
 ```vim
 function! s:config_easyfuzzymotion(...) abort
