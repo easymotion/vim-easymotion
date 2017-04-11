@@ -92,12 +92,14 @@ function! EasyMotion#cmigemo#getMigemoPattern(input) "{{{
 
     if has('migemo')
         " Use migemo().
-        let save_migemo_dict = &migemodict
+        if &migemodict !=# ''
+            return migemo(a:input)
+        endif
         let &migemodict = s:migemodict
         try
             return migemo(a:input)
         finally
-            let &migemodict = save_migemo_dict
+            let &migemodict = ''
         endtry
     elseif executable('cmigemo')
         " Use cmigemo.
