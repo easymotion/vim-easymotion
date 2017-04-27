@@ -561,19 +561,25 @@ function! s:convertRegep(input) "{{{
     " 2. migemo
     " 3. smartsign
     " 4. smartcase
-    let re = s:should_use_regexp() ? a:input : s:escape_regexp_char(a:input)
+    let use_migemo = s:should_use_migemo(a:input)
+    let re = use_migemo || s:should_use_regexp() ? a:input : s:escape_regexp_char(a:input)
 
     " Convert space to match only start of spaces
     if re ==# ' '
         let re = '\s\+'
     endif
 
-    if s:should_use_migemo(a:input)
+    if use_migemo
         let re = s:convertMigemo(re)
     endif
 
     if s:should_use_smartsign(a:input)
-        let re = s:convertSmartsign(a:input)
+        let r = s:convertSmartsign(a:input)
+        if use_migemo
+            let re = re . '\m\|' . r
+        else
+            let re = r
+        endif
     endif
 
     let case_flag = EasyMotion#helper#should_case_sensitive(
@@ -593,10 +599,7 @@ function! s:convertMigemo(re) "{{{
     if ! has_key(s:migemo_dicts, &l:encoding)
         let s:migemo_dicts[&l:encoding] = EasyMotion#helper#load_migemo_dict()
     endif
-    if re =~# '^\a$'
-        let re = get(s:migemo_dicts[&l:encoding], re, a:re)
-    endif
-    return re
+    return get(s:migemo_dicts[&l:encoding], re, a:re)
 endfunction "}}}
 function! s:convertSmartsign(chars) "{{{
     " Convert given chars to smartsign string
@@ -641,7 +644,7 @@ function! s:should_use_regexp() "{{{
     return g:EasyMotion_use_regexp == 1 && s:flag.regexp == 1
 endfunction "}}}
 function! s:should_use_migemo(char) "{{{
-    if ! g:EasyMotion_use_migemo || match(a:char, '\A') != -1
+    if ! g:EasyMotion_use_migemo || match(a:char, '[^!-~]') != -1
         return 0
     endif
 
