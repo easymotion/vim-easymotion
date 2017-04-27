@@ -574,7 +574,12 @@ function! s:convertRegep(input) "{{{
     endif
 
     if s:should_use_smartsign(a:input)
-        let re = s:convertSmartsign(a:input)
+        let r = s:convertSmartsign(a:input)
+        if use_migemo
+            let re = re . '\m\|' . r
+        else
+            let re = r
+        endif
     endif
 
     let case_flag = EasyMotion#helper#should_case_sensitive(
