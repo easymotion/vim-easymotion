@@ -247,6 +247,13 @@ function! EasyMotion#JK(visualmode, direction) " {{{
     endif
     return s:EasyMotion_is_cancelled
 endfunction " }}}
+function! EasyMotion#HL(visualmode, direction) " {{{
+    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
+    let s:flag.linewise = 1
+    let s:flag.within_line = 1
+    call s:EasyMotion('.', a:direction, a:visualmode ? visualmode() : '', 0)
+    return s:EasyMotion_is_cancelled
+endfunction " }}}
 function! EasyMotion#Sol(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let s:flag.linewise = 1
