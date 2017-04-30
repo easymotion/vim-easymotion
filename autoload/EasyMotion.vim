@@ -1621,6 +1621,10 @@ endfunction " }}}
 "}}}
 " }}}
 
+function! EasyMotion#Regex(reg)
+    call s:EasyMotion(a:reg, 2, '', 0)
+endfunction
+
 call EasyMotion#init()
 " Restore 'cpoptions' {{{
 let &cpo = s:save_cpo
