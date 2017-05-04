@@ -45,12 +45,17 @@ let g:EasyMotion_off_screen_search  = get(g: , 'EasyMotion_off_screen_search'  ,
 let g:EasyMotion_force_csapprox     = get(g: , 'EasyMotion_force_csapprox'     , 0)
 let g:EasyMotion_show_prompt        = get(g: , 'EasyMotion_show_prompt'        , 1)
 let g:EasyMotion_verbose            = get(g: , 'EasyMotion_verbose'            , 1)
+let g:EasyMotion_history_highlight  = get(g: , 'EasyMotion_history_highlight'  , 1)
 let g:EasyMotion_prompt             =
     \ get(g: , 'EasyMotion_prompt' , 'Search for {n} character(s): ')
 let g:EasyMotion_command_line_key_mappings =
     \ get(g: , 'EasyMotion_command_line_key_mappings' , {})
 let g:EasyMotion_disable_two_key_combo     =
     \ get(g: , 'EasyMotion_disable_two_key_combo' , 0)
+
+if version >= 800
+    let g:EasyMotion_timeout_len    = get(g: , 'EasyMotion_timeout_len'        , 500)
+endif
 
 "}}}
 
@@ -67,6 +72,10 @@ function! s:motion_map_helper(motions) "{{{
         if dict.fnc ==# 'S' || dict.fnc ==# 'SL' || dict.fnc ==# 'T' || dict.fnc ==# 'TL'
             let mapargs  += [dict.cnt, 0, dict.direction]
             let xmapargs += [dict.cnt, 1, dict.direction]
+            if has_key(dict, 'timeout')
+                let mapargs  += [dict.timeout]
+                let xmapargs += [dict.timeout]
+            endif
         elseif dict.fnc ==# 'Search'
             let mapargs  += [0, dict.direction, dict.respect_direction]
             let xmapargs += [1, dict.direction, dict.respect_direction]
@@ -131,6 +140,21 @@ call s:motion_map_helper({
     \ 'tln'             : {'fnc' : 'TL' , 'cnt' : -1, 'direction' : 0},
     \ 'Tln'             : {'fnc' : 'TL' , 'cnt' : -1, 'direction' : 1},
     \ 'bd-tln'          : {'fnc' : 'TL' , 'cnt' : -1, 'direction' : 2},
+    \
+    \ 'fn-to'           : {'fnc' : 'S'  , 'cnt' : -1, 'direction' : 0, 'timeout' : 1},
+    \ 'Fn-to'           : {'fnc' : 'S'  , 'cnt' : -1, 'direction' : 1, 'timeout' : 1},
+    \ 'sn-to'           : {'fnc' : 'S'  , 'cnt' : -1, 'direction' : 2, 'timeout' : 1},
+    \ 'bd-fn-to'        : {'fnc' : 'S'  , 'cnt' : -1, 'direction' : 2, 'timeout' : 1},
+    \ 'tn-to'           : {'fnc' : 'T'  , 'cnt' : -1, 'direction' : 0, 'timeout' : 1},
+    \ 'Tn-to'           : {'fnc' : 'T'  , 'cnt' : -1, 'direction' : 1, 'timeout' : 1},
+    \ 'bd-tn-to'        : {'fnc' : 'T'  , 'cnt' : -1, 'direction' : 2, 'timeout' : 1},
+    \ 'fln-to'          : {'fnc' : 'SL' , 'cnt' : -1, 'direction' : 0, 'timeout' : 1},
+    \ 'Fln-to'          : {'fnc' : 'SL' , 'cnt' : -1, 'direction' : 1, 'timeout' : 1},
+    \ 'sln-to'          : {'fnc' : 'SL' , 'cnt' : -1, 'direction' : 2, 'timeout' : 1},
+    \ 'bd-fln-to'       : {'fnc' : 'SL' , 'cnt' : -1, 'direction' : 2, 'timeout' : 1},
+    \ 'tln-to'          : {'fnc' : 'TL' , 'cnt' : -1, 'direction' : 0, 'timeout' : 1},
+    \ 'Tln-to'          : {'fnc' : 'TL' , 'cnt' : -1, 'direction' : 1, 'timeout' : 1},
+    \ 'bd-tln-to'       : {'fnc' : 'TL' , 'cnt' : -1, 'direction' : 2, 'timeout' : 1},
     \ })
 
 nnoremap <silent> <Plug>(easymotion-overwin-f) :<C-u>call EasyMotion#OverwinF(1)<CR>

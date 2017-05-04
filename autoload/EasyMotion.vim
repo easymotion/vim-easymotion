@@ -128,8 +128,12 @@ endfunction "}}}
 " direction:
 "   0 -> forward
 "   1 -> backward
-"   2 -> bi-direction (handle forward & backward at the same time) }}}
-function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
+"   2 -> bi-direction (handle forward & backward at the same time)
+" timeout:
+"   Takes only values of 1 and 0, meaning, respectively, to use or not to use
+"   timeout when getting user input. Timeout length itself is controlled
+"   by gloabal variable }}}
+function! EasyMotion#S(num_strokes, visualmode, direction, ...) " {{{
     if a:direction == 1
         let is_inclusive = 0
     else
@@ -138,7 +142,7 @@ function! EasyMotion#S(num_strokes, visualmode, direction) " {{{
         let is_inclusive = mode(1) ==# 'no' ? 1 : 0
     endif
     let s:flag.find_bd = a:direction == 2 ? 1 : 0
-    let re = s:findMotion(a:num_strokes, a:direction)
+    let re = s:findMotion(a:num_strokes, a:direction, get(a:, 0, 0))
     if s:handleEmpty(re, a:visualmode) | return | endif
     call s:EasyMotion(re, a:direction, a:visualmode ? visualmode() : '', is_inclusive)
     return s:EasyMotion_is_cancelled
@@ -150,7 +154,7 @@ function! EasyMotion#OverwinF(num_strokes) " {{{
         return EasyMotion#overwin#move(re)
     endif
 endfunction "}}}
-function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
+function! EasyMotion#T(num_strokes, visualmode, direction, timeout) " {{{
     if a:direction == 1
         let is_inclusive = 0
     else
@@ -159,7 +163,7 @@ function! EasyMotion#T(num_strokes, visualmode, direction) " {{{
         let is_inclusive = mode(1) ==# 'no' ? 1 : 0
     endif
     let s:flag.find_bd = a:direction == 2 ? 1 : 0
-    let re = s:findMotion(a:num_strokes, a:direction)
+    let re = s:findMotion(a:num_strokes, a:direction, get(a:, 0, 0))
     if s:handleEmpty(re, a:visualmode) | return | endif
     if a:direction == 2
         let s:flag.bd_t = 1
@@ -275,14 +279,14 @@ function! EasyMotion#JumpToAnywhere(visualmode, direction) " {{{
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 " -- Line Motion -------------------------
-function! EasyMotion#SL(num_strokes, visualmode, direction) " {{{
+function! EasyMotion#SL(num_strokes, visualmode, direction, timeout) " {{{
     let s:flag.within_line = 1
-    call EasyMotion#S(a:num_strokes, a:visualmode, a:direction)
+    call EasyMotion#S(a:num_strokes, a:visualmode, a:direction, get(a:, 0, 0))
     return s:EasyMotion_is_cancelled
 endfunction " }}}
-function! EasyMotion#TL(num_strokes, visualmode, direction) " {{{
+function! EasyMotion#TL(num_strokes, visualmode, direction, timeout) " {{{
     let s:flag.within_line = 1
-    call EasyMotion#T(a:num_strokes, a:visualmode, a:direction)
+    call EasyMotion#T(a:num_strokes, a:visualmode, a:direction, get(a:, 0, 0))
     return s:EasyMotion_is_cancelled
 endfunction " }}}
 function! EasyMotion#WBL(visualmode, direction) " {{{
@@ -524,13 +528,14 @@ function! s:GetChar(...) abort "{{{
 endfunction "}}}
 
 " -- Find Motion Helper ------------------
-function! s:findMotion(num_strokes, direction) "{{{
+function! s:findMotion(num_strokes, direction, ...) "{{{
     " Find Motion: S,F,T
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     " store cursor pos because 'n' key find motion could be jump to offscreen
     let s:current.original_position = [line('.'), col('.')]
     let s:current.is_search = a:num_strokes == -1 ? 1: 0
     let s:flag.regexp = a:num_strokes == -1 ? 1 : 0 " TODO: remove?
+    let timeout = get(a:, 1, 0)
 
     if g:EasyMotion_add_search_history && a:num_strokes == -1
         let s:previous['input'] = @/
@@ -538,7 +543,8 @@ function! s:findMotion(num_strokes, direction) "{{{
         let s:previous['input'] = get(s:previous, 'input', '')
     endif
     let input = EasyMotion#command_line#GetInput(
-                    \ a:num_strokes, s:previous.input, a:direction)
+                    \ a:num_strokes, s:previous.input,
+                    \ a:direction, timeout)
     let s:previous['input'] = input
 
     " Check that we have an input char
@@ -1570,6 +1576,11 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             call EasyMotion#helper#silent_feedkeys(
                                     \ ":let &hlsearch=&hlsearch\<CR>",
                                     \ 'hlsearch', 'n')
+            if !g:EasyMotion_history_highlight
+                call EasyMotion#helper#silent_feedkeys(
+                                        \ ":noh\<CR>",
+                                        \ 'noh', 'n')
+            endif
         endif "}}}
 
         call s:Message('Jumping to [' . coords[0] . ', ' . coords[1] . ']')
