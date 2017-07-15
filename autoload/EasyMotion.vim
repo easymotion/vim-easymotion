@@ -739,14 +739,6 @@ function! s:GetVisualStartPosition(c_pos, v_start, v_end, search_direction) "{{{
 endfunction "}}}
 
 " -- Others ------------------------------
-function! s:is_cmdwin() "{{{
-  return bufname('%') ==# '[Command Line]'
-endfunction "}}}
-function! s:should_use_wundo() "{{{
-    " wundu cannot use in command-line window and
-    " unless undolist is not empty
-    return ! s:is_cmdwin() && undotree().seq_last != 0
-endfunction "}}}
 function! s:handleEmpty(input, visualmode) "{{{
     " if empty, reselect and return 1
     if empty(a:input)
@@ -1104,12 +1096,8 @@ function! s:PromptUser(groups) "{{{
     " }}}
 
     " -- Put labels on targets & Get User Input & Restore all {{{
-    " Save undo tree {{{
-    let s:undo_file = tempname()
-    if s:should_use_wundo()
-        execute "wundo" s:undo_file
-    endif
-    "}}}
+    " Save undo tree
+    let undo_lock = EasyMotion#undo#save()
     try
         " Set lines with markers {{{
         call s:SetLines(lines_items, 'marker')
@@ -1156,21 +1144,8 @@ function! s:PromptUser(groups) "{{{
             \ )
         " }}}
 
-        " Restore undo tree {{{
-        if s:should_use_wundo() && filereadable(s:undo_file)
-            silent execute "rundo" s:undo_file
-            call delete(s:undo_file)
-            unlet s:undo_file
-        else
-            " Break undo history (undobreak)
-            let old_undolevels = &undolevels
-            set undolevels=-1
-            keepjumps call setline('.', getline('.'))
-            let &undolevels = old_undolevels
-            unlet old_undolevels
-            " FIXME: Error occur by GundoToggle for undo number 2 is empty
-            keepjumps call setline('.', getline('.'))
-        endif "}}}
+        " Restore undo tree
+        call undo_lock.restore()
 
         redraw
     endtry "}}}
