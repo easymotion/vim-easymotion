@@ -435,7 +435,7 @@ function! s:Message(message) " {{{
     if g:EasyMotion_verbose
         echo 'EasyMotion: ' . a:message
     else
-        " Make the current message dissapear
+        " Make the current message disappear
         echo ''
         " redraw
     endif
