@@ -841,19 +841,19 @@ function! s:GroupingAlgorithmSCTree(targets, keys)
     let i = 0
     let j = 0
     for key_count in s:GetChildrenCountsForKeys(len(a:keys), len(a:targets))
-    let node = a:keys[j]
-    if key_count == 1
-        let tree[node] = a:targets[i]
-    elseif key_count > 1
-        let tree[node] = s:GroupingAlgorithmSCTree(a:targets[i:i + key_count - 1], a:keys)
-    else
-        continue
-    endif
-    let j += 1
-    let i += key_count
-endfor
+        let node = a:keys[j]
+        if key_count == 1
+            let tree[node] = a:targets[i]
+        elseif key_count > 1
+            let tree[node] = s:GroupingAlgorithmSCTree(a:targets[i:i + key_count - 1], a:keys)
+        else
+            continue
+        endif
+        let j += 1
+        let i += key_count
+    endfor
 
-return tree
+    return tree
 endfunction
 " }}}
 " -- Original ---------------------------- {{{
@@ -931,7 +931,6 @@ endfunction
 " }}}
 "}}}
 " Core Functions: {{{
-function! s:PromptUser(groups) "{{{
     " Recursive
     let group_values = values(a:groups)
 
