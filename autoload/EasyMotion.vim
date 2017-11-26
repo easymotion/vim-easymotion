@@ -799,96 +799,57 @@ let s:grouping_algorithms = {
 \   1: 'SCTree'
 \ , 2: 'Original'
 \ }
-" -- Single-key/closest target priority tree {{{
-" This algorithm tries to assign one-key jumps to all the targets closest to the cursor.
-" It works recursively and will work correctly with as few keys as two.
-function! s:GroupingAlgorithmSCTree(targets, keys) "{{{
-    " Prepare variables for working
-    let targets_len = len(a:targets)
-    let keys_len = len(a:keys)
+function! s:GetChildrenCountsForKeys(n_keys, targets_rem)
+    " returns a list corresponding to s:jump_tokens; each
+    " count represents how many hits are in the subtree
+    " rooted at the corresponding jump token
+    let counts = repeat([0], a:n_keys)
+    let targets_rem = a:targets_rem
 
-    let groups = {}
-
-    let keys = reverse(copy(a:keys))
-
-    " Semi-recursively count targets {{{
-        " We need to know exactly how many child nodes (targets) this branch will have
-        " in order to pass the correct amount of targets to the recursive function.
-
-        " Prepare sorted target count list {{{
-            " This is horrible, I know. But dicts aren't sorted in vim, so we need to
-            " work around that. That is done by having one sorted list with key counts,
-            " and a dict which connects the key with the keys_count list.
-
-            let keys_count = []
-            let keys_count_keys = {}
-
-            let i = 0
-            for key in keys
-                call add(keys_count, 0)
-
-                let keys_count_keys[key] = i
-
-                let i += 1
-            endfor
-        " }}}
-
-        let targets_left = targets_len
-        let level = 0
-        let i = 0
-
-        while targets_left > 0
-            " Calculate the amount of child nodes based on the current level
-            let childs_len = (level == 0 ? 1 : (keys_len - 1) )
-
-            for key in keys
-                " Add child node count to the keys_count array
-                let keys_count[keys_count_keys[key]] += childs_len
-
-                " Subtract the child node count
-                let targets_left -= childs_len
-
-                if targets_left <= 0
-                    " Subtract the targets left if we added too many too
-                    " many child nodes to the key count
-                    let keys_count[keys_count_keys[key]] += targets_left
-
-                    break
-                endif
-
-                let i += 1
-            endfor
-
-            let level += 1
-        endwhile
-    " }}}
-    " Create group tree {{{
-        let i = 0
-        let key = 0
-
-        call reverse(keys_count)
-
-        for key_count in keys_count
-            if key_count > 1
-                " We need to create a subgroup
-                " Recurse one level deeper
-                let groups[a:keys[key]] = s:GroupingAlgorithmSCTree(a:targets[i : i + key_count - 1], a:keys)
-            elseif key_count == 1
-                " Assign single target key
-                let groups[a:keys[key]] = a:targets[i]
-            else
-                " No target
-                continue
+    let is_first_lvl = 1
+    while targets_rem > 0
+        " if we can't fit all the hits in the first lvl,
+        " fit the remainder starting from the last jump token
+        let n_children = is_first_lvl
+                    \ ? 1
+                    \ : a:n_keys - 1
+        for j in range(a:n_keys)
+            let counts[j] += n_children
+            let targets_rem -= n_children
+            if targets_rem <= 0
+                let counts[j] += targets_rem
+                break
             endif
-
-            let key += 1
-            let i += key_count
         endfor
-    " }}}
+        let is_first_lvl = 0
+    endwhile
 
-    " Finally!
-    return groups
-endfunction "}}}
+    return reverse(counts)
+endfunction
+
+" -- Single-key/closest target priority tree {{{
+function! s:GroupingAlgorithmSCTree(targets, keys) "{{{
+  let tree = {}
+
+  " i: index into targets
+  " j: index into keys
+  let i = 0
+  let j = 0
+  for key_count in s:GetChildrenCountsForKeys(len(a:keys), len(a:targets))
+    let node = a:keys[j]
+    if key_count == 1
+      let tree[node] = a:targets[i]
+    elseif key_count > 1
+      let tree[node] = s:MyFunc(a:targets[i:i + key_count - 1], a:keys)
+    else
+      continue
+    endif
+    let j += 1
+    let i += key_count
+  endfor
+
+  return tree
+endfunction
 " }}}
 " -- Original ---------------------------- {{{
 function! s:GroupingAlgorithmOriginal(targets, keys)
@@ -922,7 +883,6 @@ function! s:GroupingAlgorithmOriginal(targets, keys)
     return groups
 endfunction
 " }}}
-
 " -- Coord/key dictionary creation ------- {{{
 function! s:CreateCoordKeyDict(groups, ...)
     " Dict structure:
