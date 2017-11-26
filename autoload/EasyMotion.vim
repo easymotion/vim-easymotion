@@ -829,31 +829,31 @@ endfunction
 
 " -- Single-key/closest target priority tree {{{
 function! s:GroupingAlgorithmSCTree(targets, keys)
-  " returns a tree where non-leaf nodes are keys and leaves are targets, which
-  " are tuples [lineno, colno].
-  "
-  " each level of the tree is filled such that the average path depth of the tree
-  " is minimized and the closest targets come first.
-  let tree = {}
+    " returns a tree where non-leaf nodes are keys and leaves are targets, which
+    " are tuples [lineno, colno].
+    "
+    " each level of the tree is filled such that the average path depth of the tree
+    " is minimized and the closest targets come first.
+    let tree = {}
 
-  " i: index into targets
-  " j: index into keys
-  let i = 0
-  let j = 0
-  for key_count in s:GetChildrenCountsForKeys(len(a:keys), len(a:targets))
+    " i: index into targets
+    " j: index into keys
+    let i = 0
+    let j = 0
+    for key_count in s:GetChildrenCountsForKeys(len(a:keys), len(a:targets))
     let node = a:keys[j]
     if key_count == 1
-      let tree[node] = a:targets[i]
+        let tree[node] = a:targets[i]
     elseif key_count > 1
-      let tree[node] = s:GroupingAlgorithmSCTree(a:targets[i:i + key_count - 1], a:keys)
+        let tree[node] = s:GroupingAlgorithmSCTree(a:targets[i:i + key_count - 1], a:keys)
     else
-      continue
+        continue
     endif
     let j += 1
     let i += key_count
-  endfor
+endfor
 
-  return tree
+return tree
 endfunction
 " }}}
 " -- Original ---------------------------- {{{
