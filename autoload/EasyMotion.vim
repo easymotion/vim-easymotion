@@ -840,7 +840,7 @@ function! s:GroupingAlgorithmSCTree(targets, keys)
     if key_count == 1
       let tree[node] = a:targets[i]
     elseif key_count > 1
-      let tree[node] = s:MyFunc(a:targets[i:i + key_count - 1], a:keys)
+      let tree[node] = s:GroupingAlgorithmSCTree(a:targets[i:i + key_count - 1], a:keys)
     else
       continue
     endif
