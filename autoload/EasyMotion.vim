@@ -808,7 +808,7 @@ function! s:GetChildrenCountsForKeys(n_keys, targets_rem)
 
     let is_first_lvl = 1
     while targets_rem > 0
-        " if we can't fit all the hits in the first lvl,
+        " if we can't fit all the hits in the first level,
         " fit the remainder starting from the last jump token
         let n_children = is_first_lvl
                     \ ? 1
