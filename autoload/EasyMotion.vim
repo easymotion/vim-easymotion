@@ -828,7 +828,7 @@ function! s:GetChildrenCountsForKeys(n_keys, targets_rem)
 endfunction
 
 " -- Single-key/closest target priority tree {{{
-function! s:GroupingAlgorithmSCTree(targets, keys) "{{{
+function! s:GroupingAlgorithmSCTree(targets, keys)
   let tree = {}
 
   " i: index into targets
