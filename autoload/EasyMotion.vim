@@ -931,6 +931,7 @@ endfunction
 " }}}
 "}}}
 " Core Functions: {{{
+function! s:PromptUser(groups) "{{{
     " Recursive
     let group_values = values(a:groups)
 
