@@ -829,6 +829,11 @@ endfunction
 
 " -- Single-key/closest target priority tree {{{
 function! s:GroupingAlgorithmSCTree(targets, keys)
+  " returns a tree where non-leaf nodes are keys and leaves are targets, which
+  " are tuples [lineno, colno].
+  "
+  " each level of the tree is filled such that the average path depth of the tree
+  " is minimized and the closest targets come first.
   let tree = {}
 
   " i: index into targets
