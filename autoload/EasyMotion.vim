@@ -800,9 +800,9 @@ let s:grouping_algorithms = {
 \ , 2: 'Original'
 \ }
 function! s:GetChildrenCountsForKeys(n_keys, targets_rem)
-    " returns a list corresponding to s:jump_tokens; each
+    " returns a list corresponding to g:EasyMotion_keys; each
     " count represents how many hits are in the subtree
-    " rooted at the corresponding jump token
+    " rooted at the corresponding key
     let counts = repeat([0], a:n_keys)
     let targets_rem = a:targets_rem
 
