@@ -138,7 +138,7 @@ nmap <Leader>w <Plug>(easymotion-overwin-w)
 
 ```vim
 " You can use other keymappings like <C-l> instead of <CR> if you want to
-" use these mappings as default search and somtimes want to move cursor with
+" use these mappings as default search and sometimes want to move cursor with
 " EasyMotion.
 function! s:incsearch_config(...) abort
   return incsearch#util#deepextend(deepcopy({
@@ -316,7 +316,7 @@ input characters to find the last motion again.
 This requires https://github.com/tpope/vim-repeat.
 
 You can use EasyMotion with operators and press `.` to repeat!
-It is well-behaved, and consistent with the default behavior of Vim.
+It is well-behaved and consistent with the default behavior of Vim.
 
 ![repeat-motion](https://f.cloud.github.com/assets/3797062/2039538/0aef66aa-89a4-11e3-8242-c27a5208cfca.gif)
 
@@ -377,7 +377,7 @@ nmap s <Plug>(easymotion-overwin-f)
 " Need one more keystroke, but on average, it may be more comfortable.
 nmap s <Plug>(easymotion-overwin-f2)
 
-" Turn on case insensitive feature
+" Turn on case-insensitive feature
 let g:EasyMotion_smartcase = 1
 
 " JK motions: Line motions
