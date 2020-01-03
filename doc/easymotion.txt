@@ -252,7 +252,7 @@ Bidirection ~
                 End of word forward and backward. See |e| & |ge|.
 
 <Plug>(easymotion-bd-E)                               *<Plug>(easymotion-bd-E)*
-                End of WORD forward and backward. See |e| & |ge|.
+                End of WORD forward and backward. See |E| & |gE|.
 
 <Plug>(easymotion-bd-jk)                             *<Plug>(easymotion-bd-jk)*
                 Line downward and upward. See |j| & |k|.
