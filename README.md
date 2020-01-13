@@ -1,6 +1,7 @@
 Vim motion on speed!
 =====
 [![Build Status](https://travis-ci.org/easymotion/vim-easymotion.svg?branch=master)](https://travis-ci.org/easymotion/vim-easymotion)
+[![reviewdog](https://github.com/easymotion/vim-easymotion/workflows/reviewdog/badge.svg?branch=master&event=push)](https://github.com/easymotion/vim-easymotion/actions?query=workflow%3Areviewdog+event%3Apush+branch%3Amaster)
 
 ![Animated demonstration](https://f.cloud.github.com/assets/3797062/2039359/a8e938d6-899f-11e3-8789-60025ea83656.gif)
 
