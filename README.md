@@ -193,7 +193,7 @@ get to your destination.
 
 ### Bidirectional motions
 
-All motions now come in a bidirectional variants (e.g. `<Plug>(easymotion-s)`,
+All motions now come in bidirectional variants (e.g. `<Plug>(easymotion-s)`,
 `<Plug>(easymotion-bd-w)` and so forth).
 By default, you can already jump forward or backward with `<Leader>s`. A useful
 trick is to map `nmap s <Plug>(easymotion-s)` to use `s` instead and save one
@@ -201,7 +201,7 @@ keystroke!
 
 ### 2-character search motion
 
-You can now also perform a 2-character search, similar to [vim-seek](https://github.com/goldfeld/vim-seek)/[vim-sneak](https://github.com/justinmk/vim-sneak) with `<Plug>(easymotion-s2)`. For example you can highlight all words that start with `fu`.
+You can now also perform a 2-character search, similar to [vim-seek](https://github.com/goldfeld/vim-seek)/[vim-sneak](https://github.com/justinmk/vim-sneak) with `<Plug>(easymotion-s2)`. For example, you can highlight all words that start with `fu`.
 
 ![2-key-find-motion](https://f.cloud.github.com/assets/3797062/2039612/7cafcec8-89a5-11e3-8f2c-5f26a6b83efd.gif)
 
@@ -391,6 +391,6 @@ Now, all you need to remember is `s` and JK motions bindings, and it's good enou
 
 **`<Leader>j`** & **`<Leader>k`** make it easy to move to the lines.
 
-Of course you can use any key you want instead of `s` such as `<Space>`, `<Leader>s`, etc...
+Of course, you can use any key you want instead of `s` such as `<Space>`, `<Leader>s`, etc...
 
 If you want to use more useful mappings, please see [:h easymotion.txt](https://github.com/easymotion/vim-easymotion/blob/master/doc/easymotion.txt) for more detail.
