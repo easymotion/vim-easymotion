@@ -23,3 +23,9 @@ jobs:
           github_token: ${{ secrets.github_token }}
           reporter: github-check
           level: warning
+
+      - uses: reviewdog/action-languagetool@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          reporter: github-check
+          level: info
