@@ -13,6 +13,9 @@ set cpo&vim
 let s:TRUE = !0
 let s:FALSE = 0
 let s:DIRECTION = { 'forward': 0, 'backward': 1, 'bidirection': 2}
+let s:HAS_NVIM = exists('*nvim_buf_add_highlight') &&
+               \ exists('*nvim_create_namespace')  &&
+               \ exists('*nvim_buf_clear_namespace')
 
 
 " Init: {{{
@@ -988,6 +991,15 @@ function! s:PromptUser(groups) "{{{
     let coord_key_dict = s:CreateCoordKeyDict(a:groups)
 
     let prev_col_num = 0
+
+    if s:HAS_NVIM
+        let ns = nvim_create_namespace("easymotion")
+    endif
+
+    let hl_lists = {}
+    let hl_lists[g:EasyMotion_hl_group_target] = []
+    let hl_lists[g:EasyMotion_hl2_first_group_target] = []
+    let hl_lists[g:EasyMotion_hl2_second_group_target] = []
     for dict_key in sort(coord_key_dict[0])
         " NOTE: {{{
         " let g:EasyMotion_keys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -1073,9 +1085,13 @@ function! s:PromptUser(groups) "{{{
             \   : (i == 0) ? g:EasyMotion_hl2_first_group_target
             \   : g:EasyMotion_hl2_second_group_target
 
-            if exists('*matchaddpos')
-                call EasyMotion#highlight#add_pos_highlight(
-                            \ line_num, col_num + col_add, _hl_group)
+            if s:HAS_NVIM
+                call nvim_buf_add_highlight(0, ns, _hl_group,
+                            \ line_num - 1, col_num + col_add - 1, col_num + col_add)
+            elseif exists('*matchaddpos')
+                call add(hl_lists[_hl_group], [line_num, col_num + col_add])
+                " call EasyMotion#highlight#add_pos_highlight(
+                "             \ line_num, col_num + col_add, _hl_group)
             else
                 call EasyMotion#highlight#add_highlight(
                     \ '\%' . line_num . 'l' . target_col_regexp,
@@ -1090,6 +1106,9 @@ function! s:PromptUser(groups) "{{{
             let col_add += strlen(marker_char)
         endfor
         "}}}
+    endfor
+    for [group, hl_list] in items(hl_lists)
+        call EasyMotion#highlight#add_pos_highlight_batch(hl_list, group)
     endfor
 
     let lines_items = items(lines)
@@ -1137,11 +1156,15 @@ function! s:PromptUser(groups) "{{{
         call s:SetLines(lines_items, 'orig')
 
         " Un-highlight targets {{{
-        call EasyMotion#highlight#delete_highlight(
-            \ g:EasyMotion_hl_group_target,
-            \ g:EasyMotion_hl2_first_group_target,
-            \ g:EasyMotion_hl2_second_group_target,
-            \ )
+        if s:HAS_NVIM
+            call nvim_buf_clear_namespace(0, ns, 0, -1)
+        else
+            call EasyMotion#highlight#delete_highlight(
+                \ g:EasyMotion_hl_group_target,
+                \ g:EasyMotion_hl2_first_group_target,
+                \ g:EasyMotion_hl2_second_group_target,
+                \ )
+        endif
         " }}}
 
         " Restore undo tree
@@ -1376,27 +1399,62 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         let groups = GroupingFn(targets, split(g:EasyMotion_keys, '\zs'))
 
         " -- Shade inactive source --------------- {{{
+        if s:HAS_NVIM
+            let ns = nvim_create_namespace('easymotion')
+        endif
         if g:EasyMotion_do_shade && targets_len != 1 && s:flag.dot_repeat != 1
+            let cur = s:current.cursor_position
             if a:direction == 1 " Backward
-                let shade_hl_re = s:flag.within_line
-                                \ ? '^.*\%#'
-                                \ : '\%'. win_first_line .'l\_.*\%#'
+                if s:HAS_NVIM
+                    for line_num in range(win_first_line-1, cur[0]-2)
+                        call nvim_buf_add_highlight(0, ns,
+                                    \ g:EasyMotion_hl_group_shade, line_num, 0, -1)
+                    endfor
+                    call nvim_buf_add_highlight(0, ns,
+                                \ g:EasyMotion_hl_group_shade, cur[0]-1, 0, cur[1]-1)
+                else
+                    let shade_hl_re = s:flag.within_line
+                                    \ ? '^.*\%#'
+                                    \ : '\%'. win_first_line .'l\_.*\%#'
+                endif
             elseif a:direction == 0 " Forward
-                let shade_hl_re = s:flag.within_line
-                                \ ? '\%#.*$'
-                                \ : '\%#\_.*\%'. win_last_line .'l'
+                if s:HAS_NVIM
+                    for line_num in range(cur[0], win_last_line-1)
+                        call nvim_buf_add_highlight(0, ns,
+                                    \ g:EasyMotion_hl_group_shade, line_num, 0, -1)
+                    endfor
+                    call nvim_buf_add_highlight(0, ns,
+                                \ g:EasyMotion_hl_group_shade, cur[0]-1, cur[1], -1)
+                else
+                    let shade_hl_re = s:flag.within_line
+                                    \ ? '\%#.*$'
+                                    \ : '\%#\_.*\%'. win_last_line .'l'
+                endif
             else " Both directions
-                let shade_hl_re = s:flag.within_line
-                                \ ? '^.*\%#.*$'
-                                \ : '\_.*'
+                if s:HAS_NVIM
+                    for line_num in range(win_first_line-1, win_last_line-1)
+                        call nvim_buf_add_highlight(0, ns,
+                                    \ g:EasyMotion_hl_group_shade, line_num, 0, -1)
+                    endfor
+                else
+                    let shade_hl_re = s:flag.within_line
+                                    \ ? '^.*\%#.*$'
+                                    \ : '\_.*'
+                endif
             endif
 
-            call EasyMotion#highlight#add_highlight(
-                \ shade_hl_re, g:EasyMotion_hl_group_shade)
+            if !s:HAS_NVIM
+                call EasyMotion#highlight#add_highlight(
+                    \ shade_hl_re, g:EasyMotion_hl_group_shade)
+            endif
             if g:EasyMotion_cursor_highlight
-                let cursor_hl_re = '\%#'
-                call EasyMotion#highlight#add_highlight(cursor_hl_re,
-                    \ g:EasyMotion_hl_inc_cursor)
+                if s:HAS_NVIM
+                    call nvim_buf_add_highlight(0, ns, g:EasyMotion_hl_inc_cursor, cur[0]-1, cur[1]-1, cur[1])
+                else
+                    let cursor_hl_re = '\%#'
+                    call EasyMotion#highlight#add_highlight(cursor_hl_re,
+                        \ g:EasyMotion_hl_inc_cursor)
+                endif
             endif
         endif
         " }}}
@@ -1577,7 +1635,11 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         call EasyMotion#reset()
         " }}}
         " -- Remove shading ---------------------- {{{
-        call EasyMotion#highlight#delete_highlight()
+        if s:HAS_NVIM
+            call nvim_buf_clear_namespace(0, ns, 0, -1)
+        else
+            call EasyMotion#highlight#delete_highlight()
+        endif
         " }}}
 
         if s:EasyMotion_is_cancelled == 0 " Success
