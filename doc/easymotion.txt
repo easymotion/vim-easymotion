@@ -424,9 +424,9 @@ JK Motion ~
 JK motion option                    *<Plug>(easymotion-j)* *<Plug>(easymotion-k)*
                                                     *g:EasyMotion_startofline*
 
-        The default behavior of the |j| and |k| is to move your cursor to the
-        start of the line. Set this option to 0 to force the cursor to stay in
-        the same column If you want to use both movements as separate
+        The default behavior of the |j| and |k| keys is to move your cursor to
+        the start of the line. Set this option to 0 to force the cursor to stay
+        in the same column. If you want to use both movements as separate
         mappings, set |'g:EasyMotion_startofline'| to 0 and map
         |<Plug>(easymotion-sol-j)| & |<Plug>(easymotion-sol-k)| to the start
         of line mapping:
@@ -482,7 +482,7 @@ Search motion respect previous direction
 
     This is vim compatible |n| & |N| easymotion. Unlike |<Plug>(easymotion-n)|
     and |<Plug>(easymotion-N)| 's direction is always forward or backward,
-    these motions consider previous search direction. 
+    these motions consider previous search direction.
 
 Within line motion ~
                                                        *easymotion-within-line*
