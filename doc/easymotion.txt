@@ -38,6 +38,7 @@ CONTENTS                                                 *easymotion-contents*
        Custom mappings ................. |easymotion-custom-mappings|
            Leader key .................. |easymotion-leader-key|
            Custom keys ................. |easymotion-custom-keys|
+       Autocommands .................... |easymotion-autocommands|
     License ............................ |easymotion-license|
     Known bugs ......................... |easymotion-known-bugs|
     Contributing ....................... |easymotion-contributing|
@@ -1139,8 +1140,9 @@ Example: >
 See |easymotion-plug-table| for a table of motions that can be mapped
 and their default values.
 
-Autocommands                                           *easymotion-autocommands*
-                                   *EasyMotionPromptBegin* *EasyMotionPromptEnd*
+------------------------------------------------------------------------------
+Autocommands                                          *easymotion-autocommands*
+                                    *EasyMotionPromptBegin* *EasyMotionPromptEnd*
 
 EasyMotion invokes two |User| autocommands, |EasyMotionPromptBegin| and
 |EasyMotionPromptEnd|, so you can temporarily disable your linter to avoid
