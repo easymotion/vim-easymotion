@@ -562,9 +562,9 @@ function! s:convertRegep(input) "{{{
     " 3. smartsign
     " 4. smartcase
     let use_migemo = s:should_use_migemo(a:input)
-    let re = use_migemo || s:should_use_regexp() ? a:input : s:escape_regexp_char(a:input)
+    let use_dict = g:EasyMotion_dict
+    let re = use_migemo || !empty(use_dict) || s:should_use_regexp() ? a:input : s:escape_regexp_char(a:input)
 
-    let use_dict = 'zh-cn'
     if !empty(use_dict)
         let re = EasyMotion#dict#convert(re, use_dict)
     endif

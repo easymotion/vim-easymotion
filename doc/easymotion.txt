@@ -20,6 +20,7 @@ CONTENTS                                                 *easymotion-contents*
     Requirements ....................... |easymotion-requirements|
     Configuration ...................... |easymotion-configuration|
        EasyMotion_keys ................. |EasyMotion_keys|
+       EasyMotion_dict ................. |EasyMotion_dict|
        EasyMotion_do_shade ............. |EasyMotion_do_shade|
        EasyMotion_do_mapping ........... |EasyMotion_do_mapping|
        EasyMotion_grouping ............. |EasyMotion_grouping|
@@ -754,6 +755,29 @@ Example:
     'asdfghjkl;qwertyuiopzxcvbnm'
     " You can use non-ascii, multibyte key characters as well
     'asdfghjkl;qwertyuiopzxcvbnmèòàùì'
+<
+
+------------------------------------------------------------------------------
+EasyMotion_dict                                               *EasyMotion_dict*
+                                                            *g:EasyMotion_dict*
+Set the dict to extend motion targets.
+
+Supported dict currently:
+
+>
+    'zh-cn': simplified chinese
+    'zh-tw': traditional chinese
+<
+
+Default: ''
+
+Example:
+
+Text below with motion key `a`:
+
+>
+    abcdef啊测试
+    ^     ^
 <
 
 ------------------------------------------------------------------------------
