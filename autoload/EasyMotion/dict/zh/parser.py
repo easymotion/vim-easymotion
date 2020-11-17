@@ -57,15 +57,23 @@ def get_st():
     return (s, t)
 
 
-s, _ = get_st()
+s, t = get_st()
 
 with open('utf8.vim', 'w', encoding='utf-8') as fp:
     cnt = 0
-    fp.write("let g:EasyMotion#pinyin#utf8 = {\n")
+    fp.write("let g:EasyMotion#dict#zh#utf8#cn = {\n")
     for c in range(ord('a'), ord('z') + 1):
-        cnt += len(s.get(chr(c), ''))
-        fp.write("\t\\ '{:}' : '{}',\n".format(
-            chr(c),
-            '\\v|[{}]'.format(s[chr(c)]) if s.get(chr(c)) else ''))
+        if s.get(chr(c)):
+            cnt += len(s[chr(c)])
+            fp.write("\t\\ '{:}' : '[{}]',\n".format(chr(c), s[chr(c)]))
+    fp.write("\t\\}\n")
+    print('cnt: ', cnt)
+
+    cnt = 0
+    fp.write("let g:EasyMotion#dict#zh#utf8#tw = {\n")
+    for c in range(ord('a'), ord('z') + 1):
+        if t.get(chr(c)):
+            cnt += len(t[chr(c)])
+            fp.write("\t\\ '{:}' : '[{}]',\n".format(chr(c), t[chr(c)]))
     fp.write("\t\\}\n")
     print('cnt: ', cnt)

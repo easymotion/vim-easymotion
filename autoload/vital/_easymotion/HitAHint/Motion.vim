@@ -720,20 +720,16 @@ function! s:gather_poses(pattern) abort
   let poses = []
   let view = winsaveview()
 
-  let pat = a:pattern
-  if has_key(g:EasyMotion#pinyin#utf8#dict, a:pattern[-1:])
-      let pat .= g:EasyMotion#pinyin#utf8#dict[tolower(a:pattern[-1:])]
-  endif
   let lnum = line('w0')
   let stop_line = line('w$')
   while lnum <= stop_line
     call cursor(lnum, 1)
     let fold_end = foldclosedend(lnum)
     if fold_end == -1
-      keepjumps let pos = searchpos(pat, 'c', lnum)
+      keepjumps let pos = searchpos(a:pattern, 'c', lnum)
       while pos != [0, 0]
         let poses += [pos]
-        keepjumps let pos = searchpos(pat, '', lnum)
+        keepjumps let pos = searchpos(a:pattern, '', lnum)
       endwhile
       let lnum += 1
     else
