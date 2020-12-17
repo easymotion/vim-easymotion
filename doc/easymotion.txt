@@ -1,4 +1,4 @@
-*easymotion.txt*	Version 3.0
+*easymotion.txt*        Version 3.0
 
 
             ______                  __  ___       __  _
@@ -38,6 +38,7 @@ CONTENTS                                                 *easymotion-contents*
        Custom mappings ................. |easymotion-custom-mappings|
            Leader key .................. |easymotion-leader-key|
            Custom keys ................. |easymotion-custom-keys|
+       Autocommands .................... |easymotion-autocommands|
     License ............................ |easymotion-license|
     Known bugs ......................... |easymotion-known-bugs|
     Contributing ....................... |easymotion-contributing|
@@ -1138,6 +1139,28 @@ Example: >
 <
 See |easymotion-plug-table| for a table of motions that can be mapped
 and their default values.
+
+------------------------------------------------------------------------------
+Autocommands                                          *easymotion-autocommands*
+                                    *EasyMotionPromptBegin* *EasyMotionPromptEnd*
+
+EasyMotion invokes two |User| autocommands, |EasyMotionPromptBegin| and
+|EasyMotionPromptEnd|, so you can temporarily disable your linter to avoid
+annoying syntax errors.
+
+EasyMotionPromptBegin       Before the content of buffer is changed with
+                            markers. If EasyMotion directly jumps to the
+                            target (no prompts given), this autocommand will
+                            not be executed.
+
+EasyMotionPromptEnd         After the content of buffer and the undo tree are
+                            restored.
+
+Example with coc.nvim: >
+
+    autocmd User EasyMotionPromptBegin silent! CocDisable
+    autocmd User EasyMotionPromptEnd   silent! CocEnable
+<
 
 ==============================================================================
 License                                                    *easymotion-license*
