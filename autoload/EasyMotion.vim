@@ -21,12 +21,6 @@ function! EasyMotion#init()
     if s:loaded
         return
     endif
-    " iskeyword for EasyMotion
-    if exists("g:EasyMotion_is_not_keyword")
-        let s:tmp_keyword = &iskeyword
-        silent! execute "set iskeyword-=".g:EasyMotion_is_not_keyword
-        autocmd User EasyMotionPromptEnd silent! execute "set iskeyword=".s:tmp_keyword
-    endif
     let s:loaded = s:TRUE
     call EasyMotion#highlight#load()
     " Store previous motion info
