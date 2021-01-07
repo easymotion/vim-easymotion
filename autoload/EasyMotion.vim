@@ -21,6 +21,12 @@ function! EasyMotion#init()
     if s:loaded
         return
     endif
+    " iskeyword for EasyMotion
+    if exists("g:EasyMotion_is_not_keyword")
+        let s:tmp_keyword = &iskeyword
+        silent! execute "set iskeyword-=".g:EasyMotion_is_not_keyword
+        autocmd User EasyMotionPromptEnd silent! execute "set iskeyword=".s:tmp_keyword
+    endif
     let s:loaded = s:TRUE
     call EasyMotion#highlight#load()
     " Store previous motion info
@@ -1196,6 +1202,9 @@ function! s:DotPromptUser(groups) "{{{
 endfunction "}}}
 
 function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
+    if exists("g:EasyMotion_is_not_keyword")
+        execute "set iskeyword-=".g:EasyMotion_is_not_keyword
+    endif
     let config = extend(s:default_config(), get(a:, 1, {}))
     " Store s:current original_position & cursor_position {{{
     " current cursor pos.
@@ -1598,6 +1607,9 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             call EasyMotion#attach_active_autocmd() "}}}
         endif
     endtry
+    if exists("g:EasyMotion_is_not_keyword")
+        execute "set iskeyword+=".g:EasyMotion_is_not_keyword
+    endif
 endfunction " }}}
 "}}}
 " }}}
