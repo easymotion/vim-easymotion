@@ -1196,6 +1196,7 @@ function! s:DotPromptUser(groups) "{{{
 endfunction "}}}
 
 function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
+    " Set local iskeyword for EasyMotion
     if exists("g:EasyMotion_is_not_keyword")
         execute "set iskeyword-=".g:EasyMotion_is_not_keyword
     endif
@@ -1601,6 +1602,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             call EasyMotion#attach_active_autocmd() "}}}
         endif
     endtry
+    " Turn iskeyword back to normal setting
     if exists("g:EasyMotion_is_not_keyword")
         execute "set iskeyword+=".g:EasyMotion_is_not_keyword
     endif

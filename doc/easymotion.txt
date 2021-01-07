@@ -475,6 +475,13 @@ iskeyword compatible word motions           *<Plug>(easymotion-iskeyword-w)*
         map <Leader>b <Plug>(easymotion-iskeyword-b)
 <
         NOTE: Within line motions are compatible with |iskeyword| by default.
+        If you want separated |iskeyword| for EasyMotion, you can use default
+        |iskeyword| option.
+
+        Example:
+>
+        let g:EasyMotion_is_not_keyword = "-_"
+<
 
 Search motion respect previous direction
 
