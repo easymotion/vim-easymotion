@@ -1196,6 +1196,14 @@ function! s:DotPromptUser(groups) "{{{
 endfunction "}}}
 
 function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
+    " Set local iskeyword for EasyMotion
+    if exists('g:EasyMotion_is_not_keyword')
+        let s:initial_keyword = &iskeyword
+        let s:exclude_keyword = split(g:EasyMotion_is_not_keyword, ',')
+        for item in s:exclude_keyword
+            execute 'set iskeyword-='.item
+        endfor
+    endif
     let config = extend(s:default_config(), get(a:, 1, {}))
     " Store s:current original_position & cursor_position {{{
     " current cursor pos.
@@ -1598,6 +1606,10 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
             call EasyMotion#attach_active_autocmd() "}}}
         endif
     endtry
+    " Turn iskeyword back to normal setting
+    if exists('g:EasyMotion_is_not_keyword')
+        execute 'set iskeyword='.s:initial_keyword
+    endif
 endfunction " }}}
 "}}}
 " }}}
