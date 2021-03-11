@@ -356,6 +356,16 @@ Plugin 'easymotion/vim-easymotion'
 NeoBundle 'easymotion/vim-easymotion'
 ```
 
+### Vim-Plug (https://github.com/junegunn/vim-plug)
+```
+Plug 'easymotion/vim-easymotion'
+```
+
+### Vim8 Native Plugin Manager (https://vimhelp.org/repeat.txt.html#packages)
+```
+git clone https://github.com/easymotion/vim-easymotion ~/.vim/pack/plugins/start/vim-easymotion
+```
+
 Minimal Configuration Tutorial
 ------------------------------
 **I recommend configuring and map keys by yourself if you are true Vimmer.**
