@@ -26,6 +26,7 @@ CONTENTS                                                 *easymotion-contents*
        EasyMotion_smartcase ............ |EasyMotion_smartcase|
        EasyMotion_smartsign ............ |EasyMotion_smartsign|
        EasyMotion_use_migemo ........... |EasyMotion_use_migemo|
+       EasyMotion_use_Chinese .......... |EasyMotion_use_Chinese|
        EasyMotion_use_upper  ........... |EasyMotion_use_upper|
        EasyMotion_enter_jump_first ..... |EasyMotion_enter_jump_first|
        EasyMotion_prompt ............... |EasyMotion_prompt|
@@ -883,6 +884,27 @@ This feature is based on rhysd(@Linda_pp)'s clever-f script,
 which can be downloaded here:
 
 https://github.com/rhysd/clever-f.vim
+
+------------------------------------------------------------------------------
+Use Chinese Characters                                *EasyMotion_use_Chinese*
+						    *g:EasyMotion_use_Chinese*
+
+|EasyMotion| is now support Chinese characters by their PinYin initials. For
+example, '<Leader><Leader>fy' can search for '易'. This feature requres the
+following options: >
+
+    let g:EasyMotion_use_migemo  = 0
+    let g:EasyMotion_use_Chinese = 1
+
+The supported characters are listedin 'autoload\EasyMotion\Chinese.vim', you
+can refer to for more details, escpecially for the patterns for the keywords 
+'!"#$%&'*+,-()./:;<=>?@[\]^_`{}|~', you can modify it as you want.
+
+PS: The Chinese characters are extracted from a digital dictionary, and the
+characters which are pronounced in many ways are kept. Besides, chances are
+that not all the characters are included, especially the traditional Chinese
+characters.
+
 
 ------------------------------------------------------------------------------
 Show target key by upper letter                          *EasyMotion_use_upper*

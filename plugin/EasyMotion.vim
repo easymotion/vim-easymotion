@@ -32,6 +32,7 @@ let g:EasyMotion_startofline        = get(g: , 'EasyMotion_startofline'        ,
 let g:EasyMotion_smartcase          = get(g: , 'EasyMotion_smartcase'          , 0)
 let g:EasyMotion_skipfoldedline     = get(g: , 'EasyMotion_skipfoldedline'     , 1)
 let g:EasyMotion_use_migemo         = get(g: , 'EasyMotion_use_migemo'         , 0)
+let g:EasyMotion_use_Chinese        = get(g: , 'EasyMotion_use_Chinese'        , 0)
 let g:EasyMotion_use_upper          = get(g: , 'EasyMotion_use_upper'          , 0)
 let g:EasyMotion_enter_jump_first   = get(g: , 'EasyMotion_enter_jump_first'   , 0)
 let g:EasyMotion_space_jump_first   = get(g: , 'EasyMotion_space_jump_first'   , 0)
