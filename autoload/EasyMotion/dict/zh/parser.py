@@ -48,10 +48,10 @@ def get_st():
             #         print(parsed)
             #     except Exception as e:
             #         pass
-            if len(parsed['simplified']) == 1 and parsed['simplified'] not in e:
+            if len(parsed['simplified']) == 1 and parsed['simplified'] not in e and ord(parsed['simplified']) > 255:
                 k = parsed['pinyin'][0].lower()
                 s[k] = s.get(k, '') + parsed['simplified']
-            if len(parsed['traditional']) == 1 and parsed['traditional'] not in e:
+            if len(parsed['traditional']) == 1 and parsed['traditional'] not in e and ord(parsed['traditional']) > 255:
                 k = parsed['pinyin'][0].lower()
                 t[k] = t.get(k, '') + parsed['traditional']
     return (s, t)
@@ -59,7 +59,7 @@ def get_st():
 
 s, t = get_st()
 
-with open('utf8.vim', 'w', encoding='utf-8') as fp:
+with open('utf8.vim', 'w', encoding='utf-8', newline='\n') as fp:
     cnt = 0
     fp.write("let g:EasyMotion#dict#zh#utf8#cn = {\n")
     for c in range(ord('a'), ord('z') + 1):
