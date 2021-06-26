@@ -905,6 +905,19 @@ characters which are pronounced in many ways are kept. Besides, chances are
 that not all the characters are included, especially the traditional Chinese
 characters.
 
+2021-06-26 + Add support to multi-character search.
+
+Note: If you start with '<Plug>(easymotion-sn)' and then you type multiple
+characters, only the English matches will be highlighted when you are
+typing. But the Chinese matches are available as choices.
+
+当有如下样本时，： >
+
+    汉字hz中文zw中文汉字zwhz
+
+当你需要检索多个字母时，譬如，调用'<Plug>(easymotion-sn)'后，按下'zw'，此时，所
+有的英文'zw'将会高亮，'中文'并不高亮。但是当你按下回车键后，所有的'zw'及'中文'
+将会被高亮，并且你可以如常定位到'zw'或者'中文'。
 
 ------------------------------------------------------------------------------
 Show target key by upper letter                          *EasyMotion_use_upper*

@@ -592,11 +592,14 @@ function! s:convertRegep(input) "{{{
     return re
 endfunction "}}}
 function! s:convertChinese(re) "{{{
-    let re = a:re
     if empty(s:chinese_dict)
         let s:chinese_dict = EasyMotion#Chinese#load_dict()
     endif
-    return get(s:chinese_dict, re, a:re)
+    let regString = ''
+    for ch in split(a:re, '\zs')
+        let regString .= get(s:chinese_dict, ch, ch)
+    endfor
+    return regString
 endfunction "}}}
 function! s:convertMigemo(re) "{{{
     let re = a:re
