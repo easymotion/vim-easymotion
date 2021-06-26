@@ -909,7 +909,10 @@ characters.
 
 Note: If you start with '<Plug>(easymotion-sn)' and then you type multiple
 characters, only the English matches will be highlighted when you are
-typing. But the Chinese matches are available as choices.
+typing. But the Chinese matches are available as choices. 
+The highlights when typing is done with a complete library, and I don't want to
+ruin the original scripts. So the tradeoff is to enter all the characters
+without highlights while typing, but list the all hits as choices.
 
 当有如下样本时，： >
 
@@ -918,6 +921,20 @@ typing. But the Chinese matches are available as choices.
 当你需要检索多个字母时，譬如，调用'<Plug>(easymotion-sn)'后，按下'zw'，此时，所
 有的英文'zw'将会高亮，'中文'并不高亮。但是当你按下回车键后，所有的'zw'及'中文'
 将会被高亮，并且你可以如常定位到'zw'或者'中文'。
+
+					     *g:EasyMotion_Chinese_SearchUpper*
+2021-06-26 + Add option to search uppercase English when lowercase char pressed
+
+If you want the uppercase characters alse hitted, you can add the following
+choice in your vimrc: >
+
+    let g:EasyMotion_use_migemo          = 0
+    let g:EasyMotion_use_Chinese         = 1
+    let g:EasyMotion_Chinese_SearchUpper = 1
+
+E.g., '<Plug>(Easymotion-f)' followed by 'a' hits 'A' as well.
+
+BTW, hope anyone can help with my poor English.            ------Troy Daniel
 
 ------------------------------------------------------------------------------
 Show target key by upper letter                          *EasyMotion_use_upper*

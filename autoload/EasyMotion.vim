@@ -594,6 +594,19 @@ endfunction "}}}
 function! s:convertChinese(re) "{{{
     if empty(s:chinese_dict)
         let s:chinese_dict = EasyMotion#Chinese#load_dict()
+        " patch the Chinese dictionary to include the upper case English
+        " letter as hits
+        if g:EasyMotion_Chinese_SearchUpper
+            for idx in range(97, 122)
+                let key = nr2char(idx)
+                if has_key(s:chinese_dict, key)
+                    let needle = s:chinese_dict[key]
+                    let s:chinese_dict[nr2char(idx)] = needle[0:1] . nr2char(idx-32).needle[2:]
+                else
+                    let s:chinese_dict[nr2char(idx)] = '['.nr2char(idx).nr2char(idx-32).']'
+                endif
+            endfor
+        endif
     endif
     let regString = ''
     for ch in split(a:re, '\zs')
