@@ -99,7 +99,7 @@ Press `b` to jump to the second "o":
 	Lorem ipsum d<cursor>olor sit amet.
 
 Jeffrey Way of Nettuts+ has also [written
-a tutorial](http://net.tutsplus.com/tutorials/other/vim-essential-plugin-easymotion/)
+a tutorial](https://code.tutsplus.com/tutorials/vim-essential-plugin-easymotion--net-19223)
 about EasyMotion.
 
 New features in version 3.0
