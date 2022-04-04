@@ -363,7 +363,7 @@ Plug 'easymotion/vim-easymotion'
 
 ### Vim8 Native Plugin Manager (https://vimhelp.org/repeat.txt.html#packages)
 ```
-git clone https://github.com/easymotion/vim-easymotion ~/.vim/pack/plugins/start/vim-easymotion
+git clone https://github.com/easymotion/vim-easymotion.git ~/.vim/pack/plugins/start/vim-easymotion
 ```
 
 Minimal Configuration Tutorial
