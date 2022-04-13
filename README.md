@@ -148,7 +148,7 @@ function! s:incsearch_config(...) abort
   \     "\<CR>": '<Over>(easymotion)'
   \   },
   \   'is_expr': 0
-  \ }), get(a:, 1, {}))
+  \ }), get(a:000, 1, {}))
 endfunction
 
 noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
@@ -172,7 +172,7 @@ function! s:config_easyfuzzymotion(...) abort
   \   'keymap': {"\<CR>": '<Over>(easymotion)'},
   \   'is_expr': 0,
   \   'is_stay': 1
-  \ }), get(a:, 1, {}))
+  \ }), get(a:000, 1, {}))
 endfunction
 
 noremap <silent><expr> <Space>/ incsearch#go(<SID>config_easyfuzzymotion())
