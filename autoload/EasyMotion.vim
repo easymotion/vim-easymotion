@@ -29,6 +29,8 @@ function! EasyMotion#init()
     let s:dot_repeat = {}
     " Prepare 1-key Migemo Dictionary
     let s:migemo_dicts = {}
+    " Prepare Chinese Dictionary
+    let s:chinese_dict = {}
     let s:EasyMotion_is_active = 0
     call EasyMotion#reset()
     " Anywhere regular expression: {{{
@@ -571,6 +573,8 @@ function! s:convertRegep(input) "{{{
 
     if use_migemo
         let re = s:convertMigemo(re)
+    elseif g:EasyMotion_use_Chinese
+        let re = s:convertChinese(re)
     endif
 
     if s:should_use_smartsign(a:input)
@@ -586,6 +590,29 @@ function! s:convertRegep(input) "{{{
                         \ a:input, s:current.is_search) ? '\c' : '\C'
     let re = case_flag . re
     return re
+endfunction "}}}
+function! s:convertChinese(re) "{{{
+    if empty(s:chinese_dict)
+        let s:chinese_dict = EasyMotion#Chinese#load_dict()
+        " patch the Chinese dictionary to include the upper case English
+        " letter as hits
+        if g:EasyMotion_Chinese_SearchUpper
+            for idx in range(97, 122)
+                let key = nr2char(idx)
+                if has_key(s:chinese_dict, key)
+                    let needle = s:chinese_dict[key]
+                    let s:chinese_dict[nr2char(idx)] = needle[0:1] . nr2char(idx-32).needle[2:]
+                else
+                    let s:chinese_dict[nr2char(idx)] = '['.nr2char(idx).nr2char(idx-32).']'
+                endif
+            endfor
+        endif
+    endif
+    let regString = ''
+    for ch in split(a:re, '\zs')
+        let regString .= get(s:chinese_dict, ch, ch)
+    endfor
+    return regString
 endfunction "}}}
 function! s:convertMigemo(re) "{{{
     let re = a:re
