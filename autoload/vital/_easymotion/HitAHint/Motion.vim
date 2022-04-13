@@ -712,9 +712,33 @@ endfunction
 " window for both direction excluding poses in fold.
 " @return {{list<list<(number,number))>}}
 function! s:gather_poses(pattern) abort
-  let f = s:gather_visible_matched_poses(a:pattern, s:DIRECTION.forward, s:TRUE)
-  let b = s:gather_visible_matched_poses(a:pattern, s:DIRECTION.backward, s:FALSE)
-  return filter(f + b, '!s:is_in_fold(v:val[0])')
+  "let f = s:gather_visible_matched_poses(a:pattern, s:DIRECTION.forward, s:TRUE)
+  "let b = s:gather_visible_matched_poses(a:pattern, s:DIRECTION.backward, s:FALSE)
+  "return filter(f + b, '!s:is_in_fold(v:val[0])')
+  "return f
+
+  let poses = []
+  let view = winsaveview()
+
+  let lnum = line('w0')
+  let stop_line = line('w$')
+  while lnum <= stop_line
+    call cursor(lnum, 1)
+    let fold_end = foldclosedend(lnum)
+    if fold_end == -1
+      keepjumps let pos = searchpos(a:pattern, 'c', lnum)
+      while pos != [0, 0]
+        let poses += [pos]
+        keepjumps let pos = searchpos(a:pattern, '', lnum)
+      endwhile
+      let lnum += 1
+    else
+      let lnum = fold_end + 1
+    endif
+  endwhile
+
+  call winrestview(view)
+  return poses
 endfunction
 
 " s:gather_visible_matched_poses() aggregates pattern matched positions in visible current
