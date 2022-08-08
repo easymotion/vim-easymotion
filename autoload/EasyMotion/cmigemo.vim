@@ -51,6 +51,13 @@ function! s:SearchDict2(name) "{{{
     if dict == ''
         let dict = globpath(path, a:name)
     endif
+
+    let migemopath = exepath('cmigemo')
+    if migemopath != ''
+        let migemodir = fnamemodify(migemopath, ':h:h')
+        let dict = globpath(migemodir, 'share/{,c}migemo/'.a:name)
+    endif
+
     if dict == ''
         for path in [
                 \ '/usr/local/share/migemo/',
