@@ -1303,7 +1303,7 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
                 if search_direction ==# 'b'
                     " FIXME: Hmm... I should use filter()
                     " keepjumps call cursor(foldclosed(pos[0]), 0)
-                else
+                elseif foldclosedend(pos[0]+1) != -1
                     keepjumps call cursor(foldclosedend(pos[0]+1), 0)
                 endif
             else
