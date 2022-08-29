@@ -1158,8 +1158,8 @@ EasyMotionPromptEnd         After the content of buffer and the undo tree are
 
 Example with coc.nvim: >
 
-    autocmd User EasyMotionPromptBegin silent! CocDisable
-    autocmd User EasyMotionPromptEnd   silent! CocEnable
+    autocmd User EasyMotionPromptBegin :let b:coc_diagnostic_disable = 1
+    autocmd User EasyMotionPromptEnd   :let b:coc_diagnostic_disable = 0
 <
 
 ==============================================================================
