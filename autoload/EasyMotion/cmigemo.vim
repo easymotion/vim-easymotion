@@ -58,6 +58,7 @@ function! s:SearchDict2(name) "{{{
                 \ '/usr/local/share/',
                 \ '/usr/share/cmigemo/',
                 \ '/usr/share/',
+                \ '/opt/homebrew/share/',
                 \ ]
             let path = path . a:name
             if filereadable(path)
