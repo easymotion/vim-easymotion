@@ -361,6 +361,11 @@ NeoBundle 'easymotion/vim-easymotion'
 Plug 'easymotion/vim-easymotion'
 ```
 
+### Packer (https://github.com/wbthomason/packer.nvim)
+```
+use('easymotion/vim-easymotion')
+```
+
 ### Vim8 Native Plugin Manager (https://vimhelp.org/repeat.txt.html#packages)
 ```
 git clone https://github.com/easymotion/vim-easymotion.git ~/.vim/pack/plugins/start/vim-easymotion
@@ -395,6 +400,29 @@ let g:EasyMotion_smartcase = 1
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 ```
+For Neovim: 
+
+```lua
+--From https://github.com/easymotion/vim-easymotion#minimal-configuration-tutorial
+--
+vim.g.EasyMotion_do_mapping = 0 -- Disable default mappings
+
+-- Jump to anywhere you want with minimal keystrokes, with just one key binding.
+-- `s{char}{label}`
+--vim.keymap.set('n', 's', "<Plug>(easymotion-overwin-f)")
+-- or
+-- `s{char}{char}{label}`
+-- Need one more keystroke, but on average, it may be more comfortable.
+vim.keymap.set('n', 's', "<Plug>(easymotion-overwin-f2)");
+
+-- Turn on case-insensitive feature
+vim.g.EasyMotion_smartcase = 1
+
+-- JK motions: Line motions
+vim.keymap.set("", "<Leader>j", "<Plug>(easymotion-j)")
+vim.keymap.set("", "<Leader>k", "<Plug>(easymotion-k)")
+```
+
 Now, all you need to remember is `s` and JK motions bindings, and it's good enough to boost your cursor speed!
 
 **`s`** is bidirectional find motion, you can move to anywhere with it.
