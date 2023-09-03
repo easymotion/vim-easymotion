@@ -358,7 +358,7 @@ Jump To Anywhere ~
     let g:EasyMotion_re_anywhere = '\v' .
         \       '(<.|^)' . '|' .
         \       '(<.|.$)' . '|' .
-        \       '(\l)\zs(\u)' . '|' .
+        \       '(\l)\zs(\u)' . '|'
 <
 Repeat ~
 
