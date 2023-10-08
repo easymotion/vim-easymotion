@@ -173,6 +173,9 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
     let s:prompt_base = s:getPromptMessage(a:num_strokes)
     call s:search.set_prompt(s:prompt_base)
 
+    " Invoke autocmd so the user can temporarily hide floating popups, etc.
+    silent doautocmd User EasyMotionInputBegin
+
     " Screen: cursor position, first and last line
     let s:orig_pos = getpos('.')
     let s:orig_line_start = getpos('w0')
@@ -184,6 +187,8 @@ function! EasyMotion#command_line#GetInput(num_strokes, prev, direction) "{{{
     let s:save_direction = deepcopy(s:direction)
 
     let input = s:search.get()
+    silent doautocmd User EasyMotionInputEnd
+
     if input == '' && ! s:search.exit_code()
         return a:prev
     elseif s:search.exit_code() == 1 || s:search.exit_code() == -1
