@@ -247,6 +247,13 @@ function! EasyMotion#JK(visualmode, direction) " {{{
     endif
     return s:EasyMotion_is_cancelled
 endfunction " }}}
+function! EasyMotion#SolEnter(visualmode, direction,cmd) " {{{
+    let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
+    let s:flag.linewise = 1
+    call s:EasyMotion('^\(.\|$\)', a:direction, a:visualmode ? visualmode() : '', '',{},a:cmd)
+    return s:EasyMotion_is_cancelled
+endfunction " }}}
+
 function! EasyMotion#Sol(visualmode, direction) " {{{
     let s:current.is_operator = mode(1) ==# 'no' ? 1: 0
     let s:flag.linewise = 1
@@ -1197,6 +1204,11 @@ endfunction "}}}
 
 function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
     let config = extend(s:default_config(), get(a:, 1, {}))
+    try
+    let additional_call = a:2 
+catch
+    let additional_call = ''
+endtry
     " Store s:current original_position & cursor_position {{{
     " current cursor pos.
     let s:current.cursor_position = [line('.'), col('.')]
@@ -1430,6 +1442,9 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
         " -- Update cursor position -------------- {{{
         " First, jump back cursor to original position
         keepjumps call cursor(s:current.original_position)
+        if (len(additional_call)>0)
+            exec additional_call
+        endif 
 
         " Consider EasyMotion as jump motion :h jump-motion
         normal! m`
@@ -1474,6 +1489,9 @@ function! s:EasyMotion(regexp, direction, visualmode, is_inclusive, ...) " {{{
 
             " Jump to destination
             keepjumps call cursor(coords[0], coords[1])
+            if (len(additional_call)>0)
+                exec additional_call
+            endif 
 
             " Execute previous operator
             let cmd = s:dot_repeat.operator
